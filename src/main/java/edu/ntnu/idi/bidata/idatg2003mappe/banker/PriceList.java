@@ -7,7 +7,8 @@ import java.util.HashMap;
  * For example flipping a marker or using a plane route.
  */
 public class PriceList {
-  HashMap <String, Integer> priceRegister = new HashMap; //TODO - Is this class overkill? refactor to Banker class?
+  HashMap <String, Integer> priceRegister = new HashMap();  //TODO - Is this class overkill? refactor to Banker class?
+
 
   public PriceList(){
     priceRegister.put("RedGem", 1000); //TODO - Should this be hardcoded or take inn <obj, int>
