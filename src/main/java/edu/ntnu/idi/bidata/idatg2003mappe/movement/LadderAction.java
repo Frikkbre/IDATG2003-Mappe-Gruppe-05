@@ -4,4 +4,9 @@ public class LadderAction implements TileAction {
     public void move() {
         // Move the player up the ladder
     }
+
+  @Override
+  public void performAction() {
+    //Add action
+  }
 }
