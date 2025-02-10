@@ -20,7 +20,7 @@ public class Dice {
    *
    * @return boolean
    */
-  public boolean rollToTurnMarker() {
+  public boolean rollToTurnMarker() { //Only relevant for "Den forsvunne diamanten"?
     int number = ThreadLocalRandom.current().nextInt(1, 6 + 1);
     return number > 3;
   }
