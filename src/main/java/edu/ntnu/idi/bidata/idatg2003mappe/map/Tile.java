@@ -2,6 +2,10 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
 /**
  * Represents a tile on the board.
+ *
+ * @version 1.0
+ * @since 15.02.2025
+ * @author Simen Gudbrandsen and Frikk Braendsroed
  */
 
 public class Tile {
