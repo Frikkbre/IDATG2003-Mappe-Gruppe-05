@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileAction;
 
@@ -29,7 +30,16 @@ public class Tile {
 
   public Tile(int currentTile) {
     this.currentTile = currentTile;
-    this.nextTile = new ArrayList<>();
+    this.nextTiles = new ArrayList<>();
+  }
+
+  /**
+   * Adds a tile to the board.
+   * @param tile The tile to add.
+   */
+
+  public void addTile(Tile tile) {
+    nextTiles.add(tile);
   }
 
   /**
@@ -110,6 +120,15 @@ public class Tile {
 
   public Tile getDestinationTile() {
     return destinationTile;
+  }
+
+  /**
+   * Gets the next tiles left on the board.
+   * @return
+   */
+
+  public List<Tile> getNextTiles() {
+    return nextTiles;
   }
 
 }
