@@ -19,6 +19,13 @@ class TileTest {
     tile3 = new Tile(3);
   }
 
+  @AfterEach
+  void tearDown() {
+    tile1 = null;
+    tile2 = null;
+    tile3 = null;
+  }
+
   @Test void setNextTile() {
     tile1.setNextTile(tile2);
     assertEquals(tile2, tile1.getNextTile());
