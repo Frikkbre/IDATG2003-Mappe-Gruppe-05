@@ -6,36 +6,39 @@ import java.util.List;
 /**
  * Represents a tile on the board.
  *
+ * @author Simen Gudbrands and Frikk Breadsroed
  * @version 1.0
  * @since 15.02.2025
- * @author Simen Gudbrands and Frikk Breadsroed
  */
 public class Tile {
   private int tileId;
-  private List<Tile> nextTiles;
+  private List<Tile> nextTilesOnBoard;
   private Tile nextTile;
   private Tile previousTile;
   private Tile destinationTile;
 
   /**
    * Constructor for the Tile class.
+   *
    * @param tileId The current tile id.
    */
   public Tile(int tileId) {
     this.tileId = tileId;
-    this.nextTiles = new ArrayList<>();
+    this.nextTilesOnBoard = new ArrayList<>();
   }
 
   /**
    * Adds a tile to the list of next tiles.
+   *
    * @param tile The tile to add.
    */
-  public void addTile(Tile tile) {
-    nextTiles.add(tile);
+  public void addTiles(Tile tile) {
+    nextTilesOnBoard.add(tile);
   }
 
   /**
    * Sets the next tile.
+   *
    * @param nextTile The next tile.
    */
   public void setNextTile(Tile nextTile) {
@@ -44,6 +47,7 @@ public class Tile {
 
   /**
    * Sets the previous tile.
+   *
    * @param previousTile The previous tile.
    */
   public void setPreviousTile(Tile previousTile) {
@@ -52,6 +56,7 @@ public class Tile {
 
   /**
    * Sets the destination tile.
+   *
    * @param destinationTile The destination tile.
    */
   public void setDestinationTile(Tile destinationTile) {
@@ -60,6 +65,7 @@ public class Tile {
 
   /**
    * Gets the current tile id.
+   *
    * @return The current tile id.
    */
   public int getTileId() {
@@ -68,6 +74,7 @@ public class Tile {
 
   /**
    * Gets the next tile.
+   *
    * @return The next tile.
    */
   public Tile getNextTile() {
@@ -76,6 +83,7 @@ public class Tile {
 
   /**
    * Gets the previous tile.
+   *
    * @return The previous tile.
    */
   public Tile getPreviousTile() {
@@ -84,6 +92,7 @@ public class Tile {
 
   /**
    * Gets the destination tile.
+   *
    * @return The destination tile.
    */
   public Tile getDestinationTile() {
@@ -92,9 +101,10 @@ public class Tile {
 
   /**
    * Gets the list of next tiles.
+   *
    * @return The list of next tiles.
    */
   public List<Tile> getNextTiles() {
-    return nextTiles;
+    return nextTilesOnBoard;
   }
 }
