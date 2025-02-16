@@ -11,6 +11,7 @@ The project is a part of the course IDATG2003 at NTNU Gjøvik Spring 2025.
 ## Project structure
 ```
 src/main/java/edu/ntnu/idi/bidata/idatg2003mappe/
+├── main.java
 ├── app
 │   ├── App.java
 
