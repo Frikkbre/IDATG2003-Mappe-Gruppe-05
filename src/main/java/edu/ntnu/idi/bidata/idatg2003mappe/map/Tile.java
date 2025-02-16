@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @version 1.0
  * @since 15.02.2025
- * @author
+ * @author Simen Gudbrands and Frikk Breadsroed
  */
 public class Tile {
   private int tileId;
