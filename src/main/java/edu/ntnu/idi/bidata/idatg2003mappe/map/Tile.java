@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 public class Tile {
-  private int currentTile;
+  private Tile tileId;
   private List<Tile> nextTiles;
   private Tile nextTile;
   private Tile previousTile;
@@ -25,11 +25,11 @@ public class Tile {
 
   /**
    * Constructor for the Tile class.
-   * @param currentTile The current tile.
+   * @param tileId The current tile.
    */
 
-  public Tile(int currentTile) {
-    this.currentTile = currentTile;
+  public Tile(Tile tileId) {
+    this.tileId = tileId;
     this.nextTiles = new ArrayList<>();
   }
 
