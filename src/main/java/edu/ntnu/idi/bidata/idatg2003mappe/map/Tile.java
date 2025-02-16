@@ -1,7 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileAction;
 
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ public class Tile {
   private Tile nextTile;
   private Tile previousTile;
   private Tile destinationTile;
-  private TileAction TileAction;
 
   /**
    * Constructor for the Tile class.
@@ -91,8 +88,8 @@ public class Tile {
    * @return The current tile.
    */
 
-  public int getTile() {
-    return currentTile;
+  public Tile getTile() {
+    return tileId;
   }
 
   /**
