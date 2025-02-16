@@ -29,6 +29,7 @@ public class Tile {
 
   /**
    * Adds a tile to the list of next tiles.
+   * Useful for the MissingDiamond board game
    *
    * @param tile The tile to add.
    */
