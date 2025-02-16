@@ -5,6 +5,7 @@ import java.util.List;
 
 public class BoardLinear {
 
+  /*
   public List<Tile> tiles;
 
   public void LadderBoard (int totalTiles) {
@@ -22,5 +23,7 @@ public class BoardLinear {
   public Tile getTile(int tileNumber) {
     return tiles.get(tileNumber - 1);
   }
+
+   */
 
 }
