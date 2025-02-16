@@ -1,7 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileAction;
-
 import java.util.ArrayList;
 import java.util.List;
 
