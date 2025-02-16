@@ -42,7 +42,7 @@ public class BoardGameSelector {
    * Throws an exception if the input is less than 1 or a float value.
    * @return
    */
-  private int getNumberOfPlayers() {
+  public int getNumberOfPlayers() {
     int players = 0;
     boolean validInput = false;
     while (!validInput) {
