@@ -14,6 +14,11 @@ public class Tile {
   private Tile previousTile;
   private Tile destinationTile;
 
+  /**
+   * Constructor for the Tile class.
+   * @param currentTile The current tile.
+   */
+
   public Tile(int currentTile) {
     this.currentTile = currentTile;
   }
