@@ -49,7 +49,7 @@ public class BoardGameSelector {
       try {
         System.out.println("Enter number of players:");
         players = inputScanner.nextInt();
-        if (players > 0) {
+        if (players > 0 && players < 7) {
           validInput = true;
         } else {
           System.out.println("Number of players must be a positive integer. Please try again.");
