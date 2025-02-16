@@ -42,33 +42,67 @@ public class Tile {
     return currentTile;
   }
 
+  /**
+   * Sets the next tile.
+   * @param nextTile The next tile.
+   */
+
   public void setNextTile(Tile nextTile) {
     this.nextTile = nextTile;
   }
+
+  /**
+   * Sets the previous tile.
+   * @param previousTile The previous tile.
+   */
 
   public void setPreviousTile(Tile previousTile) {
     this.previousTile = previousTile;
   }
 
+  /**
+   * Sets the destination tile.
+   * @param destinationTile The destination tile.
+   */
+
   public void setDestinationTile(Tile destinationTile) {
     this.destinationTile = destinationTile;
   }
+
+  /**
+   * Gets the current tile.
+   * @return The current tile.
+   */
 
   public int getTile() {
     return currentTile;
   }
 
+  /**
+   * Gets the next tile.
+   * @return The next tile.
+   */
+
   public Tile getNextTile() {
     return nextTile;
   }
+
+  /**
+   * Gets the previous tile.
+   * @return The previous tile.
+   */
 
   public Tile getPreviousTile() {
     return previousTile;
   }
 
+  /**
+   * Gets the destination tile.
+   * @return The destination tile.
+   */
+
   public Tile getDestinationTile() {
     return destinationTile;
   }
-
 
 }
