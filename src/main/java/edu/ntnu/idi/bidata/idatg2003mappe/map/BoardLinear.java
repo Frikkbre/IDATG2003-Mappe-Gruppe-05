@@ -1,4 +1,4 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
-public class Board {
+public class BoardLinear {
 }
