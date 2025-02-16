@@ -8,11 +8,10 @@ import java.util.List;
  *
  * @version 1.0
  * @since 15.02.2025
- * @author Simen Gudbrandsen and Frikk Braendsroed
+ * @author
  */
-
 public class Tile {
-  private Tile tileId;
+  private int tileId;
   private List<Tile> nextTiles;
   private Tile nextTile;
   private Tile previousTile;
@@ -20,45 +19,25 @@ public class Tile {
 
   /**
    * Constructor for the Tile class.
-   * @param tileId The current tile.
+   * @param tileId The current tile id.
    */
-
-  public Tile(Tile tileId) {
+  public Tile(int tileId) {
     this.tileId = tileId;
     this.nextTiles = new ArrayList<>();
   }
 
   /**
-   * Adds a tile to the board.
+   * Adds a tile to the list of next tiles.
    * @param tile The tile to add.
    */
-
   public void addTile(Tile tile) {
     nextTiles.add(tile);
-  }
-
-  /**
-   * Moves the player to the next tile.
-   * @param steps The number of steps to move.
-   * @return The next tile.
-   */
-
-  public Tile moveToTile (int steps) { //TODO: Not sure if this is the correct implementation. Needs work.
-    Tile currentTile = this;
-    for (int i = 0; i < steps; i++) {
-      if (currentTile.nextTile == null) {
-        return currentTile;
-      }
-      currentTile = currentTile.nextTile;
-    }
-    return currentTile;
   }
 
   /**
    * Sets the next tile.
    * @param nextTile The next tile.
    */
-
   public void setNextTile(Tile nextTile) {
     this.nextTile = nextTile;
   }
@@ -67,7 +46,6 @@ public class Tile {
    * Sets the previous tile.
    * @param previousTile The previous tile.
    */
-
   public void setPreviousTile(Tile previousTile) {
     this.previousTile = previousTile;
   }
@@ -76,17 +54,15 @@ public class Tile {
    * Sets the destination tile.
    * @param destinationTile The destination tile.
    */
-
   public void setDestinationTile(Tile destinationTile) {
     this.destinationTile = destinationTile;
   }
 
   /**
-   * Gets the current tile.
-   * @return The current tile.
+   * Gets the current tile id.
+   * @return The current tile id.
    */
-
-  public Tile getTile() {
+  public int getTileId() {
     return tileId;
   }
 
@@ -94,7 +70,6 @@ public class Tile {
    * Gets the next tile.
    * @return The next tile.
    */
-
   public Tile getNextTile() {
     return nextTile;
   }
@@ -103,7 +78,6 @@ public class Tile {
    * Gets the previous tile.
    * @return The previous tile.
    */
-
   public Tile getPreviousTile() {
     return previousTile;
   }
@@ -112,18 +86,15 @@ public class Tile {
    * Gets the destination tile.
    * @return The destination tile.
    */
-
   public Tile getDestinationTile() {
     return destinationTile;
   }
 
   /**
-   * Gets the next tiles left on the board.
-   * @return
+   * Gets the list of next tiles.
+   * @return The list of next tiles.
    */
-
   public List<Tile> getNextTiles() {
     return nextTiles;
   }
-
 }
