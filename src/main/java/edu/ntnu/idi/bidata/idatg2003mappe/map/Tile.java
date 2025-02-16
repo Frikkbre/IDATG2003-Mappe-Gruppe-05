@@ -29,9 +29,10 @@ public class Tile {
 
   /**
    * Adds a tile to the list of next tiles.
-   * Useful for the MissingDiamond board game
+   * Useful for the MissingDiamond board game as
+   * it need to branch different tiles.
    *
-   * @param tile The tile to add.
+   * @param tile The tile to add to tile.
    */
   public void addTiles(Tile tile) {
     nextTilesOnBoard.add(tile);
