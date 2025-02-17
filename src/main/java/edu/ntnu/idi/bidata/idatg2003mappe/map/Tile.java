@@ -10,11 +10,38 @@ import java.util.List;
  * @version 1.0
  * @since 15.02.2025
  */
+
 public class Tile {
+
+  /**
+   * This is a unique identifier for the tile.
+   * Either position or order of the tile.
+   */
   private int tileId;
+
+  /**
+   * The next tiles on the board that are connected
+   * to this tile. Useful for the missing diamond game.
+   */
   private List<Tile> nextTilesOnBoard;
+
+  /**
+   * The next immediate tile next to the main or current
+   * tile. Showing which tile is next.
+   */
   private Tile nextTile;
+
+  /**
+   * The previous immediate tile next to the main or current
+   * tile. Showing which tile is previous to the current tile.
+   * Useful for backtracking or undoing moves.
+   */
   private Tile previousTile;
+
+  /**
+   * The destination tile. Useful for jumping the player
+   * to a different tile. For example, in the ladder game.
+   */
   private Tile destinationTile;
 
   /**
