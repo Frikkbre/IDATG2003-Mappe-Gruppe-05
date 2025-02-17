@@ -31,8 +31,8 @@ class BoardLinearTest {
   void testAddMultipleTiles() {
     Tile tile1 = new Tile(1);
     Tile tile2 = new Tile(2);
-    board.addTile(tile1);
-    board.addTile(tile2);
+    Tile tile3 = new Tile(3);
+    board.addMultipleTiles(tile1, tile2, tile3);
     assertEquals(tile1, board.getStartTile(), "Start tile should be the first tile added.");
   }
 

@@ -15,7 +15,12 @@ public class BoardLinear {
     if (tiles.size() == 1) {
       startTile = tile;
     }
-    System.out.println("Tile added: " + tile);
+  }
+
+  public void addMultipleTiles(Tile... tiles) {
+    for (Tile tile : tiles) {
+      addTile(tile);
+    }
   }
 
   public Tile getStartTile() {
