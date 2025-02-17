@@ -7,7 +7,7 @@ public class BoardLinear {
   private List<Tile> tiles;
   private Tile startTile;
 
-  public void addTile(Tile tile) {
+  public void addTileToBoard(Tile tile) {
     if (tiles == null) {
       tiles = new ArrayList<>();
     }
@@ -17,9 +17,9 @@ public class BoardLinear {
     }
   }
 
-  public void addMultipleTiles(Tile... tiles) {
+  public void addMultipleTilesToBoard(Tile... tiles) {
     for (Tile tile : tiles) {
-      addTile(tile);
+      addTileToBoard(tile);
     }
   }
 
