@@ -48,8 +48,8 @@ class TileTest {
 
   @Test
   void testAddTiles() {
-    tile1.addTiles(tile2);
-    tile1.addTiles(tile3);
+    tile1.addTileToTileBranch(tile2);
+    tile1.addTileToTileBranch(tile3);
     assertEquals(2, tile1.getNextTiles().size());
     assertTrue(tile1.getNextTiles().contains(tile2));
     assertTrue(tile1.getNextTiles().contains(tile3));
@@ -57,9 +57,9 @@ class TileTest {
 
   @Test
   void testAddDifferentTilePath() {
-    tile1.addTiles(tile2);
-    tile1.addTiles(tile3);
-    tile2.addTiles(tile1);
+    tile1.addTileToTileBranch(tile2);
+    tile1.addTileToTileBranch(tile3);
+    tile2.addTileToTileBranch(tile1);
     assertEquals(2, tile1.getNextTiles().size());
     assertEquals(1, tile2.getNextTiles().size());
     assertTrue(tile1.getNextTiles().contains(tile2));
@@ -69,8 +69,8 @@ class TileTest {
 
   @Test
   void negativeTestAddTiles() {
-    tile1.addTiles(tile2);
-    tile1.addTiles(tile3);
+    tile1.addTileToTileBranch(tile2);
+    tile1.addTileToTileBranch(tile3);
     assertEquals(2, tile1.getNextTiles().size());
     assertFalse(tile1.getNextTiles().contains(tile1));
   }

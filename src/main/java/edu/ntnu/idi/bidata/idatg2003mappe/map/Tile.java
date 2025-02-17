@@ -61,7 +61,7 @@ public class Tile {
    *
    * @param tile The tile to add to tile.
    */
-  public void addTiles(Tile tile) {
+  public void addTileToTileBranch(Tile tile) {
     nextTilesOnBoard.add(tile);
   }
 
