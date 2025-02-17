@@ -11,6 +11,8 @@ public class BoardGameSelector {
   /**
    * Constructor for the BoardGameSelector class.
    * Serves as a start screen for the user to select a game to play and how many players to play with.
+   * The user can select between Ladder Game and Missing Diamond.
+   * The user can also exit the program.
    */
   public BoardGameSelector() {
     System.out.println("Select a game to play:");
@@ -39,8 +41,8 @@ public class BoardGameSelector {
 
   /**
    * Method that takes user input to get the number of players to play the game.
-   * Throws an exception if the input is less than 1 or a float value.
-   * @return
+   * Throws an exception if the input is less than 1, more than 6 or a float value.
+   * @return number of players
    */
   public int getNumberOfPlayers() {
     int players = 0;
@@ -52,7 +54,7 @@ public class BoardGameSelector {
         if (players > 0 && players < 7) {
           validInput = true;
         } else {
-          System.out.println("Number of players must be a positive integer. Please try again.");
+          System.out.println("Number of players must be a positive integer less than 7. Please try again.");
         }
       } catch (InputMismatchException e) {
         System.out.println("Invalid input. Please enter a valid number.");
