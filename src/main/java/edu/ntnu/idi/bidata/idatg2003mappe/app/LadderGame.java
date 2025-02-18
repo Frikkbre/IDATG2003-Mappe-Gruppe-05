@@ -104,7 +104,7 @@ public class LadderGame {
       }
 
       //If-statement to check if index is at end og list of players
-      if(indexCurrentPlayer != players.size()){
+      if(indexCurrentPlayer != players.size() - 1){
         indexCurrentPlayer++;
       }else{
         indexCurrentPlayer = 0;
