@@ -30,7 +30,7 @@ public class Player {
   /**
    * Moves the player
    */
-  public void move(int tilesToMove){
+  public void movePlayer(int tilesToMove){
     Tile nextTile = currentTile;
     for (int i = 0; i < tilesToMove; i++){
       if (nextTile.getNextTiles() != null){
