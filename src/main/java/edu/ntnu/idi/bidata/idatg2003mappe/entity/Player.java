@@ -39,6 +39,7 @@ public class Player {
         throw new IllegalArgumentException("Cannot move player past the last tile");
       }
     }
+    currentTile = nextTile;
   }
 
   /**
