@@ -44,7 +44,7 @@ public class LadderGame {
    * @return the board
    */
 
-  private BoardLinear createBoard() {
+  protected BoardLinear createBoard() {
     BoardLinear board = new BoardLinear();
     int numTiles = this.numberOfTiles;
     Tile[] tiles = new Tile[numTiles];
@@ -67,7 +67,7 @@ public class LadderGame {
    * @return the list of players
    */
 
-  private List<Player> createPlayers(int numberOfPlayers) {
+  protected List<Player> createPlayers(int numberOfPlayers) {
     List<Player> players = new ArrayList<>();
     for (int i = 1; i <= numberOfPlayers; i++) {
       Player player = new Player("Player " + i);
