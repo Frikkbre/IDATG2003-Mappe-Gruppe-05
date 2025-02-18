@@ -26,4 +26,8 @@ public class BoardLinear {
   public Tile getStartTile() {
     return startTile;
   }
+
+  public List<Tile> getTiles() {
+    return tiles;
+  }
 }

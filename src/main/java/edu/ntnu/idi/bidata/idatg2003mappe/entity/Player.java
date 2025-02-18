@@ -36,7 +36,7 @@ public class Player {
       if (nextTile.getNextTiles() != null){
         nextTile = nextTile.getNextTile();
       }else{
-        break;
+        throw new IllegalArgumentException("Cannot move player past the last tile");
       }
     }
   }

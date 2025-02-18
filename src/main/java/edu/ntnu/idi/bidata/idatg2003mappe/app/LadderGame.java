@@ -68,7 +68,7 @@ public class LadderGame {
 
   protected List<Player> createPlayers(int numberOfPlayers) {
     List<Player> players = new ArrayList<>();
-    Tile startTile = board.getStartTile();
+    Tile startTile = board.getTiles().get(0);
     for (int i = 1; i <= numberOfPlayers; i++) {
       Player player = new Player("Player " + i, startTile);
       players.add(player);
