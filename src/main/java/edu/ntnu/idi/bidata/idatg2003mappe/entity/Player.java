@@ -14,11 +14,9 @@ public class Player {
    * Constructor for Player
    * @param name
    */
-  public Player(String name){
+  public Player(String name, Tile startTile){
     setName(name);
-    Player player = new Player();
-    Tile startTile = new Tile(1);
-    name.placePlayer(startTile);
+    currentTile = startTile;
   }
 
 
