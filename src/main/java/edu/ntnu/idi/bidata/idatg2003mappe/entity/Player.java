@@ -16,17 +16,11 @@ public class Player {
    */
   public Player(String name){
     setName(name);
+    Player player = new Player();
+    Tile startTile = new Tile(1);
+    name.placePlayer(startTile);
   }
 
-  /**
-   * Adds a player to the game
-   * @param name
-   */
-  public void addPlayer(String name){
-    Player player = new Player(name);
-    Tile startTile = new Tile(1);
-    player.placePlayer(startTile); //TODO - set player to default position
-  }
 
   /**
    * Places the player on the board
