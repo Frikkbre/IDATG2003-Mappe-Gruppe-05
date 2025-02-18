@@ -8,6 +8,17 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to represent a game of Ladder.
+ * The game consists of a board, a number of players, a dice and a number of tiles.
+ * The game is played by the players taking turns to roll the dice and move their markers on the board.
+ * The game is won by the first player to reach the last tile on the board.
+ *
+ * @version 0.1
+ * @since 14.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ */
+
 public class LadderGame {
 
   private BoardLinear board;
@@ -65,7 +76,6 @@ public class LadderGame {
     return players;
   }
 
-  private void playGame() {
-
+  private void playGame() { //TODO - Implement game logic
   }
 }
