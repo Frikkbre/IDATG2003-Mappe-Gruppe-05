@@ -28,29 +28,46 @@ public class Player {
   }
 
   /**
-   * Moves the player
+   * Moves the player on the board
+   * @param tilesToMove
    */
   public void movePlayer(int tilesToMove) {
+    validateMove(tilesToMove);
+    currentTile = getDestinationTile(currentTile, tilesToMove);
+  }
+
+  /**
+   * Validates the move
+   * @param tilesToMove
+   */
+
+  private void validateMove(int tilesToMove) {
     if (tilesToMove < 0) {
       throw new IllegalArgumentException("tilesToMove must be non-negative.");
     }
     if (currentTile == null) {
       throw new IllegalStateException("Player's current tile is not set.");
     }
+  }
 
-    Tile destinationTile = currentTile;
+  /**
+   * Gets the destination tile
+   * @param startTile
+   * @param tilesToMove
+   * @return destinationTile
+   */
+
+  private Tile getDestinationTile(Tile startTile, int tilesToMove) {
+    Tile destinationTile = startTile;
     int movesMade = 0;
-
     while (movesMade < tilesToMove && destinationTile.getNextTile() != null) {
       destinationTile = destinationTile.getNextTile();
       movesMade++;
     }
-
     if (movesMade < tilesToMove) {
       System.out.println("Player moved to the last tile (" + destinationTile.getTileId() + ").");
     }
-
-    currentTile = destinationTile;
+    return destinationTile;
   }
 
 
@@ -73,6 +90,11 @@ public class Player {
   public String getName() {
     return name;
   }
+
+  /**
+   * Gets the current tile of the player
+   * @return currentTile
+   */
 
   public Tile getCurrentTile(){
     return currentTile;
