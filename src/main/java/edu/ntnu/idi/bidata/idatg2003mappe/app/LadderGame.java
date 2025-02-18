@@ -30,7 +30,7 @@ public class LadderGame {
     System.out.println("Starting Ladder Game with " + numberOfPlayers + " players.");
 
     this.numberOfTiles = 100;
-    this.board = createBoard();
+    this.board = createBoard(numberOfTiles);
     this.players = createPlayers(numberOfPlayers);
     this.dice = new Dice();
 
@@ -44,17 +44,16 @@ public class LadderGame {
    * @return the board
    */
 
-  protected BoardLinear createBoard() {
+  protected BoardLinear createBoard(int numberOfTiles) {
     BoardLinear board = new BoardLinear();
-    int numTiles = this.numberOfTiles;
-    Tile[] tiles = new Tile[numTiles];
+    Tile[] tiles = new Tile[numberOfTiles];
 
-    for (int i = 0; i < numTiles; i++) {
+    for (int i = 0; i < numberOfTiles; i++) {
       tiles[i] = new Tile(i + 1);
       board.addTileToBoard(tiles[i]);
     }
 
-    for (int i = 0; i < numTiles - 1; i++) {
+    for (int i = 0; i < numberOfTiles - 1; i++) {
       tiles[i].setNextTile(tiles[i + 1]);
     }
     return board;
@@ -77,6 +76,12 @@ public class LadderGame {
     return players;
   }
 
+
+  /**
+   * main game method
+   * The game is played by the players taking turns to roll the dice and move their markers on the board.
+   * The game is won by the first player to reach the last tile on the board.
+   */
   private void playGame() {
     boolean hasWon = false;
     int indexCurrentPlayer = 0;
