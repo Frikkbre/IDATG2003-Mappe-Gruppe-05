@@ -26,13 +26,20 @@ public class LadderGame {
     playGame();
   }
 
+  /**
+   * Method to create a board for the game.
+   * The board consists of a number of tiles, each with a number.
+   * The tiles are connected in a linear fashion.
+   * @return the board
+   */
+
   private BoardLinear createBoard() {
     BoardLinear board = new BoardLinear();
     int numTiles = this.numberOfTiles;
     Tile[] tiles = new Tile[numTiles];
 
     for (int i = 0; i < numTiles; i++) {
-      tiles[i] = new Tile(i + 1); // Tile IDs starting at 1.
+      tiles[i] = new Tile(i + 1);
       board.addTileToBoard(tiles[i]);
     }
 
@@ -41,6 +48,13 @@ public class LadderGame {
     }
     return board;
   }
+
+  /**
+   * Method to create a list of players for the game.
+   * The players are created with a name and added to a list.
+   * @param numberOfPlayers the number of players to create
+   * @return the list of players
+   */
 
   private List<Player> createPlayers(int numberOfPlayers) {
     List<Player> players = new ArrayList<>();
