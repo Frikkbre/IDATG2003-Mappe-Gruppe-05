@@ -41,6 +41,7 @@ public class LadderGame {
    * Method to create a board for the game.
    * The board consists of a number of tiles, each with a number.
    * The tiles are connected in a linear fashion.
+   *
    * @return the board
    */
 
@@ -62,6 +63,7 @@ public class LadderGame {
   /**
    * Method to create a list of players for the game.
    * The players are created with a name and added to a list.
+   *
    * @param numberOfPlayers the number of players to create
    * @return the list of players
    */
@@ -79,8 +81,10 @@ public class LadderGame {
 
   /**
    * main game method
-   * The game is played by the players taking turns to roll the dice and move their markers on the board.
-   * The game is won by the first player to reach the last tile on the board.
+   * The game is played by the players taking turns to roll
+   * the dice and move their markers on the board.
+   * The game is won by the first player to reach the last
+   * tile on the board.
    */
   void playGame() {
     boolean hasWon = false;
@@ -112,10 +116,13 @@ public class LadderGame {
     }
   }
 
+  /**
+   * Method to get the list of players in the game.
+   *
+   * @return the list of players
+   */
+
   public List<Player> getPlayers() {
     return players;
   }
-
-
-
 }
