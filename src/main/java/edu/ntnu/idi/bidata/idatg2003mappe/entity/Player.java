@@ -37,8 +37,15 @@ public class Player {
   /**
    * Moves the player
    */
-  public void move(){
-    // Move the player
+  public void move(int tilesToMove){
+    Tile nextTile = currentTile;
+    for (int i = 0; i < tilesToMove; i++){
+      if (nextTile.getNextTiles() != null){
+        nextTile = nextTile.getNextTile();
+      }else{
+        break;
+      }
+    }
   }
 
   /**
@@ -59,6 +66,10 @@ public class Player {
 
   public String getName() {
     return name;
+  }
+
+  public Tile getCurrentTile(){
+    return currentTile;
   }
 
 }
