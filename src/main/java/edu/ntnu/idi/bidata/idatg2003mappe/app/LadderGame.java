@@ -68,7 +68,7 @@ public class LadderGame {
 
   protected List<Player> createPlayers(int numberOfPlayers) {
     List<Player> players = new ArrayList<>();
-    Tile startTile = new Tile(1);
+    Tile startTile = new Tile(0);
     for (int i = 1; i <= numberOfPlayers; i++) {
       Player player = new Player("Player " + i, startTile);
       players.add(player);
@@ -82,7 +82,7 @@ public class LadderGame {
    * The game is played by the players taking turns to roll the dice and move their markers on the board.
    * The game is won by the first player to reach the last tile on the board.
    */
-  private void playGame() {
+  void playGame() {
     boolean hasWon = false;
     int indexCurrentPlayer = 0;
     int roll = 0;
@@ -92,10 +92,10 @@ public class LadderGame {
       System.out.println("current player is: " + indexCurrentPlayer);
 
       roll = dice.rollDice();
-      System.out.println(roll);
+      System.out.println("dice rolled: " + roll);
 
       System.out.println("Tile before moving " + currentPlayer.getCurrentTile().getTileId());
-      currentPlayer.move(roll);
+      currentPlayer.movePlayer(roll);
       System.out.println("Tile after moving " + currentPlayer.getCurrentTile().getTileId());
 
       //Check if player is at destination tile
@@ -111,4 +111,11 @@ public class LadderGame {
       }
     }
   }
+
+  public List<Player> getPlayers() {
+    return players;
+  }
+
+
+
 }
