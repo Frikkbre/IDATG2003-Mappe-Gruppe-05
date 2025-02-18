@@ -77,5 +77,31 @@ public class LadderGame {
   }
 
   private void playGame() { //TODO - Implement game logic
+    boolean hasWon = false;
+    int indexCurrentPlayer = 0;
+    int roll = 0;
+
+    while(!hasWon){
+      Player currentPlayer = players.get(indexCurrentPlayer);
+
+      roll = dice.rollDice();
+      System.out.println(roll);
+
+
+      currentPlayer.move(roll);
+      System.out.println(currentPlayer.getCurrentTile());
+
+      //Check if player is at destination tile
+      if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) { //numberOfTiles - 1?
+        hasWon = true;
+      }
+
+      //If-statement to check if index is at end og list of players
+      if(indexCurrentPlayer != players.size()){
+        indexCurrentPlayer++;
+      }else{
+        indexCurrentPlayer = 0;
+      }
+    }
   }
 }
