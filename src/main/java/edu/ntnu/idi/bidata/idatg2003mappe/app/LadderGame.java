@@ -77,20 +77,21 @@ public class LadderGame {
     return players;
   }
 
-  private void playGame() { //TODO - Implement game logic
+  private void playGame() {
     boolean hasWon = false;
     int indexCurrentPlayer = 0;
     int roll = 0;
 
     while(!hasWon){
       Player currentPlayer = players.get(indexCurrentPlayer);
+      System.out.println("current player is: " + indexCurrentPlayer);
 
       roll = dice.rollDice();
       System.out.println(roll);
 
-
+      System.out.println("Tile before moving " + currentPlayer.getCurrentTile().getTileId());
       currentPlayer.move(roll);
-      System.out.println(currentPlayer.getCurrentTile());
+      System.out.println("Tile after moving " + currentPlayer.getCurrentTile().getTileId());
 
       //Check if player is at destination tile
       if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) { //numberOfTiles - 1?
