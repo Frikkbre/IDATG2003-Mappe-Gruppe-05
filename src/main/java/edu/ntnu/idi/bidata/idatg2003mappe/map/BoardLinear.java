@@ -8,7 +8,7 @@ public class BoardLinear {
   private Tile startTile;
 
   public void addTileToBoard(Tile tile) {
-    if (tiles == null) {
+    if (tiles == null) { //Can this ever be null?
       tiles = new ArrayList<>();
     }
     tiles.add(tile);
