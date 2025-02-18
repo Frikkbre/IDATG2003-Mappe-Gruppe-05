@@ -24,14 +24,15 @@ public class Player {
    */
   public void addPlayer(String name){
     Player player = new Player(name);
-    player.placePlayer(); //TODO - set player to default position
+    Tile startTile = new Tile(1);
+    player.placePlayer(startTile); //TODO - set player to default position
   }
 
   /**
    * Places the player on the board
    */
-  public void placePlayer(){
-    // Place player on the board
+  public void placePlayer(Tile tileId){
+    currentTile = tileId;
   }
 
   /**
