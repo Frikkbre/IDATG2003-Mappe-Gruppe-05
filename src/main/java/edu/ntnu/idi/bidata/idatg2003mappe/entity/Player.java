@@ -52,4 +52,12 @@ public class Player {
     this.name = name;
   }
 
+  /**
+   * Gets the name of the player
+   * @return name
+   */
+
+  public String getName(){
+    return name;
+
 }
