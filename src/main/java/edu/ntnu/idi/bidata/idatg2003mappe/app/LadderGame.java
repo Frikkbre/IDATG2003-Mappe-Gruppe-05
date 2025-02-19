@@ -93,7 +93,7 @@ public class LadderGame {
 
     while(!hasWon){
       Player currentPlayer = players.get(indexCurrentPlayer);
-      System.out.println("current player is: " + indexCurrentPlayer);
+      System.out.println("current player is: " + (indexCurrentPlayer + 1));
 
       roll = dice.rollDice();
       System.out.println("dice rolled: " + roll);
