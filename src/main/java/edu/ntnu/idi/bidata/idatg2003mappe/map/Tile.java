@@ -93,6 +93,33 @@ public class Tile {
   }
 
   /**
+   * Gets the tile at a certain distance from the current tile.
+   * If the distance is negative, an IllegalArgumentException is thrown.
+   * If the distance is greater than the number of tiles on the board,
+   * the last tile is returned.
+   *
+   * @param steps The number of steps to move.
+   * @return The tile at the specified distance.
+   */
+
+  public Tile getTileAtDistance(int steps) {
+    if (steps < 0) {
+      throw new IllegalArgumentException("steps must be non-negative.");
+    }
+
+    Tile current = this;
+    for (int i = 0; i < steps; i++) {
+      if (current.getNextTile() == null) {
+        System.out.println("Reached the last tile at tile ID " + current.getTileId());
+        return current;
+      }
+      current = current.getNextTile();
+    }
+    return current;
+  }
+
+
+  /**
    * Gets the current tile id.
    *
    * @return The current tile id.
