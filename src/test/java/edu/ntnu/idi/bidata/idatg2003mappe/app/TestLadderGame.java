@@ -32,6 +32,6 @@ class TestLadderGame {
     currentPlayer.movePlayer(roll);
     Tile newTile = currentPlayer.getCurrentTile();
 
-    assertNotEquals(initialTile, newTile, "Player should have moved to a new tile after rolling the dice.");
+    assertNotEquals(initialTile, newTile, "Player should have moved to a new tile after rolling the die.");
   }
 }
