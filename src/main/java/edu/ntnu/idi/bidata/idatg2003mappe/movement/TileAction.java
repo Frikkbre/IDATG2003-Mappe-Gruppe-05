@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.movement;
 
-public interface TileAction {
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 
-  public void performAction();
+public interface TileAction {
+  void performAction(Player player);
 }
