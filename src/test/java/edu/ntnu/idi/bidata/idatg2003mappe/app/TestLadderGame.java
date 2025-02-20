@@ -8,23 +8,23 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class TestLadderGame {
+class TestLadderGame {
 
   private LadderGame ladderGame;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     ladderGame = new LadderGame(4);
     ladderGame.playGame();
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     ladderGame = null;
   }
 
   @Test
-  public void testPlayerMovesAfterRoll() {
+  void testPlayerMovesAfterRoll() {
     Player currentPlayer = ladderGame.getPlayers().get(0);
     Tile initialTile = currentPlayer.getCurrentTile();
 
