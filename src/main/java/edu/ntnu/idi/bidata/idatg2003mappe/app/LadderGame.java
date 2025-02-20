@@ -54,9 +54,19 @@ public class LadderGame {
       board.addTileToBoard(tiles[i]);
     }
 
+    //Connecting the tiles in a linear fashion.
+
     for (int i = 0; i < numberOfTiles - 1; i++) {
       tiles[i].setNextTile(tiles[i + 1]);
     }
+
+    //Hardcoding ladders to the board.
+
+    if(numberOfTiles >= 100){ //TODO: Method not working as intended
+      tiles[15].setDestinationTile(tiles[20]);
+      tiles[25].setDestinationTile(tiles[10]);
+    }
+
     return board;
   }
 
