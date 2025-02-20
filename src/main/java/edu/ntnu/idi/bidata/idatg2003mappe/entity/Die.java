@@ -4,19 +4,19 @@ package edu.ntnu.idi.bidata.idatg2003mappe.entity;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class Dice {
+public class Die {
 
   /**
-   * Return an integer between 1 and 6 (inclusive) to simulate a dice.
+   * Return an integer between 1 and 6 (inclusive) to simulate a die.
    *
    * @return int
    */
-  public int rollDice() {
+  public int rollDie() {
     return ThreadLocalRandom.current().nextInt(1, 6 + 1); //TODO - assign value to variable?
   }
 
   /**
-   * Returns true if "dice roll" is 4,5 or 6 and false otherwise
+   * Returns true if "die roll" is 4,5 or 6 and false otherwise
    *
    * @return boolean
    */

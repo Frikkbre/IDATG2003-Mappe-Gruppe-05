@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Dice;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
@@ -23,7 +23,7 @@ public class LadderGame {
 
   private BoardLinear board;
   private List<Player> players;
-  private Dice dice;
+  private Die die;
   private int numberOfTiles;
 
   public LadderGame(int numberOfPlayers){
@@ -32,7 +32,7 @@ public class LadderGame {
     this.numberOfTiles = 100;
     this.board = createBoard(numberOfTiles);
     this.players = createPlayers(numberOfPlayers);
-    this.dice = new Dice();
+    this.die = new Die();
 
     playGame();
   }
@@ -95,7 +95,7 @@ public class LadderGame {
       Player currentPlayer = players.get(indexCurrentPlayer);
       System.out.println("Player : current player is: " + (indexCurrentPlayer + 1));
 
-      roll = dice.rollDice();
+      roll = die.rollDie();
       System.out.println("Die : die rolled: " + roll);
 
       System.out.println("Tile Current : Tile before moving " + currentPlayer.getCurrentTile().getTileId());
