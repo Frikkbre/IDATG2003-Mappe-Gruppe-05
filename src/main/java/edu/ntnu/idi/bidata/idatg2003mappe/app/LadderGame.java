@@ -14,7 +14,7 @@ import java.util.List;
  * The game is played by the players taking turns to roll the dice and move their markers on the board.
  * The game is won by the first player to reach the last tile on the board.
  *
- * @version 0.1
+ * @version 0.2
  * @since 14.02.2025
  * @author Simen Gudbrandsen and Frikk Breadsroed
  */
@@ -93,14 +93,14 @@ public class LadderGame {
 
     while(!hasWon){
       Player currentPlayer = players.get(indexCurrentPlayer);
-      System.out.println("current player is: " + (indexCurrentPlayer + 1));
+      System.out.println("Player : current player is: " + (indexCurrentPlayer + 1));
 
       roll = dice.rollDice();
-      System.out.println("dice rolled: " + roll);
+      System.out.println("Die : die rolled: " + roll);
 
-      System.out.println("Tile before moving " + currentPlayer.getCurrentTile().getTileId());
+      System.out.println("Tile Current : Tile before moving " + currentPlayer.getCurrentTile().getTileId());
       currentPlayer.movePlayer(roll);
-      System.out.println("Tile after moving " + currentPlayer.getCurrentTile().getTileId());
+      System.out.println("Tile Moved :  Tile after moving " + currentPlayer.getCurrentTile().getTileId());
 
       //Check if player is at destination tile
       if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) { //numberOfTiles - 1?
