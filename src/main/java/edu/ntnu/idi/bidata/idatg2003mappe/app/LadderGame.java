@@ -41,6 +41,7 @@ public class LadderGame {
    * Method to create a board for the game.
    * The board consists of a number of tiles, each with a number.
    * The tiles are connected in a linear fashion.
+   * The board also contains ladders that connect two tiles.
    *
    * @return the board
    */
