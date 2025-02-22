@@ -3,6 +3,14 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A linear board with tiles.
+ *
+ * @version 0.0.1
+ * @since 18.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ */
+
 public class BoardLinear {
   private List<Tile> tiles;
   private Tile startTile;
