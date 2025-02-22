@@ -66,7 +66,7 @@ public class LadderGameGUI extends Application {
     grid.setVgap(5);
 
     boolean leftToRight = true;
-    for (int row = 9; row >= 0; row--) {
+    for (int row = 0; row <= 9; row++) {
       if (leftToRight) {
         for (int col = 0; col < 10; col++) {
           int tileNumber = (9 - row) * 10 + col + 1;
