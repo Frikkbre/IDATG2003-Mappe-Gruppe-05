@@ -5,6 +5,10 @@ import java.util.HashMap;
 /**
  * This class is responsible for holding the prices for different services.
  * For example flipping a marker or using a plane route.
+ *
+ * @version 0.0.1
+ * @since 07.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 public class PriceList {
   HashMap <String, Integer> priceRegister = new HashMap();  //TODO - Is this class overkill? refactor to Banker class?
