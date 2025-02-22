@@ -6,7 +6,7 @@ import java.util.List;
  * A linear board with tiles.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.3
  * @since 18.02.2025
  */
 
