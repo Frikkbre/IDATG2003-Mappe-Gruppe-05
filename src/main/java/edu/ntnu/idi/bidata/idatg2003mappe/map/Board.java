@@ -3,6 +3,14 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a board with tiles.
+ *
+ * @version 0.0.1
+ * @since 22.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ */
+
 public class Board {
   protected Tile startTile;
   protected List<Tile> tiles;
