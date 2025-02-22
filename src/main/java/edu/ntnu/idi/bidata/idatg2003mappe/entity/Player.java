@@ -5,7 +5,12 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 /**
  * Represents a player in the game
  * Has methods to add player, place player and move player.
+ *
+ * @version 0.0.1
+ * @since 19.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  */
+
 public class Player {
   private String name;
   private Tile currentTile;
