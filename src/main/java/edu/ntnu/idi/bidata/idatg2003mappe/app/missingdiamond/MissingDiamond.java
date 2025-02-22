@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.MissingDiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
 /**
  * Represents the Missing Diamond game.
