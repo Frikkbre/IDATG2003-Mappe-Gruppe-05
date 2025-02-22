@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a tile on the board.
  *
  * @author Simen Gudbrands and Frikk Breadsroed
- * @version 1.0
+ * @version 0.0.2
  * @since 15.02.2025
  */
 
