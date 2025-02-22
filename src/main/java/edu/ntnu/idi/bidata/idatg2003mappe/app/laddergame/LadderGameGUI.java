@@ -23,8 +23,8 @@ public class LadderGameGUI extends Application {
   private TextArea gameLog;
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
-    gameController = new LadderGameController(2);
+  public void start(Stage primaryStage) throws Exception { //TODO: Add method or screen for selecting players
+    gameController = new LadderGameController(2); //Hardcoded 2 players for now
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(960, 540);
