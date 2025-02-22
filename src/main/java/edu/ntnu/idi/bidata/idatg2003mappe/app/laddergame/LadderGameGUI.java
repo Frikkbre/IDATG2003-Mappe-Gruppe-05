@@ -64,7 +64,7 @@ public class LadderGameGUI extends Application {
     grid.setHgap(5);
     grid.setVgap(5);
 
-    for (int row = 0; row < 10; row++) {
+    for (int row = 10; row > 0; row--) {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;
         TextField tile = new TextField("Tile " + tileNumber);
