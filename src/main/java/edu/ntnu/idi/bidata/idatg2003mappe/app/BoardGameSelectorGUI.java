@@ -5,6 +5,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+/**
+ * Class for the board game selector GUI.
+ */
 public class BoardGameSelectorGUI extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
