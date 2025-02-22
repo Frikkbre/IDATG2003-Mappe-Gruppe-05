@@ -28,7 +28,7 @@ public class LadderGameGUI extends Application {
     gameController = new LadderGameController(6); //Hardcoded 2 players for now
 
     BorderPane borderPane = new BorderPane();
-    borderPane.setPrefSize(960, 540);
+    borderPane.setPrefSize(960, 960); // cubed window
     borderPane.setTop(createMenuBar());
 
     VBox centerBox = new VBox(10);
@@ -71,7 +71,8 @@ public class LadderGameGUI extends Application {
         for (int col = 0; col < 10; col++) {
           int tileNumber = (9 - row) * 10 + col + 1;
           TextField tile = new TextField("Tile " + tileNumber);
-          tile.setPrefWidth(60);
+          tile.setPrefWidth(100);
+          tile.setPrefHeight(100);
           tile.setEditable(false);
           grid.add(tile, col, 9 - row);
         }
@@ -79,7 +80,8 @@ public class LadderGameGUI extends Application {
         for (int col = 9; col >= 0; col--) {
           int tileNumber = (9 - row) * 10 + (9 - col) + 1;
           TextField tile = new TextField("Tile " + tileNumber);
-          tile.setPrefWidth(60);
+          tile.setPrefWidth(100);
+          tile.setPrefHeight(100);
           tile.setEditable(false);
           grid.add(tile, col, 9 - row);
         }
