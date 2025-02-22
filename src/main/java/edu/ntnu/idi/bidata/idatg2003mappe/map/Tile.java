@@ -108,11 +108,7 @@ public class Tile {
     }
 
     Tile current = this;
-    for (int i = 0; i < steps; i++) {
-      if (current.getNextTile() == null) {
-        System.out.println("Reached the last tile at tile ID " + current.getTileId());
-        return current;
-      }
+    for (int i = 0; i < steps && current.getNextTile() != null; i++) {
       current = current.getNextTile();
     }
     return current;
