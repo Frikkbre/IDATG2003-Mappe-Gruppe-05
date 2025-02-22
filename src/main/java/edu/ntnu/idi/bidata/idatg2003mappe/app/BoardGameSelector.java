@@ -3,6 +3,16 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Class that serves as a start screen for the user to select a game to play and how many players to play with.
+ * The user can select between Ladder Game and Missing Diamond.
+ * The user can also exit the program.
+ *
+ * @version 0.0.1
+ * @since 17.02.2025
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ */
+
 public class BoardGameSelector {
   int numberOfPlayers;
 
