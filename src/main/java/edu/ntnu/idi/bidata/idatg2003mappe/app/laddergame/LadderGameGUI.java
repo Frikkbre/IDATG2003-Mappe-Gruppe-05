@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
     import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -43,14 +44,16 @@ public class LadderGameGUI extends Application {
 
   private Pane createCenterPane() {
     Button button1 = new Button("Roll die");
-    FlowPane centerPane = new FlowPane();
-    centerPane.getChildren().addAll(button1);
-    centerPane.setAlignment(Pos.CENTER_LEFT);
+    GridPane centerPane = new GridPane();
+    centerPane.add(button1, 0, 0, 10, 1); // Add button spanning 10 columns
 
-    //creates a 10x10 grid of tiles
-    for(int i = 0; i < 100; i++) {
-      Button tile = new Button("Tile " + i);
-      centerPane.getChildren().add(tile);
+    // creates a 10x10 grid of text fields
+    for (int row = 1; row <= 10; row++) {
+      for (int col = 0; col < 10; col++) {
+        TextField tile = new TextField("Tile " + ((row - 1) * 10 + col));
+        tile.setPrefWidth(60); // Set preferred width for better layout
+        centerPane.add(tile, col, row);
+      }
     }
 
     return centerPane;
