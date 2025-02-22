@@ -93,6 +93,7 @@ public class LadderGameGUI extends Application {
         int tileNumber = row * 10 + col + 1;
         TextField tile = (TextField) boardGrid.getChildren().get(row * 10 + col);
         tile.setText("Tile " + tileNumber);
+        tile.setStyle("-fx-background-color: white;");
       }
     }
 
@@ -104,6 +105,7 @@ public class LadderGameGUI extends Application {
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       tileField.setText(player.getName());
+      tileField.setStyle("-fx-background-color: red;");
     }
   }
 
