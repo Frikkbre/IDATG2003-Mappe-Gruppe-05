@@ -62,8 +62,7 @@ public class LadderGameGUI extends Application {
 
   private GridPane createBoardGrid() {
     GridPane grid = new GridPane();
-    grid.setHgap(5);
-    grid.setVgap(5);
+    grid.setAlignment(Pos.CENTER);
 
     boolean leftToRight = true;
     for (int row = 0; row <= 9; row++) {
@@ -71,8 +70,8 @@ public class LadderGameGUI extends Application {
         for (int col = 0; col < 10; col++) {
           int tileNumber = (9 - row) * 10 + col + 1;
           TextField tile = new TextField("Tile " + tileNumber);
-          tile.setPrefWidth(100);
-          tile.setPrefHeight(100);
+          tile.setPrefWidth(80);
+          tile.setPrefHeight(80);
           tile.setEditable(false);
           grid.add(tile, col, 9 - row);
         }
@@ -80,8 +79,8 @@ public class LadderGameGUI extends Application {
         for (int col = 9; col >= 0; col--) {
           int tileNumber = (9 - row) * 10 + (9 - col) + 1;
           TextField tile = new TextField("Tile " + tileNumber);
-          tile.setPrefWidth(100);
-          tile.setPrefHeight(100);
+          tile.setPrefWidth(80);
+          tile.setPrefHeight(80);
           tile.setEditable(false);
           grid.add(tile, col, 9 - row);
         }
