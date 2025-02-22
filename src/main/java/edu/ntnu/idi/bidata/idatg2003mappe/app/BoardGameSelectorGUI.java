@@ -16,7 +16,7 @@ public class BoardGameSelectorGUI extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
     BorderPane borderPane = new BorderPane();
-    borderPane.setMinHeight(540); //16:9 apsect ratio   (1920x1080)/2
+    borderPane.setMinHeight(540); //16:9 aspect ratio   (1920x1080)/2
     borderPane.setMaxHeight(540);
     borderPane.setMinWidth(960);
     borderPane.setMaxWidth(960);
