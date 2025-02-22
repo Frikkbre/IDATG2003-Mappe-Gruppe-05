@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.LadderGame;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;

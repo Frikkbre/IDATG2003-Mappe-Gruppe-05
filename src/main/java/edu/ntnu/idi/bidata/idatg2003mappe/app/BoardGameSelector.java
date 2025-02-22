@@ -1,5 +1,8 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.LadderGame.LadderGame;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.MissingDiamond.MissingDiamond;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

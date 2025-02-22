@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.LadderGame.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import org.junit.jupiter.api.AfterEach;

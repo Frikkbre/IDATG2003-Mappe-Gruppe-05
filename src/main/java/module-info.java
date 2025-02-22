@@ -19,4 +19,8 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   opens edu.ntnu.idi.bidata.idatg2003mappe.entity to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.map;
   opens edu.ntnu.idi.bidata.idatg2003mappe.map to javafx.fxml;
+  exports edu.ntnu.idi.bidata.idatg2003mappe.app.LadderGame;
+  opens edu.ntnu.idi.bidata.idatg2003mappe.app.LadderGame to javafx.fxml;
+  exports edu.ntnu.idi.bidata.idatg2003mappe.app.MissingDiamond;
+  opens edu.ntnu.idi.bidata.idatg2003mappe.app.MissingDiamond to javafx.fxml;
 }
