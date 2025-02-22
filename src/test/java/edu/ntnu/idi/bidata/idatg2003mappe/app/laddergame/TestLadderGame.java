@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
 import static org.junit.jupiter.api.Assertions.*;
 
