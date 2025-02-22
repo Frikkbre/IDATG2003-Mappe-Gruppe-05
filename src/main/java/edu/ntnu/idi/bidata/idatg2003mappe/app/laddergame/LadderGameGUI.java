@@ -69,7 +69,7 @@ public class LadderGameGUI extends Application {
       if (leftToRight) {
         for (int col = 0; col < 10; col++) {
           int tileNumber = (9 - row) * 10 + col + 1;
-          TextField tile = new TextField("Tile " + tileNumber);
+          TextField tile = new TextField("" + tileNumber);
           tile.setPrefWidth(80);
           tile.setPrefHeight(80);
           tile.setEditable(false);
@@ -78,7 +78,7 @@ public class LadderGameGUI extends Application {
       } else {
         for (int col = 9; col >= 0; col--) {
           int tileNumber = (9 - row) * 10 + (9 - col) + 1;
-          TextField tile = new TextField("Tile " + tileNumber);
+          TextField tile = new TextField(""+tileNumber);
           tile.setPrefWidth(80);
           tile.setPrefHeight(80);
           tile.setEditable(false);
@@ -105,7 +105,7 @@ public class LadderGameGUI extends Application {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;
         TextField tile = (TextField) boardGrid.getChildren().get(row * 10 + col);
-        tile.setText("Tile " + tileNumber);
+        tile.setText("" + tileNumber);
         tile.setStyle("-fx-background-color: white;");
       }
     }
