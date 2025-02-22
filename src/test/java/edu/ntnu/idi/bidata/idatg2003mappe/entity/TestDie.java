@@ -28,11 +28,18 @@ class TestDie {
     assertTrue(die.getDieValue() >= 1 && die.getDieValue() <= 6, "Die value should be between 1 and 6.");
   }
 
+  @Test
+  void testRollToTurnMarker () {
+    die.rollToTurnMarker();
+    assertTrue(die.getDieValue() >= 3 && die.getDieValue() <= 6, "Die value should be between 3 and 6.");
+  }
+
   //Tests the getDieValue method
 
   @Test
   void testGetValue() {
-    assertEquals(0, die.getDieValue(), "Initial die value should be 0.");
+    assertEquals(0, die.getDieValue(),
+        "Initial die value should be 0.");
   }
 
   //Tests the setDieValue method, to see if the value is set correctly
@@ -40,6 +47,15 @@ class TestDie {
   @Test
   void testSetValue() {
     die.setDieValue(3);
-    assertEquals(3, die.getDieValue(), "Die value should be set to 3.");
+    assertEquals(3, die.getDieValue(),
+        "Die value should be set to 3.");
+  }
+
+  //Tests the setDieValue method, to see if the value is set correctly when the value is negative
+
+  @Test
+  void testSetValueNegative() {
+    assertThrows(IllegalArgumentException.class, () -> die.setDieValue(-1),
+        "Expected an IllegalArgumentException when setting a negative value.");
   }
 }

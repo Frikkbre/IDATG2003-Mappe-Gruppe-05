@@ -31,9 +31,9 @@ public class Die {
    *
    * @return boolean
    */
-  public boolean rollToTurnMarker() { //Only relevant for "Den forsvunne diamanten"?
-    int number = ThreadLocalRandom.current().nextInt(1, 6 + 1);
-    return number > 3;
+  public boolean rollToTurnMarker() {
+    dieValue = ThreadLocalRandom.current().nextInt(3, 7);
+    return dieValue > 3;
   }
 
   public void setDieValue(int dieValue) {
