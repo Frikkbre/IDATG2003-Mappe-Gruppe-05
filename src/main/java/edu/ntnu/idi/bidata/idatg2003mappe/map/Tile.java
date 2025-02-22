@@ -2,7 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Stream;
 /**
  * Represents a tile on the board.
  *
@@ -153,6 +153,15 @@ public class Tile {
    */
   public Tile getDestinationTile() {
     return destinationTile;
+  }
+
+  /**
+   * Gets the list of next tiles.
+   *
+   * @return The list of next tiles.
+   */
+  public Stream<Tile> streamNextTiles() {
+    return nextTilesOnBoard.stream();
   }
 
   /**
