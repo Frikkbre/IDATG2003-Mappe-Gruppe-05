@@ -35,7 +35,7 @@ public class LadderGame {
     this.players = createPlayers(numberOfPlayers);
     this.die = new Die();
 
-    playGame();
+    //playGame();
   }
 
   /**
