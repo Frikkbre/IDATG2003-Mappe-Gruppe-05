@@ -17,13 +17,13 @@ public class Tile {
    * This is a unique identifier for the tile.
    * Either position or order of the tile.
    */
-  private int tileId;
+  private final int tileId;
 
   /**
    * The next tiles on the board that are connected
    * to this tile. Useful for the missing diamond game.
    */
-  private List<Tile> nextTilesOnBoard;
+  private final List<Tile> nextTilesOnBoard;
 
   /**
    * The next immediate tile next to the main or current
