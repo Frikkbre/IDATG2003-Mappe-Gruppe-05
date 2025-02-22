@@ -65,18 +65,29 @@ public class LadderGameGUI extends Application {
     grid.setHgap(5);
     grid.setVgap(5);
 
-    for (int row = 10; row > 0; row--) {
-      for (int col = 0; col < 10; col++) {
-        int tileNumber = row * 10 + col + 1;
-        TextField tile = new TextField("Tile " + tileNumber);
-        tile.setPrefWidth(60);
-        tile.setEditable(false);
-        grid.add(tile, col, row);
+    boolean leftToRight = true;
+    for (int row = 9; row >= 0; row--) {
+      if (leftToRight) {
+        for (int col = 0; col < 10; col++) {
+          int tileNumber = (9 - row) * 10 + col + 1;
+          TextField tile = new TextField("Tile " + tileNumber);
+          tile.setPrefWidth(60);
+          tile.setEditable(false);
+          grid.add(tile, col, 9 - row);
+        }
+      } else {
+        for (int col = 9; col >= 0; col--) {
+          int tileNumber = (9 - row) * 10 + (9 - col) + 1;
+          TextField tile = new TextField("Tile " + tileNumber);
+          tile.setPrefWidth(60);
+          tile.setEditable(false);
+          grid.add(tile, col, 9 - row);
+        }
       }
+      leftToRight = !leftToRight;
     }
     return grid;
   }
-
   private MenuBar createMenuBar() {
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
