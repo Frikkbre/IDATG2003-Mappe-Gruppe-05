@@ -21,10 +21,11 @@ public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
+  private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
 
   @Override
   public void start(Stage primaryStage) throws Exception { //TODO: Add method or screen for selecting players
-    gameController = new LadderGameController(2); //Hardcoded 2 players for now
+    gameController = new LadderGameController(6); //Hardcoded 2 players for now
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(960, 540);
@@ -98,15 +99,16 @@ public class LadderGameGUI extends Application {
     }
 
     List<Player> players = gameController.getPlayers();
-    for (Player player : players) {
+    for (int i = 0; i < players.size(); i++) {
+      Player player = players.get(i);
+      String playerColor = this.playerColor[i];
       int tileId = player.getCurrentTile().getTileId();
       int index = tileId - 1;
       int row = index / 10;
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       tileField.setText(player.getName());
-      tileField.setStyle("-fx-background-color: red;");
-    }
+      tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
   }
 
 
