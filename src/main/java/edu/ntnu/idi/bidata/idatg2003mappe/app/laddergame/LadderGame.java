@@ -147,4 +147,12 @@ public class LadderGame {
   public List<Player> getPlayers() {
     return players;
   }
+
+  public Die getDie() {
+    return die;
+  }
+
+  public int getNumberOfTiles() {
+    return numberOfTiles;
+  }
 }
