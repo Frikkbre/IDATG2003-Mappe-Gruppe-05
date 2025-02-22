@@ -35,7 +35,7 @@ public class LadderGame {
     this.players = createPlayers(numberOfPlayers);
     this.die = new Die();
 
-    playGame();
+    //playGame();
   }
 
   /**
@@ -146,5 +146,13 @@ public class LadderGame {
 
   public List<Player> getPlayers() {
     return players;
+  }
+
+  public Die getDie() {
+    return die;
+  }
+
+  public int getNumberOfTiles() {
+    return numberOfTiles;
   }
 }
