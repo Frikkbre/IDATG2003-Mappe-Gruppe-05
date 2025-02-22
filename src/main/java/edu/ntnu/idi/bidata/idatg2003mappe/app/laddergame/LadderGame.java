@@ -15,19 +15,19 @@ import java.util.List;
  * The game is played by the players taking turns to roll the dice and move their markers on the board.
  * The game is won by the first player to reach the last tile on the board.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.3
  * @since 14.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class LadderGame {
 
-  private BoardLinear board;
-  private List<Player> players;
-  private Die die;
-  private int numberOfTiles;
+  private final BoardLinear board;
+  private final List<Player> players;
+  private final Die die;
+  private final int numberOfTiles;
 
-  public LadderGame(int numberOfPlayers){
+  public LadderGame(int numberOfPlayers) {
     System.out.println("Starting Ladder Game with " + numberOfPlayers + " players.");
 
     this.numberOfTiles = 100;
@@ -64,7 +64,7 @@ public class LadderGame {
 
     //Hardcoding ladders to the board.
 
-    if(numberOfTiles >= 100){
+    if (numberOfTiles >= 100) {
       tiles[15].setDestinationTile(tiles[20]);
       tiles[25].setDestinationTile(tiles[10]);
     }
@@ -105,9 +105,9 @@ public class LadderGame {
     int indexCurrentPlayer = 0;
     int roll = 0;
 
-    while(!hasWon){
+    while (!hasWon) {
       Player currentPlayer = players.get(indexCurrentPlayer);
-      System.out.println("Player " + (indexCurrentPlayer + 1) + " turn." );
+      System.out.println("Player " + (indexCurrentPlayer + 1) + " turn.");
 
       roll = die.rollDie();
       System.out.println("Die : die rolled: " + roll);

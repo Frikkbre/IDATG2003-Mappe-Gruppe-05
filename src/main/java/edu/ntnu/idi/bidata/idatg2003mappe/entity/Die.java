@@ -1,14 +1,15 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.entity;
 
 //Imports
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Represents a die.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.2
  * @since 03.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class Die {

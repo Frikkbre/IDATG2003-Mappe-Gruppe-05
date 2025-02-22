@@ -1,20 +1,20 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.movement;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 /**
  * Class for ladder action.
  * This class implements the TileAction interface.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.1
  * @since 20.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class LadderAction implements TileAction {
 
-  private Tile currentTile;
+  private final Tile currentTile;
 
   /**
    * Constructor for the LadderAction class.

@@ -6,9 +6,9 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
  * Represents a player in the game
  * Has methods to add player, place player and move player.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 19.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class Player {
@@ -17,9 +17,10 @@ public class Player {
 
   /**
    * Constructor for Player
+   *
    * @param name
    */
-  public Player(String name, Tile startTile){
+  public Player(String name, Tile startTile) {
     setName(name);
     currentTile = startTile;
   }
@@ -28,12 +29,13 @@ public class Player {
   /**
    * Places the player on the board
    */
-  public void placePlayer(Tile tileId){
+  public void placePlayer(Tile tileId) {
     currentTile = tileId;
   }
 
   /**
    * Moves the player on the board
+   *
    * @param tilesToMove
    */
   public void movePlayer(int tilesToMove) {
@@ -45,10 +47,11 @@ public class Player {
 
   /**
    * Sets the name of the player
+   *
    * @param name
    */
-  public void setName(String name){
-    if(name.isBlank()){
+  public void setName(String name) {
+    if (name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be blank");
     }
     this.name = name;
@@ -56,6 +59,7 @@ public class Player {
 
   /**
    * Gets the name of the player
+   *
    * @return name
    */
 
@@ -65,10 +69,11 @@ public class Player {
 
   /**
    * Gets the current tile of the player
+   *
    * @return currentTile
    */
 
-  public Tile getCurrentTile(){
+  public Tile getCurrentTile() {
     return currentTile;
   }
 

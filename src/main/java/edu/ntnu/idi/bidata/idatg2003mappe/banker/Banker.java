@@ -5,9 +5,9 @@ package edu.ntnu.idi.bidata.idatg2003mappe.banker;
  * as well as keeping track of players bank account.
  * Each player should start out with 5000 each.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 03.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class Banker {

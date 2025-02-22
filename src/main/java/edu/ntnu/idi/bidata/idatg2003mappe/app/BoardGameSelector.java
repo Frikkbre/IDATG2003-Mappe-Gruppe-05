@@ -11,15 +11,15 @@ import java.util.Scanner;
  * The user can select between Ladder Game and Missing Diamond.
  * The user can also exit the program.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 17.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class BoardGameSelector {
   int numberOfPlayers;
 
-  private Scanner inputScanner = new Scanner(System.in);
+  private final Scanner inputScanner = new Scanner(System.in);
 
   /**
    * Constructor for the BoardGameSelector class.
@@ -55,6 +55,7 @@ public class BoardGameSelector {
   /**
    * Method that takes user input to get the number of players to play the game.
    * Throws an exception if the input is less than 1, more than 6 or a float value.
+   *
    * @return number of players
    */
   public int getNumberOfPlayers() {

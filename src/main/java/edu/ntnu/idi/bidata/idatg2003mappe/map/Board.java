@@ -6,9 +6,9 @@ import java.util.List;
 /**
  * Represents a board with tiles.
  *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 22.02.2025
- * @author Simen Gudbrandsen and Frikk Breadsroed
  */
 
 public class Board {

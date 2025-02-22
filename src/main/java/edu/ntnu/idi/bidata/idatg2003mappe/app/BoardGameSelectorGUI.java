@@ -1,9 +1,12 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
@@ -18,7 +21,7 @@ public class BoardGameSelectorGUI extends Application {
     borderPane.setMinWidth(960);
     borderPane.setMaxWidth(960);
     borderPane.setPrefHeight(540);
-    borderPane.setPrefWidth(960 );
+    borderPane.setPrefWidth(960);
     borderPane.setCenter(createCenterPane());
     borderPane.setTop(createMenuBar());
     Scene scene = new Scene(borderPane);
@@ -26,6 +29,7 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
   }
+
   private MenuBar createMenuBar() {
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
@@ -36,6 +40,7 @@ public class BoardGameSelectorGUI extends Application {
     menuBar.getMenus().addAll(fileMenu);
     return menuBar;
   }
+
   private Pane createCenterPane() {
     Button button1 = new Button("Ladder game");
     Button button2 = new Button("Missing diamond");
@@ -44,6 +49,7 @@ public class BoardGameSelectorGUI extends Application {
     centerPane.setAlignment(Pos.CENTER);
     return centerPane;
   }
+
   public static void main(String[] args) {
     launch(args);
   }
