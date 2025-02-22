@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,7 @@ public class LadderGame {
 
     //Hardcoding ladders to the board.
 
-    if(numberOfTiles >= 100){ //TODO: Method not working as intended
+    if(numberOfTiles >= 100){
       tiles[15].setDestinationTile(tiles[20]);
       tiles[25].setDestinationTile(tiles[10]);
     }
@@ -113,17 +114,24 @@ public class LadderGame {
       currentPlayer.movePlayer(roll);
       System.out.println("Tile Moved :  Tile after moving " + currentPlayer.getCurrentTile().getTileId());
 
-      //Check if player is at destination tile
-      if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) { //numberOfTiles - 1?
+      // Check if the tile has a ladder destination
+      Tile currentTile = currentPlayer.getCurrentTile();
+      if (currentTile.getDestinationTile() != null) {
+
+        // Create and perform the ladder action
+        LadderAction ladderAction = new LadderAction(currentTile);
+        ladderAction.performAction(currentPlayer);
+        System.out.println("After ladder action: moved to tile " + currentPlayer.getCurrentTile().getTileId());
+      }
+
+      // Check win condition (reached the last tile)
+      if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) {
+        System.out.println(currentPlayer.getName() + " wins the game!");
         hasWon = true;
       }
 
-      //If-statement to check if index is at end og list of players
-      if(indexCurrentPlayer != players.size() - 1){
-        indexCurrentPlayer++;
-      }else{
-        indexCurrentPlayer = 0;
-      }
+      // Next player's turn
+      indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
     }
   }
 
