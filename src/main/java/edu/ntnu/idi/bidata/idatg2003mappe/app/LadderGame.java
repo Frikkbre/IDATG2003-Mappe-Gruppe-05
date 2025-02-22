@@ -92,11 +92,13 @@ public class LadderGame {
 
 
   /**
-   * main game method
-   * The game is played by the players taking turns to roll
-   * the dice and move their markers on the board.
-   * The game is won by the first player to reach the last
-   * tile on the board.
+   * Method to play the game.
+   * The game is played by the players taking turns
+   * to roll the dice and move their markers on the board.
+   * If a player lands on a tile with a ladder, the player
+   * is moved to the destination tile of the ladder.
+   * The game is won by the first player to
+   * reach the last tile on the board.
    */
   void playGame() {
     boolean hasWon = false;
