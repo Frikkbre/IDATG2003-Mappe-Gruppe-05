@@ -22,7 +22,7 @@ public class Player {
    *
    * @param name
    */
-  public Player(String name, Tile startTile) {
+  public Player(String name, Tile startTile, int ID) {
     setName(name);
     setID(ID);
     currentTile = startTile;
@@ -89,4 +89,7 @@ public class Player {
     return currentTile;
   }
 
+  public int getID() {
+    return ID;
+  }
 }
