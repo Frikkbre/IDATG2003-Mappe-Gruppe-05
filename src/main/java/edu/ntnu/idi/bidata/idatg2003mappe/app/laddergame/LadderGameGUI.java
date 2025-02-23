@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -69,19 +70,13 @@ public class LadderGameGUI extends Application {
       if (leftToRight) {
         for (int col = 0; col < 10; col++) {
           int tileNumber = (9 - row) * 10 + col + 1;
-          TextField tile = new TextField("" + tileNumber);
-          tile.setPrefWidth(80);
-          tile.setPrefHeight(80);
-          tile.setEditable(false);
+          TextField tile = createTile(tileNumber);
           grid.add(tile, col, 9 - row);
         }
       } else {
         for (int col = 9; col >= 0; col--) {
           int tileNumber = (9 - row) * 10 + (9 - col) + 1;
-          TextField tile = new TextField(""+tileNumber);
-          tile.setPrefWidth(80);
-          tile.setPrefHeight(80);
-          tile.setEditable(false);
+          TextField tile = createTile(tileNumber);
           grid.add(tile, col, 9 - row);
         }
       }
@@ -89,6 +84,23 @@ public class LadderGameGUI extends Application {
     }
     return grid;
   }
+
+  private TextField createTile(int tileNumber) {
+    TextField tile = new TextField("" + tileNumber);
+    tile.setPrefWidth(80);
+    tile.setPrefHeight(80);
+    tile.setEditable(false);
+    tile.setAlignment(Pos.CENTER);
+
+    // Check if the tile has a ladder
+    Tile currentTile = gameController.getTileById(tileNumber);
+    if (currentTile != null && currentTile.getDestinationTile() != null) {
+      tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;"); // Highlight ladder tiles
+      tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId()); // Show destination
+    }
+    return tile;
+  }
+
   private MenuBar createMenuBar() {
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
@@ -106,8 +118,14 @@ public class LadderGameGUI extends Application {
         int tileNumber = row * 10 + col + 1;
         TextField tile = (TextField) boardGrid.getChildren().get(row * 10 + col);
         tile.setText("" + tileNumber);
-        tile.setStyle("-fx-background-color: white;");
-        tile.setStyle("-fx-background-insets: 0, 1 ;");
+        tile.setStyle("-fx-background-color: white; -fx-background-insets: 0, 1 ;");
+
+        // Keep ladder indicators
+        Tile currentTile = gameController.getTileById(tileNumber);
+        if (currentTile != null && currentTile.getDestinationTile() != null) {
+          tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;");
+          tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId());
+        }
       }
     }
 
@@ -123,28 +141,6 @@ public class LadderGameGUI extends Application {
       tileField.setText(player.getName());
       tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
   }
-
-
-/*
-
-  private Pane createCenterPane() {
-    Button button1 = new Button("Roll die");
-    GridPane centerPane = new GridPane();
-    centerPane.add(button1, 0, 0, 10, 1); // Add button spanning 10 columns
-
-    // creates a 10x10 grid of text fields
-    for (int row = 1; row <= 10; row++) {
-      for (int col = 0; col < 10; col++) {
-        TextField tile = new TextField("Tile " + ((row - 1) * 10 + col));
-        tile.setPrefWidth(60); // Set preferred width for better layout
-        centerPane.add(tile, col, row);
-      }
-    }
-
-    return centerPane;
-  }
-
- */
 
   public static void main(String[] args) {
     launch(args);
