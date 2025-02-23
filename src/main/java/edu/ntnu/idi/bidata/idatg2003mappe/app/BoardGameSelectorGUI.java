@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,6 +15,8 @@ import javafx.stage.Stage;
  * Class for the board game selector GUI.
  */
 public class BoardGameSelectorGUI extends Application {
+  private LadderGameGUI LadderGame;
+
   @Override
   public void start(Stage primaryStage) throws Exception {
     BorderPane borderPane = new BorderPane();
@@ -28,6 +32,9 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setScene(scene);
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
+
+
+    this.LadderGame = new LadderGameGUI(); //To redirect on button click.
   }
 
   private MenuBar createMenuBar() {
