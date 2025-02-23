@@ -93,7 +93,7 @@ public class LadderGameGUI extends Application {
     tile.setAlignment(Pos.CENTER);
 
     // Check if the tile has a ladder
-    Tile currentTile = gameController.getTileById(tileNumber);
+    Tile currentTile = gameController.getTileByIdLinear(tileNumber) ;
     if (currentTile != null && currentTile.getDestinationTile() != null) {
       tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;"); // Highlight ladder tiles
       tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId()); // Show destination
@@ -121,7 +121,7 @@ public class LadderGameGUI extends Application {
         tile.setStyle("-fx-background-color: white; -fx-background-insets: 0, 1 ;");
 
         // Keep ladder indicators
-        Tile currentTile = gameController.getTileById(tileNumber);
+        Tile currentTile = gameController.getTileByIdLinear(tileNumber);
         if (currentTile != null && currentTile.getDestinationTile() != null) {
           tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;");
           tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId());
