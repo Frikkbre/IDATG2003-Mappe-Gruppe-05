@@ -79,5 +79,12 @@ class TestPlayer {
         "Expected an IllegalArgumentException when name is blank.");
   }
 
+  @Test
+  void testSetName_InvalidID_ThrowsException() {
+    // Act & Assert
+    assertThrows(IllegalArgumentException.class, () -> player.setID(-1),
+        "Expected an IllegalArgumentException when ID is invalid.");
+  }
+
 
 }
