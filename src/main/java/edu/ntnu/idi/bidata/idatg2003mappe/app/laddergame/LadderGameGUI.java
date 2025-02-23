@@ -114,6 +114,8 @@ public class LadderGameGUI extends Application {
     List<Player> players = gameController.getPlayers();
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
+      System.out.println(player.getName());
+
       String playerColor = this.playerColor[i];
       int tileId = player.getCurrentTile().getTileId();
       int index = tileId - 1;
@@ -121,7 +123,7 @@ public class LadderGameGUI extends Application {
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       if (tileField.getText().contains("P")) {
-        tileField.setText(tileField.getText() + ", " + player.getName());
+        tileField.setText(tileField.getText() + ", " + player.getID());
       } else{
       tileField.setText(player.getName());
       tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
