@@ -57,17 +57,42 @@ public class LadderGameController {
     return message.toString();
   }
 
+  /**
+   * Returns the game board.
+   *
+   * @return The game board.
+   */
+
   public Board getBoard() {
     return game.getBoard();
   }
+
+  /**
+   * Returns the tile with the given tile number.
+   *
+   * @param tileNumber The tile number.
+   * @return The tile with the given tile number.
+   */
 
   public Tile getTileById(int tileNumber) {
     return game.getBoard().getTileByIdLinear(tileNumber);
   }
 
+  /**
+   * Returns the die of the game.
+   *
+   * @return The die of the game.
+   */
+
   public Die getDie() {
     return game.getDie();
   }
+
+  /**
+   * Returns the list of players in the game.
+   *
+   * @return The list of players in the game.
+   */
 
   public List<Player> getPlayers() {
     return game.getPlayers();
