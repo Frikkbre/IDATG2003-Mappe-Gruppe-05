@@ -17,6 +17,22 @@ public class BoardLinear extends Board {
   }
 
   /**
+   * Gets the tile by id.
+   *
+   * @param tileId The tile id.
+   * @return The tile with the specified id.
+   */
+
+  public Tile getTileByIdLinear(int tileId) {
+    for (Tile tile : tiles) {
+      if (tile.getTileId() == tileId) {
+        return tile;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Gets the tiles of the board.
    *
    * @return The tiles.

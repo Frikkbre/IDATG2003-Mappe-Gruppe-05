@@ -65,8 +65,25 @@ public class LadderGame {
     //Hardcoding ladders to the board.
 
     if (numberOfTiles >= 100) {
-      tiles[15].setDestinationTile(tiles[20]);
-      tiles[25].setDestinationTile(tiles[10]);
+
+      // Ladders
+      tiles[2].setDestinationTile(tiles[38]);
+      tiles[5].setDestinationTile(tiles[15]);
+      tiles[10].setDestinationTile(tiles[32]);
+      tiles[22].setDestinationTile(tiles[43]);
+      tiles[29].setDestinationTile(tiles[85]);
+      tiles[52].setDestinationTile(tiles[67]);
+      tiles[73].setDestinationTile(tiles[92]);
+      tiles[80].setDestinationTile(tiles[99]);
+
+      // Snakes
+      tiles[18].setDestinationTile(tiles[8]);
+      tiles[62].setDestinationTile(tiles[12]);
+      tiles[55].setDestinationTile(tiles[35]);
+      tiles[65].setDestinationTile(tiles[61]);
+      tiles[88].setDestinationTile(tiles[37]);
+      tiles[94].setDestinationTile(tiles[74]);
+      tiles[98].setDestinationTile(tiles[80]);
     }
 
     return board;
@@ -148,9 +165,31 @@ public class LadderGame {
     return players;
   }
 
+  /**
+   * Method to get the board of the game.
+   *
+   * @return the board
+   */
+
+  public BoardLinear getBoard() {
+    return board;
+  }
+
+  /**
+   * Method to get the die of the game.
+   *
+   * @return the die
+   */
+
   public Die getDie() {
     return die;
   }
+
+  /**
+   * Method to get the number of tiles on the board.
+   *
+   * @return the number of tiles
+   */
 
   public int getNumberOfTiles() {
     return numberOfTiles;
