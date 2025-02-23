@@ -1,7 +1,8 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.Board;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
@@ -54,6 +55,18 @@ public class LadderGameController {
     // Update to next player
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     return message.toString();
+  }
+
+  public Board getBoard() {
+    return game.getBoard();
+  }
+
+  public Tile getTileById(int tileNumber) {
+    return game.getBoard().getTileByIdLinear(tileNumber);
+  }
+
+  public Die getDie() {
+    return game.getDie();
   }
 
   public List<Player> getPlayers() {
