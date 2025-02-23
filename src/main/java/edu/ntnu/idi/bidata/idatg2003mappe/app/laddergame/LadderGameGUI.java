@@ -25,7 +25,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception { //TODO: Add method or screen for selecting players
-    gameController = new LadderGameController(6); //Hardcoded 2 players for now
+    gameController = new LadderGameController(6);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(960, 960); // cubed window
@@ -120,9 +120,12 @@ public class LadderGameGUI extends Application {
       int row = index / 10;
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
+      if (tileField.getText().contains("P")) {
+        tileField.setText(tileField.getText() + ", " + player.getName());
+      } else{
       tileField.setText(player.getName());
       tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
-  }
+  }}
 
 
 /*
