@@ -13,7 +13,9 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 public class Player {
   private String name;
+  private int ID;
   private Tile currentTile;
+
 
   /**
    * Constructor for Player
@@ -22,8 +24,11 @@ public class Player {
    */
   public Player(String name, Tile startTile) {
     setName(name);
+    setID(ID);
     currentTile = startTile;
   }
+
+
 
 
   /**
@@ -55,6 +60,13 @@ public class Player {
       throw new IllegalArgumentException("Name cannot be blank");
     }
     this.name = name;
+  }
+
+  void setID(int id) {
+    if(id < 0 || id > 6) {
+      throw new IllegalArgumentException("ID cannot be negative");
+    }
+    this.ID = id;
   }
 
   /**
