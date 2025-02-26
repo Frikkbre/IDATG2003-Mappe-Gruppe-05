@@ -132,7 +132,6 @@ public class LadderGameGUI extends Application {
     List<Player> players = gameController.getPlayers();
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
-      System.out.println(player.getName());
 
       String playerColor = this.playerColor[i];
       int tileId = player.getCurrentTile().getTileId();
