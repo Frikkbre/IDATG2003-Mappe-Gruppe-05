@@ -158,11 +158,13 @@ public class LadderGameGUI extends Application {
       int row = index / 10;
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
-      if (tileField.getText().contains("P")) {
+      if (tileField.getText().contains("Player")) {
         tileField.setText(tileField.getText() + ", " + player.getID());
       } else{
       tileField.setText(player.getName());
       tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
+
+      //update scoreboard here
 
   }}
 
