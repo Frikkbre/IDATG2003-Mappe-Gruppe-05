@@ -131,7 +131,6 @@ public class LadderGameGUI extends Application {
     }
     String s = "Scoreboard:\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
-    System.out.println(s);
   }
 
   private void updateBoardUI() {
