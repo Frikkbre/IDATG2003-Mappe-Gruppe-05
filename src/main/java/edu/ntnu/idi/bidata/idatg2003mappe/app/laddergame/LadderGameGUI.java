@@ -50,7 +50,9 @@ public class LadderGameGUI extends Application {
     gameLog.setEditable(false);
     gameLog.setPrefHeight(100);
 
-    centerBox.getChildren().addAll(boardGrid, rollDieButton, gameLog);
+    TextField scoreBoard = createScoreBoard();
+
+    centerBox.getChildren().addAll(boardGrid, rollDieButton, scoreBoard, gameLog);
     borderPane.setCenter(centerBox);
 
     Scene scene = new Scene(borderPane);
@@ -112,6 +114,23 @@ public class LadderGameGUI extends Application {
     return menuBar;
   }
 
+  private TextField createScoreBoard() {
+    TextField scoreBoard = new TextField();
+
+    for(Player player : gameController.getPlayers()) {
+      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
+    }
+
+    String s = "Scoreboard: \n" + scoreBoard.getText();
+
+    scoreBoard.setPrefWidth(80);
+    scoreBoard.setPrefHeight(80);
+    scoreBoard.setEditable(false);
+    scoreBoard.setAlignment(Pos.CENTER);
+
+    return new TextField (s);
+  }
+
   private void updateBoardUI() {
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
@@ -144,6 +163,7 @@ public class LadderGameGUI extends Application {
       } else{
       tileField.setText(player.getName());
       tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
+
   }}
 
   public static void main(String[] args) {
