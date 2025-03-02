@@ -127,7 +127,7 @@ public class LadderGameGUI extends Application {
   private void updateScoreBoard(TextField scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
     for (Player player : gameController.getPlayers()) {
-      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
+      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + " → ");
     }
     String s = "Scoreboard:\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
