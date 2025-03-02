@@ -24,7 +24,7 @@ class TestLadderGame {
   }
 
   @Test
-  void testPlayerMovesAfterRoll() {
+  void testPlayerMovesAfterRoll() { //TODO - redo test to not run through entire game
     Player currentPlayer = ladderGame.getPlayers().get(0);
     Tile initialTile = currentPlayer.getCurrentTile();
 
