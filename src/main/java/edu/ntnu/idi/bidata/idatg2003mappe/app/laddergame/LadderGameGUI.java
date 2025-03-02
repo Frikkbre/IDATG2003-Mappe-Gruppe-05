@@ -13,19 +13,16 @@ import java.util.List;
 
 /**
  * Class for the board game selector GUI.
- *
- * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
- * @since 22.02.2025
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
+  private TextField scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
 
   @Override
-  public void start(Stage primaryStage) throws Exception { //TODO: Add method or screen for selecting players
+  public void start(Stage primaryStage) throws Exception {
     gameController = new LadderGameController(6);
 
     BorderPane borderPane = new BorderPane();
@@ -37,20 +34,20 @@ public class LadderGameGUI extends Application {
     boardGrid = createBoardGrid();
     Button rollDieButton = new Button("Roll die");
     rollDieButton.setOnAction(e -> {
-          String message = gameController.playTurn();
-          gameLog.appendText(message + "\n");
-          updateBoardUI();
+      String message = gameController.playTurn();
+      gameLog.appendText(message + "\n");
+      updateBoardUI();
 
-          if (message.contains("won")) {
-            rollDieButton.setDisable(true);
-          }
-        });
+      if (message.contains("won")) {
+        rollDieButton.setDisable(true);
+      }
+    });
 
     gameLog = new TextArea();
     gameLog.setEditable(false);
     gameLog.setPrefHeight(100);
 
-    TextField scoreBoard = createScoreBoard();
+    scoreBoard = createScoreBoard(); // Initialize scoreBoard
 
     centerBox.getChildren().addAll(boardGrid, rollDieButton, scoreBoard, gameLog);
     borderPane.setCenter(centerBox);
@@ -95,7 +92,7 @@ public class LadderGameGUI extends Application {
     tile.setAlignment(Pos.CENTER);
 
     // Check if the tile has a ladder
-    Tile currentTile = gameController.getTileByIdLinear(tileNumber) ;
+    Tile currentTile = gameController.getTileByIdLinear(tileNumber);
     if (currentTile != null && currentTile.getDestinationTile() != null) {
       tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;"); // Highlight ladder tiles
       tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId()); // Show destination
@@ -117,18 +114,24 @@ public class LadderGameGUI extends Application {
   private TextField createScoreBoard() {
     TextField scoreBoard = new TextField();
 
-    for(Player player : gameController.getPlayers()) {
-      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
-    }
-
-    String s = "Scoreboard: \n" + scoreBoard.getText();
+    String s = "Scoreboard:";
 
     scoreBoard.setPrefWidth(80);
     scoreBoard.setPrefHeight(80);
     scoreBoard.setEditable(false);
     scoreBoard.setAlignment(Pos.CENTER);
 
-    return new TextField (s);
+    return new TextField(s);
+  }
+
+  private void updateScoreBoard(TextField scoreBoard) {
+    scoreBoard.clear(); // Clear the scoreBoard
+    for (Player player : gameController.getPlayers()) {
+      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
+    }
+    String s = "Scoreboard:\n" + scoreBoard.getText();
+    scoreBoard.setText(s); // Update the scoreBoard
+    System.out.println(s);
   }
 
   private void updateBoardUI() {
@@ -160,16 +163,16 @@ public class LadderGameGUI extends Application {
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       if (tileField.getText().contains("Player")) {
         tileField.setText(tileField.getText() + ", " + player.getID());
-      } else{
-      tileField.setText(player.getName());
-      tileField.setStyle("-fx-background-color: " + playerColor + ";");    }
+      } else {
+        tileField.setText(player.getName());
+        tileField.setStyle("-fx-background-color: " + playerColor + ";");
+      }
+    }
 
-      //update scoreboard here
-
-  }}
+    updateScoreBoard(scoreBoard); // Use the class-level scoreBoard
+  }
 
   public static void main(String[] args) {
     launch(args);
   }
 }
-
