@@ -12,7 +12,13 @@ import javafx.stage.Stage;
 import java.util.List;
 
 /**
- * Class for the board game selector GUI.
+ * Class for the LadderGameGUI.
+ * This class presents the game in a graphical user interface.
+ * Also handles game logic.
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.3
+ * @since 20.02.2025
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
@@ -111,6 +117,10 @@ public class LadderGameGUI extends Application {
     return menuBar;
   }
 
+  /**
+   * Create the scoreboard.
+   * @return the scoreboard
+   */
   private TextField createScoreBoard() {
     TextField scoreBoard = new TextField();
 
@@ -119,6 +129,11 @@ public class LadderGameGUI extends Application {
     return new TextField(s);
   }
 
+  /**
+   * Update the scoreBoard with the current player positions.
+   * ranks player base on position
+   * @param scoreBoard
+   */
   private void updateScoreBoard(TextField scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
 
@@ -135,6 +150,9 @@ public class LadderGameGUI extends Application {
     scoreBoard.setText(s); // Update the scoreBoard
   }
 
+  /**
+   * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
+   */
   private void updateBoardUI() {
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
