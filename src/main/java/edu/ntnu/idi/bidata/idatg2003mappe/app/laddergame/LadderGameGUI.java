@@ -35,7 +35,7 @@ public class LadderGameGUI extends Application {
     borderPane.setPrefSize(960, 960); // cubed window
     borderPane.setTop(createMenuBar());
 
-    VBox centerBox = new VBox(10);
+    HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
     boardGrid = createBoardGrid();
     Button rollDieButton = new Button("Roll die");
@@ -55,7 +55,11 @@ public class LadderGameGUI extends Application {
 
     scoreBoard = createScoreBoard(); // Initialize scoreBoard
 
-    centerBox.getChildren().addAll(boardGrid, rollDieButton, scoreBoard, gameLog);
+    VBox leftBox = new VBox(10);
+    leftBox.setAlignment(Pos.CENTER_LEFT);
+    leftBox.getChildren().addAll(scoreBoard, rollDieButton, gameLog);
+
+    centerBox.getChildren().addAll(leftBox, boardGrid);
     borderPane.setCenter(centerBox);
 
     Scene scene = new Scene(borderPane);
