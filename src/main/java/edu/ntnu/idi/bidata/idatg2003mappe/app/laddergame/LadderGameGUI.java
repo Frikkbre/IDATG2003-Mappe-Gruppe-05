@@ -143,7 +143,7 @@ public class LadderGameGUI extends Application {
     scoreBoard.clear(); // Clear the scoreBoard
 
     scoreBoard.setPrefWidth(80);
-    scoreBoard.setPrefHeight(80);
+    scoreBoard.setPrefHeight(130);
     scoreBoard.setEditable(false);
     //scoreBoard.setAlignment(Pos.CENTER_LEFT);
 
