@@ -33,10 +33,10 @@ public class LadderGameGUI extends Application {
     gameController = new LadderGameController(6);
 
     BorderPane borderPane = new BorderPane();
-    borderPane.setPrefSize(960, 960); // cubed window
+    borderPane.setPrefSize(1440, 840); // cubed window
     borderPane.setTop(createMenuBar());
 
-    HBox centerBox = new HBox(30);
+    HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
     boardGrid = createBoardGrid();
     Button rollDieButton = new Button("Roll die");
