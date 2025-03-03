@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
-  private TextField scoreBoard; // Declare scoreBoard as a class-level variable
+  private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
 
   @Override
@@ -32,10 +33,10 @@ public class LadderGameGUI extends Application {
     gameController = new LadderGameController(6);
 
     BorderPane borderPane = new BorderPane();
-    borderPane.setPrefSize(960, 960); // cubed window
+    borderPane.setPrefSize(1440, 840); // cubed window
     borderPane.setTop(createMenuBar());
 
-    VBox centerBox = new VBox(10);
+    HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
     boardGrid = createBoardGrid();
     Button rollDieButton = new Button("Roll die");
@@ -55,7 +56,11 @@ public class LadderGameGUI extends Application {
 
     scoreBoard = createScoreBoard(); // Initialize scoreBoard
 
-    centerBox.getChildren().addAll(boardGrid, rollDieButton, scoreBoard, gameLog);
+    VBox leftBox = new VBox(10);
+    leftBox.setAlignment(Pos.CENTER_LEFT);
+    leftBox.getChildren().addAll(scoreBoard, rollDieButton, gameLog);
+
+    centerBox.getChildren().addAll(leftBox, boardGrid);
     borderPane.setCenter(centerBox);
 
     Scene scene = new Scene(borderPane);
@@ -121,32 +126,35 @@ public class LadderGameGUI extends Application {
    * Create the scoreboard.
    * @return the scoreboard
    */
-  private TextField createScoreBoard() {
-    TextField scoreBoard = new TextField();
+  private TextArea createScoreBoard() {
+    TextArea scoreBoard = new TextArea();
 
     String s = "Scoreboard:";
 
-    return new TextField(s);
+    return new TextArea(s);
   }
 
   /**
    * Update the scoreBoard with the current player positions.
-   * ranks player base on position
-   * @param scoreBoard
+   * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
+   * @param scoreBoard takes in the TextArea scoreBoard to update
    */
-  private void updateScoreBoard(TextField scoreBoard) {
+  private void updateScoreBoard(TextArea scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
 
     scoreBoard.setPrefWidth(80);
-    scoreBoard.setPrefHeight(80);
+    scoreBoard.setPrefHeight(130); //TODO - Make dynamic basied on number of players
     scoreBoard.setEditable(false);
-    scoreBoard.setAlignment(Pos.CENTER_LEFT);
+    //scoreBoard.setAlignment(Pos.CENTER_LEFT);
+
+    ArrayList<Player> sortedPlayerPositionList = new ArrayList<>(gameController.getPlayers()); // adds all players to the list
+    sortedPlayerPositionList.sort((p1, p2) -> p2.getCurrentTile().getTileId() - p1.getCurrentTile().getTileId()); // sorts the list based on the players current tile
 
 
-    for (Player player : gameController.getPlayers()) {
-      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + " → ");
+    for (Player player : sortedPlayerPositionList) {
+      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
-    String s = "Scoreboard:\n" + scoreBoard.getText();
+    String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
   }
 
