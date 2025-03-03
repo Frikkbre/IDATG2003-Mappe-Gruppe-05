@@ -24,7 +24,7 @@ public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
-  private TextField scoreBoard; // Declare scoreBoard as a class-level variable
+  private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
 
   @Override
@@ -35,7 +35,7 @@ public class LadderGameGUI extends Application {
     borderPane.setPrefSize(960, 960); // cubed window
     borderPane.setTop(createMenuBar());
 
-    HBox centerBox = new HBox(10);
+    HBox centerBox = new HBox(30);
     centerBox.setAlignment(Pos.CENTER);
     boardGrid = createBoardGrid();
     Button rollDieButton = new Button("Roll die");
@@ -125,12 +125,12 @@ public class LadderGameGUI extends Application {
    * Create the scoreboard.
    * @return the scoreboard
    */
-  private TextField createScoreBoard() {
-    TextField scoreBoard = new TextField();
+  private TextArea createScoreBoard() {
+    TextArea scoreBoard = new TextArea();
 
     String s = "Scoreboard:";
 
-    return new TextField(s);
+    return new TextArea(s);
   }
 
   /**
@@ -138,19 +138,19 @@ public class LadderGameGUI extends Application {
    * ranks player base on position
    * @param scoreBoard
    */
-  private void updateScoreBoard(TextField scoreBoard) {
+  private void updateScoreBoard(TextArea scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
 
     scoreBoard.setPrefWidth(80);
     scoreBoard.setPrefHeight(80);
     scoreBoard.setEditable(false);
-    scoreBoard.setAlignment(Pos.CENTER_LEFT);
+    //scoreBoard.setAlignment(Pos.CENTER_LEFT);
 
 
     for (Player player : gameController.getPlayers()) {
-      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + " → ");
+      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
-    String s = "Scoreboard:\n" + scoreBoard.getText();
+    String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
   }
 
