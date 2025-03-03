@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,8 +136,8 @@ public class LadderGameGUI extends Application {
 
   /**
    * Update the scoreBoard with the current player positions.
-   * ranks player base on position
-   * @param scoreBoard
+   * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
+   * @param scoreBoard takes in the TextArea scoreBoard to update
    */
   private void updateScoreBoard(TextArea scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
@@ -146,8 +147,11 @@ public class LadderGameGUI extends Application {
     scoreBoard.setEditable(false);
     //scoreBoard.setAlignment(Pos.CENTER_LEFT);
 
+    ArrayList<Player> sortedPlayerPositionList = new ArrayList<>(gameController.getPlayers()); // adds all players to the list
+    sortedPlayerPositionList.sort((p1, p2) -> p2.getCurrentTile().getTileId() - p1.getCurrentTile().getTileId()); // sorts the list based on the players current tile
 
-    for (Player player : gameController.getPlayers()) {
+
+    for (Player player : sortedPlayerPositionList) {
       scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
     String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
