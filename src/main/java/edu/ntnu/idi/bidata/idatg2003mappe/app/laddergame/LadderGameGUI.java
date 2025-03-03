@@ -116,16 +116,18 @@ public class LadderGameGUI extends Application {
 
     String s = "Scoreboard:";
 
-    scoreBoard.setPrefWidth(80);
-    scoreBoard.setPrefHeight(80);
-    scoreBoard.setEditable(false);
-    scoreBoard.setAlignment(Pos.CENTER);
-
     return new TextField(s);
   }
 
   private void updateScoreBoard(TextField scoreBoard) {
     scoreBoard.clear(); // Clear the scoreBoard
+
+    scoreBoard.setPrefWidth(80);
+    scoreBoard.setPrefHeight(80);
+    scoreBoard.setEditable(false);
+    scoreBoard.setAlignment(Pos.CENTER_LEFT);
+
+
     for (Player player : gameController.getPlayers()) {
       scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + " → ");
     }
