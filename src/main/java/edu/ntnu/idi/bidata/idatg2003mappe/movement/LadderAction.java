@@ -37,9 +37,9 @@ public class LadderAction implements TileAction {
   public void performAction(Player player) {
     Tile destination = currentTile.getDestinationTile();
     if (destination != null) {
-      System.out.println("Ladder action: moving player from tile "
-          + currentTile.getTileId() + " to tile "
-          + destination.getTileId());
+      //System.out.println("Ladder action: moving player from tile "
+      //    + currentTile.getTileId() + " to tile "
+      //    + destination.getTileId());
       player.placePlayer(destination);
     } else {
       System.out.println("No ladder action on this tile.");
