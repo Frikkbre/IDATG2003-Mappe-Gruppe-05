@@ -143,7 +143,7 @@ public class LadderGameGUI extends Application {
     scoreBoard.clear(); // Clear the scoreBoard
 
     scoreBoard.setPrefWidth(80);
-    scoreBoard.setPrefHeight(130);
+    scoreBoard.setPrefHeight(130); //TODO - Make dynamic basied on number of players
     scoreBoard.setEditable(false);
     //scoreBoard.setAlignment(Pos.CENTER_LEFT);
 
