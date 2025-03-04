@@ -8,6 +8,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Class to represent a game of Ladder.
@@ -26,10 +27,12 @@ public class LadderGame {
   private final List<Player> players;
   private final Die die;
   private final int numberOfTiles;
+  private final boolean randomLadders;
 
-  public LadderGame(int numberOfPlayers) {
+  public LadderGame(int numberOfPlayers, boolean randomLadders) {
     System.out.println("Starting Ladder Game with " + numberOfPlayers + " players.");
 
+    this.randomLadders = randomLadders;
     this.numberOfTiles = 100;
     this.board = createBoard(numberOfTiles);
     this.players = createPlayers(numberOfPlayers);
@@ -56,17 +59,27 @@ public class LadderGame {
       board.addTileToBoard(tiles[i]);
     }
 
-    //Connecting the tiles in a linear fashion.
-
     for (int i = 0; i < numberOfTiles - 1; i++) {
       tiles[i].setNextTile(tiles[i + 1]);
     }
 
-    //Hardcoding ladders to the board.
+    if (randomLadders) {
+      generateRandomLadders(tiles);
+    } else {
+      setClassicLadders(tiles);
+    }
 
+    return board;
+  }
+
+  /**
+   * Method to set the classic ladders and snakes on the board.
+   * The ladders and snakes are hardcoded to the board. For a classic game of Ladder,
+   */
+
+  private void setClassicLadders(Tile[] tiles) {
     if (numberOfTiles >= 100) {
-
-      // Ladders
+      //Ladders
       tiles[2].setDestinationTile(tiles[38]);
       tiles[5].setDestinationTile(tiles[15]);
       tiles[10].setDestinationTile(tiles[32]);
@@ -76,7 +89,7 @@ public class LadderGame {
       tiles[73].setDestinationTile(tiles[92]);
       tiles[80].setDestinationTile(tiles[99]);
 
-      // Snakes
+      //Snakes
       tiles[18].setDestinationTile(tiles[8]);
       tiles[62].setDestinationTile(tiles[12]);
       tiles[55].setDestinationTile(tiles[35]);
@@ -85,8 +98,42 @@ public class LadderGame {
       tiles[94].setDestinationTile(tiles[74]);
       tiles[98].setDestinationTile(tiles[80]);
     }
+  }
 
-    return board;
+  /**
+   * Method to generate random ladders and snakes on the board.
+   * The ladders and snakes are randomly generated on the board.
+   * The number of ladders and snakes are hardcoded for now.
+   */
+
+  private void generateRandomLadders(Tile[] tiles) {
+    Random random = new Random();
+    int numLadders = 8; // Number of ladders to generate
+    int numSnakes = 8;  // Number of snakes to generate
+
+    // Generate ladders
+    for (int i = 0; i < numLadders; i++) {
+      int start = random.nextInt(99) + 1; // Start between 1 and 99
+      int end = start + random.nextInt(15) + 5; // End at least 5 tiles ahead but within 100
+
+      if (end < 100 && tiles[start].getDestinationTile() == null) {
+        tiles[start].setDestinationTile(tiles[end]);
+      } else {
+        i--; // Retry this ladder if it was invalid
+      }
+    }
+
+    // Generate snakes
+    for (int i = 0; i < numSnakes; i++) {
+      int start = random.nextInt(89) + 10; // Start between 10 and 99
+      int end = start - random.nextInt(Math.min(start - 1, 15)) - 5; // Ensure it doesn't go below 1
+
+      if (end > 1 && tiles[start].getDestinationTile() == null) {
+        tiles[start].setDestinationTile(tiles[end]);
+      } else {
+        i--; // Retry this snake if it was invalid
+      }
+    }
   }
 
   /**

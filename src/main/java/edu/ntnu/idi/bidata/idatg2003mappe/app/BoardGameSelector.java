@@ -37,7 +37,7 @@ public class BoardGameSelector {
     switch (gameSelector) {
       case 1:
         numberOfPlayers = getNumberOfPlayers();
-        new LadderGame(numberOfPlayers);
+        new LadderGame(numberOfPlayers, false);
         break;
       case 2:
         numberOfPlayers = getNumberOfPlayers();

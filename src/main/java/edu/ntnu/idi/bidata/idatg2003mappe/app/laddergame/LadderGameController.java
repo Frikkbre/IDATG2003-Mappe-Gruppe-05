@@ -12,10 +12,10 @@ public class LadderGameController {
   private final LadderGame game;
   private int currentPlayerIndex = 0;
 
-  public LadderGameController(int numberOfPlayers) {
+  public LadderGameController(int numberOfPlayers, boolean randomLadders) {
     // Create a new game. (Ensure that LadderGame’s constructor
     // does not automatically start playing the game.)
-    game = new LadderGame(numberOfPlayers);
+    game = new LadderGame(numberOfPlayers, randomLadders);
   }
 
   /**
