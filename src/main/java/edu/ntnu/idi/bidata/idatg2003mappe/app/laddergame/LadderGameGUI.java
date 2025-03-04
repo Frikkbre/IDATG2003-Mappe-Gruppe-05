@@ -134,8 +134,10 @@ public class LadderGameGUI extends Application {
     // Settings Menu
     Menu settingsMenu = new Menu("Settings");
     MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
+    MenuItem restartGameItem = new MenuItem("Restart Game");
     toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
-    settingsMenu.getItems().add(toggleModeItem);
+    restartGameItem.setOnAction(e -> restartGame(primaryStage));
+    settingsMenu.getItems().addAll(toggleModeItem, restartGameItem);
 
     // Add both menus to the menu bar
     menuBar.getMenus().addAll(fileMenu, settingsMenu);
