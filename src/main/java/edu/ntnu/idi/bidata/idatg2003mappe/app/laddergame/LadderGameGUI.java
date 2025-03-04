@@ -27,14 +27,15 @@ public class LadderGameGUI extends Application {
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
+  private boolean randomLadders = false;
 
   @Override
-  public void start(Stage primaryStage) throws Exception {
-    gameController = new LadderGameController(6, true);
+  public void start(Stage primaryStage){
+    gameController = new LadderGameController(6, randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
-    borderPane.setTop(createMenuBar());
+    borderPane.setTop(createMenuBar(primaryStage));
 
     HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
@@ -120,15 +121,41 @@ public class LadderGameGUI extends Application {
     return tile;
   }
 
-  private MenuBar createMenuBar() {
+  private MenuBar createMenuBar(Stage primaryStage) {
+    MenuBar menuBar = new MenuBar();
+
+    // File Menu
+    Menu fileMenu = new Menu("File");
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
     MenuItem closeMenuItem = new MenuItem("Close");
-    Menu fileMenu = new Menu("File");
     fileMenu.getItems().addAll(openMenuItem, saveMenuItem, new SeparatorMenuItem(), closeMenuItem);
-    MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
+
+    // Settings Menu
+    Menu settingsMenu = new Menu("Settings");
+    MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
+    toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
+    settingsMenu.getItems().add(toggleModeItem);
+
+    // Add both menus to the menu bar
+    menuBar.getMenus().addAll(fileMenu, settingsMenu);
     return menuBar;
+  }
+
+  /**
+   * Toggles the game mode between classic and random ladders.
+   */
+
+  private void toggleGameMode(Stage primaryStage) {
+    randomLadders = !randomLadders; // Toggle mode
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Game Mode Changed");
+    alert.setHeaderText("Ladder Mode Updated");
+    alert.setContentText(randomLadders ? "Switched to Randomized Ladders" : "Switched to Classic Mode");
+    alert.showAndWait();
+
+    restartGame(primaryStage);
   }
 
   /**
@@ -215,6 +242,10 @@ public class LadderGameGUI extends Application {
     }
 
     updateScoreBoard(scoreBoard); // Use the class-level scoreBoard
+  }
+
+  private void restartGame(Stage primaryStage) {
+    start(primaryStage); // Restart the game with new mode
   }
 
   public static void main(String[] args) {
