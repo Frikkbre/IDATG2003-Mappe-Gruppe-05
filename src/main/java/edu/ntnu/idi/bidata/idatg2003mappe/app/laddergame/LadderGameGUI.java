@@ -26,7 +26,7 @@ public class LadderGameGUI extends Application {
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
-  private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
+  private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -105,8 +105,17 @@ public class LadderGameGUI extends Application {
     // Check if the tile has a ladder
     Tile currentTile = gameController.getTileByIdLinear(tileNumber);
     if (currentTile != null && currentTile.getDestinationTile() != null) {
-      tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;"); // Highlight ladder tiles
-      tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId()); // Show destination
+      int destinationTileId = currentTile.getDestinationTile().getTileId();
+
+      //Positive ladder
+      if (destinationTileId > tileNumber) {
+        tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold;");
+      } else {
+        //Negative ladder
+        tile.setStyle("-fx-background-color: red; -fx-font-weight: bold;");
+      }
+
+      tile.setText(tileNumber + " → " + destinationTileId);
     }
     return tile;
   }
@@ -172,8 +181,17 @@ public class LadderGameGUI extends Application {
         // Keep ladder indicators
         Tile currentTile = gameController.getTileByIdLinear(tileNumber);
         if (currentTile != null && currentTile.getDestinationTile() != null) {
-          tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;");
-          tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId());
+          int destinationTileId = currentTile.getDestinationTile().getTileId();
+
+          //Positive ladder
+          if (destinationTileId > tileNumber) {
+            tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold; -fx-text-fill: white;");
+          } else {
+            //Negative ladder
+            tile.setStyle("-fx-background-color: red; -fx-font-weight: bold; -fx-text-fill: white;");
+          }
+
+          tile.setText(tileNumber + " → " + destinationTileId);
         }
       }
     }
