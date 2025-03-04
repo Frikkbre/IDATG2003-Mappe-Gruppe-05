@@ -29,6 +29,11 @@ public class LadderGameGUI extends Application {
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
 
+  /**
+   * Start the game.
+   * @param primaryStage the primary stage
+   */
+
   @Override
   public void start(Stage primaryStage){
     gameController = new LadderGameController(6, randomLadders);
@@ -72,6 +77,11 @@ public class LadderGameGUI extends Application {
     updateBoardUI();
   }
 
+  /**
+   * Create the board grid.
+   * @return the board grid
+   */
+
   private GridPane createBoardGrid() {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
@@ -95,6 +105,12 @@ public class LadderGameGUI extends Application {
     }
     return grid;
   }
+
+  /**
+   * Create a tile for the board.
+   * @param tileNumber the number of the tile
+   * @return the tile
+   */
 
   private TextField createTile(int tileNumber) {
     TextField tile = new TextField("" + tileNumber);
@@ -120,6 +136,12 @@ public class LadderGameGUI extends Application {
     }
     return tile;
   }
+
+  /**
+   * Create the menu bar.
+   * @param primaryStage the primary stage
+   * @return the menu bar
+   */
 
   private MenuBar createMenuBar(Stage primaryStage) {
     MenuBar menuBar = new MenuBar();
