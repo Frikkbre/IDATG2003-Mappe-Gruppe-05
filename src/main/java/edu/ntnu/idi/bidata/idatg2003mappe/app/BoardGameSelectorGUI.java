@@ -1,9 +1,10 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
+
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -15,7 +16,8 @@ import javafx.stage.Stage;
  * Class for the board game selector GUI.
  */
 public class BoardGameSelectorGUI extends Application {
-  private LadderGameGUI LadderGame;
+  private Stage primaryStage;
+  private Scene ladderGameScene;
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -33,9 +35,11 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
+    LadderGameGUI ladderGameGUI = new LadderGameGUI(); //To redirect on button click.
 
-    this.LadderGame = new LadderGameGUI(); //To redirect on button click.
+    Scene ladderGameScene = new Scene(ladderGameGUI, 1440, 840);
   }
+
 
   private MenuBar createMenuBar() {
     MenuItem openMenuItem = new MenuItem("Open");
@@ -49,12 +53,21 @@ public class BoardGameSelectorGUI extends Application {
   }
 
   private Pane createCenterPane() {
-    Button button1 = new Button("Ladder game");
-    Button button2 = new Button("Missing diamond");
+    Button ladderGameButton = new Button("Ladder game");
+    Button missingDiamondButton = new Button("Missing diamond");
+    ladderGameButton.setOnAction(e -> {
+      switchScene(ladderGameScene);
+      System.out.println("Ladder game button clicked");
+    });
+
     FlowPane centerPane = new FlowPane();
-    centerPane.getChildren().addAll(button1, button2);
+    centerPane.getChildren().addAll(ladderGameButton, missingDiamondButton);
     centerPane.setAlignment(Pos.CENTER);
     return centerPane;
+
+  }  public void switchScene(Scene scene) {
+    primaryStage.setScene(scene);
+    primaryStage.show();
   }
 
   public static void main(String[] args) {
