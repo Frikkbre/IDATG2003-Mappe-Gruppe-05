@@ -2,8 +2,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -21,20 +21,27 @@ import java.util.List;
  * @version 0.3
  * @since 20.02.2025
  */
-public class LadderGameGUI extends Application {
+public class LadderGameGUI extends Parent {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
-  private final String[] playerColor = {"red", "blue", "green", "yellow", "brown", "purple"};
+  private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
+  private boolean randomLadders = false;
 
-  @Override
-  public void start(Stage primaryStage) throws Exception {
-    gameController = new LadderGameController(6);
+  /**
+   * Start the game.
+   *
+   * @param primaryStage the primary stage
+   */
+
+
+  public void startGame(Stage primaryStage) {
+    gameController = new LadderGameController(6, randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
-    borderPane.setTop(createMenuBar());
+    borderPane.setTop(createMenuBar(primaryStage));
 
     HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
@@ -71,6 +78,12 @@ public class LadderGameGUI extends Application {
     updateBoardUI();
   }
 
+  /**
+   * Create the board grid.
+   *
+   * @return the board grid
+   */
+
   private GridPane createBoardGrid() {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
@@ -95,6 +108,13 @@ public class LadderGameGUI extends Application {
     return grid;
   }
 
+  /**
+   * Create a tile for the board.
+   *
+   * @param tileNumber the number of the tile
+   * @return the tile
+   */
+
   private TextField createTile(int tileNumber) {
     TextField tile = new TextField("" + tileNumber);
     tile.setPrefWidth(80);
@@ -105,25 +125,70 @@ public class LadderGameGUI extends Application {
     // Check if the tile has a ladder
     Tile currentTile = gameController.getTileByIdLinear(tileNumber);
     if (currentTile != null && currentTile.getDestinationTile() != null) {
-      tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;"); // Highlight ladder tiles
-      tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId()); // Show destination
+      int destinationTileId = currentTile.getDestinationTile().getTileId();
+
+      //Positive ladder
+      if (destinationTileId > tileNumber) {
+        tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold;");
+      } else {
+        //Negative ladder
+        tile.setStyle("-fx-background-color: red; -fx-font-weight: bold;");
+      }
+
+      tile.setText(tileNumber + " → " + destinationTileId);
     }
     return tile;
   }
 
-  private MenuBar createMenuBar() {
+  /**
+   * Create the menu bar.
+   *
+   * @param primaryStage the primary stage
+   * @return the menu bar
+   */
+
+  private MenuBar createMenuBar(Stage primaryStage) {
+    MenuBar menuBar = new MenuBar();
+
+    // File Menu
+    Menu fileMenu = new Menu("File");
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
     MenuItem closeMenuItem = new MenuItem("Close");
-    Menu fileMenu = new Menu("File");
     fileMenu.getItems().addAll(openMenuItem, saveMenuItem, new SeparatorMenuItem(), closeMenuItem);
-    MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
+
+    // Settings Menu
+    Menu settingsMenu = new Menu("Settings");
+    MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
+    MenuItem restartGameItem = new MenuItem("Restart Game");
+    toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
+    restartGameItem.setOnAction(e -> restartGame(primaryStage));
+    settingsMenu.getItems().addAll(toggleModeItem, restartGameItem);
+
+    // Add both menus to the menu bar
+    menuBar.getMenus().addAll(fileMenu, settingsMenu);
     return menuBar;
   }
 
   /**
+   * Toggles the game mode between classic and random ladders.
+   */
+
+  private void toggleGameMode(Stage primaryStage) {
+    randomLadders = !randomLadders; // Toggle mode
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Game Mode Changed");
+    alert.setHeaderText("Ladder Mode Updated");
+    alert.setContentText(randomLadders ? "Switched to Randomized Ladders" : "Switched to Classic Mode");
+    alert.showAndWait();
+
+    restartGame(primaryStage);
+  }
+
+  /**
    * Create the scoreboard.
+   *
    * @return the scoreboard
    */
   private TextArea createScoreBoard() {
@@ -137,6 +202,7 @@ public class LadderGameGUI extends Application {
   /**
    * Update the scoreBoard with the current player positions.
    * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
+   *
    * @param scoreBoard takes in the TextArea scoreBoard to update
    */
   private void updateScoreBoard(TextArea scoreBoard) {
@@ -154,7 +220,7 @@ public class LadderGameGUI extends Application {
     for (Player player : sortedPlayerPositionList) {
       scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
-    String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
+    String s = "Scoreboard:" + "\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
   }
 
@@ -172,8 +238,17 @@ public class LadderGameGUI extends Application {
         // Keep ladder indicators
         Tile currentTile = gameController.getTileByIdLinear(tileNumber);
         if (currentTile != null && currentTile.getDestinationTile() != null) {
-          tile.setStyle("-fx-background-color: orange; -fx-font-weight: bold;");
-          tile.setText(tileNumber + " → " + currentTile.getDestinationTile().getTileId());
+          int destinationTileId = currentTile.getDestinationTile().getTileId();
+
+          //Positive ladder
+          if (destinationTileId > tileNumber) {
+            tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold; -fx-text-fill: white;");
+          } else {
+            //Negative ladder
+            tile.setStyle("-fx-background-color: red; -fx-font-weight: bold; -fx-text-fill: white;");
+          }
+
+          tile.setText(tileNumber + " → " + destinationTileId);
         }
       }
     }
@@ -199,7 +274,7 @@ public class LadderGameGUI extends Application {
     updateScoreBoard(scoreBoard); // Use the class-level scoreBoard
   }
 
-  public static void main(String[] args) {
-    launch(args);
+  private void restartGame(Stage primaryStage) {
+    startGame(primaryStage); // Restart the game with new mode
   }
 }
