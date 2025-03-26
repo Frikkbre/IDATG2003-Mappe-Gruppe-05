@@ -8,7 +8,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
  * This class implements the TileAction interface.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.1
+ * @version 0.0.1
  * @since 20.02.2025
  */
 
