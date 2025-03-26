@@ -14,7 +14,7 @@ class TestLadderGame {
 
   @BeforeEach
   void setUp() {
-    ladderGame = new LadderGame(4);
+    ladderGame = new LadderGame(4, false);
     ladderGame.playGame();
   }
 

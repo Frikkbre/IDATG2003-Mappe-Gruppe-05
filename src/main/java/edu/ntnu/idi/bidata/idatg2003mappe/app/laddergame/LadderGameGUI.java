@@ -2,8 +2,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -21,7 +21,7 @@ import java.util.List;
  * @version 0.3
  * @since 20.02.2025
  */
-public class LadderGameGUI extends Parent {
+public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
@@ -31,12 +31,11 @@ public class LadderGameGUI extends Parent {
 
   /**
    * Start the game.
-   *
    * @param primaryStage the primary stage
    */
 
-
-  public void startGame(Stage primaryStage) {
+  @Override
+  public void start(Stage primaryStage){
     gameController = new LadderGameController(6, randomLadders);
 
     BorderPane borderPane = new BorderPane();
@@ -80,7 +79,6 @@ public class LadderGameGUI extends Parent {
 
   /**
    * Create the board grid.
-   *
    * @return the board grid
    */
 
@@ -110,7 +108,6 @@ public class LadderGameGUI extends Parent {
 
   /**
    * Create a tile for the board.
-   *
    * @param tileNumber the number of the tile
    * @return the tile
    */
@@ -142,7 +139,6 @@ public class LadderGameGUI extends Parent {
 
   /**
    * Create the menu bar.
-   *
    * @param primaryStage the primary stage
    * @return the menu bar
    */
@@ -188,7 +184,6 @@ public class LadderGameGUI extends Parent {
 
   /**
    * Create the scoreboard.
-   *
    * @return the scoreboard
    */
   private TextArea createScoreBoard() {
@@ -202,7 +197,6 @@ public class LadderGameGUI extends Parent {
   /**
    * Update the scoreBoard with the current player positions.
    * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
-   *
    * @param scoreBoard takes in the TextArea scoreBoard to update
    */
   private void updateScoreBoard(TextArea scoreBoard) {
@@ -220,7 +214,7 @@ public class LadderGameGUI extends Parent {
     for (Player player : sortedPlayerPositionList) {
       scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
-    String s = "Scoreboard:" + "\n" + scoreBoard.getText();
+    String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
   }
 
@@ -275,6 +269,10 @@ public class LadderGameGUI extends Parent {
   }
 
   private void restartGame(Stage primaryStage) {
-    startGame(primaryStage); // Restart the game with new mode
+    start(primaryStage); // Restart the game with new mode
+  }
+
+  public static void main(String[] args) {
+    launch(args);
   }
 }
