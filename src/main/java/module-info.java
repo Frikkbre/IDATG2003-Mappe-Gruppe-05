@@ -10,6 +10,7 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires org.kordamp.bootstrapfx.core;
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
+  requires com.google.gson;
 
   opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe;
@@ -25,4 +26,6 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   opens edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.filehandling;
   opens edu.ntnu.idi.bidata.idatg2003mappe.filehandling to javafx.fxml;
+  exports edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
+  opens edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game to javafx.fxml;
 }
