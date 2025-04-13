@@ -28,30 +28,36 @@ public class BoardGameSelector {
    * The user can also exit the program.
    */
   public BoardGameSelector() {
-    System.out.println("Select a game to play:");
+    /*System.out.println("Select a game to play:"); TODO - Remove TUI commands?
     System.out.println("1: Ladder Game");
     System.out.println("2: Missing Diamond");
     System.out.println("0: Exit");
-    int gameSelector = inputScanner.nextInt();
+    int gameSelector = inputScanner.nextInt();*/
 
+  }
+  public void switchGame(int gameSelector) { //TODO - use other params than int?
     switch (gameSelector) {
-      case 1:
+      case 1: {
         numberOfPlayers = getNumberOfPlayers();
         new LadderGame(numberOfPlayers, false);
+        System.out.println("Starting Ladder Game with " + numberOfPlayers + " players.");
         break;
-      case 2:
+      }
+      case 2: {
         numberOfPlayers = getNumberOfPlayers();
         new MissingDiamond(numberOfPlayers);
         break;
-      case 0:
+      }
+      case 0: {
         System.out.println("Exiting...");
         break;
-      default:
+      }
+      default: {
         System.out.println("Invalid selection. Exiting...");
         break;
+      }
     }
   }
-
   /**
    * Method that takes user input to get the number of players to play the game.
    * Throws an exception if the input is less than 1, more than 6 or a float value.
