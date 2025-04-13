@@ -15,7 +15,13 @@ import javafx.stage.Stage;
  * Class for the board game selector GUI.
  */
 public class BoardGameSelectorGUI extends Application {
+  private BoardGameSelectorController boardGameSelectorController;
   private LadderGameGUI LadderGame;
+
+  public BoardGameSelectorGUI(BoardGameSelectorController boardGameSelectorController) {
+    this.boardGameSelectorController = boardGameSelectorController;
+  }
+
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -50,7 +56,21 @@ public class BoardGameSelectorGUI extends Application {
 
   private Pane createCenterPane() {
     Button button1 = new Button("Ladder game");
+    button1.setOnAction(e -> {try { //Eventhandler for button1 switching to ladder game
+      System.out.println("Switching to ladder game");
+      boardGameSelectorController.switchGame(1);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      System.out.println("Error in switching game");
+    }});
+
     Button button2 = new Button("Missing diamond");
+    button1.setOnAction(e -> {try { //Eventhandler for button2 switching to missing diamond
+      boardGameSelectorController.switchGame(2);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }});
+
     FlowPane centerPane = new FlowPane();
     centerPane.getChildren().addAll(button1, button2);
     centerPane.setAlignment(Pos.CENTER);
