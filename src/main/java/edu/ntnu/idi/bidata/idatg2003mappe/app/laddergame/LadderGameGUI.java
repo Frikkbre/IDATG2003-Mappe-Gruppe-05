@@ -28,6 +28,7 @@ public class LadderGameGUI extends Application {
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
+  private Stage primaryStage;
 
   /**
    * Start the game.
@@ -75,6 +76,10 @@ public class LadderGameGUI extends Application {
     primaryStage.show();
 
     updateBoardUI();
+  }
+
+  public Stage getLadderGameStage() {
+    return (Stage) boardGrid.getScene().getWindow();
   }
 
   /**
@@ -274,5 +279,9 @@ public class LadderGameGUI extends Application {
 
   public static void main(String[] args) {
     launch(args);
+  }
+
+  public Stage getStage() {
+    return primaryStage;
   }
 }
