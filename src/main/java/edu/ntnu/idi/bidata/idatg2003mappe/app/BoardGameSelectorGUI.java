@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class BoardGameSelectorGUI extends Application {
   private BoardGameSelectorController boardGameSelectorController;
   private LadderGameGUI ladderGame;
+  private Stage primaryStage = new Stage();
 
   public BoardGameSelectorGUI() {
     // Initialize the controller
@@ -28,6 +29,8 @@ public class BoardGameSelectorGUI extends Application {
 
   @Override
   public void start(Stage primaryStage) throws Exception {
+    this.primaryStage = primaryStage; // Assign the parameter to the class field
+
     BorderPane borderPane = new BorderPane();
     borderPane.setMinHeight(540); // 16:9 aspect ratio (1920x1080)/2
     borderPane.setMaxHeight(540);
@@ -45,6 +48,13 @@ public class BoardGameSelectorGUI extends Application {
     this.ladderGame = new LadderGameGUI(); // To redirect on button click.
   }
 
+  public void setScene(Scene scene) {
+    if (primaryStage == null) {
+      throw new IllegalStateException("Primary stage is not initialized.");
+    }
+    this.primaryStage.setScene(scene);
+  }
+
   private MenuBar createMenuBar() {
     MenuItem openMenuItem = new MenuItem("Open");
     MenuItem saveMenuItem = new MenuItem("Save");
@@ -60,7 +70,7 @@ public class BoardGameSelectorGUI extends Application {
     Button button1 = new Button("Ladder game");
     button1.setOnAction(e -> {
       try {
-        System.out.println("Switching to ladder game");
+        System.out.println("Switching to ladder game"); //TODO - remove
         boardGameSelectorController.switchGame(1);
       } catch (Exception ex) {
         System.out.println(ex);
