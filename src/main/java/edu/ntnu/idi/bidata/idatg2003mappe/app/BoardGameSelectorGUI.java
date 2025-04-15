@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -16,17 +15,21 @@ import javafx.stage.Stage;
  */
 public class BoardGameSelectorGUI extends Application {
   private BoardGameSelectorController boardGameSelectorController;
-  private LadderGameGUI LadderGame;
+  private LadderGameGUI ladderGame;
+
+  public BoardGameSelectorGUI() {
+    // Initialize the controller
+    this.boardGameSelectorController = new BoardGameSelectorController();
+  }
 
   public BoardGameSelectorGUI(BoardGameSelectorController boardGameSelectorController) {
     this.boardGameSelectorController = boardGameSelectorController;
   }
 
-
   @Override
   public void start(Stage primaryStage) throws Exception {
     BorderPane borderPane = new BorderPane();
-    borderPane.setMinHeight(540); //16:9 aspect ratio   (1920x1080)/2
+    borderPane.setMinHeight(540); // 16:9 aspect ratio (1920x1080)/2
     borderPane.setMaxHeight(540);
     borderPane.setMinWidth(960);
     borderPane.setMaxWidth(960);
@@ -39,8 +42,7 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
-
-    this.LadderGame = new LadderGameGUI(); //To redirect on button click.
+    this.ladderGame = new LadderGameGUI(); // To redirect on button click.
   }
 
   private MenuBar createMenuBar() {
@@ -56,20 +58,24 @@ public class BoardGameSelectorGUI extends Application {
 
   private Pane createCenterPane() {
     Button button1 = new Button("Ladder game");
-    button1.setOnAction(e -> {try { //Eventhandler for button1 switching to ladder game
-      System.out.println("Switching to ladder game");
-      boardGameSelectorController.switchGame(1);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-      System.out.println("Error in switching game");
-    }});
+    button1.setOnAction(e -> {
+      try {
+        System.out.println("Switching to ladder game");
+        boardGameSelectorController.switchGame(1);
+      } catch (Exception ex) {
+        ex.printStackTrace();
+        System.out.println("Error in switching game");
+      }
+    });
 
     Button button2 = new Button("Missing diamond");
-    button1.setOnAction(e -> {try { //Eventhandler for button2 switching to missing diamond
-      boardGameSelectorController.switchGame(2);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }});
+    button2.setOnAction(e -> {
+      try {
+        boardGameSelectorController.switchGame(2);
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    });
 
     FlowPane centerPane = new FlowPane();
     centerPane.getChildren().addAll(button1, button2);
