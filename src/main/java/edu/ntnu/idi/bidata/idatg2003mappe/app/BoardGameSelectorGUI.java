@@ -63,8 +63,7 @@ public class BoardGameSelectorGUI extends Application {
         System.out.println("Switching to ladder game");
         boardGameSelectorController.switchGame(1);
       } catch (Exception ex) {
-        ex.printStackTrace();
-        System.out.println("Error in switching game");
+        System.out.println(ex);
       }
     });
 
