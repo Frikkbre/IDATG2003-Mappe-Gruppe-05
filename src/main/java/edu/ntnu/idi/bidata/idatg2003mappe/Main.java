@@ -19,7 +19,6 @@ public class Main {
    */
 
   public static void main(String[] args) {
-    //BoardGameSelector boardGameSelector = new BoardGameSelector();
-    BoardGameSelectorGUI.main(args);
+    BoardGameSelectorGUI.launch(BoardGameSelectorGUI.class, args); // Start JavaFX
   }
 }
