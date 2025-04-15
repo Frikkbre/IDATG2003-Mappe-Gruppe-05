@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamond;
 
 import java.util.InputMismatchException;
@@ -17,6 +18,7 @@ import java.util.InputMismatchException;
 
 public class BoardGameSelector {
   int numberOfPlayers = 6;//TODO - make this variable
+  BoardGameSelectorGUI boardGameSelectorGUI;
 
   /**
    * Constructor for the BoardGameSelector class.
@@ -33,9 +35,14 @@ public class BoardGameSelector {
    */
   public void switchGame(int gameSelector) { //TODO - use other params than int?
     setNumberOfPlayers(numberOfPlayers);
+    boardGameSelectorGUI = new BoardGameSelectorGUI();
     switch (gameSelector) {
       case 1: {
-        new LadderGame(numberOfPlayers, false);
+        //new LadderGameGUI(numberOfPlayers, false);
+        setNumberOfPlayers(numberOfPlayers);
+        LadderGame ladderGame = new LadderGame(numberOfPlayers, false);
+        LadderGameGUI ladderGameGUI = new LadderGameGUI();
+        boardGameSelectorGUI.setScene(ladderGameGUI.getScene());
         break;
       }
       case 2: {
