@@ -10,12 +10,90 @@ The project is a part of the course IDATG2003 at NTNU Gjøvik Spring 2025.
 
 ## Project structure
 ```
-src/main/java/edu/ntnu/idi/bidata/idatg2003mappe/
-├── main.java
-├── app
-│   ├── App.java
-
-ADD THE REST OF THE STRUCTURE
+├── README.md
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   ├── edu
+│   │   │   │   └── ntnu
+│   │   │   │       └── idi
+│   │   │   │           └── bidata
+│   │   │   │               └── idatg2003mappe
+│   │   │   │                   ├── Main.java
+│   │   │   │                   ├── app
+│   │   │   │                   │   ├── BoardGameSelector.java
+│   │   │   │                   │   ├── BoardGameSelectorController.java
+│   │   │   │                   │   ├── BoardGameSelectorGUI.java
+│   │   │   │                   │   ├── NavBar.java
+│   │   │   │                   │   ├── laddergame
+│   │   │   │                   │   │   ├── LadderGame.java
+│   │   │   │                   │   │   ├── LadderGameController.java
+│   │   │   │                   │   │   └── LadderGameGUI.java
+│   │   │   │                   │   └── missingdiamond
+│   │   │   │                   │       ├── MissingDiamond.java
+│   │   │   │                   │       └── MissingDiamondGUI.java
+│   │   │   │                   ├── banker
+│   │   │   │                   │   ├── Banker.java
+│   │   │   │                   │   └── PriceList.java
+│   │   │   │                   ├── entity
+│   │   │   │                   │   ├── Action.java
+│   │   │   │                   │   ├── Die.java
+│   │   │   │                   │   └── Player.java
+│   │   │   │                   ├── map
+│   │   │   │                   │   ├── Board.java
+│   │   │   │                   │   ├── BoardBranching.java
+│   │   │   │                   │   ├── BoardLinear.java
+│   │   │   │                   │   ├── BoardSquare.java
+│   │   │   │                   │   └── Tile.java
+│   │   │   │                   ├── markers
+│   │   │   │                   │   ├── Bandit.java
+│   │   │   │                   │   ├── Diamond.java
+│   │   │   │                   │   ├── GreenGem.java
+│   │   │   │                   │   ├── Marker.java
+│   │   │   │                   │   ├── RedGem.java
+│   │   │   │                   │   ├── Visa.java
+│   │   │   │                   │   └── YellowGem.java
+│   │   │   │                   └── movement
+│   │   │   │                       ├── LadderAction.java
+│   │   │   │                       └── TileAction.java
+│   │   │   └── module-info.java
+│   │   └── resources
+│   │       └── edu
+│   │           └── ntnu
+│   │               └── idi
+│   │                   └── bidata
+│   │                       └── idatg2003mappe
+│   │                           └── hello-view.fxml
+│   └── test
+│       └── java
+│           └── edu
+│               └── ntnu
+│                   └── idi
+│                       └── bidata
+│                           └── idatg2003mappe
+│                               ├── app
+│                               │   ├── TestBoardGameSelector.java
+│                               │   ├── laddergame
+│                               │   │   └── TestLadderGame.java
+│                               │   └── missingdiamond
+│                               │       └── TestMissingDiamond.java
+│                               ├── banker
+│                               │   ├── TestBanker.java
+│                               │   └── TestPriceList.java
+│                               ├── entity
+│                               │   ├── TestDie.java
+│                               │   └── TestPlayer.java
+│                               ├── map
+│                               │   ├── TestBoard.java
+│                               │   ├── TestBoardLinear.java
+│                               │   └── TestTile.java
+│                               ├── markers
+│                               │   └── TestMarker.java
+│                               └── movement
+│                                   └── TestLadderAction.java
 ```
 
 ## How to run the project
