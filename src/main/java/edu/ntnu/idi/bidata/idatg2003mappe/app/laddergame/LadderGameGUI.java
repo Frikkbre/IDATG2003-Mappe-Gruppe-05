@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
@@ -40,7 +41,9 @@ public class LadderGameGUI extends Application {
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
-    borderPane.setTop(createMenuBar(primaryStage));
+
+    NavBar navBar = new NavBar();
+    borderPane.setTop(navBar.createMenuBar());
 
     HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
