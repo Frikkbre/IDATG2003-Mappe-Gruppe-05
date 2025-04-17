@@ -28,7 +28,7 @@ public class LadderGameGUI extends Application {
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
-  private Stage primaryStage;
+  private Scene ladderGameScene;
 
   /**
    * Start the game.
@@ -70,8 +70,8 @@ public class LadderGameGUI extends Application {
     centerBox.getChildren().addAll(leftBox, boardGrid);
     borderPane.setCenter(centerBox);
 
-    Scene scene = new Scene(borderPane);
-    primaryStage.setScene(scene);
+    Scene ladderGameScene = new Scene(borderPane);
+    primaryStage.setScene(ladderGameScene);
     primaryStage.setTitle("Ladder game");
     primaryStage.show();
 
@@ -226,7 +226,7 @@ public class LadderGameGUI extends Application {
   /**
    * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
    */
-  private void updateBoardUI() {
+  public void updateBoardUI() {
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;
@@ -281,7 +281,8 @@ public class LadderGameGUI extends Application {
     launch(args);
   }
 
-  public Stage getStage() {
-    return primaryStage;
+  public Scene getScene() {
+    System.out.println("Returning scene from ladder game");
+    return ladderGameScene;
   }
 }
