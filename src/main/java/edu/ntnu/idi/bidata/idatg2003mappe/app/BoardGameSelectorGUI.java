@@ -50,7 +50,9 @@ public class BoardGameSelectorGUI extends Application {
 
   public void setScene(Scene scene) {
     if (primaryStage == null) {
-      throw new IllegalStateException("Primary stage is not initialized.");
+      throw new IllegalStateException("Scene is not initialized.");
+    } else if (scene == null) {
+      throw new IllegalArgumentException("Scene is not initialized.");
     }
     this.primaryStage.setScene(scene);
   }
