@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -27,7 +26,9 @@ public class BoardGameSelectorGUI extends Application {
     borderPane.setPrefHeight(540);
     borderPane.setPrefWidth(960);
     borderPane.setCenter(createCenterPane());
-    borderPane.setTop(createMenuBar());
+
+    NavBar navBar = new NavBar();
+    borderPane.setTop(navBar.createMenuBar());
     Scene scene = new Scene(borderPane);
     primaryStage.setScene(scene);
     primaryStage.setTitle("Select a board game");
@@ -35,17 +36,6 @@ public class BoardGameSelectorGUI extends Application {
 
 
     this.LadderGame = new LadderGameGUI(); //To redirect on button click.
-  }
-
-  private MenuBar createMenuBar() {
-    MenuItem openMenuItem = new MenuItem("Open");
-    MenuItem saveMenuItem = new MenuItem("Save");
-    MenuItem closeMenuItem = new MenuItem("Close");
-    Menu fileMenu = new Menu("File");
-    fileMenu.getItems().addAll(openMenuItem, saveMenuItem, new SeparatorMenuItem(), closeMenuItem);
-    MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
-    return menuBar;
   }
 
   private Pane createCenterPane() {
