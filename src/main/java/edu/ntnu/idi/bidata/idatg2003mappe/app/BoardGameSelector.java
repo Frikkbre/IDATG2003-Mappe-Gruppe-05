@@ -18,7 +18,7 @@ import java.util.InputMismatchException;
 
 public class BoardGameSelector {
   int numberOfPlayers = 6;//TODO - make this variable
-  BoardGameSelectorGUI boardGameSelectorGUI;
+  BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
 
   /**
    * Constructor for the BoardGameSelector class.
@@ -35,14 +35,17 @@ public class BoardGameSelector {
    */
   public void switchGame(int gameSelector) { //TODO - use other params than int?
     setNumberOfPlayers(numberOfPlayers);
-    boardGameSelectorGUI = new BoardGameSelectorGUI();
     switch (gameSelector) {
       case 1: {
         //new LadderGameGUI(numberOfPlayers, false);
         setNumberOfPlayers(numberOfPlayers);
         LadderGame ladderGame = new LadderGame(numberOfPlayers, false);
         LadderGameGUI ladderGameGUI = new LadderGameGUI();
-        boardGameSelectorGUI.setScene(ladderGameGUI.getScene());
+        try{
+          boardGameSelectorGUI.setScene(ladderGameGUI.getScene());
+        } catch (Exception e) {
+          System.out.println("Error starting Ladder Game GUI: " + e.getMessage());
+        }
         break;
       }
       case 2: {
