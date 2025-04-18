@@ -1,9 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
@@ -15,8 +13,6 @@ public class LadderGameController {
   private boolean randomLadders;
 
   public LadderGameController(int numberOfPlayers, boolean randomLadders) {
-    // Create a new game. (Ensure that LadderGame’s constructor
-    // does not automatically start playing the game.)
     this.randomLadders = randomLadders;
     game = new LadderGame(numberOfPlayers, randomLadders);
   }
@@ -115,5 +111,22 @@ public class LadderGameController {
    */
   public void applyGameState(GameState gameState) {
     this.currentPlayerIndex = gameState.getCurrentPlayerIndex();
+
+    // Restore player positions
+    if (gameState.getPlayerPositions() != null) {
+      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+      List<Player> players = game.getPlayers();
+
+      for (int i = 0; i < players.size() && i < positions.size(); i++) {
+        GameState.PlayerPosition pos = positions.get(i);
+        Player player = players.get(i);
+
+        // Find the tile with the saved ID and place player there
+        Tile tile = game.getBoard().getTileByIdLinear(pos.getTileId());
+        if (tile != null) {
+          player.placePlayer(tile);
+        }
+      }
+    }
   }
 }

@@ -15,6 +15,7 @@ public class GameState {
   private int currentPlayerIndex;
   private boolean randomLadders;
   private List<Player> players;
+  private List<PlayerPosition> playerPositions;
 
   /**
    * Default constructor.
@@ -33,6 +34,30 @@ public class GameState {
     this.currentPlayerIndex = currentPlayerIndex;
     this.randomLadders = randomLadders;
     this.players = players;
+  }
+
+  public static class PlayerPosition {
+    private String name;
+    private int id;
+    private int tileId;
+
+    public PlayerPosition(String name, int id, int tileId) {
+      this.name = name;
+      this.id = id;
+      this.tileId = tileId;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public int getId() {
+      return id;
+    }
+
+    public int getTileId() {
+      return tileId;
+    }
   }
 
   /**
@@ -87,5 +112,13 @@ public class GameState {
    */
   public void setPlayers(List<Player> players) {
     this.players = players;
+  }
+
+  public List<PlayerPosition> getPlayerPositions() {
+    return playerPositions;
+  }
+
+  public void setPlayerPositions(List<PlayerPosition> playerPositions) {
+    this.playerPositions = playerPositions;
   }
 }

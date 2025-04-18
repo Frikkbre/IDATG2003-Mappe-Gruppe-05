@@ -5,14 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileHandlingException;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileReader;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileWriter;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -99,9 +95,20 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
       gameState.setCurrentPlayerIndex(currentPlayerIndex);
       gameState.setRandomLadders(randomLadders);
 
-      // We don't actually reconstruct the players here, as we need the full game context
-      // The LadderGameGUI will handle loading the players based on this info
+      // Extracting player positions
+      JsonArray playersArray = jsonObject.getAsJsonArray("players");
+      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
 
+      for (int i = 0; i < playersArray.size(); i++) {
+        JsonObject playerObj = playersArray.get(i).getAsJsonObject();
+        String name = playerObj.get("name").getAsString();
+        int id = playerObj.get("id").getAsInt();
+        int tileId = playerObj.get("currentTileId").getAsInt();
+
+        playerPositions.add(new GameState.PlayerPosition(name, id, tileId));
+      }
+
+      gameState.setPlayerPositions(playerPositions);
       return gameState;
     } catch (IOException e) {
       throw new FileHandlingException("Error reading game state from file: " + filePath, e);

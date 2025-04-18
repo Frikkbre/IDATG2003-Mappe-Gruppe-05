@@ -1,0 +1,17 @@
+{
+  "currentPlayerIndex": 0,
+  "randomLadders": false,
+  "players": [
+    {
+      "name": "Player 1",
+      "id": 1,
+      "currentTileId": 9
+    },
+    {
+      "name": "Player 2",
+      "id": 2,
+      "currentTileId": 14
+    }
+  ],
+  "saveTime": "2025-04-18 18:13:30"
+}
