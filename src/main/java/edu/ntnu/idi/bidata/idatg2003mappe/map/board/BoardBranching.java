@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.map;
+package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 
 /**
  * This class represents a board which uses branching paths.
