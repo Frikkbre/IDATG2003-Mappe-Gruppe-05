@@ -1,6 +1,7 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.map;
+package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,8 +47,6 @@ public class BoardFactory {
 
     return board;
   }
-
-
 
   /**
    * Lists available board files from the boards directory.
