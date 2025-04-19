@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.map;
+package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 
 /**
  * Represents a BoardSquare, for example a game of chess.

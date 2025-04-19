@@ -1,4 +1,6 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.map;
+package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
+
+import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
