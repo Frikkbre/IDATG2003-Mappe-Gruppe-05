@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
- * @since 22.02.2025
+ * @since 19.04.2025
  */
 public class BoardFactory {
   private static final String BOARDS_DIRECTORY = "src/main/resources/boards";
