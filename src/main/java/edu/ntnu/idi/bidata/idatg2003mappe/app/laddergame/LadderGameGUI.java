@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
@@ -41,7 +41,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
-    gameController = new LadderGameController(2, randomLadders);
+    gameController = new LadderGameController(6, randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window

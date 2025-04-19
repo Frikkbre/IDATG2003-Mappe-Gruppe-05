@@ -5,10 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.JsonParsingException;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,8 +41,11 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
    */
   @Override
   public void write(GameState gameState, String filePath) throws FileHandlingException {
-    try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter(filePath))) {
-      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    try {
+      // Create directory if it doesn't exist
+      Files.createDirectories(Paths.get(filePath).getParent());
+
+      // Create the main JSON object
       JsonObject jsonObject = new JsonObject();
 
       // Add current player index
@@ -52,24 +54,28 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
       // Add random ladders flag
       jsonObject.addProperty("randomLadders", gameState.isRandomLadders());
 
-      // Add players
+      // Add players array
       JsonArray playersArray = new JsonArray();
-      for (Player player : gameState.getPlayers()) {
-        JsonObject playerObject = new JsonObject();
-        playerObject.addProperty("name", player.getName());
-        playerObject.addProperty("id", player.getID());
-        playerObject.addProperty("currentTileId", player.getCurrentTile().getTileId());
-        playersArray.add(playerObject);
+      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+      if (positions != null) {
+        for (GameState.PlayerPosition position : positions) {
+          JsonObject playerObject = new JsonObject();
+          playerObject.addProperty("name", position.getName());
+          playerObject.addProperty("id", position.getId());
+          playerObject.addProperty("currentTileId", position.getTileId());
+          playersArray.add(playerObject);
+        }
       }
       jsonObject.add("players", playersArray);
 
       // Add timestamp
-      LocalDateTime now = LocalDateTime.now();
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-      jsonObject.addProperty("saveTime", now.format(formatter));
+      String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+      jsonObject.addProperty("saveTime", timestamp);
 
-      // Write JSON to file
-      writer.write(gson.toJson(jsonObject));
+      // Write to file
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      Files.writeString(Paths.get(filePath), gson.toJson(jsonObject));
+
     } catch (IOException e) {
       throw new FileHandlingException("Error writing game state to file: " + filePath, e);
     }
@@ -85,8 +91,16 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
   @Override
   public GameState read(String filePath) throws FileHandlingException {
     try {
-      String jsonContent = new String(Files.readAllBytes(Paths.get(filePath)));
+      // Read file content
+      String jsonContent = Files.readString(Paths.get(filePath));
+
+      // Parse JSON content
       JsonObject jsonObject = JsonParser.parseString(jsonContent).getAsJsonObject();
+
+      // Extract fields with basic validation
+      if (!jsonObject.has("currentPlayerIndex") || !jsonObject.has("randomLadders") || !jsonObject.has("players")) {
+        throw new JsonParsingException("Invalid JSON: Missing required fields");
+      }
 
       int currentPlayerIndex = jsonObject.get("currentPlayerIndex").getAsInt();
       boolean randomLadders = jsonObject.get("randomLadders").getAsBoolean();
@@ -109,9 +123,18 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
       }
 
       gameState.setPlayerPositions(playerPositions);
+
+      // Parse save timestamp if present
+      if (jsonObject.has("saveTime")) {
+        gameState.setSaveTime(jsonObject.get("saveTime").getAsString());
+      }
+
       return gameState;
+
     } catch (IOException e) {
-      throw new FileHandlingException("Error reading game state from file: " + filePath, e);
+      throw new FileHandlingException("Error reading file: " + filePath, e);
+    } catch (Exception e) {
+      throw new JsonParsingException("Error parsing JSON: " + e.getMessage(), e);
     }
   }
 
@@ -122,52 +145,23 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
    * @throws FileHandlingException If an error occurs while saving the file.
    */
   public void saveToDefaultLocation(GameState gameState) throws FileHandlingException {
-    ensureSaveDirectoryExists();
-    write(gameState, getDefaultSaveFilePath());
-  }
-
-  /**
-   * Loads a game state from the default location (src/main/resources/saves/last_save.json)
-   *
-   * @return The loaded game state.
-   * @throws FileHandlingException If an error occurs while loading the file.
-   */
-  public GameState loadFromDefaultLocation() throws FileHandlingException {
-    return read(getDefaultSaveFilePath());
-  }
-
-  /**
-   * Checks if a save file exists at the default location.
-   *
-   * @return True if a save file exists, false otherwise.
-   */
-  public boolean defaultSaveExists() {
-    File file = new File(getDefaultSaveFilePath());
-    return file.exists() && file.isFile();
-  }
-
-  /**
-   * Gets the default save file path.
-   *
-   * @return The default save file path.
-   */
-  public String getDefaultSaveFilePath() {
-    return DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE;
-  }
-
-  /**
-   * Ensures that the save directory exists.
-   *
-   * @throws FileHandlingException If an error occurs while creating the directory.
-   */
-  private void ensureSaveDirectoryExists() throws FileHandlingException {
     Path saveDir = Paths.get(DEFAULT_SAVE_DIR);
     if (!Files.exists(saveDir)) {
       try {
         Files.createDirectories(saveDir);
       } catch (IOException e) {
-        throw new FileHandlingException("Failed to create save directory: " + DEFAULT_SAVE_DIR, e);
+        throw new FileHandlingException("Failed to create save directory", e);
       }
     }
+    write(gameState, DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
+  }
+
+  public GameState loadFromDefaultLocation() throws FileHandlingException {
+    return read(DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
+  }
+
+  public boolean defaultSaveExists() {
+    File file = new File(DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
+    return file.exists() && file.isFile();
   }
 }

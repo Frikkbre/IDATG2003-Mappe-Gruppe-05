@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+
 /**
  * Interface for writing objects to a file.
  *

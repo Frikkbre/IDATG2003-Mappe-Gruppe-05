@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,32 +15,16 @@ import java.util.List;
 public class GameState {
   private int currentPlayerIndex;
   private boolean randomLadders;
-  private List<Player> players;
   private List<PlayerPosition> playerPositions;
+  private String saveTime;
 
   /**
-   * Default constructor.
+   * Inner class to represent a player's position on the board.
    */
-  public GameState() {
-  }
-
-  /**
-   * Constructor with all fields.
-   *
-   * @param currentPlayerIndex The index of the current player.
-   * @param randomLadders Whether the game uses random ladders.
-   * @param players The list of players.
-   */
-  public GameState(int currentPlayerIndex, boolean randomLadders, List<Player> players) {
-    this.currentPlayerIndex = currentPlayerIndex;
-    this.randomLadders = randomLadders;
-    this.players = players;
-  }
-
   public static class PlayerPosition {
-    private String name;
-    private int id;
-    private int tileId;
+    private final String name;
+    private final int id;
+    private final int tileId;
 
     public PlayerPosition(String name, int id, int tileId) {
       this.name = name;
@@ -57,6 +42,32 @@ public class GameState {
 
     public int getTileId() {
       return tileId;
+    }
+  }
+
+  /**
+   * Default constructor.
+   */
+  public GameState() {
+    this.playerPositions = new ArrayList<>();
+  }
+
+  /**
+   * Constructor with player information.
+   */
+  public GameState(int currentPlayerIndex, boolean randomLadders, List<Player> players) {
+    this.currentPlayerIndex = currentPlayerIndex;
+    this.randomLadders = randomLadders;
+    this.playerPositions = new ArrayList<>();
+
+    if (players != null) {
+      for (Player player : players) {
+        this.playerPositions.add(new PlayerPosition(
+            player.getName(),
+            player.getID(),
+            player.getCurrentTile().getTileId()
+        ));
+      }
     }
   }
 
@@ -97,28 +108,38 @@ public class GameState {
   }
 
   /**
-   * Gets the list of players.
+   * Gets the list of player positions.
    *
-   * @return The list of players.
+   * @return The list of player positions.
    */
-  public List<Player> getPlayers() {
-    return players;
-  }
-
-  /**
-   * Sets the list of players.
-   *
-   * @param players The list of players.
-   */
-  public void setPlayers(List<Player> players) {
-    this.players = players;
-  }
-
   public List<PlayerPosition> getPlayerPositions() {
     return playerPositions;
   }
 
+  /**
+   * Sets the list of player positions.
+   *
+   * @param playerPositions The list of player positions.
+   */
   public void setPlayerPositions(List<PlayerPosition> playerPositions) {
     this.playerPositions = playerPositions;
+  }
+
+  /**
+   * Gets the save time of the game state.
+   *
+   * @return The save time.
+   */
+  public String getSaveTime() {
+    return saveTime;
+  }
+
+  /**
+   * Sets the save time of the game state.
+   *
+   * @param saveTime The save time.
+   */
+  public void setSaveTime(String saveTime) {
+    this.saveTime = saveTime;
   }
 }

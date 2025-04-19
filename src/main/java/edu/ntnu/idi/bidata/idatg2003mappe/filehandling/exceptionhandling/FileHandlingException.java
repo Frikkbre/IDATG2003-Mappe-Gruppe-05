@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.filehandling;
+package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling;
 
 /**
  * Exception class for file handling errors.

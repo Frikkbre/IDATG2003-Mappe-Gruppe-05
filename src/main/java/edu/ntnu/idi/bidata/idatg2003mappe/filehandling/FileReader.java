@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+
 /**
  * This interface defines a method for reading files and returning their content as an object of type T.
  *
