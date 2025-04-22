@@ -51,6 +51,7 @@ public class LadderGameGUI extends Application {
 
     NavBar navBar = new NavBar();
     borderPane.setTop(navBar.createMenuBar());
+    borderPane.setStyle("-fx-background-color: lightblue;");
 
     HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
