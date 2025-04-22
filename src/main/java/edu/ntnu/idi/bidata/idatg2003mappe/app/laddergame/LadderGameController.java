@@ -1,8 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.Board;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
@@ -11,10 +10,10 @@ import java.util.List;
 public class LadderGameController {
   private final LadderGame game;
   private int currentPlayerIndex = 0;
+  private boolean randomLadders;
 
   public LadderGameController(int numberOfPlayers, boolean randomLadders) {
-    // Create a new game. (Ensure that LadderGame’s constructor
-    // does not automatically start playing the game.)
+    this.randomLadders = randomLadders;
     game = new LadderGame(numberOfPlayers, randomLadders);
   }
 
@@ -71,5 +70,63 @@ public class LadderGameController {
 
   public List<Player> getPlayers() {
     return game.getPlayers();
+  }
+
+  /**
+   * Returns the current player index.
+   */
+  public int getCurrentPlayerIndex() {
+    return currentPlayerIndex;
+  }
+
+  /**
+   * Sets the current player index.
+   *
+   * @param index The new current player index.
+   */
+  public void setCurrentPlayerIndex(int index) {
+    this.currentPlayerIndex = index;
+  }
+
+  /**
+   * Returns whether the game uses random ladders.
+   */
+  public boolean isRandomLadders() {
+    return randomLadders;
+  }
+
+  /**
+   * Creates a GameState object representing the current state of the game.
+   *
+   * @return A GameState object.
+   */
+  public GameState createGameState() {
+    return new GameState(currentPlayerIndex, randomLadders, game.getPlayers());
+  }
+
+  /**
+   * Applies a GameState to this controller.
+   *
+   * @param gameState The GameState to apply.
+   */
+  public void applyGameState(GameState gameState) {
+    this.currentPlayerIndex = gameState.getCurrentPlayerIndex();
+
+    // Restore player positions
+    if (gameState.getPlayerPositions() != null) {
+      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+      List<Player> players = game.getPlayers();
+
+      for (int i = 0; i < players.size() && i < positions.size(); i++) {
+        GameState.PlayerPosition pos = positions.get(i);
+        Player player = players.get(i);
+
+        // Find the tile with the saved ID and place player there
+        Tile tile = game.getBoard().getTileByIdLinear(pos.getTileId());
+        if (tile != null) {
+          player.placePlayer(tile);
+        }
+      }
+    }
   }
 }
