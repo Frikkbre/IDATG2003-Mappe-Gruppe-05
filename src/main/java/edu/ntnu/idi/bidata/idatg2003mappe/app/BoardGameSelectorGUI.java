@@ -37,21 +37,12 @@ public class BoardGameSelectorGUI extends Application {
     return primaryStage;
   }
 
-  /*public void setNumberOfPlayers(int numberOfPlayers) { //TODO - remove this since its allready in the LadderGameGUI
-    if (numberOfPlayers >= 2  && numberOfPlayers <= 6) {
-      this.currentPlayers = numberOfPlayers;
-    }else {
-      throw new IllegalArgumentException("Number of players must be between 2 and 6");
-    }
-  }*/
-
   /**
    * Method to return the number of players.
    * Used to determine the number of players in the game.
    * @return number of players selected on spinner
    */
   public int getNumberOfPlayers() {
-    System.out.println("Number of players: " + currentPlayers);
     return currentPlayers;
   }
 
@@ -82,9 +73,7 @@ public class BoardGameSelectorGUI extends Application {
     Button button1 = new Button("Ladder game");
     button1.setOnAction(event -> {
       try {
-        // Explicitly update currentPlayers before starting the game
         ladderGameGUI.setNumberOfPlayers(numberOfPlayers.getValue());
-        System.out.println("Button 1 pressed. Number of players: " + getNumberOfPlayers());
         ladderGameGUI.start(getStage());
       } catch (Exception e) {
         e.printStackTrace();
@@ -94,9 +83,7 @@ public class BoardGameSelectorGUI extends Application {
     Button button2 = new Button("Missing diamond");
     button2.setOnAction(event -> {
       try {
-        // Explicitly update currentPlayers before starting the game
         ladderGameGUI.setNumberOfPlayers(numberOfPlayers.getValue());
-        System.out.println("Button 2 pressed. Number of players: " + getNumberOfPlayers());
         // MissingDiamond.start(getStage()); TODO - implement diamond game start method.
       } catch (Exception e) {
         e.printStackTrace();
@@ -109,7 +96,6 @@ public class BoardGameSelectorGUI extends Application {
     // Add a listener to update currentPlayers whenever the spinner value changes
     numberOfPlayers.valueProperty().addListener((obs, oldValue, newValue) -> {
       ladderGameGUI.setNumberOfPlayers(newValue);
-      System.out.println("Spinner value changed. Current players: " + currentPlayers); //TODO - remove this
     });
 
     FlowPane centerPane = new FlowPane();
