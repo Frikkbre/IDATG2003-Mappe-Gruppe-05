@@ -10,6 +10,8 @@ import javafx.scene.control.SeparatorMenuItem;
 public class NavBar {
 
   public MenuBar createMenuBar() {
+
+    // File tab
     MenuItem openMenuItem = new MenuItem("Open");
     openMenuItem.setOnAction(openFile());
 
@@ -22,8 +24,18 @@ public class NavBar {
     Menu fileMenu = new Menu("File");
 
     fileMenu.getItems().addAll(openMenuItem, saveMenuItem, new SeparatorMenuItem(), closeMenuItem);
+
+    // Navigate tab
+    MenuItem selectorMenuItem = new MenuItem("Selector");
+    selectorMenuItem.setOnAction(closeFile());
+
+    Menu navigateMenu = new Menu("Navigate");
+    navigateMenu.getItems().addAll(selectorMenuItem);
+
+
+    // Creating the menu bar
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
+    menuBar.getMenus().addAll(fileMenu, navigateMenu);
     return menuBar;
   }
 
