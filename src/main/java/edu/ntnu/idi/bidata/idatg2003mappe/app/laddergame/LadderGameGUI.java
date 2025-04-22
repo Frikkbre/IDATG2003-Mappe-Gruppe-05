@@ -44,7 +44,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
-    gameController = new LadderGameController(boardGameSelectorGui.getNumberOfPlayers(), randomLadders);
+    gameController = new LadderGameController(numberOfPlayers, randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
