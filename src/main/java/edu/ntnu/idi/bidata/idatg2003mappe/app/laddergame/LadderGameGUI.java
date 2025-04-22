@@ -1,5 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
-
+import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
@@ -29,11 +29,13 @@ import java.util.List;
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
+  private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI();
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
+  private int numberOfPlayers;
 
   /**
    * Start the game.
@@ -42,7 +44,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
-    gameController = new LadderGameController(6, randomLadders);
+    gameController = new LadderGameController(numberOfPlayers, randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
@@ -86,10 +88,21 @@ public class LadderGameGUI extends Application {
   }
 
   /**
+   * sets the number of players.
+   * @param numberOfPlayers
+   */
+  public void setNumberOfPlayers(int numberOfPlayers) {
+    if (numberOfPlayers >= 2  && numberOfPlayers <= 6) {
+      this.numberOfPlayers = numberOfPlayers;
+    }else {
+      throw new IllegalArgumentException("Number of players must be between 2 and 6");
+    }
+  }
+
+  /**
    * Create the board grid.
    * @return the board grid
    */
-
   private GridPane createBoardGrid() {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
