@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -59,6 +60,7 @@ public class BoardGameSelectorGUI extends Application {
 
     NavBar navBar = new NavBar();
     borderPane.setTop(navBar.createMenuBar());
+    borderPane.setStyle("-fx-background-color: lightblue;");
     Scene scene = new Scene(borderPane);
     setStage(primaryStage);
     primaryStage.setScene(scene);
