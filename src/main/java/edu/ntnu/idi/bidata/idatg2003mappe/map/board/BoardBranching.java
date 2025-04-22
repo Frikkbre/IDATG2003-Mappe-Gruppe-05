@@ -7,11 +7,11 @@ import java.util.Map;
 
 /**
  * This class represents a board which uses branching paths.
- * For example Missing Diamond game.
+ * For example, Missing Diamond game.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
- * @since 22.02.2025
+ * @since 22.04.2025
  */
 
 public class BoardBranching extends Board{
