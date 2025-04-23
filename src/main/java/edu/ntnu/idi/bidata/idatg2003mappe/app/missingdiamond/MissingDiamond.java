@@ -5,19 +5,16 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents the Missing Diamond game.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.2
  * @since 16.02.2025
  */
-
 public class MissingDiamond {
-
   private final BoardBranching board;
   private final List<Player> players;
   private final Die die;
@@ -25,13 +22,13 @@ public class MissingDiamond {
   private Player currentPlayer;
   private int currentPlayerIndex;
   private Tile diamondLocation;
+  private int currentRoll; // Store the last roll value
 
   /**
    * Constructor for the MissingDiamond class.
    *
    * @param numberOfPlayers The number of players in the game.
    */
-
   public MissingDiamond(int numberOfPlayers) {
     System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
     this.board = createBoard();
@@ -40,34 +37,39 @@ public class MissingDiamond {
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.get(currentPlayerIndex);
+    this.currentRoll = 0;
   }
 
   private BoardBranching createBoard() {
     BoardBranching board = new BoardBranching();
-    List<Tile> mainPath = new ArrayList<>();
 
-    for (int i = 0; i < 30; i++) {
-      Tile tile = new Tile(i + 1);
+    // Create tiles for the main circular path (20 tiles)
+    List<Tile> outerTiles = new ArrayList<>();
+    for (int i = 1; i <= 20; i++) {
+      Tile tile = new Tile(i);
       board.addTileToBoard(tile);
-      mainPath.add(tile);
+      outerTiles.add(tile);
     }
 
-    for (int i = 0; i < mainPath.size() - 1; i++) {
-      board.connectTiles(mainPath.get(i), mainPath.get(i + 1));
+    // Connect the outer tiles in a circle
+    for (int i = 0; i < outerTiles.size(); i++) {
+      Tile current = outerTiles.get(i);
+      Tile next = outerTiles.get((i + 1) % outerTiles.size());
+      board.connectTiles(current, next);
     }
 
-    // Starting branch for testing, Later will be replaced by random and the original map
-    Tile branchTile1 = new Tile(100);
-    Tile branchTile2 = new Tile(101);
-    board.addTileToBoard(branchTile1);
-    board.addTileToBoard(branchTile2);
+    // Create center tile
+    Tile centerTile = new Tile(21);
+    board.addTileToBoard(centerTile);
 
-    board.connectTiles(mainPath.get(5), branchTile1);
-    board.connectTiles(branchTile1, branchTile2);
-    board.connectTiles(branchTile2, mainPath.get(10));
+    // Connect center tile to the circle at four points (north, east, south, west)
+    board.connectTiles(centerTile, outerTiles.get(0));  // North
+    board.connectTiles(centerTile, outerTiles.get(5));  // East
+    board.connectTiles(centerTile, outerTiles.get(10)); // South
+    board.connectTiles(centerTile, outerTiles.get(15)); // West
 
-    // Set the diamond location
-    diamondLocation = mainPath.get(mainPath.size() - 1);
+    // Set a random tile as the diamond location (for demo purposes)
+    diamondLocation = outerTiles.get(outerTiles.size() - 1);
 
     return board;
   }
@@ -85,17 +87,59 @@ public class MissingDiamond {
   }
 
   public String playTurn() {
-    String result = "";
-
     // Roll the die
-    int roll = die.rollDie();
-    result += currentPlayer.getName() + " rolled a " + roll + ". ";
+    this.currentRoll = die.rollDie();
+    return currentPlayer.getName() + " rolled a " + currentRoll + ".";
+  }
 
-    // In Missing Diamond, the player chooses where to move rather than automatically moving
-    // The controller will handle the movement based on player choice
+  /**
+   * Gets all tiles that are exactly N steps away from a starting tile.
+   * Uses a simple recursive approach to find all possible destinations.
+   *
+   * @param startTile The starting tile.
+   * @param steps The number of steps to move.
+   * @return Set of tiles that are exactly N steps away.
+   */
+  public Set<Tile> getTilesExactlyNStepsAway(Tile startTile, int steps) {
+    // Base case: if no steps, return empty set
+    if (steps <= 0) {
+      return new HashSet<>();
+    }
+
+    // Base case: if one step, return direct neighbors
+    if (steps == 1) {
+      return new HashSet<>(startTile.getNextTiles());
+    }
+
+    // Recursive case: for each neighbor, find tiles that are (steps-1) away
+    Set<Tile> result = new HashSet<>();
+    for (Tile neighbor : startTile.getNextTiles()) {
+      // Add all tiles that are (steps-1) away from this neighbor
+      result.addAll(getTilesExactlyNStepsAway(neighbor, steps - 1));
+    }
+
     return result;
   }
 
+  /**
+   * Gets all possible moves for the current player based on the last die roll.
+   *
+   * @return Set of tiles that the player can move to.
+   */
+  public Set<Tile> getPossibleMovesForCurrentRoll() {
+    if (currentRoll < 1) {
+      return new HashSet<>();
+    }
+
+    return getTilesExactlyNStepsAway(currentPlayer.getCurrentTile(), currentRoll);
+  }
+
+  /**
+   * Moves the current player to the selected tile and handles any special actions.
+   *
+   * @param destinationTile The tile to move to.
+   * @return A message describing the move result.
+   */
   public String movePlayerToTile(Tile destinationTile) {
     String result = "";
 
@@ -103,20 +147,18 @@ public class MissingDiamond {
       return "Invalid destination tile.";
     }
 
-    // Check if the move is valid
-    Tile currentTile = currentPlayer.getCurrentTile();
-    if (!currentTile.getNextTiles().contains(destinationTile)) {
-      return "Cannot move to that tile from your current position.";
+    // Check if the move is valid (destination is exactly N steps away)
+    Set<Tile> validMoves = getPossibleMovesForCurrentRoll();
+    if (!validMoves.contains(destinationTile)) {
+      return "Cannot move to that tile - it's not exactly " + currentRoll + " steps away.";
     }
 
     // Move the player
-    result += "Player " + currentPlayer.getName() + " moving from tile " +
-        currentTile.getTileId() + " to tile " + destinationTile.getTileId() + ". ";
-
+    result += currentPlayer.getName() + " moved to tile " + destinationTile.getTileId() + ". ";
     currentPlayer.placePlayer(destinationTile);
 
-    // Check for special tile effects (similar to ladder in LadderGame)
-    // This would be expanded with actual game mechanics
+    // Reset current roll
+    currentRoll = 0;
 
     // Check if player found the diamond
     if (destinationTile == diamondLocation) {
@@ -134,39 +176,66 @@ public class MissingDiamond {
     return result;
   }
 
+  /**
+   * Gets the list of players.
+   *
+   * @return The list of players.
+   */
   public List<Player> getPlayers() {
     return players;
   }
 
+  /**
+   * Gets the game board.
+   *
+   * @return The game board.
+   */
   public BoardBranching getBoard() {
     return board;
   }
 
+  /**
+   * Gets the die.
+   *
+   * @return The die.
+   */
   public Die getDie() {
     return die;
   }
 
+  /**
+   * Gets the current roll value.
+   *
+   * @return The current roll value.
+   */
+  public int getCurrentRoll() {
+    return currentRoll;
+  }
+
+  /**
+   * Checks if the game is finished.
+   *
+   * @return True if the game is finished, false otherwise.
+   */
   public boolean isGameFinished() {
     return gameFinished;
   }
 
+  /**
+   * Gets the current player.
+   *
+   * @return The current player.
+   */
   public Player getCurrentPlayer() {
     return currentPlayer;
   }
 
   /**
-   * The location is already set in the constructor, but this method is here
-   * for debug or later use.
+   * Gets the index of the current player.
    *
-   * @return diamondLocation
+   * @return The index of the current player.
    */
-
-  public Tile getDiamondLocation() {
-    return diamondLocation;
-  }
-
   public int getCurrentPlayerIndex() {
     return currentPlayerIndex;
   }
-
 }

@@ -3,49 +3,64 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.2
  * @since 23.04.2025
  */
 public class MissingDiamondController {
   private final MissingDiamond game;
+  private boolean hasRolled = false;
 
   public MissingDiamondController(int numberOfPlayers) {
     this.game = new MissingDiamond(numberOfPlayers);
   }
 
-  public String movePlayer(int tileId) {
-    Player currentPlayer = game.getCurrentPlayer();
-    Tile currentTile = currentPlayer.getCurrentTile();
-    Tile destinationTile = game.getBoard().getTileById(tileId);
+  public String playTurn() {
+    // Check if player has already rolled
+    if (hasRolled) {
+      return "Player " + getCurrentPlayer().getName() + " must move before rolling again.";
+    }
 
+    // Roll the die
+    String result = game.playTurn();
+    hasRolled = true;
+    return result;
+  }
+
+  public String movePlayer(int tileId) {
+    // Check if player has rolled
+    if (!hasRolled) {
+      return "Player must roll the die first.";
+    }
+
+    // Get destination tile
+    Tile destinationTile = game.getBoard().getTileById(tileId);
     if (destinationTile == null) {
       return "Invalid tile ID.";
     }
 
-    // Check if the destination tile is a valid move (connected to current tile)
-    if (!currentTile.getNextTiles().contains(destinationTile)) {
-      return "Cannot move to tile " + tileId + " from the current position.";
+    // Check if the destination tile is a valid move based on the die roll
+    Set<Tile> validMoves = game.getPossibleMovesForCurrentRoll();
+    if (!validMoves.contains(destinationTile)) {
+      return "Cannot move to tile " + tileId + " - it's not exactly " +
+          game.getCurrentRoll() + " steps away.";
     }
 
     // Move the player
-    currentPlayer.placePlayer(destinationTile);
+    String moveResult = game.movePlayerToTile(destinationTile);
 
-    String message = currentPlayer.getName() + " moved to tile " + tileId + ".";
+    // Reset rolled state after move
+    hasRolled = false;
 
-    // This is a simplified implementation, additional game logic can be added here
-
-    return message;
-  }
-
-  public String playTurn() {
-    return game.playTurn();
+    return moveResult;
   }
 
   public List<Player> getPlayers() {
@@ -60,6 +75,10 @@ public class MissingDiamondController {
     return game.getCurrentPlayerIndex();
   }
 
+  public int getCurrentRoll() {
+    return game.getCurrentRoll();
+  }
+
   public boolean isGameFinished() {
     return game.isGameFinished();
   }
@@ -69,6 +88,13 @@ public class MissingDiamondController {
   }
 
   public List<Tile> getPossibleMoves() {
-    return game.getCurrentPlayer().getCurrentTile().getNextTiles();
+    if (!hasRolled) {
+      return new ArrayList<>();
+    }
+    return new ArrayList<>(game.getPossibleMovesForCurrentRoll());
+  }
+
+  public boolean hasRolled() {
+    return hasRolled;
   }
 }
