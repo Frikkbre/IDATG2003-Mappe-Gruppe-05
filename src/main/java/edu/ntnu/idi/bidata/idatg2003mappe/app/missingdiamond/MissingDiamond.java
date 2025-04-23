@@ -101,24 +101,32 @@ public class MissingDiamond {
    * @return Set of tiles that are exactly N steps away.
    */
   public Set<Tile> getTilesExactlyNStepsAway(Tile startTile, int steps) {
-    // Base case: if no steps, return empty set
-    if (steps <= 0) {
-      return new HashSet<>();
-    }
-
-    // Base case: if one step, return direct neighbors
-    if (steps == 1) {
-      return new HashSet<>(startTile.getNextTiles());
-    }
-
-    // Recursive case: for each neighbor, find tiles that are (steps-1) away
     Set<Tile> result = new HashSet<>();
-    for (Tile neighbor : startTile.getNextTiles()) {
-      // Add all tiles that are (steps-1) away from this neighbor
-      result.addAll(getTilesExactlyNStepsAway(neighbor, steps - 1));
+
+    // No valid moves if steps is invalid
+    if (steps <= 0) {
+      return result;
     }
+
+    // We'll use a helper method to do a depth-first search of exactly N steps
+    findExactPathsOfLength(startTile, null, steps, result);
 
     return result;
+  }
+
+  private void findExactPathsOfLength(Tile currentTile, Tile previousTile, int remainingSteps, Set<Tile> result) {
+    // If we've used all our steps, add the current tile to our result
+    if (remainingSteps == 0) {
+      result.add(currentTile);
+      return;
+    }
+
+    // Otherwise, continue the search from each neighbor (except the one we just came from)
+    for (Tile neighbor : currentTile.getNextTiles()) {
+      if (neighbor != previousTile) {  // Prevent immediate backtracking
+        findExactPathsOfLength(neighbor, currentTile, remainingSteps - 1, result);
+      }
+    }
   }
 
   /**
