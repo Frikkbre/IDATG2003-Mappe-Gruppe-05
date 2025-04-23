@@ -29,6 +29,7 @@ public class MissingDiamondGUI extends Application {
 
   // Game controller
   private MissingDiamondController gameController;
+  private int numberOfPlayers = 2;
 
   // UI components
   private BorderPane mainLayout;
@@ -45,8 +46,6 @@ public class MissingDiamondGUI extends Application {
   private final Color[] playerColors = {
       Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
   };
-
-  private int numberOfPlayers = 2;
 
   @Override
   public void start(Stage primaryStage) {
