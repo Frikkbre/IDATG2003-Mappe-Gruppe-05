@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,7 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -16,6 +16,7 @@ import javafx.stage.Stage;
  */
 public class BoardGameSelectorGUI extends Application {
   private LadderGameGUI ladderGameGUI;
+  private MissingDiamondGUI missingDiamondGUI;
   private Stage primaryStage;
   private Spinner<Integer> numberOfPlayers; //TODO - Change this out with int?
   private int currentPlayers;               //TODO - This instead of the spinner?
@@ -68,7 +69,8 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.show();
 
 
-    this.ladderGameGUI = new LadderGameGUI(); //To redirect on button click.
+    this.ladderGameGUI = new LadderGameGUI();
+    this.missingDiamondGUI = new MissingDiamondGUI();
   }
 
   private Pane createCenterPane() {
@@ -85,17 +87,16 @@ public class BoardGameSelectorGUI extends Application {
     Button button2 = new Button("Missing diamond");
     button2.setOnAction(event -> {
       try {
-        ladderGameGUI.setNumberOfPlayers(numberOfPlayers.getValue());
-        // MissingDiamond.start(getStage()); TODO - implement diamond game start method.
+        missingDiamondGUI.setNumberOfPlayers(numberOfPlayers.getValue());
+        missingDiamondGUI.start(getStage());
       } catch (Exception e) {
         e.printStackTrace();
       }
     });
 
-    numberOfPlayers = new Spinner<>(2, 6, 2); // Initialize the spinner
+    numberOfPlayers = new Spinner<>(2, 6, 2);
     numberOfPlayers.setEditable(true);
 
-    // Add a listener to update currentPlayers whenever the spinner value changes
     numberOfPlayers.valueProperty().addListener((obs, oldValue, newValue) -> {
       ladderGameGUI.setNumberOfPlayers(newValue);
     });
