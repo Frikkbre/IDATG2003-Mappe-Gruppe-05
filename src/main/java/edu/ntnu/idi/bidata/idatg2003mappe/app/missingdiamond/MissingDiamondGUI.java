@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -80,7 +79,7 @@ public class MissingDiamondGUI extends Application {
     primaryStage.setTitle("Missing Diamond");
     primaryStage.show();
 
-    // Initialize UI state
+    // Initialize BoardUI
     updateBoardUI();
   }
 
@@ -131,6 +130,7 @@ public class MissingDiamondGUI extends Application {
   }
 
   //Creates a simple board with a circular path and a few cross paths.
+  //Will be replaced with original board in the future.
   private void createSimpleBoard(Pane pane) {
     // Center of the board
     double centerX = 500;
