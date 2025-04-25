@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
-  private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI();
+  private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI(); //TODO - Remove this? - not used
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
@@ -47,7 +47,7 @@ public class LadderGameGUI extends Application {
     gameController = new LadderGameController(numberOfPlayers, randomLadders);
 
     BorderPane borderPane = new BorderPane();
-    borderPane.setPrefSize(1440, 840); // cubed window
+    borderPane.setPrefSize(1440, 840); // 16:9 window
 
     NavBar navBar = new NavBar();
     borderPane.setTop(navBar.createMenuBar());
@@ -61,7 +61,7 @@ public class LadderGameGUI extends Application {
       gameLog.appendText(message + "\n");
       updateBoardUI();
 
-      if (message.contains("won")) {
+      if (message.contains("won")) { //TODO - refactor to own method
         rollDieButton.setDisable(true);
       }
     });
