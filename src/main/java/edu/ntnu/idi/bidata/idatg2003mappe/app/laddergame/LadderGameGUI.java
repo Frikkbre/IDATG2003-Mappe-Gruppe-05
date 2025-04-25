@@ -146,7 +146,7 @@ public class LadderGameGUI extends Application {
     if (currentTile != null && currentTile.getDestinationTile() != null) {
       int destinationTileId = currentTile.getDestinationTile().getTileId();
 
-      //Positive ladder
+      //Positive ladder //TODO: This part is redundant. Can be removed after testing.
       if (destinationTileId > tileNumber) {
         tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold;");
       } else {
