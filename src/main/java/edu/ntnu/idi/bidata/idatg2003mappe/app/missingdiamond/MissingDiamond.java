@@ -43,35 +43,32 @@ public class MissingDiamond {
   private BoardBranching createBoard() {
     BoardBranching board = new BoardBranching();
 
-    // Create tiles for the main circular path (20 tiles)
-    List<Tile> outerTiles = new ArrayList<>();
-    for (int i = 1; i <= 20; i++) {
+    // Create locations for Afrikan Tähti
+    for (int i = 1; i <= 21; i++) {
       Tile tile = new Tile(i);
       board.addTileToBoard(tile);
-      outerTiles.add(tile);
     }
 
-    // Connect the outer tiles in a circle
-    for (int i = 0; i < outerTiles.size(); i++) {
-      Tile current = outerTiles.get(i);
-      Tile next = outerTiles.get((i + 1) % outerTiles.size());
-      board.connectTiles(current, next);
-    }
+    // Define connections between locations matching the GUI connections
+    connectTiles(board, 1, 3, 18, 19);
+    connectTiles(board, 2, 3, 16);
+    connectTiles(board, 3, 4);
+    // ... continue for all connections
 
-    // Create center tile
-    Tile centerTile = new Tile(21);
-    board.addTileToBoard(centerTile);
-
-    // Connect center tile to the circle at four points (north, east, south, west)
-    board.connectTiles(centerTile, outerTiles.get(0));  // North
-    board.connectTiles(centerTile, outerTiles.get(5));  // East
-    board.connectTiles(centerTile, outerTiles.get(10)); // South
-    board.connectTiles(centerTile, outerTiles.get(15)); // West
-
-    // Set a random tile as the diamond location (for demo purposes)
-    diamondLocation = outerTiles.get(outerTiles.size() - 1);
+    // Randomly place the diamond at one of the locations
+    int diamondLocation = new Random().nextInt(20) + 1;
+    this.diamondLocation = board.getTileById(diamondLocation);
 
     return board;
+  }
+
+  // Helper method to connect one tile to multiple others
+  private void connectTiles(BoardBranching board, int fromId, int... toIds) {
+    Tile fromTile = board.getTileById(fromId);
+    for (int toId : toIds) {
+      Tile toTile = board.getTileById(toId);
+      board.connectTiles(fromTile, toTile);
+    }
   }
 
   private List<Player> createPlayers(int numberOfPlayers) {

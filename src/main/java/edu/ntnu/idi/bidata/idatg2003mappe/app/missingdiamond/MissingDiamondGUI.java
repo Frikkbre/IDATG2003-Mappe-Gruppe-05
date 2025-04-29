@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -120,12 +122,137 @@ public class MissingDiamondGUI extends Application {
   //Creates the board pane with the game tiles.
   private Pane createBoardPane() {
     Pane pane = new Pane();
-    pane.setStyle("-fx-background-color: lightblue;");
 
-    // Create simple circular board with cross paths
-    createSimpleBoard(pane);
+    try {
+      // Load the map image
+      Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
+      ImageView mapView = new ImageView(mapImage);
+
+      // Set a fixed size for the map
+      mapView.setFitWidth(900);  // Fixed width
+      mapView.setFitHeight(650); // Fixed height
+      mapView.setPreserveRatio(true);
+
+      // Add the map image to the pane
+      pane.getChildren().add(mapView);
+
+      // Create the game locations after setting the map size
+      createGameLocations(pane, mapView);
+    } catch (Exception e) {
+      System.err.println("Failed to load map image: " + e.getMessage());
+      pane.setStyle("-fx-background-color: lightblue;");
+      createSimpleBoard(pane);
+    }
 
     return pane;
+  }
+
+  private void createGameLocations(Pane pane, ImageView mapView) {
+    // Get the actual size of the displayed map
+    double mapWidth = mapView.getFitWidth();
+    double mapHeight = mapView.getFitHeight();
+
+    // Calculate scale factors based on the map size
+    // Assuming the original coordinates were for a 1440x840 map
+    double scaleX = mapWidth / 1440.0;
+    double scaleY = mapHeight / 840.0;
+
+    // Define location data with coordinates based on the original map size
+    // We'll scale these coordinates based on the actual map size
+    Object[][] locationData = {
+        {1, "Tangier", 160, 130},
+        {2, "Cairo", 280, 170},
+        {3, "Tripoli", 210, 150},
+        {4, "Sahara", 180, 190},
+        {5, "Dakar", 80, 210},
+        {6, "Gold Coast", 130, 270},
+        {7, "Slave Coast", 150, 290},
+        {8, "Congo", 180, 350},
+        {9, "Victoria Falls", 230, 410},
+        {10, "Cape Town", 190, 490},
+        {11, "Madagascar", 320, 400},
+        {12, "Zanzibar", 270, 320},
+        {13, "Dar es Salaam", 280, 340},
+        {14, "Mombasa", 290, 300},
+        {15, "Addis Ababa", 300, 230},
+        {16, "Suez", 300, 180},
+        {17, "St. Helena", 60, 400},
+        {18, "Tunis", 190, 120},
+        {19, "Marrakech", 110, 150},
+        {20, "Timbuktu", 150, 210},
+        {21, "Center", 200, 250}
+    };
+
+    // Create and connect the locations with scaled coordinates
+    for (Object[] data : locationData) {
+      int tileId = (int) data[0];
+      String name = (String) data[1];
+
+      // Scale the coordinates to match the map size
+      double x = ((Number) data[2]).doubleValue() * scaleX;
+      double y = ((Number) data[3]).doubleValue() * scaleY;
+
+      Circle tile = createTileCircle(x, y, tileId);
+      tile.setRadius(10); // Slightly smaller for better fit
+
+      // Add name label
+      Label label = new Label(name);
+      label.setLayoutX(x + 15);
+      label.setLayoutY(y);
+      label.setTextFill(Color.WHITE);
+      label.setStyle("-fx-font-weight: bold; -fx-font-size: 10pt; -fx-effect: dropshadow(three-pass-box, black, 2, 0.2, 0, 0);");
+
+      pane.getChildren().addAll(tile, label);
+      tileCircles.put(tileId, tile);
+    }
+
+    // Connect the locations with paths
+    createPaths(pane, locationData, scaleX, scaleY);
+  }
+
+  private void createPaths(Pane pane, Object[][] locationData, double scaleX, double scaleY) {
+    // Define connections between locations
+    int[][] connections = {
+        {1, 3}, {1, 18}, {1, 19},
+        {2, 3}, {2, 16},
+        {3, 4},
+        {4, 5}, {4, 20},
+        {5, 19}, {5, 20},
+        {6, 7}, {6, 20},
+        {7, 8},
+        {8, 9}, {8, 12},
+        {9, 10}, {9, 13},
+        {10, 11}, {10, 17},
+        {11, 13},
+        {12, 13}, {12, 14},
+        {13, 14},
+        {14, 15},
+        {15, 16},
+        // Center connections
+        {21, 4}, {21, 8}, {21, 14}, {21, 20}
+    };
+
+    // Create the paths
+    for (int[] connection : connections) {
+      int fromId = connection[0];
+      int toId = connection[1];
+
+      // Find the circles for these IDs
+      Circle fromCircle = tileCircles.get(fromId);
+      Circle toCircle = tileCircles.get(toId);
+
+      if (fromCircle != null && toCircle != null) {
+        Line line = new Line(
+            fromCircle.getCenterX(), fromCircle.getCenterY(),
+            toCircle.getCenterX(), toCircle.getCenterY()
+        );
+        line.setStroke(Color.BLACK);
+        line.setStrokeWidth(2);
+
+        // Put lines under the circles
+        pane.getChildren().add(0, line);
+      }
+    }
   }
 
   //Creates a simple board with a circular path and a few cross paths.
