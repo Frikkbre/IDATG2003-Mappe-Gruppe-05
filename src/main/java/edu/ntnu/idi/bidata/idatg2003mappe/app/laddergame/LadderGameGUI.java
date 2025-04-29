@@ -44,6 +44,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
+    System.out.println(numberOfPlayers);
     gameController = new LadderGameController(numberOfPlayers, randomLadders);
 
     BorderPane borderPane = new BorderPane();
@@ -412,6 +413,12 @@ public class LadderGameGUI extends Application {
   }
 
   public void restartGame(Stage primaryStage) {
+    try{
+      setNumberOfPlayers(gameController.getPlayers().size()); //Uses previously set number of players
+      gameController = new LadderGameController(numberOfPlayers, randomLadders);
+    }catch (IllegalArgumentException e){
+      System.out.println(e);
+    }
     start(primaryStage); // Restart the game with new mode
   }
 
