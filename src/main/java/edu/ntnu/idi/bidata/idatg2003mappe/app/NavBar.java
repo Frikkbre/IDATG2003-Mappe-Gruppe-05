@@ -63,7 +63,6 @@ public class NavBar {
 
     fileMenu.getItems().addAll(openMenuItem, saveMenuItem, new SeparatorMenuItem(), closeMenuItem);
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
         /*+ "-fx-text-fill: #000000;"
         + "-fx-font-size: 14px;"
