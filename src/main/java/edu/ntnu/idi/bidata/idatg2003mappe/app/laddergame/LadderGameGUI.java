@@ -50,7 +50,7 @@ public class LadderGameGUI extends Application {
     borderPane.setPrefSize(1440, 840); // cubed window
 
     NavBar navBar = new NavBar();
-    borderPane.setTop(navBar.createMenuBar());
+    borderPane.setTop(navBar.createMenuBarLadders(primaryStage));
     borderPane.setStyle("-fx-background-color: lightblue;");
 
     HBox centerBox = new HBox(10);
@@ -159,48 +159,6 @@ public class LadderGameGUI extends Application {
     return tile;
   }
 
-  /**
-   * Create the menu bar.
-   * @param primaryStage the primary stage
-   * @return the menu bar
-   */
-
-  private MenuBar createMenuBar(Stage primaryStage) {
-    MenuBar menuBar = new MenuBar();
-
-    // File Menu
-    Menu fileMenu = new Menu("File");
-    MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
-    quickSaveMenuItem.setOnAction(e -> quickSaveGame());
-
-    MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
-    loadLastSaveMenuItem.setOnAction(e -> loadLastSave());
-
-    MenuItem openMenuItem = new MenuItem("Open");
-    openMenuItem.setOnAction(e -> loadGame(primaryStage));
-
-    MenuItem saveMenuItem = new MenuItem("Save As...");
-    saveMenuItem.setOnAction(e -> saveGame(primaryStage));
-
-    MenuItem closeMenuItem = new MenuItem("Close");
-    closeMenuItem.setOnAction(e -> primaryStage.close());
-
-    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem,
-        new SeparatorMenuItem(), openMenuItem, saveMenuItem,
-        new SeparatorMenuItem(), closeMenuItem);
-
-    // Settings Menu
-    Menu settingsMenu = new Menu("Settings");
-    MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
-    MenuItem restartGameItem = new MenuItem("Restart Game");
-    toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
-    restartGameItem.setOnAction(e -> restartGame(primaryStage));
-    settingsMenu.getItems().addAll(toggleModeItem, restartGameItem);
-
-    // Add both menus to the menu bar
-    menuBar.getMenus().addAll(fileMenu, settingsMenu);
-    return menuBar;
-  }
 
   /**
    * Quick save the game to the default location.
@@ -355,7 +313,7 @@ public class LadderGameGUI extends Application {
    * Toggles the game mode between classic and random ladders.
    */
 
-  private void toggleGameMode(Stage primaryStage) {
+  public void toggleGameMode(Stage primaryStage) {
     randomLadders = !randomLadders; // Toggle mode
 
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -453,7 +411,7 @@ public class LadderGameGUI extends Application {
     updateScoreBoard(scoreBoard); // Use the class-level scoreBoard
   }
 
-  private void restartGame(Stage primaryStage) {
+  public void restartGame(Stage primaryStage) {
     start(primaryStage); // Restart the game with new mode
   }
 
