@@ -44,9 +44,7 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
-    System.out.println(numberOfPlayers);
     gameController = new LadderGameController(numberOfPlayers, randomLadders);
-
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
 
@@ -99,6 +97,14 @@ public class LadderGameGUI extends Application {
     }else {
       throw new IllegalArgumentException("Number of players must be between 2 and 6");
     }
+  }
+
+  /**
+   * Get the number of players.
+   * @return
+   */
+  private int getNumberOfPlayers() {
+    return numberOfPlayers;
   }
 
   /**
@@ -413,13 +419,14 @@ public class LadderGameGUI extends Application {
   }
 
   public void restartGame(Stage primaryStage) {
-    try{
-      setNumberOfPlayers(gameController.getPlayers().size()); //Uses previously set number of players
+    try {
+      System.out.println("Restarting game with " + numberOfPlayers + " players and randomLadders: " + randomLadders);
       gameController = new LadderGameController(numberOfPlayers, randomLadders);
-    }catch (IllegalArgumentException e){
-      System.out.println(e);
+    } catch (IllegalArgumentException e) {
+      System.out.println(e.getMessage());
+      return; // Exit the method if an exception occurs
     }
-    start(primaryStage); // Restart the game with new mode
+    start(primaryStage); // Restart the game with the updated settings
   }
 
   public static void main(String[] args) {
