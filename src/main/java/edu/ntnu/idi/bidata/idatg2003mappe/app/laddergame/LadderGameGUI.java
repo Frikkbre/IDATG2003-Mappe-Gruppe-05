@@ -27,7 +27,7 @@ import java.util.List;
  * @version 0.3
  * @since 20.02.2025
  */
-public class LadderGameGUI extends Application {
+public class LadderGameGUI extends Application implements NavBar.GameStateProvider {
   private LadderGameController gameController;
   private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI();
   private GridPane boardGrid;
@@ -36,6 +36,7 @@ public class LadderGameGUI extends Application {
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
   private int numberOfPlayers;
+  private NavBar navBar;
 
   /**
    * Start the game.
@@ -49,7 +50,10 @@ public class LadderGameGUI extends Application {
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
 
-    NavBar navBar = new NavBar();
+    navBar = new NavBar();
+    navBar.setStage(primaryStage);
+    navBar.setGameStateProvider(this);
+
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
 
@@ -86,6 +90,24 @@ public class LadderGameGUI extends Application {
     primaryStage.show();
 
     updateBoardUI();
+  }
+
+  @Override
+  public GameState getCurrentGameState() {
+    return gameController.createGameState();
+  }
+
+  @Override
+  public void loadGameState(GameState gameState) {
+    // Check if the game state is for ladder game
+    if (gameState != null) {
+      // Apply the game state
+      gameController.applyGameState(gameState);
+      // Update the UI
+      updateBoardUI();
+      // Display a confirmation in the game log
+      gameLog.appendText("Game state loaded successfully.\n");
+    }
   }
 
   /**
