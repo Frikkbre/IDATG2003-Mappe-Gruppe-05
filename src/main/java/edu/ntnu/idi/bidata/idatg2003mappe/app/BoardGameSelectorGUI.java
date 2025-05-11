@@ -80,6 +80,7 @@ public class BoardGameSelectorGUI extends Application {
     try {
       outputfile = new FileWriter(playerFile);
       playerWriter = new CSVWriter(outputfile);
+        String[] header = { "Player", "Score" };
     } catch (IOException e) {
       e.printStackTrace();
       System.out.println("Error creating player file");
