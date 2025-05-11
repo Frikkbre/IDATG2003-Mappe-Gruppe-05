@@ -11,8 +11,9 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
   requires com.google.gson;
+    requires com.opencsv;
 
-  opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
+    opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe;
   exports edu.ntnu.idi.bidata.idatg2003mappe.app;
   opens edu.ntnu.idi.bidata.idatg2003mappe.app to javafx.fxml;
