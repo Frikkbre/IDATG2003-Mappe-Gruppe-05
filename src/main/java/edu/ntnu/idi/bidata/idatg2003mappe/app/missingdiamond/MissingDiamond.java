@@ -2,6 +2,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.playerInfo.PlayerFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 
@@ -26,17 +28,16 @@ public class MissingDiamond {
 
   /**
    * Constructor for the MissingDiamond class.
-   *
-   * @param numberOfPlayers The number of players in the game.
+   * Reads players from CSV file.
    */
-  public MissingDiamond(int numberOfPlayers) {
-    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+  public MissingDiamond() {
+    System.out.println("Starting Missing Diamond Game with players from file.");
     this.board = createBoard();
-    this.players = createPlayers(numberOfPlayers);
+    this.players = createPlayers();
     this.die = new Die();
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
-    this.currentPlayer = players.get(currentPlayerIndex);
+    this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
     this.currentRoll = 0;
   }
 
@@ -74,16 +75,22 @@ public class MissingDiamond {
     return board;
   }
 
-  private List<Player> createPlayers(int numberOfPlayers) {
-    List<Player> players = new ArrayList<>();
-    Tile startTile = board.getStartTile();
-
-    for (int i = 1; i <= numberOfPlayers; i++) {
-      Player player = new Player("Player " + i, startTile, i);
-      players.add(player);
+  private List<Player> createPlayers() {
+    try {
+      Tile startTile = board.getStartTile();
+      return PlayerFileHandler.readPlayersFromFile(startTile);
+    } catch (FileHandlingException e) {
+      System.err.println("Error reading player data: " + e.getMessage());
+      // Fallback to default creation if file reading fails
+      List<Player> players = new ArrayList<>();
+      Tile startTile = board.getStartTile();
+      // Create 2 players as fallback
+      for (int i = 1; i <= 2; i++) {
+        Player player = new Player("Player " + i, startTile, i);
+        players.add(player);
+      }
+      return players;
     }
-
-    return players;
   }
 
   public String playTurn() {

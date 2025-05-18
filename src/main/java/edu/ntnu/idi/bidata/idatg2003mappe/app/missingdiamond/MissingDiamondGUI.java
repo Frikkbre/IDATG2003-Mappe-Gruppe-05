@@ -29,7 +29,6 @@ public class MissingDiamondGUI extends Application {
 
   // Game controller
   private MissingDiamondController gameController;
-  private int numberOfPlayers = 2;
 
   // UI components
   private BorderPane mainLayout;
@@ -50,7 +49,7 @@ public class MissingDiamondGUI extends Application {
   @Override
   public void start(Stage primaryStage) {
     // Initialize game controller
-    gameController = new MissingDiamondController(numberOfPlayers);
+    gameController = new MissingDiamondController();
 
     // Create main layout
     mainLayout = new BorderPane();
@@ -321,15 +320,6 @@ public class MissingDiamondGUI extends Application {
       updateBoardUI();
     } else {
       gameLog.appendText("Cannot move to tile " + tileId + ".\n");
-    }
-  }
-
-  //Sets the number of players for the game.
-  public void setNumberOfPlayers(int numberOfPlayers) {
-    if (numberOfPlayers >= 2 && numberOfPlayers <= 6) {
-      this.numberOfPlayers = numberOfPlayers;
-    } else {
-      throw new IllegalArgumentException("Number of players must be between 2 and 6");
     }
   }
 
