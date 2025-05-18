@@ -1,10 +1,18 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.playerInfo.PlayerFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -15,8 +23,10 @@ import java.util.*;
  * @since 16.02.2025
  */
 public class MissingDiamond {
+  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardBranching board;
-  private final List<Player> players;
+  private final BoardLinear boardLinear = new BoardLinear();
+  private List<Player> players = new ArrayList<>();
   private final Die die;
   private boolean gameFinished;
   private Player currentPlayer;
@@ -26,20 +36,23 @@ public class MissingDiamond {
 
   /**
    * Constructor for the MissingDiamond class.
-   *
-   * @param numberOfPlayers The number of players in the game.
+   * Reads players from CSV file.
    */
-  public MissingDiamond(int numberOfPlayers) {
-    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+  public MissingDiamond() {
+    System.out.println("Starting Missing Diamond Game with players from file.");
     this.board = createBoard();
-    this.players = createPlayers(numberOfPlayers);
+    readPlayersFromCSV();
     this.die = new Die();
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
-    this.currentPlayer = players.get(currentPlayerIndex);
+    this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
     this.currentRoll = 0;
   }
 
+  /**
+   * Creates the game board.
+   * @return Board
+   */
   private BoardBranching createBoard() {
     BoardBranching board = new BoardBranching();
 
@@ -74,15 +87,39 @@ public class MissingDiamond {
     return board;
   }
 
-  private List<Player> createPlayers(int numberOfPlayers) {
-    List<Player> players = new ArrayList<>();
-    Tile startTile = board.getStartTile();
+  protected List<Player> readPlayersFromCSV() {
+    List<Player> localPlayers = new ArrayList<>();
 
-    for (int i = 1; i <= numberOfPlayers; i++) {
-      Player player = new Player("Player " + i, startTile, i);
-      players.add(player);
+    // Try to read from CSV file
+    File file = new File(PLAYER_DATA_FILE);
+    if (file.exists() && file.isFile()) {
+      try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        String[] record;
+        reader.readNext();
+
+        while ((record = reader.readNext()) != null) {
+          // Expected format: Player Name, Player ID, Color, Position
+          if (record.length > 0) {
+            String playerName = record[0];
+            int playerID = Integer.parseInt(record[1]);
+            String playerColor = record[2];
+            int position = Integer.parseInt(record[3]);
+            Tile playerTile = board.getTileById(position);
+
+            Player player = new Player(playerName, playerID, playerColor, playerTile);
+            players.add(player);
+            System.out.println("Player " + playerName + " added to the game.");
+            System.out.println("Player ID: " + playerID);
+            System.out.println("Player Color: " + playerColor);
+            System.out.println("Player Position: " + position);
+            System.out.println("Player list" + players);
+            System.out.println("----------------------");
+          }
+        }
+      } catch (IOException | CsvValidationException e) {
+        System.out.println("Error reading player data: " + e.getMessage());
+      }
     }
-
     return players;
   }
 

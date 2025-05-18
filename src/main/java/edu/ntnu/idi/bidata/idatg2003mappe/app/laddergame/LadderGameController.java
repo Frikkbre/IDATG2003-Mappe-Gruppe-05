@@ -12,9 +12,9 @@ public class LadderGameController {
   private int currentPlayerIndex = 0;
   private boolean randomLadders;
 
-  public LadderGameController(int numberOfPlayers, boolean randomLadders) {
+  public LadderGameController(boolean randomLadders) {
     this.randomLadders = randomLadders;
-    game = new LadderGame(numberOfPlayers, randomLadders);
+    game = new LadderGame(randomLadders);
   }
 
   /**
