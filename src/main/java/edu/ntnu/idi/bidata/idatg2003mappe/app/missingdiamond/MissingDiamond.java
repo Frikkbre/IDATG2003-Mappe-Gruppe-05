@@ -26,7 +26,7 @@ public class MissingDiamond {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardBranching board;
   private final BoardLinear boardLinear = new BoardLinear();
-  private final List<Player> players;
+  private List<Player> players = new ArrayList<>();
   private final Die die;
   private boolean gameFinished;
   private Player currentPlayer;
@@ -41,7 +41,7 @@ public class MissingDiamond {
   public MissingDiamond() {
     System.out.println("Starting Missing Diamond Game with players from file.");
     this.board = createBoard();
-    this.players = readPlayersFromCSV();
+    readPlayersFromCSV();
     this.die = new Die();
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
@@ -49,6 +49,10 @@ public class MissingDiamond {
     this.currentRoll = 0;
   }
 
+  /**
+   * Creates the game board.
+   * @return Board
+   */
   private BoardBranching createBoard() {
     BoardBranching board = new BoardBranching();
 
@@ -84,8 +88,7 @@ public class MissingDiamond {
   }
 
   protected List<Player> readPlayersFromCSV() {
-    List<Player> players = new ArrayList<>();
-    Tile startTile = boardLinear.getTiles().get(0);
+    List<Player> localPlayers = new ArrayList<>();
 
     // Try to read from CSV file
     File file = new File(PLAYER_DATA_FILE);
@@ -96,15 +99,21 @@ public class MissingDiamond {
 
         while ((record = reader.readNext()) != null) {
           // Expected format: Player Name, Player ID, Color, Position
-          if (record.length >= 2) {
+          if (record.length > 0) {
             String playerName = record[0];
             int playerID = Integer.parseInt(record[1]);
             String playerColor = record[2];
             int position = Integer.parseInt(record[3]);
-            Tile playerTile = boardLinear.getTiles().get(position);
+            Tile playerTile = board.getTileById(position);
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             players.add(player);
+            System.out.println("Player " + playerName + " added to the game.");
+            System.out.println("Player ID: " + playerID);
+            System.out.println("Player Color: " + playerColor);
+            System.out.println("Player Position: " + position);
+            System.out.println("Player list" + players);
+            System.out.println("----------------------");
           }
         }
       } catch (IOException | CsvValidationException e) {
