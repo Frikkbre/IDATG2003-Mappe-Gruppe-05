@@ -1,11 +1,16 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,19 +28,20 @@ import java.util.Random;
 
 public class LadderGame {
 
+  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardLinear board;
   private final List<Player> players;
   private final Die die;
   private final int numberOfTiles;
   private final boolean randomLadders;
 
-  public LadderGame(int numberOfPlayers, boolean randomLadders) {
-    System.out.println("Starting Ladder Game with " + numberOfPlayers + " players.");
+  public LadderGame(boolean randomLadders) {
+    System.out.println("Starting Ladder Game with players from file.");
 
     this.randomLadders = randomLadders;
     this.numberOfTiles = 100;
     this.board = createBoard(numberOfTiles);
-    this.players = createPlayers(numberOfPlayers);
+    this.players = createPlayers();
     this.die = new Die();
 
     //playGame();
@@ -137,20 +143,50 @@ public class LadderGame {
   }
 
   /**
-   * Method to create a list of players for the game.
-   * The players are created with a name and added to a list.
+   * Method to create a list of players for the game from the CSV file.
+   * If reading from file fails, it creates default players.
    *
-   * @param numberOfPlayers the number of players to create
    * @return the list of players
    */
-
-  protected List<Player> createPlayers(int numberOfPlayers) {
+  protected List<Player> createPlayers() {
     List<Player> players = new ArrayList<>();
     Tile startTile = board.getTiles().get(0);
-    for (int i = 1; i <= numberOfPlayers; i++) {
-      Player player = new Player("Player " + i, startTile, i);
-      players.add(player);
+
+    // Try to read from CSV file
+    File file = new File(PLAYER_DATA_FILE);
+    if (file.exists() && file.isFile()) {
+      try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        String[] record;
+        // Skip header
+        reader.readNext();
+
+        int id = 1;
+        while ((record = reader.readNext()) != null) {
+          // Expected format: Player Name, Color, Score
+          if (record.length >= 2) {
+            String playerName = record[0];
+            // String color = record[1]; // Store but not used directly
+
+            Player player = new Player(playerName, startTile, id);
+            players.add(player);
+            id++;
+          }
+        }
+      } catch (IOException | CsvValidationException e) {
+        System.err.println("Error reading player data: " + e.getMessage());
+        // Will fall back to default creation below if the list is empty
+      }
     }
+
+    // If no players were read from the file, create default players
+    if (players.isEmpty()) {
+      // Create 2 players as fallback
+      for (int i = 1; i <= 2; i++) {
+        Player player = new Player("Player " + i, startTile, i);
+        players.add(player);
+      }
+    }
+
     return players;
   }
 

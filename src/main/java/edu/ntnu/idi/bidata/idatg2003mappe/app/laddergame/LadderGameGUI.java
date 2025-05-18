@@ -1,4 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+
 import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
@@ -35,7 +36,6 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
-  private int numberOfPlayers;
   private NavBar navBar;
 
   /**
@@ -45,7 +45,7 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
 
   @Override
   public void start(Stage primaryStage){
-    gameController = new LadderGameController(numberOfPlayers, randomLadders);
+    gameController = new LadderGameController(randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
@@ -107,18 +107,6 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
       updateBoardUI();
       // Display a confirmation in the game log
       gameLog.appendText("Game state loaded successfully.\n");
-    }
-  }
-
-  /**
-   * sets the number of players.
-   * @param numberOfPlayers
-   */
-  public void setNumberOfPlayers(int numberOfPlayers) {
-    if (numberOfPlayers >= 2  && numberOfPlayers <= 6) {
-      this.numberOfPlayers = numberOfPlayers;
-    }else {
-      throw new IllegalArgumentException("Number of players must be between 2 and 6");
     }
   }
 
@@ -267,7 +255,7 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
 
       // Create a new game with the loaded state
       this.randomLadders = gameState.isRandomLadders();
-      gameController = new LadderGameController(2, randomLadders);
+      gameController = new LadderGameController(randomLadders);
       gameController.applyGameState(gameState);
 
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -353,7 +341,7 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
 
         // Create a new game with the loaded state
         this.randomLadders = gameState.isRandomLadders();
-        gameController = new LadderGameController(2, randomLadders);
+        gameController = new LadderGameController(randomLadders);
         gameController.applyGameState(gameState);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
