@@ -53,8 +53,10 @@ public class Player {
   }
 
   public void setColor(String color){
-    // Set the color of the player
-    // This method is not implemented yet
+    if (color.isBlank()) {
+      throw new IllegalArgumentException("Color cannot be blank");
+    }
+    this.color = color;
   }
 
   /**
@@ -77,7 +79,7 @@ public class Player {
   }
 
   public String getColor() {
-    return color;
+    return this.color;
   }
 
   /**
