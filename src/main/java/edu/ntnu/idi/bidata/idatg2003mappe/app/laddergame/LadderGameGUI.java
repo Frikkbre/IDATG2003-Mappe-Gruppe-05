@@ -30,11 +30,9 @@ import java.util.List;
  */
 public class LadderGameGUI extends Application implements NavBar.GameStateProvider {
   private LadderGameController gameController;
-  private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI();
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
-  private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
   private NavBar navBar;
 
@@ -446,7 +444,7 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
 
-      String playerColor = this.playerColor[i];
+      String playerColor = player.getColor();
       int tileId = player.getCurrentTile().getTileId();
       int index = tileId - 1;
       int row = index / 10;
