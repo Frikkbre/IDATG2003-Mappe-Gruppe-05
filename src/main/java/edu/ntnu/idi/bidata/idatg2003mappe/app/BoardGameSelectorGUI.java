@@ -117,12 +117,12 @@ public class BoardGameSelectorGUI extends Application {
         playerWriter = new CSVWriter(outputfile);
 
         // Write header
-        String[] header = { "Player", "Color", "Score" };
+        String[] header = { "Player name", "ID", "Color", "Position" };
         playerWriter.writeNext(header);
 
         // Write player data
         for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-          String[] playerData = { "Player " + (i + 1), getColor(i), "0" };
+          String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "0" };
           playerWriter.writeNext(playerData);
         }
 
@@ -149,12 +149,12 @@ public class BoardGameSelectorGUI extends Application {
         playerWriter = new CSVWriter(outputfile);
 
         // Write header
-        String[] header = { "Player", "Color", "Score" };
+        String[] header = { "Player name", "ID", "Color", "Position" };
         playerWriter.writeNext(header);
 
         // Write player data
         for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-          String[] playerData = { "Player " + (i + 1), getColor(i), "0" };
+          String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "0" };
           playerWriter.writeNext(playerData);
         }
 
