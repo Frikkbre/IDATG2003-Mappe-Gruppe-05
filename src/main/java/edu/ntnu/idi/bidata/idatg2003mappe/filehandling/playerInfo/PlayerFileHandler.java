@@ -4,7 +4,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.playerInfo;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.io.File;
@@ -28,14 +27,14 @@ public class PlayerFileHandler {
    *
    * @param startTile The starting tile for all players
    * @return A list of Player objects
-   * @throws FileHandlingException If there's an error reading the file
+   * @throws IllegalArgumentException If there's an error reading the file
    */
-  public static List<Player> readPlayersFromFile(Tile startTile) throws FileHandlingException {
+  public static List<Player> readPlayersFromFile(Tile startTile) throws IllegalArgumentException {
     List<Player> players = new ArrayList<>();
 
     File file = new File(PLAYER_DATA_FILE);
     if (!file.exists()) {
-      throw new FileHandlingException("Player file does not exist: " + PLAYER_DATA_FILE);
+      throw new IllegalArgumentException("Player file does not exist: " + PLAYER_DATA_FILE);
     }
 
     try (CSVReader reader = new CSVReader(new FileReader(PLAYER_DATA_FILE))) {
@@ -43,29 +42,24 @@ public class PlayerFileHandler {
       // Skip header if present
       reader.readNext();
 
-      int id = 1;
       while ((record = reader.readNext()) != null) {
         // Expected format: Player Name, Color, Score
         if (record.length >= 2) {
           String playerName = record[0];
-          System.out.println("Player name: " + playerName);
-          System.out.println("Player ID: " + record[1]);
-          System.out.println("Player color: " + record[2]);
-          System.out.println("Player position: " + record[3]);
-          // Color is stored but not used in Player constructor directly
-          // String color = record[1];
+          int id = Integer.parseInt(record[1]);
+          String color = record[2];
+          int position = Integer.parseInt(record[3]);
 
-          Player player = new Player(playerName, startTile, id);
+          Player player = new Player(playerName, id, color, startTile);
           players.add(player);
-          id++;
         }
       }
     } catch (IOException | CsvValidationException e) {
-      throw new FileHandlingException("Error reading player data from CSV file", e);
+      throw new IllegalArgumentException("Error reading player data from CSV file", e);
     }
 
     if (players.isEmpty()) {
-      throw new FileHandlingException("No players found in CSV file");
+      throw new IllegalArgumentException("No players found in CSV file");
     }
 
     return players;
