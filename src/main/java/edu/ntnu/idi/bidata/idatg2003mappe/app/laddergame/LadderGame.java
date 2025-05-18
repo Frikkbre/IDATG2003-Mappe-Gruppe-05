@@ -41,7 +41,7 @@ public class LadderGame {
     this.randomLadders = randomLadders;
     this.numberOfTiles = 100;
     this.board = createBoard(numberOfTiles);
-    this.players = createPlayers();
+    this.players = readPlayersFromCSV();
     this.die = new Die();
 
     //playGame();
@@ -144,11 +144,10 @@ public class LadderGame {
 
   /**
    * Method to create a list of players for the game from the CSV file.
-   * If reading from file fails, it creates default players.
    *
    * @return the list of players
    */
-  protected List<Player> createPlayers() {
+  protected List<Player> readPlayersFromCSV() {
     List<Player> players = new ArrayList<>();
     Tile startTile = board.getTiles().get(0);
 
@@ -157,36 +156,25 @@ public class LadderGame {
     if (file.exists() && file.isFile()) {
       try (CSVReader reader = new CSVReader(new FileReader(file))) {
         String[] record;
-        // Skip header
         reader.readNext();
 
-        int id = 1;
         while ((record = reader.readNext()) != null) {
-          // Expected format: Player Name, Color, Score
+          // Expected format: Player Name, Player ID, Color, Position
           if (record.length >= 2) {
             String playerName = record[0];
-            // String color = record[1]; // Store but not used directly
+            int playerID = Integer.parseInt(record[1]);
+            String playerColor = record[2];
+            int position = Integer.parseInt(record[3]);
+            Tile playerTile = board.getTiles().get(position);
 
-            Player player = new Player(playerName, startTile, id);
+            Player player = new Player(playerName, playerID, playerColor, playerTile);
             players.add(player);
-            id++;
           }
         }
       } catch (IOException | CsvValidationException e) {
-        System.err.println("Error reading player data: " + e.getMessage());
-        // Will fall back to default creation below if the list is empty
+        System.out.println("Error reading player data: " + e.getMessage());
       }
     }
-
-    // If no players were read from the file, create default players
-    if (players.isEmpty()) {
-      // Create 2 players as fallback
-      for (int i = 1; i <= 2; i++) {
-        Player player = new Player("Player " + i, startTile, i);
-        players.add(player);
-      }
-    }
-
     return players;
   }
 
