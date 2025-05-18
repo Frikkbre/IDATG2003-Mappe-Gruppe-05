@@ -169,6 +169,11 @@ public class LadderGame {
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             players.add(player);
+            System.out.println("Player " + playerName + " added to the game.");
+            System.out.println("Player ID: " + playerID);
+            System.out.println("Player Color: " + playerColor);
+            System.out.println("Player Position: " + position);
+            System.out.println("----------------------");
           }
         }
       } catch (IOException | CsvValidationException e) {
