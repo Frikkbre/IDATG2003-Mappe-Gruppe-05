@@ -14,6 +14,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 public class Player {
   private String name;
   private int ID;
+  private String color;
   private Tile currentTile;
 
 
@@ -22,10 +23,11 @@ public class Player {
    *
    * @param name
    */
-  public Player(String name, Tile startTile, int ID) {
+  public Player(String name, int ID, String color, Tile startTile) {
     setName(name);
     setID(ID);
     currentTile = startTile;
+    setColor(color);
   }
 
 
@@ -50,6 +52,11 @@ public class Player {
     currentTile = currentTile.getTileAtDistance(tilesToMove);
   }
 
+  public void setColor(String color){
+    // Set the color of the player
+    // This method is not implemented yet
+  }
+
   /**
    * Sets the name of the player
    *
@@ -67,6 +74,10 @@ public class Player {
       throw new IllegalArgumentException("ID cannot be negative");
     }
     this.ID = id;
+  }
+
+  public String getColor() {
+    return color;
   }
 
   /**
