@@ -48,6 +48,10 @@ public class PlayerFileHandler {
         // Expected format: Player Name, Color, Score
         if (record.length >= 2) {
           String playerName = record[0];
+          System.out.println("Player name: " + playerName);
+          System.out.println("Player ID: " + record[1]);
+          System.out.println("Player color: " + record[2]);
+          System.out.println("Player position: " + record[3]);
           // Color is stored but not used in Player constructor directly
           // String color = record[1];
 
