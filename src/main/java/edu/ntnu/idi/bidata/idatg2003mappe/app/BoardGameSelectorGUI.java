@@ -37,11 +37,10 @@ public class BoardGameSelectorGUI extends Application {
    */
   public void populateColors() {
     // Add colors to the color list
-    ColorList.add("Red");
-    ColorList.add("Blue");
+    ColorList.add("LightGreen");
+    ColorList.add("LightPink");
     ColorList.add("Green");
-    ColorList.add("Yellow");
-    ColorList.add("Purple");
+    ColorList.add("HotPink");
     ColorList.add("Orange");
   }
 
