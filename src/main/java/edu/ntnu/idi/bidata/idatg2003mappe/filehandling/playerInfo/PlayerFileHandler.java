@@ -1,4 +1,5 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.player;
+package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.playerInfo;
+
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -12,6 +13,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for reading player data from the CSV file.
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.1
+ * @since 18.05.2025
+ */
 public class PlayerFileHandler {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
@@ -24,6 +32,11 @@ public class PlayerFileHandler {
    */
   public static List<Player> readPlayersFromFile(Tile startTile) throws FileHandlingException {
     List<Player> players = new ArrayList<>();
+
+    File file = new File(PLAYER_DATA_FILE);
+    if (!file.exists()) {
+      throw new FileHandlingException("Player file does not exist: " + PLAYER_DATA_FILE);
+    }
 
     try (CSVReader reader = new CSVReader(new FileReader(PLAYER_DATA_FILE))) {
       String[] record;
