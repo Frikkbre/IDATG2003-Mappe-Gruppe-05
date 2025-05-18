@@ -1,12 +1,18 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.playerInfo.PlayerFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -17,7 +23,9 @@ import java.util.*;
  * @since 16.02.2025
  */
 public class MissingDiamond {
+  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardBranching board;
+  private final BoardLinear boardLinear = new BoardLinear();
   private final List<Player> players;
   private final Die die;
   private boolean gameFinished;
@@ -33,7 +41,7 @@ public class MissingDiamond {
   public MissingDiamond() {
     System.out.println("Starting Missing Diamond Game with players from file.");
     this.board = createBoard();
-    this.players = createPlayers();
+    this.players = readPlayersFromCSV();
     this.die = new Die();
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
@@ -75,22 +83,35 @@ public class MissingDiamond {
     return board;
   }
 
-  private List<Player> createPlayers() {
-    try {
-      Tile startTile = board.getStartTile();
-      return PlayerFileHandler.readPlayersFromFile(startTile);
-    } catch (FileHandlingException e) {
-      System.err.println("Error reading player data: " + e.getMessage());
-      // Fallback to default creation if file reading fails
-      List<Player> players = new ArrayList<>();
-      Tile startTile = board.getStartTile();
-      // Create 2 players as fallback
-      for (int i = 1; i <= 2; i++) {
-        Player player = new Player("Player " + i, startTile, i);
-        players.add(player);
+  protected List<Player> readPlayersFromCSV() {
+    List<Player> players = new ArrayList<>();
+    Tile startTile = boardLinear.getTiles().get(0);
+
+    // Try to read from CSV file
+    File file = new File(PLAYER_DATA_FILE);
+    if (file.exists() && file.isFile()) {
+      try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        String[] record;
+        reader.readNext();
+
+        while ((record = reader.readNext()) != null) {
+          // Expected format: Player Name, Player ID, Color, Position
+          if (record.length >= 2) {
+            String playerName = record[0];
+            int playerID = Integer.parseInt(record[1]);
+            String playerColor = record[2];
+            int position = Integer.parseInt(record[3]);
+            Tile playerTile = boardLinear.getTiles().get(position);
+
+            Player player = new Player(playerName, playerID, playerColor, playerTile);
+            players.add(player);
+          }
+        }
+      } catch (IOException | CsvValidationException e) {
+        System.out.println("Error reading player data: " + e.getMessage());
       }
-      return players;
     }
+    return players;
   }
 
   public String playTurn() {
