@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import com.opencsv.AbstractCSVWriter;
+import com.opencsv.CSVWriter;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import javafx.application.Application;
@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileWriter;
-import com.opencsv.CSVWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,8 +24,7 @@ public class BoardGameSelectorGUI extends Application {
   private LadderGameGUI ladderGameGUI;
   private MissingDiamondGUI missingDiamondGUI;
   private Stage primaryStage;
-  private Spinner<Integer> numberOfPlayers; //TODO - Change this out with int?
-  private int currentPlayers;               //TODO - This instead of the spinner?
+  private Spinner<Integer> numberOfPlayers;
   private File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
   private CSVWriter playerWriter;
   private FileWriter outputfile;
@@ -58,10 +56,9 @@ public class BoardGameSelectorGUI extends Application {
       throw new IndexOutOfBoundsException("Invalid index: " + index);
     }
     return ColorList.get(index);
-
   }
 
-    /**
+  /**
    * Method to set the stage of the application.
    * @param primaryStage
    */
@@ -76,15 +73,6 @@ public class BoardGameSelectorGUI extends Application {
    */
   public Stage getStage() {
     return primaryStage;
-  }
-
-  /**
-   * Method to return the number of players.
-   * Used to determine the number of players in the game.
-   * @return number of players selected on spinner
-   */
-  public int getNumberOfPlayers() {
-    return currentPlayers;
   }
 
   @Override
@@ -107,16 +95,6 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
-    // Instaciate the CSVWriter
-    try {
-      outputfile = new FileWriter(playerFile);
-      playerWriter = new CSVWriter(outputfile);
-        String[] header = { "Player", "Color", "Score" };
-    } catch (IOException e) {
-      e.printStackTrace();
-      System.out.println("Error creating player file");
-    }
-
     // Populate the color list
     populateColors();
 
@@ -128,13 +106,29 @@ public class BoardGameSelectorGUI extends Application {
     Button button1 = new Button("Ladder game");
     button1.setOnAction(event -> {
       try {
+        // Make sure directory exists
+        File playerDir = new File("src/main/resources/saves/playerData/");
+        if (!playerDir.exists()) {
+          playerDir.mkdirs();
+        }
+
+        // Reset the file and writer
+        outputfile = new FileWriter(playerFile);
+        playerWriter = new CSVWriter(outputfile);
+
+        // Write header
+        String[] header = { "Player", "Color", "Score" };
+        playerWriter.writeNext(header);
+
+        // Write player data
         for (int i = 0; i < numberOfPlayers.getValue(); i++) {
           String[] playerData = { "Player " + (i + 1), getColor(i), "0" };
           playerWriter.writeNext(playerData);
         }
-        playerWriter.flush(); // Ensure data is written to the file
-        playerWriter.close(); // Close the writer after use
-        ladderGameGUI.setNumberOfPlayers(numberOfPlayers.getValue());
+
+        playerWriter.flush();
+        playerWriter.close();
+
         ladderGameGUI.start(getStage());
       } catch (Exception e) {
         e.printStackTrace();
@@ -144,7 +138,29 @@ public class BoardGameSelectorGUI extends Application {
     Button button2 = new Button("Missing diamond");
     button2.setOnAction(event -> {
       try {
-        missingDiamondGUI.setNumberOfPlayers(numberOfPlayers.getValue());
+        // Make sure directory exists
+        File playerDir = new File("src/main/resources/saves/playerData/");
+        if (!playerDir.exists()) {
+          playerDir.mkdirs();
+        }
+
+        // Reset the file and writer
+        outputfile = new FileWriter(playerFile);
+        playerWriter = new CSVWriter(outputfile);
+
+        // Write header
+        String[] header = { "Player", "Color", "Score" };
+        playerWriter.writeNext(header);
+
+        // Write player data
+        for (int i = 0; i < numberOfPlayers.getValue(); i++) {
+          String[] playerData = { "Player " + (i + 1), getColor(i), "0" };
+          playerWriter.writeNext(playerData);
+        }
+
+        playerWriter.flush();
+        playerWriter.close();
+
         missingDiamondGUI.start(getStage());
       } catch (Exception e) {
         e.printStackTrace();
@@ -153,10 +169,6 @@ public class BoardGameSelectorGUI extends Application {
 
     numberOfPlayers = new Spinner<>(2, 6, 2);
     numberOfPlayers.setEditable(true);
-
-    numberOfPlayers.valueProperty().addListener((obs, oldValue, newValue) -> {
-      ladderGameGUI.setNumberOfPlayers(newValue);
-    });
 
     FlowPane centerPane = new FlowPane();
     centerPane.getChildren().addAll(button1, button2, numberOfPlayers);
