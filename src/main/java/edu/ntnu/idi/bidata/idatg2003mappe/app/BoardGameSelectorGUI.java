@@ -167,7 +167,7 @@ public class BoardGameSelectorGUI extends Application {
       }
     });
 
-    numberOfPlayers = new Spinner<>(2, 6, 2);
+    numberOfPlayers = new Spinner<>(2, 5, 2);
     numberOfPlayers.setEditable(true);
 
     FlowPane centerPane = new FlowPane();
