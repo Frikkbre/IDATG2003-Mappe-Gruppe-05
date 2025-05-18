@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileWriter;
 import com.opencsv.CSVWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Class for the board game selector GUI.
@@ -29,7 +30,36 @@ public class BoardGameSelectorGUI extends Application {
   private File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
   private CSVWriter playerWriter;
   private FileWriter outputfile;
+  private ArrayList<String> ColorList = new ArrayList<>();
 
+
+  /**
+   * populateColors method.
+   * This method is used to populate the color list with colors.
+   */
+  public void populateColors() {
+    // Add colors to the color list
+    ColorList.add("Red");
+    ColorList.add("Blue");
+    ColorList.add("Green");
+    ColorList.add("Yellow");
+    ColorList.add("Purple");
+    ColorList.add("Orange");
+  }
+
+  /**
+   * Returns the color of the index passed in.
+   * Used to assign colors to players.
+   * @param index
+   * @return color
+   */
+  public String getColor(int index) {
+    if (index < 0 || index >= ColorList.size()) {
+      throw new IndexOutOfBoundsException("Invalid index: " + index);
+    }
+    return ColorList.get(index);
+
+  }
 
     /**
    * Method to set the stage of the application.
@@ -77,14 +107,18 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
+    // Instaciate the CSVWriter
     try {
       outputfile = new FileWriter(playerFile);
       playerWriter = new CSVWriter(outputfile);
-        String[] header = { "Player", "Score" };
+        String[] header = { "Player", "Color", "Score" };
     } catch (IOException e) {
       e.printStackTrace();
       System.out.println("Error creating player file");
     }
+
+    // Populate the color list
+    populateColors();
 
     this.ladderGameGUI = new LadderGameGUI();
     this.missingDiamondGUI = new MissingDiamondGUI();
@@ -95,7 +129,7 @@ public class BoardGameSelectorGUI extends Application {
     button1.setOnAction(event -> {
       try {
         for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-          String[] playerData = { "Player " + (i + 1), "0" };
+          String[] playerData = { "Player " + (i + 1), getColor(i), "0" };
           playerWriter.writeNext(playerData);
         }
         playerWriter.flush(); // Ensure data is written to the file
