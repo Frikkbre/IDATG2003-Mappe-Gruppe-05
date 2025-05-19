@@ -214,7 +214,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     mapView = new ImageView(mapImage);
     mapView.setFitWidth(900);
     mapView.setFitHeight(700);
-    mapView.setPreserveRatio(true);
+    mapView.setPreserveRatio(false); //TODO: set to true if you want to keep the aspect ratio, will cause streching issue with tiles
 
     root.getChildren().add(mapView);
 
