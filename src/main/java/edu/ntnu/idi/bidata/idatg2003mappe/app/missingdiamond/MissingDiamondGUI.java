@@ -37,6 +37,7 @@ public class MissingDiamondGUI extends Application {
   private TextArea scoreBoard;
   private TextArea gameLog;
   private Button rollDieButton;
+  private Stage primaryStage;
 
   // Board data
   private Map<Integer, Circle> tileCircles = new HashMap<>();
@@ -53,6 +54,7 @@ public class MissingDiamondGUI extends Application {
 
     // Add menu bar
     NavBar navBar = new NavBar();
+    navBar.setStage(primaryStage); // Set the stage in NavBar
     mainLayout.setTop(navBar.createMenuBar());
 
     // Create left panel (scoreboard, roll button, game log)
@@ -317,6 +319,10 @@ public class MissingDiamondGUI extends Application {
     } else {
       gameLog.appendText("Cannot move to tile " + tileId + ".\n");
     }
+  }
+
+  public Stage getStage() {
+    return primaryStage;
   }
 
   //Main method to launch the application.
