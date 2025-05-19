@@ -42,11 +42,6 @@ public class MissingDiamondGUI extends Application {
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
 
-  // Player colors
-  private final Color[] playerColors = {
-      Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
-  };
-
   @Override
   public void start(Stage primaryStage) {
     // Initialize game controller
