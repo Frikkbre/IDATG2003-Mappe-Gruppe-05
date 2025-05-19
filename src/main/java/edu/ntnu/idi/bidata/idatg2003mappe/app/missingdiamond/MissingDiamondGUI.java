@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
@@ -40,11 +41,6 @@ public class MissingDiamondGUI extends Application {
   // Board data
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
-
-  // Player colors
-  private final Color[] playerColors = {
-      Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
-  };
 
   @Override
   public void start(Stage primaryStage) {
@@ -284,7 +280,7 @@ public class MissingDiamondGUI extends Application {
             tileCircle.getCenterX() + offsetX,
             tileCircle.getCenterY() + offsetY,
             10,
-            playerColors[i]
+            Paint.valueOf(player.getColor()) //Using valueOf to make string usable with Paint.
         );
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
