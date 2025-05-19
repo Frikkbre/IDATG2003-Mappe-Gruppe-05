@@ -3,7 +3,11 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -152,44 +156,69 @@ public class MissingDiamondGUI extends Application {
 
   @Override
   public void start(Stage primaryStage) {
-    // Initialize game controller
     gameController = new MissingDiamondController(numberOfPlayers);
 
-    // Create main layout
     mainLayout = new BorderPane();
     mainLayout.setPrefSize(1440, 840);
+    mainLayout.setStyle("-fx-background-color: white;");
+    primaryStage.setTitle("Missing Diamond");
 
-    // Add menu bar with developer tools
     MenuBar menuBar = createMenuBar();
-
-    // Create coordinate mode label (initially invisible)
     coordinateModeLabel = new Label("COORDINATE MODE: Click on map to place points");
-    coordinateModeLabel.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 5px; -fx-font-weight: bold;");
+    coordinateModeLabel.setStyle("""
+        -fx-background-color: red;
+        -fx-text-fill: white;
+        -fx-padding: 5px;
+        -fx-font-weight: bold;
+      """);
     coordinateModeLabel.setVisible(false);
+    mainLayout.setTop(new VBox(menuBar, coordinateModeLabel));
 
-    // Add the label under the menu bar
-    VBox topContainer = new VBox(menuBar, coordinateModeLabel);
-    mainLayout.setTop(topContainer);
+    VBox leftSidebar = createLeftPanel();
+    leftSidebar.setPrefWidth(250);
+    leftSidebar.setMinWidth(250);
+    leftSidebar.setMaxWidth(250);
+    leftSidebar.setPadding(new Insets(10));
+    leftSidebar.setBorder(new Border(new BorderStroke(
+        Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT
+    )));
 
-    // Create left panel (scoreboard, roll button, game log)
-    VBox leftPanel = createLeftPanel();
+    GridPane grid = new GridPane();
 
-    // Create board
+    ColumnConstraints col0 = new ColumnConstraints();
+    col0.setMinWidth(250);
+    col0.setMaxWidth(250);
+    col0.setPrefWidth(250);
+
+    ColumnConstraints col1 = new ColumnConstraints();
+    col1.setHgrow(Priority.ALWAYS);
+
+    grid.getColumnConstraints().addAll(col0, col1);
+    grid.setPadding(Insets.EMPTY);
+    grid.setVgap(0);
+    grid.setHgap(0);
+
+    grid.add(leftSidebar, 0, 0);
+
+    StackPane mapContainer = new StackPane();
+    //mapContainer.setStyle("-fx-background-color: lightgray;");  // debug: see its full area
+    mapContainer.setAlignment(Pos.CENTER);
+
     boardPane = createBoardPane();
+    mapContainer.getChildren().add(boardPane);
 
-    // Set up split layout
-    SplitPane splitPane = new SplitPane();
-    splitPane.getItems().addAll(leftPanel, boardPane);
-    splitPane.setDividerPositions(0.25);
-    mainLayout.setCenter(splitPane);
+    grid.add(mapContainer, 1, 0);
 
-    // Create scene and show
+    RowConstraints row = new RowConstraints();
+    row.setVgrow(Priority.ALWAYS);
+    grid.getRowConstraints().add(row);
+
+    mainLayout.setCenter(grid);
+
     Scene scene = new Scene(mainLayout);
     primaryStage.setScene(scene);
-    primaryStage.setTitle("Missing Diamond");
     primaryStage.show();
 
-    // Initialize BoardUI
     updateBoardUI();
   }
 
@@ -276,7 +305,6 @@ public class MissingDiamondGUI extends Application {
 
   private VBox createLeftPanel() {
     VBox panel = new VBox(10);
-    panel.setPadding(new Insets(10));
 
     // Create scoreboard
     scoreBoard = new TextArea();
@@ -310,55 +338,43 @@ public class MissingDiamondGUI extends Application {
 
   //Creates the board pane with the game tiles.
   private Pane createBoardPane() {
-    Pane pane = new Pane();
+    StackPane root = new StackPane();
+    root.setPrefSize(900, 700);
+    root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-    try {
-      // Load the map image
-      Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
-      ImageView mapView = new ImageView(mapImage);
+    Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
+    ImageView mapView = new ImageView(mapImage);
+    mapView.setFitWidth(900);
+    mapView.setFitHeight(700);
+    mapView.setPreserveRatio(true);
 
-      // Set a fixed size for the map
-      mapView.setFitWidth(900);
-      mapView.setFitHeight(650);
-      mapView.setPreserveRatio(true);
+    root.getChildren().add(mapView);
 
-      // Add the map image to the pane
-      pane.getChildren().add(mapView);
+    Pane overlay = new Pane();
+    overlay.setPickOnBounds(false);
+    overlay.setPrefSize(900, 700);
+    overlay.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-      // Add click handler for coordinate mode AND normal game mode
-      pane.setOnMouseClicked(event -> {
-        if (coordinateMode) {
-          // Handle coordinate mode click
-          handleCoordinateClick(event.getX(), event.getY(), mapView);
-        } else {
-          // Handle normal game click (tile selection)
-          handleGameClick(event.getX(), event.getY());
-        }
-      });
+    mapView.boundsInParentProperty().addListener((obs, old, bounds) -> {
+      overlay.setPrefSize(bounds.getWidth(), bounds.getHeight());
+      overlay.setMaxSize(bounds.getWidth(), bounds.getHeight());
+    });
 
-      // Create the game locations
-      createGameLocations(pane, mapView);
-
-    } catch (Exception e) {
-      System.err.println("Failed to load map image: " + e.getMessage());
-      e.printStackTrace();
-
-      // Show error message on the pane instead of creating a simple board
-      pane.setStyle("-fx-background-color: darkred;");
-      Label errorLabel = new Label("ERROR: Failed to load game map!");
-      errorLabel.setStyle("-fx-font-size: 24pt; -fx-text-fill: white;");
-      errorLabel.setLayoutX(200);
-      errorLabel.setLayoutY(200);
-      pane.getChildren().add(errorLabel);
-
-      // Also log to the gameLog if it exists
-      if (gameLog != null) {
-        gameLog.appendText("ERROR: Failed to load game map! " + e.getMessage() + "\n");
+    overlay.setOnMouseClicked(event -> {
+      if (coordinateMode) {
+        handleCoordinateClick(event.getX(), event.getY(), mapView);
+      } else {
+        handleGameClick(event.getX(), event.getY());
       }
-    }
+    });
 
-    return pane;
+    root.getChildren().add(overlay);
+
+    createGameLocations(overlay, mapView);
+
+    return root;
   }
+
 
   private void handleCoordinateClick(double x, double y, ImageView mapView) {
     // Get actual dimensions
@@ -537,9 +553,11 @@ public class MissingDiamondGUI extends Application {
 
   //Updates the board UI with current game state.
   private void updateBoardUI() {
-    // Clear existing player markers
+    // First clear existing player markers from the board
     for (Circle marker : playerMarkers.values()) {
-      boardPane.getChildren().remove(marker);
+      // Find the Pane that contains the game elements
+      Pane gamePane = (Pane) boardPane;
+      gamePane.getChildren().remove(marker);
     }
     playerMarkers.clear();
 
@@ -565,8 +583,9 @@ public class MissingDiamondGUI extends Application {
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
 
-        // Add to board
-        boardPane.getChildren().add(playerMarker);
+        // Add to board - ensure we're adding to the correct Pane
+        Pane gamePane = (Pane) boardPane;
+        gamePane.getChildren().add(playerMarker);
         playerMarkers.put(player, playerMarker);
       }
     }
