@@ -20,7 +20,8 @@ import java.util.List;
  * @since 18.05.2025
  */
 public class PlayerFileHandler {
-  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  private static final String playerData = "src/main/resources/saves/playerData/Players.csv";
+
 
   /**
    * Reads player data from the Players.csv file and creates Player objects.
@@ -32,12 +33,12 @@ public class PlayerFileHandler {
   public static List<Player> readPlayersFromFile(Tile startTile) throws IllegalArgumentException {
     List<Player> players = new ArrayList<>();
 
-    File file = new File(PLAYER_DATA_FILE);
+    File file = new File(playerData);
     if (!file.exists()) {
-      throw new IllegalArgumentException("Player file does not exist: " + PLAYER_DATA_FILE);
+      throw new IllegalArgumentException("Player file does not exist: " + playerData);
     }
 
-    try (CSVReader reader = new CSVReader(new FileReader(PLAYER_DATA_FILE))) {
+    try (CSVReader reader = new CSVReader(new FileReader(playerData))) {
       String[] record;
       // Skip header if present
       reader.readNext();
@@ -71,7 +72,7 @@ public class PlayerFileHandler {
    * @return true if the file exists, false otherwise
    */
   public static boolean playerFileExists() {
-    File file = new File(PLAYER_DATA_FILE);
+    File file = new File(playerData);
     return file.exists() && file.isFile();
   }
 }
