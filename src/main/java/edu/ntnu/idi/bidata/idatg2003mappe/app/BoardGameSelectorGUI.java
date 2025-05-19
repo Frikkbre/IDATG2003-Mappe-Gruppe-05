@@ -117,7 +117,7 @@ public class BoardGameSelectorGUI extends Application {
     return centerPane;
   }
 
-  public void writeToFile(String game){
+  public void writeToFile(String game){ //TODO - remove dobble if statements that check for the same param?
     try {
       // Make sure directory exists
       File playerDir = new File("src/main/resources/saves/playerData/");
@@ -133,10 +133,18 @@ public class BoardGameSelectorGUI extends Application {
       String[] header = { "Player name", "ID", "Color", "Position" };
       playerWriter.writeNext(header);
 
-      // Write player data
-      for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-        String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "1" };
-        playerWriter.writeNext(playerData);
+      // Write player data specific to game chosen
+      if(game.equals("ladderGame")) {
+        for (int i = 0; i < numberOfPlayers.getValue(); i++) {
+          String[] playerData = {"Player " + (i + 1), String.valueOf(i), getColor(i), "0"};
+          playerWriter.writeNext(playerData);
+        }
+      } else if (game.equals("missingDiamond")){
+          for (int i = 0; i < numberOfPlayers.getValue(); i++) {
+            String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "1" };
+            playerWriter.writeNext(playerData);
+        }
+
       }
 
       playerWriter.flush();
