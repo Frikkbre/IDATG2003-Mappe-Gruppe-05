@@ -103,68 +103,10 @@ public class BoardGameSelectorGUI extends Application {
 
   private Pane createCenterPane() {
     Button button1 = new Button("Ladder game");
-    button1.setOnAction(event -> {
-      try {
-        // Make sure directory exists
-        File playerDir = new File("src/main/resources/saves/playerData/");
-        if (!playerDir.exists()) {
-          playerDir.mkdirs();
-        }
-
-        // Reset the file and writer
-        outputfile = new FileWriter(playerFile);
-        playerWriter = new CSVWriter(outputfile);
-
-        // Write header
-        String[] header = { "Player name", "ID", "Color", "Position" };
-        playerWriter.writeNext(header);
-
-        // Write player data
-        for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-          String[] playerData = { "Player " + (i + 1), String.valueOf(i + 1), getColor(i), "0" };
-          playerWriter.writeNext(playerData);
-        }
-
-        playerWriter.flush();
-        playerWriter.close();
-
-        ladderGameGUI.start(getStage());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    });
+    button1.setOnAction(event -> writeToFile("ladderGame"));
 
     Button button2 = new Button("Missing diamond");
-    button2.setOnAction(event -> {
-      try {
-        // Make sure directory exists
-        File playerDir = new File("src/main/resources/saves/playerData/");
-        if (!playerDir.exists()) {
-          playerDir.mkdirs();
-        }
-
-        // Reset the file and writer
-        outputfile = new FileWriter(playerFile);
-        playerWriter = new CSVWriter(outputfile);
-
-        // Write header
-        String[] header = { "Player name", "ID", "Color", "Position" };
-        playerWriter.writeNext(header);
-
-        // Write player data
-        for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-          String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "1" };
-          playerWriter.writeNext(playerData);
-        }
-
-        playerWriter.flush();
-        playerWriter.close();
-
-        missingDiamondGUI.start(getStage());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    });
+    button2.setOnAction(event -> writeToFile("missingDiamond"));
 
     numberOfPlayers = new Spinner<>(2, 5, 2);
     numberOfPlayers.setEditable(true);
@@ -173,6 +115,40 @@ public class BoardGameSelectorGUI extends Application {
     centerPane.getChildren().addAll(button1, button2, numberOfPlayers);
     centerPane.setAlignment(Pos.CENTER);
     return centerPane;
+  }
+
+  public void writeToFile(String game){
+    try {
+      // Make sure directory exists
+      File playerDir = new File("src/main/resources/saves/playerData/");
+      if (!playerDir.exists()) {
+        playerDir.mkdirs();
+      }
+
+      // Reset the file and writer
+      outputfile = new FileWriter(playerFile);
+      playerWriter = new CSVWriter(outputfile);
+
+      // Write header
+      String[] header = { "Player name", "ID", "Color", "Position" };
+      playerWriter.writeNext(header);
+
+      // Write player data
+      for (int i = 0; i < numberOfPlayers.getValue(); i++) {
+        String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "1" };
+        playerWriter.writeNext(playerData);
+      }
+
+      playerWriter.flush();
+      playerWriter.close();
+      if(game.equals("ladderGame")){
+        ladderGameGUI.start(getStage());
+      } else if(game.equals("missingDiamond")){
+        missingDiamondGUI.start(getStage());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public static void main(String[] args) {
