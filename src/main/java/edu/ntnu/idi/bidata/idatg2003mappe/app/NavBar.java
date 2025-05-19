@@ -66,6 +66,9 @@ public class NavBar {
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
       try {
+        if(getStage().equals(boardGameSelectorGUI.getStage())) {
+          throw new FileHandlingException("Already in main menu.");
+        }
         boardGameSelectorGUI.start(getStage());
       } catch (Exception e) {
         throw new RuntimeException(e);
