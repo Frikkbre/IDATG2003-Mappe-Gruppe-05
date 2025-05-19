@@ -225,6 +225,16 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
     root.getChildren().add(overlayPane);
 
+    overlayPane.setOnMouseClicked(e -> {
+      // Only process clicks if in designer mode
+      if (mapDesigner.isCoordinateMode()) {
+        mapDesigner.handleCoordinateClick(e.getX(), e.getY(), mapView);
+        e.consume(); // Prevent the event from bubbling up
+      } else {
+        handleGameClick(e.getX(), e.getY());
+      }
+    });
+
     mapView.boundsInParentProperty().addListener((obs, old, bounds) -> {
       overlayPane.setPrefSize(bounds.getWidth(), bounds.getHeight());
       overlayPane.setMaxSize(bounds.getWidth(), bounds.getHeight());
