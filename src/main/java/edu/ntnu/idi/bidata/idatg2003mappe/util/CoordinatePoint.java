@@ -12,7 +12,7 @@ import java.util.List;
  * Used by the MapDesignerTool for creating and editing game maps.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.3
  * @since 25.04.2025
  */
 public class CoordinatePoint {
@@ -52,13 +52,16 @@ public class CoordinatePoint {
     this.isSpecial = isSpecial;
 
     // Special tiles (RED): 10px radius
-    // Movement tiles (YELLOW): 5px radius (smaller)
+    // Movement tiles (BLACK): 5px radius (smaller)
+    double radius = isSpecial ? 10.0 : 5.0;
+
     Circle circle = new Circle(
         x, y,
-        isSpecial ? 10 : 5,  // Different sizes
-        isSpecial ? Color.RED : Color.YELLOW
+        radius,
+        isSpecial ? Color.RED : Color.BLACK
     );
-    circle.setStroke(Color.BLACK);
+
+    circle.setStroke(Color.WHITE);
     circle.setStrokeWidth(1.5);
 
     this.circle = circle;
@@ -74,19 +77,47 @@ public class CoordinatePoint {
   public Label createLabel(String name) {
     this.name = name;
 
-    // Only create labels for special points
-    if (isSpecial) {
-      Label label = new Label(name);
-      label.setLayoutX(x + 10);
-      label.setLayoutY(y - 10);
-      label.setTextFill(Color.WHITE);
-      label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 10pt;");
+    // Create label for all points, but only show it for special points
+    Label label = new Label(name);
+    label.setLayoutX(x + 10);
+    label.setLayoutY(y - 10);
+    label.setTextFill(Color.WHITE);
+    label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 10pt;");
 
-      this.label = label;
-      return label;
+    if (!isSpecial) {
+      label.setVisible(false); // Hide labels for movement tiles
     }
 
-    return null;
+    this.label = label;
+    return label;
+  }
+
+  /**
+   * Updates the visual position of this point based on new map dimensions.
+   *
+   * @param mapWidth Current map width
+   * @param mapHeight Current map height
+   */
+  public void updatePosition(double mapWidth, double mapHeight) {
+    // Calculate new absolute coordinates from percentages
+    double newX = xPercent * mapWidth;
+    double newY = yPercent * mapHeight;
+
+    // Update stored absolute coordinates
+    this.x = newX;
+    this.y = newY;
+
+    // Update circle position if it exists
+    if (circle != null) {
+      circle.setCenterX(newX);
+      circle.setCenterY(newY);
+    }
+
+    // Update label position if it exists
+    if (label != null) {
+      label.setLayoutX(newX + 10);
+      label.setLayoutY(newY - 10);
+    }
   }
 
   /**

@@ -11,19 +11,22 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class for designing game maps.
  * Provides tools for placing coordinates, creating connections, and exporting map data.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.3
  * @since 25.04.2025
  */
 public class MapDesignerTool {
@@ -40,6 +43,7 @@ public class MapDesignerTool {
 
   // Data storage
   private List<CoordinatePoint> capturedPoints = new ArrayList<>();
+  private Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
   private int selectedSourceId = -1;
 
@@ -160,7 +164,7 @@ public class MapDesignerTool {
   }
 
   /**
-   * Updates the map dimensions.
+   * Updates the map dimensions and repositions all coordinate points.
    *
    * @param width The new width
    * @param height The new height
@@ -168,6 +172,55 @@ public class MapDesignerTool {
   public void updateMapDimensions(double width, double height) {
     this.mapWidth = width;
     this.mapHeight = height;
+
+    // Update all point positions based on new dimensions
+    for (CoordinatePoint point : capturedPoints) {
+      point.updatePosition(width, height);
+    }
+
+    // Recreate connections to ensure they follow the updated points
+    redrawConnections();
+  }
+
+  /**
+   * Redraws all connections between points.
+   */
+  private void redrawConnections() {
+    // Remove all existing connection lines
+    // (we'll identify lines by user data property)
+    List<Line> linesToRemove = new ArrayList<>();
+    for (javafx.scene.Node node : overlayPane.getChildren()) {
+      if (node instanceof Line && "connection".equals(node.getUserData())) {
+        linesToRemove.add((Line) node);
+      }
+    }
+    overlayPane.getChildren().removeAll(linesToRemove);
+
+    // Redraw all connections
+    for (CoordinatePoint source : capturedPoints) {
+      for (Integer targetId : source.getConnections()) {
+        CoordinatePoint target = pointsById.get(targetId);
+        if (target != null) {
+          drawConnection(source, target);
+        }
+      }
+    }
+  }
+
+  /**
+   * Draws a connection line between two points.
+   */
+  private void drawConnection(CoordinatePoint source, CoordinatePoint target) {
+    Line line = new Line(
+        source.getCircle().getCenterX(), source.getCircle().getCenterY(),
+        target.getCircle().getCenterX(), target.getCircle().getCenterY()
+    );
+    line.setStroke(Color.BLACK);
+    line.setStrokeWidth(1.5);
+    line.setUserData("connection"); // For identification
+
+    // Add the line to the overlay (below circles)
+    overlayPane.getChildren().add(0, line);
   }
 
   /**
@@ -220,6 +273,7 @@ public class MapDesignerTool {
       }
     }
     capturedPoints.clear();
+    pointsById.clear();
     nextPointId = 1;
 
     if (listener != null) {
@@ -322,12 +376,14 @@ public class MapDesignerTool {
    */
   public void handleCoordinateClick(double x, double y, ImageView mapView) {
     if (!coordinateMode) {
+      System.out.println("Coordinate mode is not active");
       return;
     }
 
-    // Log click position for debugging
+    System.out.println("Creating coordinate at: " + x + ", " + y);
+
     if (listener != null) {
-      listener.onLogMessage("Click detected at: (" + x + "," + y + ")");
+      listener.onLogMessage("Click detected at: (" + x + ", " + y + ")");
     }
 
     // Ensure click is within map bounds
@@ -360,14 +416,15 @@ public class MapDesignerTool {
       pointName = "Location" + point.getId();
     }
 
-    // Create and add label if needed
+    // Create and add label
     Label label = point.createLabel(pointName);
     if (label != null) {
       overlayPane.getChildren().add(label);
     }
 
-    // Add to list of captured points
+    // Add to collections
     capturedPoints.add(point);
+    pointsById.put(point.getId(), point);
 
     // Log info about what was added
     if (listener != null) {
@@ -420,13 +477,8 @@ public class MapDesignerTool {
       int targetId = Integer.parseInt(targetIdField.getText().trim());
 
       // Find the corresponding coordinate points
-      CoordinatePoint source = null;
-      CoordinatePoint target = null;
-
-      for (CoordinatePoint point : capturedPoints) {
-        if (point.getId() == sourceId) source = point;
-        if (point.getId() == targetId) target = point;
-      }
+      CoordinatePoint source = pointsById.get(sourceId);
+      CoordinatePoint target = pointsById.get(targetId);
 
       if (source == null || target == null) {
         if (listener != null) {
@@ -435,19 +487,11 @@ public class MapDesignerTool {
         return;
       }
 
-      // Create and draw the connection line
-      Line line = new Line(
-          source.getCircle().getCenterX(), source.getCircle().getCenterY(),
-          target.getCircle().getCenterX(), target.getCircle().getCenterY()
-      );
-      line.setStroke(javafx.scene.paint.Color.BLACK);
-      line.setStrokeWidth(1.5);
-
       // Store connection data
       source.addConnection(target.getId());
 
-      // Add the line to the overlay (below circles)
-      overlayPane.getChildren().add(0, line);
+      // Draw the connection
+      drawConnection(source, target);
 
       if (listener != null) {
         listener.onLogMessage("Created connection: " + sourceId + " → " + targetId);

@@ -26,7 +26,7 @@ import java.util.Map;
  * GUI class for the Missing Diamond game.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.3
+ * @version 0.0.4
  * @since 23.04.2025
  */
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
@@ -39,6 +39,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private BorderPane mainLayout;
   private StackPane boardPane;
   private Pane overlayPane;
+  private ImageView mapView;
   private TextArea scoreBoard;
   private TextArea gameLog;
   private Button rollDieButton;
@@ -79,7 +80,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     boardPane = createBoardPane();
 
     // Initialize the map designer (after overlay is created)
-    mapDesigner = new MapDesignerTool(overlayPane, 900, 700, this);
+    mapDesigner = new MapDesignerTool(overlayPane, mapView.getFitWidth(), mapView.getFitHeight(), this);
 
     // Create the menu bar with designer menu
     MenuBar menuBar = createMenuBar();
@@ -96,6 +97,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         new Label("Target ID:"), mapDesigner.getTargetIdField(),
         new Button("Create Connection") {{ setOnAction(e -> mapDesigner.createConnection()); }}
     );
+
+    // Hide developer controls initially
+    mapDesigner.getTileTypeSelector().setVisible(false);
+    mapDesigner.getSourceIdField().setVisible(false);
+    mapDesigner.getTargetIdField().setVisible(false);
 
     // Set up the top container with all elements
     VBox topContainer = new VBox(menuBar, mapDesigner.getStatusLabel(), devControls);
@@ -205,7 +211,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
     Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
-    ImageView mapView = new ImageView(mapImage);
+    mapView = new ImageView(mapImage);
     mapView.setFitWidth(900);
     mapView.setFitHeight(700);
     mapView.setPreserveRatio(true);
@@ -214,7 +220,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Create a transparent pane for game elements
     overlayPane = new Pane();
-    overlayPane.setPickOnBounds(true);
+    overlayPane.setPickOnBounds(true); // Make sure this is true to receive all clicks
     overlayPane.setPrefSize(900, 700);
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
     root.getChildren().add(overlayPane);
@@ -229,15 +235,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       }
     });
 
-    // Add mouse handler to overlay
-    overlayPane.setOnMouseClicked(event -> {
-      if (mapDesigner.isCoordinateMode()) {
-        mapDesigner.handleCoordinateClick(event.getX(), event.getY(), mapView);
-      } else {
-        handleGameClick(event.getX(), event.getY());
-      }
-    });
-
     // Create game locations on the overlay
     createGameLocations(overlayPane, mapView);
 
@@ -245,6 +242,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private void handleGameClick(double x, double y) {
+    // Debug log
+    System.out.println("Game click at: " + x + ", " + y);
+
     // Get tile id from clicked point (if any)
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
       Circle circle = entry.getValue();
@@ -255,6 +255,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
       if (distance <= circle.getRadius()) {
         // Tile was clicked
+        System.out.println("Tile clicked: " + entry.getKey());
         handleTileClick(entry.getKey());
         return;
       }
@@ -280,7 +281,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       double x = mapWidth * xPercent;
       double y = mapHeight * yPercent;
 
-      Circle tile = createTileCircle(x, y, tileId);
+      // Check if the name contains "Special" to determine color
+      boolean isSpecial = name.contains("Special");
+      Color tileColor = isSpecial ? Color.RED : Color.BLACK;
+
+      Circle tile = createTileCircle(x, y, tileId, tileColor);
 
       // Add name label with better visibility
       Label label = new Label(name);
@@ -316,6 +321,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         );
         line.setStroke(Color.BLACK);
         line.setStrokeWidth(1.5);
+        line.setUserData("connection"); // For identification
 
         // Put lines under the circles
         pane.getChildren().add(0, line);
@@ -325,15 +331,18 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
-
-  private Circle createTileCircle(double x, double y, int tileId) {
-    Circle tile = new Circle(x, y, 10, Color.RED);
-    tile.setStroke(Color.BLACK);
+  private Circle createTileCircle(double x, double y, int tileId, Color color) {
+    Circle tile = new Circle(x, y, 10, color);
+    tile.setStroke(Color.WHITE);
     tile.setStrokeWidth(1.5);
     tile.setUserData(tileId);
 
     // Add click event
-    tile.setOnMouseClicked(e -> handleTileClick(tileId));
+    tile.setOnMouseClicked(e -> {
+      System.out.println("Circle clicked directly: " + tileId);
+      handleTileClick(tileId);
+      e.consume(); // Prevent event bubbling
+    });
 
     return tile;
   }
@@ -352,9 +361,21 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   //Highlights the possible moves for the current player.
   private void highlightPossibleMoves() {
-    // Reset all tiles to red
-    for (Circle tile : tileCircles.values()) {
-      tile.setFill(Color.RED);
+    // Reset all tiles to original colors (RED for special, BLACK for movement)
+    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
+      int tileId = entry.getKey();
+      Circle tile = entry.getValue();
+
+      // Determine original color based on location data
+      boolean isSpecial = false;
+      for (Object[] data : LOCATION_DATA) {
+        if ((int)data[0] == tileId && ((String)data[1]).contains("Special")) {
+          isSpecial = true;
+          break;
+        }
+      }
+
+      tile.setFill(isSpecial ? Color.RED : Color.BLACK);
     }
 
     // Only highlight possible moves if die has been rolled
@@ -428,12 +449,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       String moveResult = gameController.movePlayer(tileId);
       gameLog.appendText(moveResult + "\n");
 
-      // Reset highlighting
-      for (Circle tile : tileCircles.values()) {
-        tile.setFill(Color.RED);
-      }
-
-      // Update the board
+      // Reset highlighting and update the board
+      highlightPossibleMoves();
       updateBoardUI();
     } else {
       gameLog.appendText("Cannot move to tile " + tileId + ".\n");
@@ -454,6 +471,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   @Override
   public void onLogMessage(String message) {
     gameLog.appendText(message + "\n");
+    System.out.println("Log: " + message); // Debug output
   }
 
   @Override
@@ -465,16 +483,21 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Disable/enable game controls
     rollDieButton.setDisable(enabled);
+
+    // Debug output
+    System.out.println("Coordinate mode toggled: " + enabled);
   }
 
   @Override
   public void onConnectionModeToggled(boolean enabled) {
-    // Nothing specific needed here
+    // Debug output
+    System.out.println("Connection mode toggled: " + enabled);
   }
 
   @Override
   public void onMapDataExported(String data, boolean success) {
-    // Could add extra functionality here if needed
+    // Debug output
+    System.out.println("Map data exported: " + success);
   }
 
   //Main method to launch the application.
