@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
@@ -284,7 +285,7 @@ public class MissingDiamondGUI extends Application {
             tileCircle.getCenterX() + offsetX,
             tileCircle.getCenterY() + offsetY,
             10,
-            playerColors[i]
+            Paint.valueOf(player.getColor()) //Using valueOf to make string usable with Paint.
         );
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
