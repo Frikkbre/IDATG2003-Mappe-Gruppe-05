@@ -43,20 +43,58 @@ public class MissingDiamond {
   private BoardBranching createBoard() {
     BoardBranching board = new BoardBranching();
 
-    // Create locations for Afrikan Tähti
-    for (int i = 1; i <= 21; i++) {
+    // Create all locations
+    for (int i = 1; i <= 32; i++) {
       Tile tile = new Tile(i);
       board.addTileToBoard(tile);
     }
 
-    // Define connections between locations matching the GUI connections
-    connectTiles(board, 1, 3, 18, 19);
-    connectTiles(board, 2, 3, 16);
-    connectTiles(board, 3, 4);
-    // ... continue for all connections
+    // Add all connections matching the GUI's CONNECTIONS array
+    // North Africa
+    connectTiles(board, 1, 2, 3);
+    connectTiles(board, 2, 19);
+    connectTiles(board, 3, 4, 6);
+    connectTiles(board, 4, 5);
+    connectTiles(board, 5, 13);
+    connectTiles(board, 6, 7);
+
+    // West Africa
+    connectTiles(board, 7, 9, 10);
+    connectTiles(board, 8, 17, 20);
+    connectTiles(board, 9, 18, 19);
+
+    // Central Africa
+    connectTiles(board, 10, 11, 12);
+    connectTiles(board, 11, 15, 16);
+    connectTiles(board, 12, 13);
+    connectTiles(board, 13, 14);
+    connectTiles(board, 14, 15);
+
+    // East Africa
+    connectTiles(board, 15, 16, 24);
+    connectTiles(board, 16, 21, 24);
+
+    // West Coast
+    connectTiles(board, 17, 18);
+    connectTiles(board, 18, 19);
+    connectTiles(board, 19, 21);
+    connectTiles(board, 20, 29);
+
+    // Central Paths
+    connectTiles(board, 21, 22, 23);
+    connectTiles(board, 22, 29);
+    connectTiles(board, 23, 24, 25);
+    connectTiles(board, 25, 26, 28);
+    connectTiles(board, 26, 27);
+    connectTiles(board, 27, 31);
+
+    // South Africa
+    connectTiles(board, 28, 29, 30);
+    connectTiles(board, 29, 32);
+    connectTiles(board, 30, 31);
 
     // Randomly place the diamond at one of the locations
-    int diamondLocation = new Random().nextInt(20) + 1;
+    int diamondLocation = new Random().nextInt(32) + 1;
     this.diamondLocation = board.getTileById(diamondLocation);
 
     return board;

@@ -32,4 +32,6 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   opens edu.ntnu.idi.bidata.idatg2003mappe.map.board to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling;
   opens edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling to javafx.fxml;
+  exports edu.ntnu.idi.bidata.idatg2003mappe.util;
+  opens edu.ntnu.idi.bidata.idatg2003mappe.util to javafx.fxml;
 }
