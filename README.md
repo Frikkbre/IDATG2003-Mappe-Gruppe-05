@@ -101,9 +101,11 @@ clone the repository to your preferred IDE with java support.
 Make sure to use JDK 21 as its the version used in the project and its LTS(Long Term Support).
 compile with Apache Maven x.x.x VERSION!
 Run the App.java file in the app package.
+Or run with ```mvn clean install compile javafx:run```
 
 ## How to run the tests
 Navigate to the test package as shown in the [Project structure](#project-structure) section of the readme.
 Make sure to have the test dependencies installed and run the tests. This includes maven surefire (VERSION) plugin and JUnit 5.
+Or run with ```mvn test``` in the terminal.
 
 ## Refrences
