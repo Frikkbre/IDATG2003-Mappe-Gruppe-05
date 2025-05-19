@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class NavBar {
+  BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
 
   public interface GameStateProvider {
     GameState getCurrentGameState();
@@ -24,6 +25,10 @@ public class NavBar {
 
   private GameStateProvider gameStateProvider;
   private Stage stage;
+
+  public Stage getStage() {
+    return stage;
+  }
 
   public void setGameStateProvider(GameStateProvider provider) {
     this.gameStateProvider = provider;
@@ -56,12 +61,23 @@ public class NavBar {
         closeMenuItem
     );
 
-    //fileMenu.getItems().addAll(openMenuItem, quickSaveMenuItem, new SeparatorMenuItem(), closeMenuItem);
+
+    Menu navigateMenu = new Menu("Navigate");
+    MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
+    navigateMenuItem.setOnAction(event -> {
+      try {
+        boardGameSelectorGUI.start(getStage());
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    navigateMenu.getItems().addAll(navigateMenuItem);
 
 
 
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu);
+    menuBar.getMenus().addAll(fileMenu, navigateMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
 
     return menuBar;
