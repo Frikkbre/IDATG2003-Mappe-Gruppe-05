@@ -451,7 +451,7 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       if (tileField.getText().contains("Player")) {
-        tileField.setText(tileField.getText() + ", " + player.getID());
+        tileField.setText(tileField.getText() + ", " + (player.getID() + 1)); //+1 to account for indexation, player 1 has ID 0 and so on.
       } else {
         tileField.setText(player.getName());
         tileField.setStyle("-fx-background-color: " + playerColor + ";");
