@@ -8,8 +8,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
