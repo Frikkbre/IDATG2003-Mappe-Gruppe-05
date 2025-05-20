@@ -28,7 +28,7 @@ public class NavBar {
 
   private Stage stage;
   private Object gameController;
-  private LadderGameGUI ladderGameGUI; // Reference to the ladder game GUI
+  private LadderGameGUI ladderGameGUI = new LadderGameGUI(); // Reference to the ladder game GUI
 
   public Stage getStage() {
     return stage;
@@ -98,6 +98,7 @@ public class NavBar {
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
     return event -> {
       if (gameController instanceof LadderGameController) {
+        LadderGameGUI ladderGameGUI = this.ladderGameGUI;
         gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, ((LadderGameController) gameController).isRandomLadders());
       } else if (gameController instanceof MissingDiamondController) {
         gameSaveLoadHandler.loadLastSaveMissingDiamond();
