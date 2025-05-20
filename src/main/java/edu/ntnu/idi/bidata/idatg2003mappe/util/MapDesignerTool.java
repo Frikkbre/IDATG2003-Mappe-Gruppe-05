@@ -1,5 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.util;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -16,7 +18,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.image.ImageView;
 import javafx.scene.Node;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +32,7 @@ import java.util.Map;
  * Provides tools for placing coordinates, creating connections, and exporting map data.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.4
+ * @version 0.0.5
  * @since 25.04.2025
  */
 public class MapDesignerTool {
@@ -350,44 +355,62 @@ public class MapDesignerTool {
       return;
     }
 
-    StringBuilder locationData = new StringBuilder();
-    StringBuilder connectionData = new StringBuilder();
+    // Create a MapConfig object
+    MapConfig mapConfig = new MapConfig();
+    mapConfig.setName("Missing Diamond Map");
 
-    // Export location data
-    locationData.append("// Location data with percentages of map width/height\n");
-    locationData.append("private static final Object[][] LOCATION_DATA = {\n");
-    locationData.append("    // {id, name, x-percentage, y-percentage, isSpecial}\n");
-
+    // Add locations
     for (CoordinatePoint point : capturedPoints) {
-      locationData.append(String.format("    {%d, \"%s\", %.4f, %.4f},\n",
-          point.getId(), point.getName(), point.getXPercent(), point.getYPercent()));
+      MapConfig.Location location = new MapConfig.Location(
+          point.getId(),
+          point.getName(),
+          point.getXPercent(),
+          point.getYPercent(),
+          point.isSpecial()
+      );
+      mapConfig.addLocation(location);
     }
 
-    locationData.append("};\n\n");
-
-    // Export connection data
-    connectionData.append("// Connection data for paths between locations\n");
-    connectionData.append("private static final int[][] CONNECTIONS = {\n");
-
+    // Add connections
     for (CoordinatePoint point : capturedPoints) {
       for (Integer targetId : point.getConnections()) {
-        connectionData.append(String.format("    {%d, %d},\n", point.getId(), targetId));
+        MapConfig.Connection connection = new MapConfig.Connection(
+            point.getId(),
+            targetId
+        );
+        mapConfig.addConnection(connection);
       }
     }
 
-    connectionData.append("};\n");
+    try {
+      // Create a file chooser dialog
+      FileChooser fileChooser = new FileChooser();
+      fileChooser.setTitle("Save Map Configuration");
+      fileChooser.getExtensionFilters().add(
+          new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+      fileChooser.setInitialDirectory(new File("src/main/resources/maps"));
+      fileChooser.setInitialFileName("missing_diamond_map.json");
 
-    String exportData = locationData.toString() + connectionData.toString();
+      // Get file from dialog
+      Stage stage = new Stage();
+      File file = fileChooser.showSaveDialog(stage);
 
-    // Copy to clipboard
-    Clipboard clipboard = Clipboard.getSystemClipboard();
-    ClipboardContent content = new ClipboardContent();
-    content.putString(exportData);
-    clipboard.setContent(content);
+      if (file != null) {
+        // Save to file
+        MapConfigFileHandler fileHandler = new MapConfigFileHandler();
+        fileHandler.write(mapConfig, file.getAbsolutePath());
 
-    if (listener != null) {
-      listener.onMapDataExported(exportData, true);
-      listener.onLogMessage("Exported map data to clipboard.");
+        // Show success message
+        if (listener != null) {
+          listener.onMapDataExported("Map saved to " + file.getName(), true);
+          listener.onLogMessage("Map configuration exported to " + file.getAbsolutePath());
+        }
+      }
+    } catch (Exception e) {
+      if (listener != null) {
+        listener.onMapDataExported("Error exporting map: " + e.getMessage(), false);
+        listener.onLogMessage("Error exporting map: " + e.getMessage());
+      }
     }
   }
 
