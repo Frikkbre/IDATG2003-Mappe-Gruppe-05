@@ -12,7 +12,7 @@ import java.util.List;
  * Used by the MapDesignerTool for creating and editing game maps.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.3
+ * @version 0.0.4
  * @since 25.04.2025
  */
 public class CoordinatePoint {
@@ -63,6 +63,7 @@ public class CoordinatePoint {
 
     circle.setStroke(Color.WHITE);
     circle.setStrokeWidth(1.5);
+    circle.setUserData(id); // Add this line to set the ID as user data
 
     this.circle = circle;
     return circle;
@@ -83,6 +84,7 @@ public class CoordinatePoint {
     label.setLayoutY(y - 10);
     label.setTextFill(Color.WHITE);
     label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 10pt;");
+    label.setUserData(id); // Set userData to the point ID
 
     if (!isSpecial) {
       label.setVisible(false); // Hide labels for movement tiles
@@ -126,7 +128,9 @@ public class CoordinatePoint {
    * @param targetId The ID of the point to connect to
    */
   public void addConnection(int targetId) {
-    connections.add(targetId);
+    if (!connections.contains(targetId)) {
+      connections.add(targetId);
+    }
   }
 
   // Getters and setters
@@ -155,6 +159,10 @@ public class CoordinatePoint {
     return circle;
   }
 
+  public void setCircle(Circle circle) {
+    this.circle = circle;
+  }
+
   public Label getLabel() {
     return label;
   }
@@ -163,8 +171,16 @@ public class CoordinatePoint {
     return name;
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public boolean isSpecial() {
     return isSpecial;
+  }
+
+  public void setSpecial(boolean special) {
+    this.isSpecial = special;
   }
 
   public List<Integer> getConnections() {

@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.image.ImageView;
+import javafx.scene.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ import java.util.Map;
  * Provides tools for placing coordinates, creating connections, and exporting map data.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.3
+ * @version 0.0.4
  * @since 25.04.2025
  */
 public class MapDesignerTool {
@@ -111,9 +112,13 @@ public class MapDesignerTool {
     MenuItem exportMapItem = new MenuItem("Export Map Data");
     exportMapItem.setOnAction(e -> exportMapData());
 
+    MenuItem dumpPointsMapItem = new MenuItem("Debug: Dump Points Map");
+    dumpPointsMapItem.setOnAction(e -> dumpPointsMap());
+
     devMenu.getItems().addAll(coordModeItem, new SeparatorMenuItem(),
         copyItem, clearItem, new SeparatorMenuItem(),
-        toggleConnectionModeItem, exportMapItem);
+        toggleConnectionModeItem, exportMapItem, new SeparatorMenuItem(),
+        dumpPointsMapItem);
 
     return devMenu;
   }
@@ -164,6 +169,15 @@ public class MapDesignerTool {
   }
 
   /**
+   * Checks if connection mode is enabled.
+   *
+   * @return True if connection mode is enabled, false otherwise
+   */
+  public boolean isConnectionMode() {
+    return connectionMode;
+  }
+
+  /**
    * Updates the map dimensions and repositions all coordinate points.
    *
    * @param width The new width
@@ -189,7 +203,7 @@ public class MapDesignerTool {
     // Remove all existing connection lines
     // (we'll identify lines by user data property)
     List<Line> linesToRemove = new ArrayList<>();
-    for (javafx.scene.Node node : overlayPane.getChildren()) {
+    for (Node node : overlayPane.getChildren()) {
       if (node instanceof Line && "connection".equals(node.getUserData())) {
         linesToRemove.add((Line) node);
       }
@@ -210,7 +224,13 @@ public class MapDesignerTool {
   /**
    * Draws a connection line between two points.
    */
-  private void drawConnection(CoordinatePoint source, CoordinatePoint target) {
+  public void drawConnection(CoordinatePoint source, CoordinatePoint target) {
+    if (source.getCircle() == null || target.getCircle() == null) {
+      System.err.println("Cannot draw connection: circles not initialized for points " +
+          source.getId() + " or " + target.getId());
+      return;
+    }
+
     Line line = new Line(
         source.getCircle().getCenterX(), source.getCircle().getCenterY(),
         target.getCircle().getCenterX(), target.getCircle().getCenterY()
@@ -221,6 +241,8 @@ public class MapDesignerTool {
 
     // Add the line to the overlay (below circles)
     overlayPane.getChildren().add(0, line);
+
+    System.out.println("Drew connection from " + source.getId() + " to " + target.getId());
   }
 
   /**
@@ -267,7 +289,9 @@ public class MapDesignerTool {
   public void clearCoordinatePoints() {
     // Remove all coordinate circles and labels
     for (CoordinatePoint point : capturedPoints) {
-      overlayPane.getChildren().remove(point.getCircle());
+      if (point.getCircle() != null) {
+        overlayPane.getChildren().remove(point.getCircle());
+      }
       if (point.getLabel() != null) {
         overlayPane.getChildren().remove(point.getLabel());
       }
@@ -444,7 +468,7 @@ public class MapDesignerTool {
    *
    * @param tileId The ID of the clicked tile
    */
-  private void handleConnectionModeClick(int tileId) {
+  public void handleConnectionModeClick(int tileId) {
     if (selectedSourceId == -1) {
       // First click - select source
       selectedSourceId = tileId;
@@ -476,26 +500,7 @@ public class MapDesignerTool {
       int sourceId = Integer.parseInt(sourceIdField.getText().trim());
       int targetId = Integer.parseInt(targetIdField.getText().trim());
 
-      // Find the corresponding coordinate points
-      CoordinatePoint source = pointsById.get(sourceId);
-      CoordinatePoint target = pointsById.get(targetId);
-
-      if (source == null || target == null) {
-        if (listener != null) {
-          listener.onLogMessage("Error: Source or target point not found.");
-        }
-        return;
-      }
-
-      // Store connection data
-      source.addConnection(target.getId());
-
-      // Draw the connection
-      drawConnection(source, target);
-
-      if (listener != null) {
-        listener.onLogMessage("Created connection: " + sourceId + " → " + targetId);
-      }
+      createDirectConnection(sourceId, targetId);
 
       // Clear fields
       sourceIdField.clear();
@@ -504,6 +509,102 @@ public class MapDesignerTool {
       if (listener != null) {
         listener.onLogMessage("Error: Please enter valid tile IDs.");
       }
+    }
+  }
+
+  /**
+   * Creates a connection directly using IDs.
+   */
+  public boolean createDirectConnection(int sourceId, int targetId) {
+    System.out.println("Creating direct connection from " + sourceId + " to " + targetId);
+
+    // Find the points
+    CoordinatePoint source = pointsById.get(sourceId);
+    CoordinatePoint target = pointsById.get(targetId);
+
+    if (source == null || target == null) {
+      System.err.println("Source or target point not found: " +
+          (source == null ? "sourceId=" + sourceId + " missing" : "") +
+          (target == null ? "targetId=" + targetId + " missing" : ""));
+
+      // Debug what's in the map
+      System.out.println("Available pointsById keys: " + pointsById.keySet());
+
+      if (listener != null) {
+        listener.onLogMessage("Error: Could not find points with IDs " + sourceId + " and " + targetId);
+      }
+      return false;
+    }
+
+    // Add connection data
+    source.addConnection(targetId);
+
+    // Draw the connection line
+    drawConnection(source, target);
+
+    if (listener != null) {
+      listener.onLogMessage("Created connection: " + sourceId + " → " + targetId);
+    }
+
+    return true;
+  }
+
+  /**
+   * Registers an existing point with the map designer.
+   * Used to synchronize points created elsewhere with the designer.
+   */
+  public void registerExistingPoint(int id, double x, double y, double xPercent, double yPercent,
+                                    String name, boolean isSpecial) {
+
+    // Check if this ID is already registered to avoid duplicates
+    if (pointsById.containsKey(id)) {
+      System.out.println("Point ID " + id + " already registered, skipping.");
+      return;
+    }
+
+    // Create and register the point
+    CoordinatePoint point = new CoordinatePoint(id, x, y, xPercent, yPercent);
+    point.setName(name);
+    point.setSpecial(isSpecial);
+
+    // If the circle exists in the overlay, link it to the point
+    for (Node node : overlayPane.getChildren()) {
+      if (node instanceof Circle) {
+        Circle circle = (Circle) node;
+        if (circle.getUserData() != null && circle.getUserData().equals(id)) {
+          point.setCircle(circle);
+          break;
+        }
+      }
+    }
+
+    // Register the point
+    pointsById.put(id, point);
+    capturedPoints.add(point);
+
+    // Update nextPointId to avoid ID conflicts
+    if (id >= nextPointId) {
+      nextPointId = id + 1;
+    }
+
+    System.out.println("Registered existing point " + id + ": " + name + " at " + x + "," + y);
+  }
+
+  /**
+   * Dump the contents of the pointsById map for debugging.
+   */
+  public void dumpPointsMap() {
+    System.out.println("========= POINTS MAP DUMP =========");
+    System.out.println("Total points: " + pointsById.size());
+    for (Map.Entry<Integer, CoordinatePoint> entry : pointsById.entrySet()) {
+      CoordinatePoint point = entry.getValue();
+      System.out.println("ID " + entry.getKey() + ": " + point.getName() +
+          " at (" + point.getX() + "," + point.getY() + ")");
+    }
+    System.out.println("==================================");
+
+    if (listener != null) {
+      listener.onLogMessage("Points map dumped to console (" + pointsById.size() + " points)");
     }
   }
 }

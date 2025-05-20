@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GUI class for the Missing Diamond game. //TODO: Try to connect the dots, remove labels of tiles
+ * GUI class for the Missing Diamond game.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.4
+ * @version 0.0.5
  * @since 23.04.2025
  */
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
@@ -53,6 +53,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   // Map designer tool
   private MapDesignerTool mapDesigner;
 
+  // Connection tracking
+  private int connectionSourceId = -1;
+
   // Player colors
   private final Color[] playerColors = {
       Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
@@ -60,18 +63,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   // Location data with percentages of map width/height
   private static final Object[][] LOCATION_DATA = {
-      // {id, name, x-percentage, y-percentage}
-      {1, "Location1", 0.1577, 0.1571},
-      {2, "Location2", 0.1217, 0.1686},
-      {3, "Location3", 0.0239, 0.2200},
-      {4, "SpecialLoc4", 0.0778, 0.1971},
-      {5, "SpecialLoc5", 0.1816, 0.2000},
-      {6, "SpecialLoc6", 0.4411, 0.1614},
+      // {id, name, x-percentage, y-percentage
   };
 
   // Connection data for paths between locations
   private static final int[][] CONNECTIONS = {
-      // Empty for now
   };
 
   @Override
@@ -162,6 +158,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       if (LOCATION_DATA.length > 0) {
         System.out.println("Forcing creation of game locations after layout");
         createGameLocations(overlayPane, mapView);
+
+        // Synchronize with map designer
+        synchronizeTilesWithDesigner();
       }
       updateBoardUI();
     });
@@ -249,7 +248,27 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       // Only process clicks if in designer mode
       if (mapDesigner.isCoordinateMode()) {
         mapDesigner.handleCoordinateClick(e.getX(), e.getY(), mapView);
-        e.consume(); // Prevent the event from bubbling up
+        e.consume();
+      } else if (mapDesigner.isConnectionMode()) {
+        // Find which tile was clicked
+        for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
+          Circle circle = entry.getValue();
+          double distance = Math.sqrt(
+              Math.pow(circle.getCenterX() - e.getX(), 2) +
+                  Math.pow(circle.getCenterY() - e.getY(), 2)
+          );
+
+          if (distance <= circle.getRadius()) {
+            int tileId = entry.getKey();
+            System.out.println("Connection mode - tile clicked: " + tileId);
+            handleConnectionClick(tileId);
+            e.consume();
+            return;
+          }
+        }
+
+        // If we get here, no tile was clicked
+        gameLog.appendText("No tile found at click location. Try again.\n");
       } else {
         handleGameClick(e.getX(), e.getY());
       }
@@ -310,6 +329,34 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
+  private void handleConnectionClick(int tileId) {
+    System.out.println("Connection mode - tile clicked: " + tileId);
+
+    if (connectionSourceId == -1) {
+      // First click - remember source ID
+      connectionSourceId = tileId;
+      gameLog.appendText("Selected source ID: " + tileId + ". Now click on target tile.\n");
+    } else {
+      // Second click - create connection with saved source and new target
+      int sourceId = connectionSourceId;
+      int targetId = tileId;
+
+      gameLog.appendText("Creating connection: " + sourceId + " → " + targetId + "\n");
+
+      // Use the direct method to create connection
+      boolean success = mapDesigner.createDirectConnection(sourceId, targetId);
+
+      if (success) {
+        gameLog.appendText("Successfully connected tiles " + sourceId + " to " + targetId + ".\n");
+      } else {
+        gameLog.appendText("Failed to connect tiles. Make sure both tiles exist.\n");
+      }
+
+      // Reset for next connection
+      connectionSourceId = -1;
+    }
+  }
+
   private void createGameLocations(Pane pane, ImageView mapView) {
     System.out.println("CREATING GAME LOCATIONS");
 
@@ -367,6 +414,57 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Create connections after adding all tiles
     createPaths(pane);
+  }
+
+  private void synchronizeTilesWithDesigner() {
+    System.out.println("Synchronizing " + tileCircles.size() + " tiles with map designer...");
+
+    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
+      int tileId = entry.getKey();
+      Circle circle = entry.getValue();
+
+      // Create a CoordinatePoint that matches the existing circle
+      double xPercent = circle.getCenterX() / mapView.getFitWidth();
+      double yPercent = circle.getCenterY() / mapView.getFitHeight();
+
+      // Get the point name and special status from LOCATION_DATA
+      String pointName = "Location" + tileId;
+      boolean isSpecial = false;
+
+      for (Object[] data : LOCATION_DATA) {
+        if ((int)data[0] == tileId) {
+          pointName = (String)data[1];
+          isSpecial = pointName.contains("Special");
+          break;
+        }
+      }
+
+      // Register this point with the map designer
+      registerExistingPointWithDesigner(
+          tileId,
+          circle.getCenterX(),
+          circle.getCenterY(),
+          xPercent,
+          yPercent,
+          pointName,
+          isSpecial
+      );
+    }
+
+    gameLog.appendText("Synchronized " + tileCircles.size() + " map locations with designer.\n");
+  }
+
+  private void registerExistingPointWithDesigner(
+      int id, double x, double y, double xPercent, double yPercent,
+      String name, boolean isSpecial) {
+
+    // Create an entry in mapDesigner.pointsById that matches our existing circle
+    try {
+      // Call the method in MapDesignerTool
+      mapDesigner.registerExistingPoint(id, x, y, xPercent, yPercent, name, isSpecial);
+    } catch (Exception e) {
+      System.err.println("Error registering point: " + e.getMessage());
+    }
   }
 
   private void updateGameLocations() {
@@ -473,7 +571,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     // Add click event
     tile.setOnMouseClicked(e -> {
       System.out.println("Circle clicked directly: " + tileId);
-      handleTileClick(tileId);
+      if (mapDesigner.isConnectionMode()) {
+        handleConnectionClick(tileId);
+      } else {
+        handleTileClick(tileId);
+      }
       e.consume(); // Prevent event bubbling
     });
 
@@ -625,6 +727,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   public void onConnectionModeToggled(boolean enabled) {
     // Debug output
     System.out.println("Connection mode toggled: " + enabled);
+
+    // Reset connection source ID when toggling off
+    if (!enabled) {
+      connectionSourceId = -1;
+    }
   }
 
   @Override
