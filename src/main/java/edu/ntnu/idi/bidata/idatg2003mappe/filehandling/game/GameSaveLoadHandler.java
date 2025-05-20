@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
@@ -80,7 +81,7 @@ public class GameSaveLoadHandler {
    * @param ladderGameGUI
    * @param randomLadders
    */
-  public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, boolean randomLadders) {
+  public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
     // Check if the CSV file exists
     File csvFile = new File(fullPath);
     if (!csvFile.exists() || !csvFile.isFile()) {
@@ -97,12 +98,8 @@ public class GameSaveLoadHandler {
       CSVReader reader = new CSVReader(new FileReader(csvFile));
       System.out.println("Loading game from: " + fullPath);
 
-      String[] header = reader.readNext(); // Skip heade
-
+      String[] header = reader.readNext(); // Skip header
       System.out.println("Header: " + String.join(", ", header));
-
-      // Create a new game with default randomLadders value
-      ladderGameController = new LadderGameController(randomLadders);
 
       // Create GameState
       GameState gameState = new GameState();
@@ -126,8 +123,11 @@ public class GameSaveLoadHandler {
 
       gameState.setPlayerPositions(playerPositions);
 
-      // Apply the game state
-      ladderGameController.applyGameState(gameState);
+      // Get the controller from NavBar instead of creating a new one
+      NavBar navBar = ladderGameGUI.navBar; // Assuming navBar is accessible
+
+      // Apply the game state to the existing controller
+      controller.applyGameState(gameState);
 
       // Show success alert
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
