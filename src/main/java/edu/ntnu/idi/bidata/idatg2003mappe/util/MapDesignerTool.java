@@ -125,7 +125,71 @@ public class MapDesignerTool {
         toggleConnectionModeItem, exportMapItem, new SeparatorMenuItem(),
         dumpPointsMapItem);
 
+    MenuItem saveAsDefaultItem = new MenuItem("Save as Default Map");
+    saveAsDefaultItem.setOnAction(e -> saveAsDefaultMap());
+
+    devMenu.getItems().addAll(
+        new SeparatorMenuItem(),
+        saveAsDefaultItem
+    );
+
     return devMenu;
+  }
+
+  /**
+   * Saves the current map configuration as the default map.
+   * This is primarily for developer use during map creation.
+   */
+  public void saveAsDefaultMap() {
+    if (capturedPoints.isEmpty()) {
+      if (listener != null) {
+        listener.onLogMessage("No map data to save as default.");
+      }
+      return;
+    }
+
+    try {
+      // Create a MapConfig object
+      MapConfig mapConfig = new MapConfig();
+      mapConfig.setName("Default Missing Diamond Map");
+
+      // Add locations
+      for (CoordinatePoint point : capturedPoints) {
+        MapConfig.Location location = new MapConfig.Location(
+            point.getId(),
+            point.getName(),
+            point.getXPercent(),
+            point.getYPercent(),
+            point.isSpecial()
+        );
+        mapConfig.addLocation(location);
+      }
+
+      // Add connections
+      for (CoordinatePoint point : capturedPoints) {
+        for (Integer targetId : point.getConnections()) {
+          MapConfig.Connection connection = new MapConfig.Connection(
+              point.getId(),
+              targetId
+          );
+          mapConfig.addConnection(connection);
+        }
+      }
+
+      // Save to default location
+      MapConfigFileHandler fileHandler = new MapConfigFileHandler();
+      fileHandler.saveToDefaultLocation(mapConfig);
+
+      if (listener != null) {
+        listener.onMapDataExported("Map saved as default map configuration", true);
+        listener.onLogMessage("Map saved as default configuration and will be loaded automatically next time");
+      }
+    } catch (Exception e) {
+      if (listener != null) {
+        listener.onMapDataExported("Error saving default map: " + e.getMessage(), false);
+        listener.onLogMessage("Error saving default map: " + e.getMessage());
+      }
+    }
   }
 
   /**
