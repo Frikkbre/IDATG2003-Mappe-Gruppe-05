@@ -229,7 +229,7 @@ private BoardBranching createBoard() {
     connectTiles(board, 30, 31);
 
     // Randomly place the diamond at one of the locations
-    int diamondLocation = new Random().nextInt(32) + 1;
+    int diamondLocation = new Random().nextInt(board.getTiles().size()) + 1;
     this.diamondLocation = board.getTileById(diamondLocation);
 
     return board;
