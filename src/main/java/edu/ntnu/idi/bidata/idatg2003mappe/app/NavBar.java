@@ -27,7 +27,7 @@ public class NavBar {
   private static final String fullPath = lastSaveDir + "/" + lastSaveFile;
 
   private Stage stage;
-  private Object gameController;
+  public Object gameController;
   private LadderGameGUI ladderGameGUI = new LadderGameGUI(); // Reference to the ladder game GUI
 
   public Stage getStage() {
@@ -99,7 +99,7 @@ public class NavBar {
     return event -> {
       if (gameController instanceof LadderGameController) {
         LadderGameGUI ladderGameGUI = this.ladderGameGUI;
-        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, ((LadderGameController) gameController).isRandomLadders());
+        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController, ((LadderGameController) gameController).isRandomLadders());
       } else if (gameController instanceof MissingDiamondController) {
         gameSaveLoadHandler.loadLastSaveMissingDiamond();
       }
