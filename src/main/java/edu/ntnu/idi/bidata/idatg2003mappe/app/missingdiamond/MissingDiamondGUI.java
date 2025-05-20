@@ -68,6 +68,10 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
   };
 
+  /**
+   * Main method to launch the application.
+   * @param primaryStage
+   */
   @Override
   public void start(Stage primaryStage) {
     this.primaryStage = primaryStage; // Store the stage reference
@@ -95,7 +99,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Add NavBar functionality
     NavBar navBar = new NavBar();
+    
     navBar.setStage(primaryStage); // Set the stage in NavBar
+    navBar.setGameController(gameController);
+    navBar.setMissingDiamondGUI(this);
+    mainLayout.setTop(navBar.createMenuBar());
 
     // Create developer controls HBox
     HBox devControls = new HBox(10);
@@ -234,6 +242,12 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return menuBar;
   }
 
+  /**
+   * Creates the left panel with scoreboard, roll button, and game log.
+   *
+   * @return VBox containing the left panel components
+   */
+
   private VBox createLeftPanel() {
     VBox panel = new VBox(10);
 
@@ -267,8 +281,15 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return panel;
   }
 
-  //Creates the board pane with the game tiles.
-  private StackPane createBoardPane() {
+  /**
+   * Creates the board pane with a simple circular path and cross paths.
+   *
+   * @return Pane containing the board
+   */
+  private Pane createBoardPane() {
+    Pane pane = new Pane();
+    pane.setStyle("-fx-background-color: lightblue;");
+  
     StackPane root = new StackPane();
     root.setPrefSize(900, 700);
     root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -618,7 +639,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return tile;
   }
 
-  //Updates the scoreboard with current player positions.
+  /**
+   * Updates the scoreboard with player names and their current tile.
+   */
   private void updateScoreBoard() {
     scoreBoard.clear();
     scoreBoard.appendText("Scoreboard:\n");
@@ -630,7 +653,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
-  //Highlights the possible moves for the current player.
+  /**
+   * Highlights possible moves for the current player.
+   */
   private void highlightPossibleMoves() {
     // Reset all tiles to original colors
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
@@ -657,6 +682,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       }
     }
   }
+
+
+  /**
+   * Updates the board UI with player positions and highlights possible moves.
+   */
 
   //Updates the board UI with current game state.
   private void updateBoardUI() {
@@ -698,7 +728,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     updateScoreBoard();
   }
 
-  //Handles a click on a tile.
+  /**
+   * Handles tile click events.
+   *
+   * @param tileId The ID of the clicked tile.
+   */
   private void handleTileClick(int tileId) {
     // Only allow moves if the player has rolled
     if (!gameController.hasRolled()) {
@@ -724,6 +758,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
+  /**
+   * Returns the primary stage of the application.
+   *
+   * @return The primary stage
+   */
   public Stage getStage() {
     return primaryStage;
   }

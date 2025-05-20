@@ -381,6 +381,18 @@ public class MissingDiamond {
   }
 
   /**
+   * Sets the current player.
+   *
+   * @param playerIndex The new current player.
+   */
+  public void setCurrentPlayerIndex(int playerIndex) {
+    if(playerIndex < 0 || playerIndex >= players.size()) {
+      throw new IllegalArgumentException("Invalid player.");
+    }
+    this.currentPlayerIndex = playerIndex;
+  }
+
+  /**
    * Gets the index of the current player.
    *
    * @return The index of the current player.

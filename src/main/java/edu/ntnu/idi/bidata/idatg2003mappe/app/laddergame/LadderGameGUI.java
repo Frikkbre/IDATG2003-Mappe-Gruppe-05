@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
@@ -34,7 +35,8 @@ public class LadderGameGUI extends Application {
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private boolean randomLadders = false;
-  private NavBar navBar;
+  public NavBar navBar;
+  private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   /**
    * Start the game.
@@ -50,6 +52,7 @@ public class LadderGameGUI extends Application {
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
 
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
@@ -149,190 +152,6 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Create the menu bar.
-   * @param primaryStage the primary stage
-   * @return the menu bar
-   */
-
-  private MenuBar createMenuBar(Stage primaryStage) {
-    MenuBar menuBar = new MenuBar();
-
-    // File Menu
-    Menu fileMenu = new Menu("File");
-    MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
-    quickSaveMenuItem.setOnAction(e -> quickSaveGame());
-
-    MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
-    loadLastSaveMenuItem.setOnAction(e -> loadLastSave());
-
-    MenuItem closeMenuItem = new MenuItem("Close");
-    closeMenuItem.setOnAction(e -> primaryStage.close());
-
-    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem, new SeparatorMenuItem(), closeMenuItem);
-
-    // Settings Menu
-    Menu settingsMenu = new Menu("Settings");
-    MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
-    MenuItem restartGameItem = new MenuItem("Restart Game");
-    toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
-    restartGameItem.setOnAction(e -> restartGame(primaryStage));
-    settingsMenu.getItems().addAll(toggleModeItem, restartGameItem);
-
-    // Add both menus to the menu bar
-    menuBar.getMenus().addAll(fileMenu, settingsMenu);
-    return menuBar;
-  }
-
-  /**
-   * Quick save the game to the default location.
-   */
-  private void quickSaveGame() {
-    try {
-      BoardFileHandler fileHandler = new BoardFileHandler();
-      GameState gameState = gameController.createGameState();
-      fileHandler.saveToDefaultLocation(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Saved");
-      alert.setHeaderText("Game Saved Successfully");
-      alert.setContentText("Your game has been saved to the default location.");
-      alert.showAndWait();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Save Error");
-      alert.setContentText("Could not save the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
-  }
-
-  /**
-   * Load the last saved game from the default location.
-   */
-  private void loadLastSave() {
-    BoardFileHandler fileHandler = new BoardFileHandler();
-
-    if (!fileHandler.defaultSaveExists()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("No Save Found");
-      alert.setHeaderText("No Save File Found");
-      alert.setContentText("There is no saved game to load.");
-      alert.showAndWait();
-      return;
-    }
-
-    try {
-      GameState gameState = fileHandler.loadFromDefaultLocation();
-
-      // Create a new game with the loaded state
-      this.randomLadders = gameState.isRandomLadders();
-      gameController = new LadderGameController(randomLadders);
-      gameController.applyGameState(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Loaded");
-      alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved game has been loaded.");
-      alert.showAndWait();
-
-      updateBoardUI();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Load Error");
-      alert.setContentText("Could not load the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
-  }
-
-  /**
-   * Save the current game state to a file.
-   * @param primaryStage the primary stage
-   */
-  private void saveGame(Stage primaryStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Game");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-
-    // Set initial directory to the saves folder
-    File saveDir = new File("src/main/resources/saves");
-    if (saveDir.exists() && saveDir.isDirectory()) {
-      fileChooser.setInitialDirectory(saveDir);
-    }
-
-    // Set default filename
-    fileChooser.setInitialFileName("game_save.json");
-
-    File file = fileChooser.showSaveDialog(primaryStage);
-
-    if (file != null) {
-      try {
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        GameState gameState = gameController.createGameState();
-        fileHandler.write(gameState, file.getAbsolutePath());
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Saved");
-        alert.setHeaderText("Game Saved Successfully");
-        alert.setContentText("Your game has been saved to " + file.getName());
-        alert.showAndWait();
-      } catch (FileHandlingException ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Save Error");
-        alert.setContentText("Could not save the game: " + ex.getMessage());
-        alert.showAndWait();
-      }
-    }
-  }
-
-  /**
-   * Load a game state from a file.
-   * @param primaryStage the primary stage
-   */
-  private void loadGame(Stage primaryStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Load Game");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-
-    // Set initial directory to the saves folder
-    File saveDir = new File("src/main/resources/saves");
-    if (saveDir.exists() && saveDir.isDirectory()) {
-      fileChooser.setInitialDirectory(saveDir);
-    }
-
-    File file = fileChooser.showOpenDialog(primaryStage);
-
-    if (file != null) {
-      try {
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        GameState gameState = fileHandler.read(file.getAbsolutePath());
-
-        // Create a new game with the loaded state
-        this.randomLadders = gameState.isRandomLadders();
-        gameController = new LadderGameController(randomLadders);
-        gameController.applyGameState(gameState);
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Loaded");
-        alert.setHeaderText("Game Loaded Successfully");
-        alert.setContentText("Your game has been loaded from " + file.getName());
-        alert.showAndWait();
-
-        updateBoardUI();
-      } catch (FileHandlingException ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Load Error");
-        alert.setContentText("Could not load the game: " + ex.getMessage());
-        alert.showAndWait();
-      }
-    }
-  }
-
-  /**
    * Toggles the game mode between classic and random ladders.
    */
 
@@ -387,7 +206,12 @@ public class LadderGameGUI extends Application {
   /**
    * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
    */
-  private void updateBoardUI() {
+  public void updateBoardUI() {
+
+    if ((boardGrid) == null) {
+      return; // Avoid NullPointerException
+    }
+
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;
