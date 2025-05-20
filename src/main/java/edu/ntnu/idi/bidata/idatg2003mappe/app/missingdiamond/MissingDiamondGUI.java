@@ -54,7 +54,8 @@ public class MissingDiamondGUI extends Application {
 
     // Add menu bar
     NavBar navBar = new NavBar();
-    navBar.setStage(primaryStage); // Set the stage in NavBar
+    navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
     mainLayout.setTop(navBar.createMenuBar());
 
     // Create left panel (scoreboard, roll button, game log)
