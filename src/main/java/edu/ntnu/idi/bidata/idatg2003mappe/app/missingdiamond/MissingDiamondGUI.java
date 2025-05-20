@@ -349,6 +349,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
       Circle tile = createTileCircle(x, y, tileId, tileColor);
 
+      /*
       // Add name label with better visibility
       Label label = new Label(name);
       label.setLayoutX(x + 5);
@@ -356,8 +357,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       label.setTextFill(Color.WHITE);
       label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 8pt;");
       label.setUserData(tileId);  // Line to set userData
+       */
 
-      pane.getChildren().addAll(tile, label);
+      pane.getChildren().addAll(tile); // (tile,label); to add label to circles
       tileCircles.put(tileId, tile);
     }
 
