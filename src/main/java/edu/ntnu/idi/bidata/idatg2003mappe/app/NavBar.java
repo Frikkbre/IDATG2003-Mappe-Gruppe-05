@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
@@ -20,6 +21,8 @@ import java.util.List;
 
 public class NavBar {
   BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
+  private LadderGameGUI ladderGameGUI = new LadderGameGUI();
+  private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   private static final String lastSaveDir = "src/main/resources/saves";
@@ -28,7 +31,7 @@ public class NavBar {
 
   private Stage stage;
   public Object gameController;
-  private LadderGameGUI ladderGameGUI = new LadderGameGUI(); // Reference to the ladder game GUI
+
 
   public Stage getStage() {
     return stage;
@@ -52,6 +55,15 @@ public class NavBar {
    */
   public void setLadderGameGUI(LadderGameGUI gui) {
     this.ladderGameGUI = gui;
+  }
+
+
+  /**
+   * Set the missing diamond GUI instance
+   * @param gui The MissingDiamondGUI instance
+   */
+  public void setMissingDiamondGUI(MissingDiamondGUI gui) {
+    this.missingDiamondGUI = gui;
   }
 
   public MenuBar createMenuBar() {
@@ -99,9 +111,11 @@ public class NavBar {
     return event -> {
       if (gameController instanceof LadderGameController) {
         LadderGameGUI ladderGameGUI = this.ladderGameGUI;
-        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController, ((LadderGameController) gameController).isRandomLadders());
+        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController,
+            ((LadderGameController) gameController).isRandomLadders());
       } else if (gameController instanceof MissingDiamondController) {
-        gameSaveLoadHandler.loadLastSaveMissingDiamond();
+        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI; // Add this field to NavBar
+        gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, (MissingDiamondController) gameController);
       }
     };
   }
