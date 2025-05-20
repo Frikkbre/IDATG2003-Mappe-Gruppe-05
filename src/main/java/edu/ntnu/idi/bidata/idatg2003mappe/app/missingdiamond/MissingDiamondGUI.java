@@ -23,9 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * GUI class for the Missing Diamond game.
@@ -52,6 +50,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   // Board data
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
+
+  private Set<Integer> specialTileIds = new HashSet<>();
 
   // Map designer tool
   private MapDesignerTool mapDesigner;
@@ -578,6 +578,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private Circle createTileCircle(double x, double y, int tileId, Color color) {
+
     // Create circle
     Circle tile = new Circle();
     tile.setCenterX(x);
@@ -603,6 +604,10 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       e.consume(); // Prevent event bubbling
     });
 
+    if (isSpecial) {
+      specialTileIds.add(tileId);
+    }
+
     return tile;
   }
 
@@ -622,10 +627,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private void highlightPossibleMoves() {
     // Reset all tiles to original colors
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
+      int tileId = entry.getKey();
       Circle tile = entry.getValue();
 
-      // Simply check if it was RED (special) or not
-      if (tile.getFill().equals(Color.RED)) {
+      // Check if it's a special tile using our set
+      if (specialTileIds.contains(tileId)) {
         tile.setFill(Color.RED);
       } else {
         tile.setFill(Color.BLACK);
