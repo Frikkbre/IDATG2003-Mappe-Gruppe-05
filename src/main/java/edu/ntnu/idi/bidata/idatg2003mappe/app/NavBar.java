@@ -96,12 +96,13 @@ public class NavBar {
   }
 
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
-    if (gameController instanceof LadderGameController) {
-      gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, ((LadderGameController) gameController).isRandomLadders());
-    } else if (gameController instanceof MissingDiamondController) {
-      gameSaveLoadHandler.loadLastSaveMissingDiamond();
-    }
-    return null;
+    return event -> {
+      if (gameController instanceof LadderGameController) {
+        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, ((LadderGameController) gameController).isRandomLadders());
+      } else if (gameController instanceof MissingDiamondController) {
+        gameSaveLoadHandler.loadLastSaveMissingDiamond();
+      }
+    };
   }
 
   private EventHandler<ActionEvent> closeFile() {
