@@ -2,7 +2,7 @@
 
 ## Authors
 Simen Gudbrandsen - candidatenumber: \
-Frikk Brændsrød - candidatenumber:
+Frikk Brændsrød - 10011
 
 ## Projects description
 Using many of the same classes the project is to build the classic "Ladder game" and "Forsvunne diamant" in java with a GUI. \

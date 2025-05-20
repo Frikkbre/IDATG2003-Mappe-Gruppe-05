@@ -4,6 +4,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
@@ -32,13 +35,87 @@ public class MissingDiamond {
   private Tile diamondLocation;
   private int currentRoll; // Store the last roll value
 
+  public MissingDiamond(int numberOfPlayers) {
+    this(numberOfPlayers, "src/main/resources/maps/missing_diamond_default.json");
+  }
+
+  public MissingDiamond(int numberOfPlayers, String mapFilePath) {
+    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+
+    BoardBranching boardInstance;
+    List<Player> playersInstance;
+    Die dieInstance = new Die();
+    boolean gameFinishedInstance = false;
+    int currentPlayerIndexInstance = 0;
+
+    try {
+      // Load map configuration from file
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig = mapFileHandler.read(mapFilePath);
+
+      // Only try to create board from config if mapConfig is not null
+      if (mapConfig != null) {
+        // Create board from configuration
+        boardInstance = createBoardFromConfig(mapConfig);
+      } else {
+        System.err.println("Error: Map configuration is null");
+        boardInstance = createEmptyDefaultBoard();
+      }
+
+      // Initialize players using the created board
+      playersInstance = createPlayers(numberOfPlayers, boardInstance);
+
+    } catch (FileHandlingException e) {
+      System.err.println("Error loading map configuration: " + e.getMessage());
+      // Fall back to default board creation
+      boardInstance = createEmptyDefaultBoard();
+      playersInstance = createPlayers(numberOfPlayers, boardInstance);
+    }
+
+    // Assign to final fields
+    this.board = boardInstance;
+    this.players = playersInstance;
+    this.die = dieInstance;
+    this.gameFinished = gameFinishedInstance;
+    this.currentPlayerIndex = currentPlayerIndexInstance;
+    this.currentPlayer = players.get(currentPlayerIndex);
+    this.currentRoll = 0;
+  }
+
+  /**
+   * Constructor for the MissingDiamond class.
+   * Reads players from CSV file.
+   */
   /**
    * Constructor for the MissingDiamond class.
    * Reads players from CSV file.
    */
   public MissingDiamond() {
     System.out.println("Starting Missing Diamond Game with players from file.");
-    this.board = createBoard();
+
+    // Initialize board first before doing anything else
+    BoardBranching boardInstance;
+
+    // Use the same JSON-based approach as the other constructor
+    try {
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapFileHandler.defaultMapExists()) {
+        mapConfig = mapFileHandler.loadFromDefaultLocation();
+        boardInstance = createBoardFromConfig(mapConfig);
+      } else {
+        // Fall back to empty default board if no JSON file exists
+        boardInstance = createEmptyDefaultBoard();
+      }
+    } catch (FileHandlingException e) {
+      System.err.println("Error loading map configuration: " + e.getMessage());
+      boardInstance = createEmptyDefaultBoard();
+    }
+
+    // Now assign to this.board (this needs to happen exactly once)
+    this.board = boardInstance;
+
     readPlayersFromCSV();
     this.die = new Die();
     this.gameFinished = false;
@@ -47,42 +124,63 @@ public class MissingDiamond {
     this.currentRoll = 0;
   }
 
-  /**
-   * Creates the game board.
-   * @return Board
-   */
-  private BoardBranching createBoard() {
+  private BoardBranching createBoardFromConfig(MapConfig mapConfig) {
     BoardBranching board = new BoardBranching();
+    board.setBoardName(mapConfig.getName());
 
-    // Create tiles for the main circular path (20 tiles)
-    List<Tile> outerTiles = new ArrayList<>();
-    for (int i = 1; i <= 20; i++) {
-      Tile tile = new Tile(i);
+    // Create all tiles
+    for (MapConfig.Location location : mapConfig.getLocations()) {
+      Tile tile = new Tile(location.getId());
       board.addTileToBoard(tile);
-      outerTiles.add(tile);
     }
 
-    // Connect the outer tiles in a circle
-    for (int i = 0; i < outerTiles.size(); i++) {
-      Tile current = outerTiles.get(i);
-      Tile next = outerTiles.get((i + 1) % outerTiles.size());
-      board.connectTiles(current, next);
+    // Add all connections
+    for (MapConfig.Connection connection : mapConfig.getConnections()) {
+      Tile fromTile = board.getTileById(connection.getFromId());
+      Tile toTile = board.getTileById(connection.getToId());
+
+      if (fromTile != null && toTile != null) {
+        board.connectTiles(fromTile, toTile);
+      }
     }
-
-    // Create center tile
-    Tile centerTile = new Tile(21);
-    board.addTileToBoard(centerTile);
-
-    // Connect center tile to the circle at four points (north, east, south, west)
-    board.connectTiles(centerTile, outerTiles.get(0));  // North
-    board.connectTiles(centerTile, outerTiles.get(5));  // East
-    board.connectTiles(centerTile, outerTiles.get(10)); // South
-    board.connectTiles(centerTile, outerTiles.get(15)); // West
-
-    // Set a random tile as the diamond location (for demo purposes)
-    diamondLocation = outerTiles.get(outerTiles.size() - 1);
 
     return board;
+  }
+
+  private BoardBranching createEmptyDefaultBoard() {
+    BoardBranching board = new BoardBranching();
+
+    // Create just a few connected tiles as absolute fallback
+    for (int i = 1; i <= 5; i++) {
+      Tile tile = new Tile(i);
+      board.addTileToBoard(tile);
+    }
+
+    // Connect the tiles in a simple path
+    for (int i = 1; i <= 4; i++) {
+      board.connectTiles(board.getTileById(i), board.getTileById(i+1));
+    }
+
+    return board;
+  }
+
+  private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
+    List<Player> players = new ArrayList<>();
+    Tile startTile = board.getStartTile();
+
+    // Define colors for players
+    String[] playerColors = {"Orange", "Blue", "Green", "Yellow", "Purple", "Red"};
+
+    for (int i = 1; i <= numberOfPlayers; i++) {
+      // Get color with wraparound if more players than colors
+      String color = playerColors[(i-1) % playerColors.length];
+
+      // Create player with correct parameter order: name, id, color, tile
+      Player player = new Player("Player " + i, i, color, startTile);
+      players.add(player);
+    }
+
+    return players;
   }
 
   protected List<Player> readPlayersFromCSV() {
@@ -217,6 +315,15 @@ public class MissingDiamond {
     }
 
     return result;
+  }
+
+  public void skipTurn() {
+    // Reset current roll
+    currentRoll = 0;
+
+    // Move to next player
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    currentPlayer = players.get(currentPlayerIndex);
   }
 
   /**
