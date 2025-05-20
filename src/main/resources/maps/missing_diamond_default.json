@@ -1,0 +1,311 @@
+{
+  "name": "Default Missing Diamond Map",
+  "locations": [
+    {
+      "id": 1,
+      "name": "SpecialLoc1",
+      "xPercent": 0.2375,
+      "yPercent": 0.1457,
+      "isSpecial": true
+    },
+    {
+      "id": 2,
+      "name": "SpecialLoc2",
+      "xPercent": 0.0758,
+      "yPercent": 0.1929,
+      "isSpecial": true
+    },
+    {
+      "id": 3,
+      "name": "SpecialLoc3",
+      "xPercent": 0.1796,
+      "yPercent": 0.2014,
+      "isSpecial": true
+    },
+    {
+      "id": 4,
+      "name": "SpecialLoc4",
+      "xPercent": 0.4351,
+      "yPercent": 0.16,
+      "isSpecial": true
+    },
+    {
+      "id": 5,
+      "name": "SpecialLoc5",
+      "xPercent": 0.479,
+      "yPercent": 0.2143,
+      "isSpecial": true
+    },
+    {
+      "id": 6,
+      "name": "SpecialLoc6",
+      "xPercent": 0.3473,
+      "yPercent": 0.2714,
+      "isSpecial": true
+    },
+    {
+      "id": 7,
+      "name": "SpecialLoc7",
+      "xPercent": 0.0259,
+      "yPercent": 0.3571,
+      "isSpecial": true
+    },
+    {
+      "id": 8,
+      "name": "Location8",
+      "xPercent": 0.1577,
+      "yPercent": 0.16,
+      "isSpecial": false
+    },
+    {
+      "id": 9,
+      "name": "Location9",
+      "xPercent": 0.1197,
+      "yPercent": 0.1686,
+      "isSpecial": false
+    },
+    {
+      "id": 10,
+      "name": "Location10",
+      "xPercent": 0.2634,
+      "yPercent": 0.1814,
+      "isSpecial": false
+    },
+    {
+      "id": 11,
+      "name": "Location11",
+      "xPercent": 0.2295,
+      "yPercent": 0.1986,
+      "isSpecial": false
+    },
+    {
+      "id": 12,
+      "name": "Location12",
+      "xPercent": 0.2954,
+      "yPercent": 0.1957,
+      "isSpecial": false
+    },
+    {
+      "id": 13,
+      "name": "Location13",
+      "xPercent": 0.3413,
+      "yPercent": 0.1957,
+      "isSpecial": false
+    },
+    {
+      "id": 14,
+      "name": "Location14",
+      "xPercent": 0.3792,
+      "yPercent": 0.18,
+      "isSpecial": false
+    },
+    {
+      "id": 15,
+      "name": "Location15",
+      "xPercent": 0.2535,
+      "yPercent": 0.2086,
+      "isSpecial": false
+    },
+    {
+      "id": 16,
+      "name": "Location16",
+      "xPercent": 0.2774,
+      "yPercent": 0.2214,
+      "isSpecial": false
+    },
+    {
+      "id": 17,
+      "name": "Location17",
+      "xPercent": 0.2974,
+      "yPercent": 0.2471,
+      "isSpecial": false
+    },
+    {
+      "id": 18,
+      "name": "Location18",
+      "xPercent": 0.2275,
+      "yPercent": 0.2329,
+      "isSpecial": false
+    },
+    {
+      "id": 19,
+      "name": "Location19",
+      "xPercent": 0.2275,
+      "yPercent": 0.2614,
+      "isSpecial": false
+    },
+    {
+      "id": 20,
+      "name": "Location20",
+      "xPercent": 0.1996,
+      "yPercent": 0.2829,
+      "isSpecial": false
+    },
+    {
+      "id": 21,
+      "name": "Location21",
+      "xPercent": 0.1696,
+      "yPercent": 0.3043,
+      "isSpecial": false
+    },
+    {
+      "id": 22,
+      "name": "Location22",
+      "xPercent": 0.1417,
+      "yPercent": 0.3243,
+      "isSpecial": false
+    },
+    {
+      "id": 23,
+      "name": "Location23",
+      "xPercent": 0.1018,
+      "yPercent": 0.3186,
+      "isSpecial": false
+    },
+    {
+      "id": 24,
+      "name": "Location24",
+      "xPercent": 0.0698,
+      "yPercent": 0.33,
+      "isSpecial": false
+    },
+    {
+      "id": 25,
+      "name": "Location25",
+      "xPercent": 0.0279,
+      "yPercent": 0.2214,
+      "isSpecial": false
+    },
+    {
+      "id": 26,
+      "name": "Location26",
+      "xPercent": 0.014,
+      "yPercent": 0.2529,
+      "isSpecial": false
+    },
+    {
+      "id": 27,
+      "name": "Location27",
+      "xPercent": 0.008,
+      "yPercent": 0.2857,
+      "isSpecial": false
+    },
+    {
+      "id": 28,
+      "name": "Location28",
+      "xPercent": 0.012,
+      "yPercent": 0.3157,
+      "isSpecial": false
+    }
+  ],
+  "connections": [
+    {
+      "fromId": 1,
+      "toId": 8
+    },
+    {
+      "fromId": 1,
+      "toId": 11
+    },
+    {
+      "fromId": 1,
+      "toId": 10
+    },
+    {
+      "fromId": 2,
+      "toId": 25
+    },
+    {
+      "fromId": 3,
+      "toId": 18
+    },
+    {
+      "fromId": 8,
+      "toId": 9
+    },
+    {
+      "fromId": 9,
+      "toId": 2
+    },
+    {
+      "fromId": 10,
+      "toId": 12
+    },
+    {
+      "fromId": 11,
+      "toId": 3
+    },
+    {
+      "fromId": 11,
+      "toId": 15
+    },
+    {
+      "fromId": 12,
+      "toId": 13
+    },
+    {
+      "fromId": 13,
+      "toId": 14
+    },
+    {
+      "fromId": 14,
+      "toId": 4
+    },
+    {
+      "fromId": 15,
+      "toId": 16
+    },
+    {
+      "fromId": 16,
+      "toId": 17
+    },
+    {
+      "fromId": 17,
+      "toId": 6
+    },
+    {
+      "fromId": 18,
+      "toId": 19
+    },
+    {
+      "fromId": 19,
+      "toId": 20
+    },
+    {
+      "fromId": 20,
+      "toId": 21
+    },
+    {
+      "fromId": 21,
+      "toId": 22
+    },
+    {
+      "fromId": 22,
+      "toId": 23
+    },
+    {
+      "fromId": 23,
+      "toId": 24
+    },
+    {
+      "fromId": 24,
+      "toId": 7
+    },
+    {
+      "fromId": 25,
+      "toId": 26
+    },
+    {
+      "fromId": 26,
+      "toId": 27
+    },
+    {
+      "fromId": 27,
+      "toId": 28
+    },
+    {
+      "fromId": 28,
+      "toId": 7
+    }
+  ]
+}
