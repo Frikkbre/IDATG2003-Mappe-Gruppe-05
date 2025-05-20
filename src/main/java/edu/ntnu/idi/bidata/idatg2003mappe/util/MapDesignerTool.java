@@ -359,8 +359,8 @@ public class MapDesignerTool {
     locationData.append("    // {id, name, x-percentage, y-percentage, isSpecial}\n");
 
     for (CoordinatePoint point : capturedPoints) {
-      locationData.append(String.format("    {%d, \"%s\", %.4f, %.4f, %b},\n",
-          point.getId(), point.getName(), point.getXPercent(), point.getYPercent(), point.isSpecial()));
+      locationData.append(String.format("    {%d, \"%s\", %.4f, %.4f},\n",
+          point.getId(), point.getName(), point.getXPercent(), point.getYPercent()));
     }
 
     locationData.append("};\n\n");

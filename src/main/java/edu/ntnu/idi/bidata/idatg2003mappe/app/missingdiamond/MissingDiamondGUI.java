@@ -62,12 +62,68 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   };
 
   // Location data with percentages of map width/height
+// Location data with percentages of map width/height
   private static final Object[][] LOCATION_DATA = {
-      // {id, name, x-percentage, y-percentage
+      // {id, name, x-percentage, y-percentage, isSpecial}
+      {1, "SpecialLoc1", 0.2375, 0.1457},
+      {2, "SpecialLoc2", 0.0758, 0.1929},
+      {3, "SpecialLoc3", 0.1796, 0.2014},
+      {4, "SpecialLoc4", 0.4351, 0.1600},
+      {5, "SpecialLoc5", 0.4790, 0.2143},
+      {6, "SpecialLoc6", 0.3473, 0.2714},
+      {7, "SpecialLoc7", 0.0259, 0.3571},
+      {8, "Location8", 0.1577, 0.1600},
+      {9, "Location9", 0.1197, 0.1686},
+      {10, "Location10", 0.2634, 0.1814},
+      {11, "Location11", 0.2295, 0.1986},
+      {12, "Location12", 0.2954, 0.1957},
+      {13, "Location13", 0.3413, 0.1957},
+      {14, "Location14", 0.3792, 0.1800},
+      {15, "Location15", 0.2535, 0.2086},
+      {16, "Location16", 0.2774, 0.2214},
+      {17, "Location17", 0.2974, 0.2471},
+      {18, "Location18", 0.2275, 0.2329},
+      {19, "Location19", 0.2275, 0.2614},
+      {20, "Location20", 0.1996, 0.2829},
+      {21, "Location21", 0.1696, 0.3043},
+      {22, "Location22", 0.1417, 0.3243},
+      {23, "Location23", 0.1018, 0.3186},
+      {24, "Location24", 0.0698, 0.3300},
+      {25, "Location25", 0.0279, 0.2214},
+      {26, "Location26", 0.0140, 0.2529},
+      {27, "Location27", 0.0080, 0.2857},
+      {28, "Location28", 0.0120, 0.3157},
   };
 
   // Connection data for paths between locations
   private static final int[][] CONNECTIONS = {
+      {1, 8},
+      {1, 11},
+      {1, 10},
+      {2, 25},
+      {3, 18},
+      {8, 9},
+      {9, 2},
+      {10, 12},
+      {11, 3},
+      {11, 15},
+      {12, 13},
+      {13, 14},
+      {14, 4},
+      {15, 16},
+      {16, 17},
+      {17, 6},
+      {18, 19},
+      {19, 20},
+      {20, 21},
+      {21, 22},
+      {22, 23},
+      {23, 24},
+      {24, 7},
+      {25, 26},
+      {26, 27},
+      {27, 28},
+      {28, 7},
   };
 
   @Override
@@ -415,6 +471,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     // Create connections after adding all tiles
     createPaths(pane);
   }
+
 
   private void synchronizeTilesWithDesigner() {
     System.out.println("Synchronizing " + tileCircles.size() + " tiles with map designer...");
