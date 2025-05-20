@@ -22,10 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A utility class for designing game maps.
@@ -179,9 +176,14 @@ public class MapDesignerTool {
         listener.onLogMessage("Creating new default map configuration");
       }
 
-      // Clear existing locations and connections
+      // Store existing connections before clearing them
+      List<MapConfig.Connection> existingConnections = new ArrayList<>(mapConfig.getConnections());
+
+      // Clear existing locations
       mapConfig.getLocations().clear();
-      mapConfig.getConnections().clear();
+
+      // Do NOT clear existing connections
+      // mapConfig.getConnections().clear();
 
       // Add locations, preserving positions for existing tiles
       for (CoordinatePoint point : capturedPoints) {
@@ -212,14 +214,28 @@ public class MapDesignerTool {
         mapConfig.addLocation(location);
       }
 
-      // Add connections
+      // Create a set to track unique connections we'll add
+      Set<String> connectionKeys = new HashSet<>();
+
+      // Add connections from current UI state
       for (CoordinatePoint point : capturedPoints) {
         for (Integer targetId : point.getConnections()) {
-          MapConfig.Connection connection = new MapConfig.Connection(
-              point.getId(),
-              targetId
-          );
-          mapConfig.addConnection(connection);
+          // Create a unique key for this connection
+          String connectionKey = point.getId() + "-" + targetId;
+
+          // Only add if we haven't already added this connection
+          if (!connectionKeys.contains(connectionKey)) {
+            connectionKeys.add(connectionKey);
+
+            // Check if connection already exists
+            if (!connectionExists(mapConfig.getConnections(), point.getId(), targetId)) {
+              MapConfig.Connection connection = new MapConfig.Connection(
+                  point.getId(),
+                  targetId
+              );
+              mapConfig.addConnection(connection);
+            }
+          }
         }
       }
 
@@ -229,7 +245,7 @@ public class MapDesignerTool {
       if (listener != null) {
         String message = existingLocations.isEmpty()
             ? "Map saved as default map configuration"
-            : "Map updated and saved as default map configuration, preserving existing positions";
+            : "Map updated and saved as default map configuration, preserving existing connections";
         listener.onMapDataExported(message, true);
         listener.onLogMessage(message);
         listener.onLogMessage("Map contains " + mapConfig.getLocations().size() +
@@ -241,6 +257,22 @@ public class MapDesignerTool {
         listener.onLogMessage("Error saving default map: " + e.getMessage());
       }
     }
+  }
+
+  /**
+   * Checks if a connection already exists in the list
+   * @param connections The list of connections to check
+   * @param fromId The source tile ID
+   * @param toId The target tile ID
+   * @return true if the connection exists, false otherwise
+   */
+  private boolean connectionExists(List<MapConfig.Connection> connections, int fromId, int toId) {
+    for (MapConfig.Connection conn : connections) {
+      if (conn.getFromId() == fromId && conn.getToId() == toId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
