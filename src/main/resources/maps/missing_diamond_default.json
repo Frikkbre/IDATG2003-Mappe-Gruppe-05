@@ -1,0 +1,272 @@
+{
+  "name": "Default Missing Diamond Map",
+  "locations": [
+    {
+      "id": 1,
+      "name": "SpecialLoc1",
+      "xPercent": 0.23748976807639835,
+      "yPercent": 0.14857142857142858,
+      "isSpecial": true
+    },
+    {
+      "id": 2,
+      "name": "SpecialLoc2",
+      "xPercent": 0.07583706879750536,
+      "yPercent": 0.1957142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 3,
+      "name": "SpecialLoc3",
+      "xPercent": 0.18160982264665756,
+      "yPercent": 0.2042857142857143,
+      "isSpecial": true
+    },
+    {
+      "id": 4,
+      "name": "SpecialLoc4",
+      "xPercent": 0.4350652894172676,
+      "yPercent": 0.16142857142857142,
+      "isSpecial": true
+    },
+    {
+      "id": 5,
+      "name": "SpecialLoc5",
+      "xPercent": 0.02594426037809394,
+      "yPercent": 0.3585714285714286,
+      "isSpecial": true
+    },
+    {
+      "id": 6,
+      "name": "SpecialLoc6",
+      "xPercent": 0.25145975443383356,
+      "yPercent": 0.35,
+      "isSpecial": true
+    },
+    {
+      "id": 7,
+      "name": "SpecialLoc7",
+      "xPercent": 0.34725394659910347,
+      "yPercent": 0.27,
+      "isSpecial": true
+    },
+    {
+      "id": 8,
+      "name": "SpecialLoc8",
+      "xPercent": 0.4809666731631261,
+      "yPercent": 0.21428571428571427,
+      "isSpecial": true
+    },
+    {
+      "id": 9,
+      "name": "SpecialLoc9",
+      "xPercent": 0.6825336191775483,
+      "yPercent": 0.20857142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 10,
+      "name": "Location10",
+      "xPercent": 0.1576612746053401,
+      "yPercent": 0.16,
+      "isSpecial": false
+    },
+    {
+      "id": 11,
+      "name": "Location11",
+      "xPercent": 0.11974274020658741,
+      "yPercent": 0.16857142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 12,
+      "name": "Location12",
+      "xPercent": 0.02594426037809394,
+      "yPercent": 0.22285714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 13,
+      "name": "Location13",
+      "xPercent": 0.01197427402065874,
+      "yPercent": 0.25285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 14,
+      "name": "Location14",
+      "xPercent": 0.007982849347105827,
+      "yPercent": 0.28714285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 15,
+      "name": "Location15",
+      "xPercent": 0.01197427402065874,
+      "yPercent": 0.3142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 16,
+      "name": "Location16",
+      "xPercent": 0.22950691872929255,
+      "yPercent": 0.19285714285714287,
+      "isSpecial": false
+    },
+    {
+      "id": 17,
+      "name": "Location17",
+      "xPercent": 0.2634340284544923,
+      "yPercent": 0.18142857142857144,
+      "isSpecial": false
+    },
+    {
+      "id": 18,
+      "name": "Location18",
+      "xPercent": 0.25345546677061004,
+      "yPercent": 0.2042857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 19,
+      "name": "Location19",
+      "xPercent": 0.22751120639251607,
+      "yPercent": 0.23285714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 20,
+      "name": "Location20",
+      "xPercent": 0.22751120639251607,
+      "yPercent": 0.26285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 21,
+      "name": "Location21",
+      "xPercent": 0.19757552134086923,
+      "yPercent": 0.2842857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 22,
+      "name": "Location22",
+      "xPercent": 0.16963554862599883,
+      "yPercent": 0.3057142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 23,
+      "name": "Location23",
+      "xPercent": 0.139699863574352,
+      "yPercent": 0.32285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 24,
+      "name": "Location24",
+      "xPercent": 0.1017813291755993,
+      "yPercent": 0.31857142857142856,
+      "isSpecial": false
+    },
+    {
+      "id": 25,
+      "name": "Location25",
+      "xPercent": 0.069849931787176,
+      "yPercent": 0.33,
+      "isSpecial": false
+    },
+    {
+      "id": 26,
+      "name": "Location26",
+      "xPercent": 0.279399727148704,
+      "yPercent": 0.22,
+      "isSpecial": false
+    },
+    {
+      "id": 27,
+      "name": "Location27",
+      "xPercent": 0.29736113817969206,
+      "yPercent": 0.24857142857142858,
+      "isSpecial": false
+    }
+  ],
+  "connections": [
+    {
+      "fromId": 1,
+      "toId": 10
+    },
+    {
+      "fromId": 1,
+      "toId": 16
+    },
+    {
+      "fromId": 1,
+      "toId": 17
+    },
+    {
+      "fromId": 2,
+      "toId": 12
+    },
+    {
+      "fromId": 3,
+      "toId": 19
+    },
+    {
+      "fromId": 10,
+      "toId": 11
+    },
+    {
+      "fromId": 11,
+      "toId": 2
+    },
+    {
+      "fromId": 12,
+      "toId": 13
+    },
+    {
+      "fromId": 13,
+      "toId": 14
+    },
+    {
+      "fromId": 14,
+      "toId": 15
+    },
+    {
+      "fromId": 15,
+      "toId": 5
+    },
+    {
+      "fromId": 16,
+      "toId": 3
+    },
+    {
+      "fromId": 19,
+      "toId": 20
+    },
+    {
+      "fromId": 20,
+      "toId": 21
+    },
+    {
+      "fromId": 21,
+      "toId": 22
+    },
+    {
+      "fromId": 22,
+      "toId": 23
+    },
+    {
+      "fromId": 23,
+      "toId": 24
+    },
+    {
+      "fromId": 24,
+      "toId": 25
+    },
+    {
+      "fromId": 25,
+      "toId": 5
+    }
+  ]
+}

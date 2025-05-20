@@ -63,17 +63,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private final Color[] playerColors = {
       Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
   };
-
-  // Location data with percentages of map width/height
-// Location data with percentages of map width/height
-  private static final Object[][] LOCATION_DATA = {
-      // {id, name, x-percentage, y-percentage, isSpecial}
-  };
-
-  // Connection data for paths between locations
-  private static final int[][] CONNECTIONS = {
-  };
-
   @Override
   public void start(Stage primaryStage) {
     gameController = new MissingDiamondController(numberOfPlayers);
@@ -196,13 +185,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Wait for layout to complete after window is shown
     Platform.runLater(() -> {
-      if (LOCATION_DATA.length > 0) {
-        System.out.println("Forcing creation of game locations after layout");
-        createGameLocations(overlayPane, mapView);
-
-        // Synchronize with map designer
-        synchronizeTilesWithDesigner();
-      }
       updateBoardUI();
     });
   }
@@ -211,23 +193,14 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     MapConfig mapConfig = new MapConfig();
     mapConfig.setName("Default Missing Diamond Map");
 
-    // Add locations from your existing LOCATION_DATA
-    for (Object[] data : LOCATION_DATA) {
-      int id = (int) data[0];
-      String name = (String) data[1];
-      double xPercent = ((Number) data[2]).doubleValue();
-      double yPercent = ((Number) data[3]).doubleValue();
-      boolean isSpecial = name.contains("Special");
+    for (int i = 1; i <= 5; i++) {
+      mapConfig.addLocation(
+          new MapConfig.Location(i, "Location" + i, 0.1 * i, 0.1 * i, false)
+      );
 
-      MapConfig.Location location = new MapConfig.Location(id, name, xPercent, yPercent, isSpecial);
-      mapConfig.addLocation(location);
-    }
-
-    // Add connections from your existing CONNECTIONS
-    for (int[] connection : CONNECTIONS) {
-      if (connection.length >= 2) {
-        MapConfig.Connection conn = new MapConfig.Connection(connection[0], connection[1]);
-        mapConfig.addConnection(conn);
+      // Add basic connections
+      if (i > 1) {
+        mapConfig.addConnection(new MapConfig.Connection(i-1, i));
       }
     }
 
@@ -426,62 +399,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private void createGameLocations(Pane pane, ImageView mapView) {
-    System.out.println("CREATING GAME LOCATIONS");
-
-    // Get the ACTUAL rendered dimensions
-    double mapWidth = mapView.getBoundsInParent().getWidth();  // Try boundsInParent instead
-    double mapHeight = mapView.getBoundsInParent().getHeight();
-
-    if (mapWidth <= 0 || mapHeight <= 0) {
-      System.out.println("ERROR: Invalid map dimensions: " + mapWidth + "x" + mapHeight);
-      return;
-    }
-
-    System.out.println("Map dimensions: " + mapWidth + "x" + mapHeight);
-    System.out.println("Original image dimensions: " + mapView.getImage().getWidth() + "x" + mapView.getImage().getHeight());
-
-    // Clear existing tiles
-    pane.getChildren().clear();
-    tileCircles.clear();
-
-    // Create and position the locations
-    for (Object[] data : LOCATION_DATA) {
-      int tileId = (int) data[0];
-      String name = (String) data[1];
-
-      // Calculate actual coordinates based on percentages
-      double xPercent = ((Number) data[2]).doubleValue();
-      double yPercent = ((Number) data[3]).doubleValue();
-      double x = mapWidth * xPercent;
-      double y = mapHeight * yPercent;
-
-      // Debug output for each tile
-      System.out.println("Creating tile " + tileId + " at " + x + "," + y + " from " + xPercent + "," + yPercent);
-
-      // Check if the name contains "Special" to determine color
-      boolean isSpecial = name.contains("Special");
-      Color tileColor = isSpecial ? Color.RED : Color.BLACK;
-
-      Circle tile = createTileCircle(x, y, tileId, tileColor);
-
-      /*
-      // Add name label with better visibility
-      Label label = new Label(name);
-      label.setLayoutX(x + 5);
-      label.setLayoutY(y - 15);
-      label.setTextFill(Color.WHITE);
-      label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 8pt;");
-      label.setUserData(tileId);  // Line to set userData
-       */
-
-      pane.getChildren().addAll(tile); // (tile,label); to add label to circles
-      tileCircles.put(tileId, tile);
-    }
-
-    System.out.println("Created " + tileCircles.size() + " tiles");
-
-    // Create connections after adding all tiles
-    createPaths(pane);
+    System.out.println("WARNING: Using fallback method to create game locations");
+    gameLog.appendText("Warning: Using hardcoded map fallback. JSON loading failed.\n");
   }
 
   /**
@@ -564,17 +483,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       double xPercent = circle.getCenterX() / mapView.getFitWidth();
       double yPercent = circle.getCenterY() / mapView.getFitHeight();
 
-      // Get the point name and special status from LOCATION_DATA
-      String pointName = "Location" + tileId;
-      boolean isSpecial = false;
-
-      for (Object[] data : LOCATION_DATA) {
-        if ((int)data[0] == tileId) {
-          pointName = (String)data[1];
-          isSpecial = pointName.contains("Special");
-          break;
-        }
-      }
+      // Determine if special based on circle color
+      boolean isSpecial = circle.getFill().equals(Color.RED);
+      String pointName = isSpecial ? "SpecialLoc" + tileId : "Location" + tileId;
 
       // Register this point with the map designer
       registerExistingPointWithDesigner(
@@ -616,22 +527,22 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     System.out.println("Updating location positions. Map size: " + mapWidth + "x" + mapHeight);
 
-    for (Object[] data : LOCATION_DATA) {
-      int tileId = (int) data[0];
-      Circle circle = tileCircles.get(tileId);
+    // Instead of using LOCATION_DATA, get positions from actual circles
+    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
+      int tileId = entry.getKey();
+      Circle circle = entry.getValue();
 
       if (circle != null) {
-        // Calculate new position based on percentages
-        double xPercent = ((Number) data[2]).doubleValue();
-        double yPercent = ((Number) data[3]).doubleValue();
-        double x = mapWidth * xPercent;
-        double y = mapHeight * yPercent;
+
+        double xPct = circle.getCenterX() / mapView.getFitWidth();
+        double yPct = circle.getCenterY() / mapView.getFitHeight();
+
+        double x = mapWidth * xPct;
+        double y = mapHeight * yPct;
 
         // Update circle position
         circle.setCenterX(x);
         circle.setCenterY(y);
-
-        System.out.println("Updated tile " + tileId + " to " + x + "," + y);
 
         // Update any labels associated with this tile
         for (Node node : overlayPane.getChildren()) {
@@ -642,8 +553,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
             label.setLayoutY(y - 15);
           }
         }
-      } else {
-        System.out.println("Circle not found for tile ID: " + tileId);
       }
     }
 
@@ -657,36 +566,14 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     overlayPane.getChildren().removeIf(node ->
         node instanceof Line && "connection".equals(node.getUserData()));
 
-    // Recreate connections
-    createPaths(overlayPane);
-  }
-
-  private void createPaths(Pane pane) {
-    // Create the paths between locations
-    for (int[] connection : CONNECTIONS) {
-      if (connection.length < 2) continue; // Skip invalid connections
-
-      int fromId = connection[0];
-      int toId = connection[1];
-
-      // Find the circles for these IDs
-      Circle fromCircle = tileCircles.get(fromId);
-      Circle toCircle = tileCircles.get(toId);
-
-      if (fromCircle != null && toCircle != null) {
-        Line line = new Line(
-            fromCircle.getCenterX(), fromCircle.getCenterY(),
-            toCircle.getCenterX(), toCircle.getCenterY()
-        );
-        line.setStroke(Color.BLACK);
-        line.setStrokeWidth(1.5);
-        line.setUserData("connection"); // For identification
-
-        // Put lines under the circles
-        pane.getChildren().add(0, line);
-      } else {
-        System.out.println("Warning: Missing circle for connection " + fromId + " to " + toId);
+    try {
+      MapConfigFileHandler fileHandler = new MapConfigFileHandler();
+      if (fileHandler.defaultMapExists()) {
+        MapConfig mapConfig = fileHandler.loadFromDefaultLocation();
+        createPathsFromConfig(overlayPane, mapConfig);
       }
+    } catch (FileHandlingException e) {
+      System.err.println("Error loading connections: " + e.getMessage());
     }
   }
 
@@ -733,21 +620,16 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   //Highlights the possible moves for the current player.
   private void highlightPossibleMoves() {
-    // Reset all tiles to original colors (RED for special, BLACK for movement)
+    // Reset all tiles to original colors
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      int tileId = entry.getKey();
       Circle tile = entry.getValue();
 
-      // Determine original color based on location data
-      boolean isSpecial = false;
-      for (Object[] data : LOCATION_DATA) {
-        if ((int)data[0] == tileId && ((String)data[1]).contains("Special")) {
-          isSpecial = true;
-          break;
-        }
+      // Simply check if it was RED (special) or not
+      if (tile.getFill().equals(Color.RED)) {
+        tile.setFill(Color.RED);
+      } else {
+        tile.setFill(Color.BLACK);
       }
-
-      tile.setFill(isSpecial ? Color.RED : Color.BLACK);
     }
 
     // Only highlight possible moves if die has been rolled

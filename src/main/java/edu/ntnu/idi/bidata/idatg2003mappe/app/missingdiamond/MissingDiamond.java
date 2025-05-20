@@ -29,26 +29,14 @@ public class MissingDiamond {
   private Tile diamondLocation;
   private int currentRoll; // Store the last roll value
 
-  /**
-   * Constructor for the MissingDiamond class.
-   *
-   * @param numberOfPlayers The number of players in the game.
-   */
   public MissingDiamond(int numberOfPlayers) {
-    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
-    this.board = createBoard();
-    this.players = createPlayers(numberOfPlayers, this.board);
-    this.die = new Die();
-    this.gameFinished = false;
-    this.currentPlayerIndex = 0;
-    this.currentPlayer = players.get(currentPlayerIndex);
-    this.currentRoll = 0;
+    this(numberOfPlayers, "src/main/resources/maps/missing_diamond_default.json");
   }
 
   public MissingDiamond(int numberOfPlayers, String mapFilePath) {
     System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
 
-    BoardBranching boardInstance; // Temporary local variable
+    BoardBranching boardInstance;
     List<Player> playersInstance;
     Die dieInstance = new Die();
     boolean gameFinishedInstance = false;
@@ -59,23 +47,26 @@ public class MissingDiamond {
       MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
       MapConfig mapConfig = mapFileHandler.read(mapFilePath);
 
-      // Create board from configuration
-      boardInstance = createBoardFromConfig(mapConfig);
+      // Only try to create board from config if mapConfig is not null
+      if (mapConfig != null) {
+        // Create board from configuration
+        boardInstance = createBoardFromConfig(mapConfig);
+      } else {
+        System.err.println("Error: Map configuration is null");
+        boardInstance = createEmptyDefaultBoard();
+      }
 
       // Initialize players using the created board
       playersInstance = createPlayers(numberOfPlayers, boardInstance);
 
-      // Randomly place the diamond at one of the locations
-      int randomTileId = new Random().nextInt(32) + 1;
-
     } catch (FileHandlingException e) {
       System.err.println("Error loading map configuration: " + e.getMessage());
       // Fall back to default board creation
-      boardInstance = createDefaultBoard();
+      boardInstance = createEmptyDefaultBoard();
       playersInstance = createPlayers(numberOfPlayers, boardInstance);
     }
 
-    // Only assign to final fields once
+    // Assign to final fields
     this.board = boardInstance;
     this.players = playersInstance;
     this.die = dieInstance;
@@ -85,19 +76,8 @@ public class MissingDiamond {
     this.currentRoll = 0;
 
     // Place diamond after board is initialized
-    int randomTileId = new Random().nextInt(32) + 1;
+    int randomTileId = new Random().nextInt(board.getTiles().size()) + 1;
     this.diamondLocation = board.getTileById(randomTileId);
-  }
-
-  /**
-   * Creates a default board when no configuration file is available.
-   * This serves as a fallback when a map configuration cannot be loaded.
-   *
-   * @return A default board configuration
-   */
-  private BoardBranching createDefaultBoard() {
-    // Simply delegate to the existing createBoard method
-    return createBoard();
   }
 
   private BoardBranching createBoardFromConfig(MapConfig mapConfig) {
@@ -118,6 +98,23 @@ public class MissingDiamond {
       if (fromTile != null && toTile != null) {
         board.connectTiles(fromTile, toTile);
       }
+    }
+
+    return board;
+  }
+
+  private BoardBranching createEmptyDefaultBoard() {
+    BoardBranching board = new BoardBranching();
+
+    // Create just a few connected tiles as absolute fallback
+    for (int i = 1; i <= 5; i++) {
+      Tile tile = new Tile(i);
+      board.addTileToBoard(tile);
+    }
+
+    // Connect the tiles in a simple path
+    for (int i = 1; i <= 4; i++) {
+      board.connectTiles(board.getTileById(i), board.getTileById(i+1));
     }
 
     return board;
