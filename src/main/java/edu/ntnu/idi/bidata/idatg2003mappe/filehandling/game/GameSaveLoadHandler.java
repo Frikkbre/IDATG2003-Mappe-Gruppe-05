@@ -97,6 +97,8 @@ public class GameSaveLoadHandler {
       ladderGameController = new LadderGameController(randomLadders);
       ladderGameController.applyGameState(gameState);
 
+      // After reading playerDataList from CSV
+
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Game Loaded");
       alert.setHeaderText("Game Loaded Successfully");
