@@ -1,8 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -10,28 +8,16 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
 
 public class NavBar {
   BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
 
-  public interface GameStateProvider {
-    GameState getCurrentGameState();
-    void loadGameState(GameState gameState);
-  }
-
-  private GameStateProvider gameStateProvider;
   private Stage stage;
 
   public Stage getStage() {
     return stage;
-  }
-
-  public void setGameStateProvider(GameStateProvider provider) {
-    this.gameStateProvider = provider;
   }
 
   public void setStage(Stage stage) {
@@ -97,59 +83,11 @@ public class NavBar {
 
   private EventHandler<ActionEvent> quickSaveGame() {
     return event -> {
-      if (gameStateProvider == null) {
-        showAlert(Alert.AlertType.WARNING, "Save Error",
-            "No active game",
-            "There is no active game to save.");
-        return;
-      }
-
-      try {
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        GameState gameState = gameStateProvider.getCurrentGameState();
-        fileHandler.saveToDefaultLocation(gameState);
-
-        showAlert(Alert.AlertType.INFORMATION, "Game Saved",
-            "Game Saved Successfully",
-            "Your game has been saved to the default location.");
-      } catch (FileHandlingException ex) {
-        showAlert(Alert.AlertType.ERROR, "Save Error",
-            "Save Error",
-            "Could not save the game: " + ex.getMessage());
-      }
     };
   }
 
   private EventHandler<ActionEvent> loadLastSave() {
     return event -> {
-      if (gameStateProvider == null) {
-        showAlert(Alert.AlertType.WARNING, "Load Error",
-            "No active game",
-            "There is no active game to load data into.");
-        return;
-      }
-
-      BoardFileHandler fileHandler = new BoardFileHandler();
-
-      if (!fileHandler.defaultSaveExists()) {
-        showAlert(Alert.AlertType.INFORMATION, "No Save Found",
-            "No Save File Found",
-            "There is no saved game to load.");
-        return;
-      }
-
-      try {
-        GameState gameState = fileHandler.loadFromDefaultLocation();
-        gameStateProvider.loadGameState(gameState);
-
-        showAlert(Alert.AlertType.INFORMATION, "Game Loaded",
-            "Game Loaded Successfully",
-            "Your last saved game has been loaded.");
-      } catch (FileHandlingException ex) {
-        showAlert(Alert.AlertType.ERROR, "Load Error",
-            "Load Error",
-            "Could not load the game: " + ex.getMessage());
-      }
     };
   }
 
