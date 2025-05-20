@@ -18,255 +18,1529 @@
     {
       "id": 3,
       "name": "SpecialLoc3",
-      "xPercent": 0.18160982264665756,
-      "yPercent": 0.2042857142857143,
+      "xPercent": 0.027939972714870396,
+      "yPercent": 0.35714285714285715,
       "isSpecial": true
     },
     {
       "id": 4,
       "name": "SpecialLoc4",
-      "xPercent": 0.4350652894172676,
-      "yPercent": 0.16142857142857142,
+      "xPercent": 0.18160982264665756,
+      "yPercent": 0.20142857142857143,
       "isSpecial": true
     },
     {
       "id": 5,
       "name": "SpecialLoc5",
-      "xPercent": 0.02594426037809394,
-      "yPercent": 0.3585714285714286,
+      "xPercent": 0.4350652894172676,
+      "yPercent": 0.16,
       "isSpecial": true
     },
     {
       "id": 6,
       "name": "SpecialLoc6",
-      "xPercent": 0.25145975443383356,
-      "yPercent": 0.35,
+      "xPercent": 0.4809666731631261,
+      "yPercent": 0.21142857142857144,
       "isSpecial": true
     },
     {
       "id": 7,
       "name": "SpecialLoc7",
-      "xPercent": 0.34725394659910347,
-      "yPercent": 0.27,
+      "xPercent": 0.6825336191775483,
+      "yPercent": 0.21285714285714286,
       "isSpecial": true
     },
     {
       "id": 8,
       "name": "SpecialLoc8",
-      "xPercent": 0.4809666731631261,
-      "yPercent": 0.21428571428571427,
+      "xPercent": 0.34924965893587995,
+      "yPercent": 0.27,
       "isSpecial": true
     },
     {
       "id": 9,
       "name": "SpecialLoc9",
-      "xPercent": 0.6825336191775483,
-      "yPercent": 0.20857142857142857,
+      "xPercent": 0.6525979341259014,
+      "yPercent": 0.31142857142857144,
       "isSpecial": true
     },
     {
       "id": 10,
-      "name": "Location10",
-      "xPercent": 0.1576612746053401,
-      "yPercent": 0.16,
-      "isSpecial": false
+      "name": "SpecialLoc10",
+      "xPercent": 0.7843149483531475,
+      "yPercent": 0.35428571428571426,
+      "isSpecial": true
     },
     {
       "id": 11,
-      "name": "Location11",
+      "name": "SpecialLoc11",
+      "xPercent": 0.9719119080101345,
+      "yPercent": 0.44142857142857145,
+      "isSpecial": true
+    },
+    {
+      "id": 12,
+      "name": "SpecialLoc12",
+      "xPercent": 0.25145975443383356,
+      "yPercent": 0.3485714285714286,
+      "isSpecial": true
+    },
+    {
+      "id": 13,
+      "name": "SpecialLoc13",
+      "xPercent": 0.07783278113428181,
+      "yPercent": 0.4357142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 14,
+      "name": "SpecialLoc14",
+      "xPercent": 0.22751120639251607,
+      "yPercent": 0.47,
+      "isSpecial": true
+    },
+    {
+      "id": 15,
+      "name": "SpecialLoc15",
+      "xPercent": 0.34126680958877414,
+      "yPercent": 0.47714285714285715,
+      "isSpecial": true
+    },
+    {
+      "id": 16,
+      "name": "SpecialLoc16",
+      "xPercent": 0.6066965503800429,
+      "yPercent": 0.41285714285714287,
+      "isSpecial": true
+    },
+    {
+      "id": 17,
+      "name": "SpecialLoc17",
+      "xPercent": 0.4729838238160203,
+      "yPercent": 0.36142857142857143,
+      "isSpecial": true
+    },
+    {
+      "id": 18,
+      "name": "SpecialLoc18",
+      "xPercent": 0.44703956343792633,
+      "yPercent": 0.5257142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 19,
+      "name": "SpecialLoc19",
+      "xPercent": 0.161652699278893,
+      "yPercent": 0.6828571428571428,
+      "isSpecial": true
+    },
+    {
+      "id": 20,
+      "name": "SpecialLoc20",
+      "xPercent": 0.4270824400701618,
+      "yPercent": 0.6328571428571429,
+      "isSpecial": true
+    },
+    {
+      "id": 21,
+      "name": "SpecialLoc21",
+      "xPercent": 0.5927265640226077,
+      "yPercent": 0.61,
+      "isSpecial": true
+    },
+    {
+      "id": 22,
+      "name": "SpecialLoc22",
+      "xPercent": 0.7364178522705126,
+      "yPercent": 0.5271428571428571,
+      "isSpecial": true
+    },
+    {
+      "id": 23,
+      "name": "SpecialLoc23",
+      "xPercent": 0.6645722081465602,
+      "yPercent": 0.47285714285714286,
+      "isSpecial": true
+    },
+    {
+      "id": 24,
+      "name": "SpecialLoc24",
+      "xPercent": 0.8202377704151238,
+      "yPercent": 0.4585714285714286,
+      "isSpecial": true
+    },
+    {
+      "id": 25,
+      "name": "SpecialLoc25",
+      "xPercent": 0.8002806470473592,
+      "yPercent": 0.6042857142857143,
+      "isSpecial": true
+    },
+    {
+      "id": 26,
+      "name": "SpecialLoc26",
+      "xPercent": 0.808263496394465,
+      "yPercent": 0.6957142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 27,
+      "name": "SpecialLoc27",
+      "xPercent": 0.9399805106217112,
+      "yPercent": 0.7314285714285714,
+      "isSpecial": true
+    },
+    {
+      "id": 28,
+      "name": "SpecialLoc28",
+      "xPercent": 0.8481777431299942,
+      "yPercent": 0.8257142857142857,
+      "isSpecial": true
+    },
+    {
+      "id": 29,
+      "name": "SpecialLoc29",
+      "xPercent": 0.6745507698304424,
+      "yPercent": 0.8042857142857143,
+      "isSpecial": true
+    },
+    {
+      "id": 30,
+      "name": "SpecialLoc30",
+      "xPercent": 0.6146793997271487,
+      "yPercent": 0.7371428571428571,
+      "isSpecial": true
+    },
+    {
+      "id": 31,
+      "name": "SpecialLoc31",
+      "xPercent": 0.44105242642759696,
+      "yPercent": 0.7728571428571429,
+      "isSpecial": true
+    },
+    {
+      "id": 32,
+      "name": "SpecialLoc32",
+      "xPercent": 0.4949366595205613,
+      "yPercent": 0.8985714285714286,
+      "isSpecial": true
+    },
+    {
+      "id": 33,
+      "name": "Location33",
+      "xPercent": 0.1576612746053401,
+      "yPercent": 0.15857142857142856,
+      "isSpecial": false
+    },
+    {
+      "id": 34,
+      "name": "Location34",
       "xPercent": 0.11974274020658741,
       "yPercent": 0.16857142857142857,
       "isSpecial": false
     },
     {
-      "id": 12,
-      "name": "Location12",
+      "id": 35,
+      "name": "Location35",
       "xPercent": 0.02594426037809394,
-      "yPercent": 0.22285714285714286,
+      "yPercent": 0.22142857142857142,
       "isSpecial": false
     },
     {
-      "id": 13,
-      "name": "Location13",
+      "id": 36,
+      "name": "Location36",
       "xPercent": 0.01197427402065874,
       "yPercent": 0.25285714285714284,
       "isSpecial": false
     },
     {
-      "id": 14,
-      "name": "Location14",
+      "id": 37,
+      "name": "Location37",
       "xPercent": 0.007982849347105827,
-      "yPercent": 0.28714285714285714,
+      "yPercent": 0.2857142857142857,
       "isSpecial": false
     },
     {
-      "id": 15,
-      "name": "Location15",
+      "id": 38,
+      "name": "Location38",
       "xPercent": 0.01197427402065874,
       "yPercent": 0.3142857142857143,
       "isSpecial": false
     },
     {
-      "id": 16,
-      "name": "Location16",
+      "id": 39,
+      "name": "Location39",
       "xPercent": 0.22950691872929255,
-      "yPercent": 0.19285714285714287,
+      "yPercent": 0.19142857142857142,
       "isSpecial": false
     },
     {
-      "id": 17,
-      "name": "Location17",
+      "id": 40,
+      "name": "Location40",
       "xPercent": 0.2634340284544923,
       "yPercent": 0.18142857142857144,
       "isSpecial": false
     },
     {
-      "id": 18,
-      "name": "Location18",
-      "xPercent": 0.25345546677061004,
+      "id": 41,
+      "name": "Location41",
+      "xPercent": 0.2953654258429156,
+      "yPercent": 0.1957142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 42,
+      "name": "Location42",
+      "xPercent": 0.33927109725199767,
+      "yPercent": 0.1957142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 43,
+      "name": "Location43",
+      "xPercent": 0.37718963165075037,
+      "yPercent": 0.18,
+      "isSpecial": false
+    },
+    {
+      "id": 44,
+      "name": "Location44",
+      "xPercent": 0.3292925355681154,
+      "yPercent": 0.14142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 45,
+      "name": "Location45",
+      "xPercent": 0.371202494640421,
+      "yPercent": 0.14285714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 46,
+      "name": "Location46",
+      "xPercent": 0.48495809783667904,
+      "yPercent": 0.16714285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 47,
+      "name": "Location47",
+      "xPercent": 0.5188852075618787,
+      "yPercent": 0.17142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 48,
+      "name": "Location48",
+      "xPercent": 0.558799454297408,
+      "yPercent": 0.1742857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 49,
+      "name": "Location49",
+      "xPercent": 0.5967179886961606,
+      "yPercent": 0.18714285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 50,
+      "name": "Location50",
+      "xPercent": 0.4171038783862795,
+      "yPercent": 0.19714285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 51,
+      "name": "Location51",
+      "xPercent": 0.43306957708049115,
+      "yPercent": 0.21714285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 52,
+      "name": "Location52",
+      "xPercent": 0.25145975443383356,
       "yPercent": 0.2042857142857143,
       "isSpecial": false
     },
     {
-      "id": 19,
-      "name": "Location19",
+      "id": 53,
+      "name": "Location53",
+      "xPercent": 0.279399727148704,
+      "yPercent": 0.22142857142857142,
+      "isSpecial": false
+    },
+    {
+      "id": 54,
+      "name": "Location54",
+      "xPercent": 0.29736113817969206,
+      "yPercent": 0.24857142857142858,
+      "isSpecial": false
+    },
+    {
+      "id": 55,
+      "name": "Location55",
       "xPercent": 0.22751120639251607,
       "yPercent": 0.23285714285714285,
       "isSpecial": false
     },
     {
-      "id": 20,
-      "name": "Location20",
+      "id": 56,
+      "name": "Location56",
       "xPercent": 0.22751120639251607,
-      "yPercent": 0.26285714285714284,
+      "yPercent": 0.26142857142857145,
       "isSpecial": false
     },
     {
-      "id": 21,
-      "name": "Location21",
-      "xPercent": 0.19757552134086923,
+      "id": 57,
+      "name": "Location57",
+      "xPercent": 0.19957123367764568,
       "yPercent": 0.2842857142857143,
       "isSpecial": false
     },
     {
-      "id": 22,
-      "name": "Location22",
-      "xPercent": 0.16963554862599883,
-      "yPercent": 0.3057142857142857,
+      "id": 58,
+      "name": "Location58",
+      "xPercent": 0.17163126096277528,
+      "yPercent": 0.30714285714285716,
       "isSpecial": false
     },
     {
-      "id": 23,
-      "name": "Location23",
-      "xPercent": 0.139699863574352,
-      "yPercent": 0.32285714285714284,
+      "id": 59,
+      "name": "Location59",
+      "xPercent": 0.14169557591112844,
+      "yPercent": 0.3242857142857143,
       "isSpecial": false
     },
     {
-      "id": 24,
-      "name": "Location24",
-      "xPercent": 0.1017813291755993,
-      "yPercent": 0.31857142857142856,
+      "id": 60,
+      "name": "Location60",
+      "xPercent": 0.10377704151237575,
+      "yPercent": 0.32,
       "isSpecial": false
     },
     {
-      "id": 25,
-      "name": "Location25",
+      "id": 61,
+      "name": "Location61",
       "xPercent": 0.069849931787176,
       "yPercent": 0.33,
       "isSpecial": false
     },
     {
-      "id": 26,
-      "name": "Location26",
-      "xPercent": 0.279399727148704,
-      "yPercent": 0.22,
+      "id": 62,
+      "name": "Location62",
+      "xPercent": 0.0878113428181641,
+      "yPercent": 0.36857142857142855,
       "isSpecial": false
     },
     {
-      "id": 27,
-      "name": "Location27",
-      "xPercent": 0.29736113817969206,
-      "yPercent": 0.24857142857142858,
+      "id": 63,
+      "name": "Location63",
+      "xPercent": 0.12173845254336386,
+      "yPercent": 0.3842857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 64,
+      "name": "Location64",
+      "xPercent": 0.12572987721691678,
+      "yPercent": 0.41,
+      "isSpecial": false
+    },
+    {
+      "id": 65,
+      "name": "Location65",
+      "xPercent": 0.01197427402065874,
+      "yPercent": 0.3985714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 66,
+      "name": "Location66",
+      "xPercent": 0.03193139738842331,
+      "yPercent": 0.4157142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 67,
+      "name": "Location67",
+      "xPercent": 0.009978561683882285,
+      "yPercent": 0.42428571428571427,
+      "isSpecial": false
+    },
+    {
+      "id": 68,
+      "name": "Location68",
+      "xPercent": 0.01197427402065874,
+      "yPercent": 0.45571428571428574,
+      "isSpecial": false
+    },
+    {
+      "id": 69,
+      "name": "Location69",
+      "xPercent": 0.01796141103098811,
+      "yPercent": 0.4828571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 70,
+      "name": "Location70",
+      "xPercent": 0.027939972714870396,
+      "yPercent": 0.5157142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 71,
+      "name": "Location71",
+      "xPercent": 0.041909959072305596,
+      "yPercent": 0.5471428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 72,
+      "name": "Location72",
+      "xPercent": 0.061867082440070165,
+      "yPercent": 0.5785714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 73,
+      "name": "Location73",
+      "xPercent": 0.08182420580783473,
+      "yPercent": 0.6057142857142858,
+      "isSpecial": false
+    },
+    {
+      "id": 74,
+      "name": "Location74",
+      "xPercent": 0.10976417852270512,
+      "yPercent": 0.6385714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 75,
+      "name": "Location75",
+      "xPercent": 0.17362697329955173,
+      "yPercent": 0.7271428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 76,
+      "name": "Location76",
+      "xPercent": 0.18360553498343402,
+      "yPercent": 0.7628571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 77,
+      "name": "Location77",
+      "xPercent": 0.19557980900409278,
+      "yPercent": 0.7914285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 78,
+      "name": "Location78",
+      "xPercent": 0.21154550769830444,
+      "yPercent": 0.8228571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 79,
+      "name": "Location79",
+      "xPercent": 0.24547261742350418,
+      "yPercent": 0.85,
+      "isSpecial": false
+    },
+    {
+      "id": 80,
+      "name": "Location80",
+      "xPercent": 0.29935685051646854,
+      "yPercent": 0.87,
+      "isSpecial": false
+    },
+    {
+      "id": 81,
+      "name": "Location81",
+      "xPercent": 0.3612239329565387,
+      "yPercent": 0.8742857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 82,
+      "name": "Location82",
+      "xPercent": 0.40912102903917363,
+      "yPercent": 0.8685714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 83,
+      "name": "Location83",
+      "xPercent": 0.4390567140908205,
+      "yPercent": 0.8857142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 84,
+      "name": "Location84",
+      "xPercent": 0.39714675501851493,
+      "yPercent": 0.8414285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 85,
+      "name": "Location85",
+      "xPercent": 0.40313389202884425,
+      "yPercent": 0.81,
+      "isSpecial": false
+    },
+    {
+      "id": 86,
+      "name": "Location86",
+      "xPercent": 0.3831767686610797,
+      "yPercent": 0.7485714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 87,
+      "name": "Location87",
+      "xPercent": 0.3692067823036445,
+      "yPercent": 0.72,
+      "isSpecial": false
+    },
+    {
+      "id": 88,
+      "name": "Location88",
+      "xPercent": 0.36721106996686803,
+      "yPercent": 0.6928571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 89,
+      "name": "Location89",
+      "xPercent": 0.38517248099785617,
+      "yPercent": 0.6628571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 90,
+      "name": "Location90",
+      "xPercent": 0.13570843890079906,
+      "yPercent": 0.43,
+      "isSpecial": false
+    },
+    {
+      "id": 91,
+      "name": "Location91",
+      "xPercent": 0.16963554862599883,
+      "yPercent": 0.4142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 92,
+      "name": "Location92",
+      "xPercent": 0.20156694601442213,
+      "yPercent": 0.4042857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 93,
+      "name": "Location93",
+      "xPercent": 0.231502631066069,
+      "yPercent": 0.38571428571428573,
+      "isSpecial": false
+    },
+    {
+      "id": 94,
+      "name": "Location94",
+      "xPercent": 0.20555837068797506,
+      "yPercent": 0.43,
+      "isSpecial": false
+    },
+    {
+      "id": 95,
+      "name": "Location95",
+      "xPercent": 0.08381991814461119,
+      "yPercent": 0.47285714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 96,
+      "name": "Location96",
+      "xPercent": 0.10776846618592867,
+      "yPercent": 0.49714285714285716,
+      "isSpecial": false
+    },
+    {
+      "id": 97,
+      "name": "Location97",
+      "xPercent": 0.1436912882479049,
+      "yPercent": 0.5057142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 98,
+      "name": "Location98",
+      "xPercent": 0.18759695965698694,
+      "yPercent": 0.5028571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 99,
+      "name": "Location99",
+      "xPercent": 0.25545117910738646,
+      "yPercent": 0.5071428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 100,
+      "name": "Location100",
+      "xPercent": 0.30334827519002144,
+      "yPercent": 0.5214285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 101,
+      "name": "Location101",
+      "xPercent": 0.33927109725199767,
+      "yPercent": 0.52,
+      "isSpecial": false
+    },
+    {
+      "id": 102,
+      "name": "Location102",
+      "xPercent": 0.34326252192555057,
+      "yPercent": 0.5485714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 103,
+      "name": "Location103",
+      "xPercent": 0.3552367959462093,
+      "yPercent": 0.5814285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 104,
+      "name": "Location104",
+      "xPercent": 0.37718963165075037,
+      "yPercent": 0.6085714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 105,
+      "name": "Location105",
+      "xPercent": 0.4071253167023972,
+      "yPercent": 0.2842857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 106,
+      "name": "Location106",
+      "xPercent": 0.45103098811147924,
+      "yPercent": 0.29,
+      "isSpecial": false
+    },
+    {
+      "id": 107,
+      "name": "Location107",
+      "xPercent": 0.48296238549990256,
+      "yPercent": 0.3057142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 108,
+      "name": "Location108",
+      "xPercent": 0.5049152212044435,
+      "yPercent": 0.32285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 109,
+      "name": "Location109",
+      "xPercent": 0.532855193919314,
+      "yPercent": 0.3385714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 110,
+      "name": "Location110",
+      "xPercent": 0.558799454297408,
+      "yPercent": 0.3585714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 111,
+      "name": "Location111",
+      "xPercent": 0.5727694406548431,
+      "yPercent": 0.38142857142857145,
+      "isSpecial": false
+    },
+    {
+      "id": 112,
+      "name": "Location112",
+      "xPercent": 0.45103098811147924,
+      "yPercent": 0.3914285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 113,
+      "name": "Location113",
+      "xPercent": 0.4490352757747028,
+      "yPercent": 0.4142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 114,
+      "name": "Location114",
+      "xPercent": 0.45502241278503214,
+      "yPercent": 0.4357142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 115,
+      "name": "Location115",
+      "xPercent": 0.4650009744689144,
+      "yPercent": 0.45714285714285713,
+      "isSpecial": false
+    },
+    {
+      "id": 116,
+      "name": "Location116",
+      "xPercent": 0.4310738647437147,
+      "yPercent": 0.46,
+      "isSpecial": false
+    },
+    {
+      "id": 117,
+      "name": "Location117",
+      "xPercent": 0.39115961800818555,
+      "yPercent": 0.46,
+      "isSpecial": false
+    },
+    {
+      "id": 118,
+      "name": "Location118",
+      "xPercent": 0.45502241278503214,
+      "yPercent": 0.48428571428571426,
+      "isSpecial": false
+    },
+    {
+      "id": 119,
+      "name": "Location119",
+      "xPercent": 0.4949366595205613,
+      "yPercent": 0.44285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 120,
+      "name": "Location120",
+      "xPercent": 0.5268680569089846,
+      "yPercent": 0.4357142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 121,
+      "name": "Location121",
+      "xPercent": 0.5607951666341844,
+      "yPercent": 0.43,
+      "isSpecial": false
+    },
+    {
+      "id": 122,
+      "name": "Location122",
+      "xPercent": 0.5168894952251023,
+      "yPercent": 0.3757142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 123,
+      "name": "Location123",
+      "xPercent": 0.532855193919314,
+      "yPercent": 0.39285714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 124,
+      "name": "Location124",
+      "xPercent": 0.5607951666341844,
+      "yPercent": 0.40714285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 125,
+      "name": "Location125",
+      "xPercent": 0.6346365230949133,
+      "yPercent": 0.3742857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 126,
+      "name": "Location126",
+      "xPercent": 0.6545936464626778,
+      "yPercent": 0.3557142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 127,
+      "name": "Location127",
+      "xPercent": 0.6585850711362308,
+      "yPercent": 0.2814285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 128,
+      "name": "Location128",
+      "xPercent": 0.6625764958097836,
+      "yPercent": 0.26142857142857145,
+      "isSpecial": false
+    },
+    {
+      "id": 129,
+      "name": "Location129",
+      "xPercent": 0.6865250438511011,
+      "yPercent": 0.24571428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 130,
+      "name": "Location130",
+      "xPercent": 0.6186708244007016,
+      "yPercent": 0.2842857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 131,
+      "name": "Location131",
+      "xPercent": 0.5847437146755019,
+      "yPercent": 0.2742857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 132,
+      "name": "Location132",
+      "xPercent": 0.5428337556031962,
+      "yPercent": 0.28,
+      "isSpecial": false
+    },
+    {
+      "id": 133,
+      "name": "Location133",
+      "xPercent": 0.5109023582147729,
+      "yPercent": 0.2785714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 134,
+      "name": "Location134",
+      "xPercent": 0.4769752484895732,
+      "yPercent": 0.26,
+      "isSpecial": false
+    },
+    {
+      "id": 135,
+      "name": "Location135",
+      "xPercent": 0.7364178522705126,
+      "yPercent": 0.25285714285714284,
+      "isSpecial": false
+    },
+    {
+      "id": 136,
+      "name": "Location136",
+      "xPercent": 0.7623621126486065,
+      "yPercent": 0.27714285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 137,
+      "name": "Location137",
+      "xPercent": 0.7843149483531475,
+      "yPercent": 0.3057142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 138,
+      "name": "Location138",
+      "xPercent": 0.6665679204833366,
+      "yPercent": 0.41,
+      "isSpecial": false
+    },
+    {
+      "id": 139,
+      "name": "Location139",
+      "xPercent": 0.7064821672188657,
+      "yPercent": 0.4014285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 140,
+      "name": "Location140",
+      "xPercent": 0.7463964139543948,
+      "yPercent": 0.38571428571428573,
+      "isSpecial": false
+    },
+    {
+      "id": 141,
+      "name": "Location141",
+      "xPercent": 0.6486065094523484,
+      "yPercent": 0.4342857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 142,
+      "name": "Location142",
+      "xPercent": 0.7903020853634769,
+      "yPercent": 0.39285714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 143,
+      "name": "Location143",
+      "xPercent": 0.8022763593841357,
+      "yPercent": 0.41714285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 144,
+      "name": "Location144",
+      "xPercent": 0.8381991814461118,
+      "yPercent": 0.3657142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 145,
+      "name": "Location145",
+      "xPercent": 0.8641434418242058,
+      "yPercent": 0.3942857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 146,
+      "name": "Location146",
+      "xPercent": 0.8841005651919703,
+      "yPercent": 0.4157142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 147,
+      "name": "Location147",
+      "xPercent": 0.9200233872539466,
+      "yPercent": 0.4228571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 148,
+      "name": "Location148",
+      "xPercent": 0.9180276749171702,
+      "yPercent": 0.45714285714285713,
+      "isSpecial": false
+    },
+    {
+      "id": 149,
+      "name": "Location149",
+      "xPercent": 0.8801091405184175,
+      "yPercent": 0.45571428571428574,
+      "isSpecial": false
+    },
+    {
+      "id": 150,
+      "name": "Location150",
+      "xPercent": 0.8002806470473592,
+      "yPercent": 0.49142857142857144,
+      "isSpecial": false
+    },
+    {
+      "id": 151,
+      "name": "Location151",
+      "xPercent": 0.7683492496589359,
+      "yPercent": 0.5,
+      "isSpecial": false
+    },
+    {
+      "id": 152,
+      "name": "Location152",
+      "xPercent": 0.6885207561878776,
+      "yPercent": 0.5071428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 153,
+      "name": "Location153",
+      "xPercent": 0.6845293315143247,
+      "yPercent": 0.54,
+      "isSpecial": false
+    },
+    {
+      "id": 154,
+      "name": "Location154",
+      "xPercent": 0.6565893587994543,
+      "yPercent": 0.5614285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 155,
+      "name": "Location155",
+      "xPercent": 0.6406236601052426,
+      "yPercent": 0.5857142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 156,
+      "name": "Location156",
+      "xPercent": 0.5428337556031962,
+      "yPercent": 0.6228571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 157,
+      "name": "Location157",
+      "xPercent": 0.5148937828883259,
+      "yPercent": 0.6428571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 158,
+      "name": "Location158",
+      "xPercent": 0.4769752484895732,
+      "yPercent": 0.65,
+      "isSpecial": false
+    },
+    {
+      "id": 159,
+      "name": "Location159",
+      "xPercent": 0.45103098811147924,
+      "yPercent": 0.5728571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 160,
+      "name": "Location160",
+      "xPercent": 0.4530267004482557,
+      "yPercent": 0.5985714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 161,
+      "name": "Location161",
+      "xPercent": 0.4590138374585851,
+      "yPercent": 0.6671428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 162,
+      "name": "Location162",
+      "xPercent": 0.5009237965308907,
+      "yPercent": 0.6771428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 163,
+      "name": "Location163",
+      "xPercent": 0.5428337556031962,
+      "yPercent": 0.6757142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 164,
+      "name": "Location164",
+      "xPercent": 0.580752290001949,
+      "yPercent": 0.6771428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 165,
+      "name": "Location165",
+      "xPercent": 0.6206665367374781,
+      "yPercent": 0.6871428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 166,
+      "name": "Location166",
+      "xPercent": 0.6525979341259014,
+      "yPercent": 0.7028571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 167,
+      "name": "Location167",
+      "xPercent": 0.6885207561878776,
+      "yPercent": 0.7171428571428572,
+      "isSpecial": false
+    },
+    {
+      "id": 168,
+      "name": "Location168",
+      "xPercent": 0.7304307152601832,
+      "yPercent": 0.73,
+      "isSpecial": false
+    },
+    {
+      "id": 169,
+      "name": "Location169",
+      "xPercent": 0.7503878386279478,
+      "yPercent": 0.71,
+      "isSpecial": false
+    },
+    {
+      "id": 170,
+      "name": "Location170",
+      "xPercent": 0.8002806470473592,
+      "yPercent": 0.6628571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 171,
+      "name": "Location171",
+      "xPercent": 0.7803235236795946,
+      "yPercent": 0.6414285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 172,
+      "name": "Location172",
+      "xPercent": 0.7503878386279478,
+      "yPercent": 0.6242857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 173,
+      "name": "Location173",
+      "xPercent": 0.7523835509647242,
+      "yPercent": 0.5942857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 174,
+      "name": "Location174",
+      "xPercent": 0.7623621126486065,
+      "yPercent": 0.5642857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 175,
+      "name": "Location175",
+      "xPercent": 0.8162463457415708,
+      "yPercent": 0.56,
+      "isSpecial": false
+    },
+    {
+      "id": 176,
+      "name": "Location176",
+      "xPercent": 0.8322120444357824,
+      "yPercent": 0.5357142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 177,
+      "name": "Location177",
+      "xPercent": 0.8681348664977587,
+      "yPercent": 0.5157142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 178,
+      "name": "Location178",
+      "xPercent": 0.9020619762229585,
+      "yPercent": 0.49714285714285716,
+      "isSpecial": false
+    },
+    {
+      "id": 179,
+      "name": "Location179",
+      "xPercent": 0.9359890859481582,
+      "yPercent": 0.48142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 180,
+      "name": "Location180",
+      "xPercent": 0.9719119080101345,
+      "yPercent": 0.4928571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 181,
+      "name": "Location181",
+      "xPercent": 0.9938647437146755,
+      "yPercent": 0.48857142857142855,
+      "isSpecial": false
+    },
+    {
+      "id": 182,
+      "name": "Location182",
+      "xPercent": 0.9958604560514519,
+      "yPercent": 0.52,
+      "isSpecial": false
+    },
+    {
+      "id": 183,
+      "name": "Location183",
+      "xPercent": 0.9699161956733581,
+      "yPercent": 0.5242857142857142,
+      "isSpecial": false
+    },
+    {
+      "id": 184,
+      "name": "Location184",
+      "xPercent": 0.9958604560514519,
+      "yPercent": 0.5514285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 185,
+      "name": "Location185",
+      "xPercent": 0.9938647437146755,
+      "yPercent": 0.5842857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 186,
+      "name": "Location186",
+      "xPercent": 0.9918690313778991,
+      "yPercent": 0.6185714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 187,
+      "name": "Location187",
+      "xPercent": 0.9878776067043461,
+      "yPercent": 0.6571428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 188,
+      "name": "Location188",
+      "xPercent": 0.9739076203469109,
+      "yPercent": 0.69,
+      "isSpecial": false
+    },
+    {
+      "id": 189,
+      "name": "Location189",
+      "xPercent": 0.9539504969791464,
+      "yPercent": 0.5557142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 190,
+      "name": "Location190",
+      "xPercent": 0.9379847982849348,
+      "yPercent": 0.5814285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 191,
+      "name": "Location191",
+      "xPercent": 0.9140362502436172,
+      "yPercent": 0.61,
+      "isSpecial": false
+    },
+    {
+      "id": 192,
+      "name": "Location192",
+      "xPercent": 0.8880919898655233,
+      "yPercent": 0.64,
+      "isSpecial": false
+    },
+    {
+      "id": 193,
+      "name": "Location193",
+      "xPercent": 0.8601520171506529,
+      "yPercent": 0.6657142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 194,
+      "name": "Location194",
+      "xPercent": 0.8062677840576885,
+      "yPercent": 0.7457142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 195,
+      "name": "Location195",
+      "xPercent": 0.8841005651919703,
+      "yPercent": 0.7428571428571429,
+      "isSpecial": false
+    },
+    {
+      "id": 196,
+      "name": "Location196",
+      "xPercent": 0.8821048528551939,
+      "yPercent": 0.7685714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 197,
+      "name": "Location197",
+      "xPercent": 0.8801091405184175,
+      "yPercent": 0.7928571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 198,
+      "name": "Location198",
+      "xPercent": 0.8062677840576885,
+      "yPercent": 0.7871428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 199,
+      "name": "Location199",
+      "xPercent": 0.7962892223738063,
+      "yPercent": 0.8557142857142858,
+      "isSpecial": false
+    },
+    {
+      "id": 200,
+      "name": "Location200",
+      "xPercent": 0.7104735918924187,
+      "yPercent": 0.7442857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 201,
+      "name": "Location201",
+      "xPercent": 0.6745507698304424,
+      "yPercent": 0.73,
+      "isSpecial": false
+    },
+    {
+      "id": 202,
+      "name": "Location202",
+      "xPercent": 0.6945078931982069,
+      "yPercent": 0.7685714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 203,
+      "name": "Location203",
+      "xPercent": 0.5607951666341844,
+      "yPercent": 0.7471428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 204,
+      "name": "Location204",
+      "xPercent": 0.5208809198986553,
+      "yPercent": 0.7457142857142857,
+      "isSpecial": false
+    },
+    {
+      "id": 205,
+      "name": "Location205",
+      "xPercent": 0.48695381017345546,
+      "yPercent": 0.75,
+      "isSpecial": false
+    },
+    {
+      "id": 206,
+      "name": "Location206",
+      "xPercent": 0.48894952251023194,
+      "yPercent": 0.7985714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 207,
+      "name": "Location207",
+      "xPercent": 0.49693237185733774,
+      "yPercent": 0.8228571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 208,
+      "name": "Location208",
+      "xPercent": 0.48296238549990256,
+      "yPercent": 0.8485714285714285,
+      "isSpecial": false
+    },
+    {
+      "id": 209,
+      "name": "Location209",
+      "xPercent": 0.6166751120639251,
+      "yPercent": 0.7785714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 210,
+      "name": "Location210",
+      "xPercent": 0.6146793997271487,
+      "yPercent": 0.8085714285714286,
+      "isSpecial": false
+    },
+    {
+      "id": 211,
+      "name": "Location211",
+      "xPercent": 0.76036640031183,
+      "yPercent": 0.8771428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 212,
+      "name": "Location212",
+      "xPercent": 0.7204521535763009,
+      "yPercent": 0.8914285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 213,
+      "name": "Location213",
+      "xPercent": 0.6785421945039953,
+      "yPercent": 0.9071428571428571,
+      "isSpecial": false
+    },
+    {
+      "id": 214,
+      "name": "Location214",
+      "xPercent": 0.6366322354316897,
+      "yPercent": 0.9114285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 215,
+      "name": "Location215",
+      "xPercent": 0.6007094133697135,
+      "yPercent": 0.9128571428571428,
+      "isSpecial": false
+    },
+    {
+      "id": 216,
+      "name": "Location216",
+      "xPercent": 0.554808029623855,
+      "yPercent": 0.9114285714285715,
+      "isSpecial": false
+    },
+    {
+      "id": 217,
+      "name": "Location217",
+      "xPercent": 0.3372753849152212,
+      "yPercent": 0.44,
+      "isSpecial": false
+    },
+    {
+      "id": 218,
+      "name": "Location218",
+      "xPercent": 0.33927109725199767,
+      "yPercent": 0.4142857142857143,
+      "isSpecial": false
+    },
+    {
+      "id": 219,
+      "name": "Location219",
+      "xPercent": 0.3253011108945625,
+      "yPercent": 0.3914285714285714,
+      "isSpecial": false
+    },
+    {
+      "id": 220,
+      "name": "Location220",
+      "xPercent": 0.2953654258429156,
+      "yPercent": 0.37142857142857144,
       "isSpecial": false
     }
   ],
-  "connections": [
-    {
-      "fromId": 1,
-      "toId": 10
-    },
-    {
-      "fromId": 1,
-      "toId": 16
-    },
-    {
-      "fromId": 1,
-      "toId": 17
-    },
-    {
-      "fromId": 2,
-      "toId": 12
-    },
-    {
-      "fromId": 3,
-      "toId": 19
-    },
-    {
-      "fromId": 10,
-      "toId": 11
-    },
-    {
-      "fromId": 11,
-      "toId": 2
-    },
-    {
-      "fromId": 12,
-      "toId": 13
-    },
-    {
-      "fromId": 13,
-      "toId": 14
-    },
-    {
-      "fromId": 14,
-      "toId": 15
-    },
-    {
-      "fromId": 15,
-      "toId": 5
-    },
-    {
-      "fromId": 16,
-      "toId": 3
-    },
-    {
-      "fromId": 19,
-      "toId": 20
-    },
-    {
-      "fromId": 20,
-      "toId": 21
-    },
-    {
-      "fromId": 21,
-      "toId": 22
-    },
-    {
-      "fromId": 22,
-      "toId": 23
-    },
-    {
-      "fromId": 23,
-      "toId": 24
-    },
-    {
-      "fromId": 24,
-      "toId": 25
-    },
-    {
-      "fromId": 25,
-      "toId": 5
-    }
-  ]
+  "connections": []
 }
