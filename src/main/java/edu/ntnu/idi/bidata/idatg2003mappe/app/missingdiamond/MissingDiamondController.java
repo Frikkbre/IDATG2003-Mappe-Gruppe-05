@@ -32,6 +32,16 @@ public class MissingDiamondController {
     // Roll the die
     String result = game.playTurn();
     hasRolled = true;
+
+    // Check if there are any valid moves after rolling
+    List<Tile> possibleMoves = getPossibleMoves();
+    if (possibleMoves.isEmpty()) {
+      // No valid moves, so automatically end turn
+      hasRolled = false;
+      game.skipTurn(); // You'll need to add this method to MissingDiamond class
+      return result + "\nNo valid moves available. Turn passed to next player.";
+    }
+
     return result;
   }
 
