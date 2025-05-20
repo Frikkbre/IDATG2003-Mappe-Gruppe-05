@@ -56,6 +56,7 @@ public class MissingDiamondGUI extends Application {
     NavBar navBar = new NavBar();
     navBar.setStage(primaryStage);
     navBar.setGameController(gameController);
+    navBar.setMissingDiamondGUI(this);
     mainLayout.setTop(navBar.createMenuBar());
 
     // Create left panel (scoreboard, roll button, game log)
@@ -259,7 +260,7 @@ public class MissingDiamondGUI extends Application {
   }
 
   //Updates the board UI with current game state.
-  private void updateBoardUI() {
+  public void updateBoardUI() {
     // Clear existing player markers
     for (Circle marker : playerMarkers.values()) {
       boardPane.getChildren().remove(marker);
