@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
@@ -35,6 +36,7 @@ public class LadderGameGUI extends Application {
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private boolean randomLadders = false;
   private NavBar navBar;
+  private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   /**
    * Start the game.
@@ -188,62 +190,15 @@ public class LadderGameGUI extends Application {
    * Quick save the game to the default location.
    */
   private void quickSaveGame() {
-    try {
-      BoardFileHandler fileHandler = new BoardFileHandler();
-      GameState gameState = gameController.createGameState();
-      fileHandler.saveToDefaultLocation(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Saved");
-      alert.setHeaderText("Game Saved Successfully");
-      alert.setContentText("Your game has been saved to the default location.");
-      alert.showAndWait();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Save Error");
-      alert.setContentText("Could not save the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
+    gameSaveLoadHandler.quickSaveGameLadderGame();
   }
 
   /**
    * Load the last saved game from the default location.
    */
   private void loadLastSave() {
-    BoardFileHandler fileHandler = new BoardFileHandler();
-
-    if (!fileHandler.defaultSaveExists()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("No Save Found");
-      alert.setHeaderText("No Save File Found");
-      alert.setContentText("There is no saved game to load.");
-      alert.showAndWait();
-      return;
-    }
-
-    try {
-      GameState gameState = fileHandler.loadFromDefaultLocation();
-
-      // Create a new game with the loaded state
-      this.randomLadders = gameState.isRandomLadders();
-      gameController = new LadderGameController(randomLadders);
-      gameController.applyGameState(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Loaded");
-      alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved game has been loaded.");
-      alert.showAndWait();
-
-      updateBoardUI();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Load Error");
-      alert.setContentText("Could not load the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
+    gameSaveLoadHandler.loadLastSaveLadderGame(this, randomLadders);
+    updateBoardUI(); // Update the UI after loading TODO - not working?
   }
 
   /**
