@@ -3,52 +3,52 @@
   "locations": [
     {
       "id": 1,
-      "name": "SpecialLoc1",
+      "name": "Location1",
       "xPercent": 0.2375,
       "yPercent": 0.1457,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 2,
-      "name": "SpecialLoc2",
+      "name": "Location2",
       "xPercent": 0.0758,
       "yPercent": 0.1929,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 3,
-      "name": "SpecialLoc3",
+      "name": "Location3",
       "xPercent": 0.1796,
       "yPercent": 0.2014,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 4,
-      "name": "SpecialLoc4",
+      "name": "Location4",
       "xPercent": 0.4351,
       "yPercent": 0.16,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 5,
-      "name": "SpecialLoc5",
+      "name": "Location5",
       "xPercent": 0.479,
       "yPercent": 0.2143,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 6,
-      "name": "SpecialLoc6",
+      "name": "Location6",
       "xPercent": 0.3473,
       "yPercent": 0.2714,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 7,
-      "name": "SpecialLoc7",
+      "name": "Location7",
       "xPercent": 0.0259,
       "yPercent": 0.3571,
-      "isSpecial": true
+      "isSpecial": false
     },
     {
       "id": 8,

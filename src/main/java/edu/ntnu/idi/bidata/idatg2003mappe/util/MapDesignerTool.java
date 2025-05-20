@@ -149,19 +149,66 @@ public class MapDesignerTool {
     }
 
     try {
-      // Create a MapConfig object
-      MapConfig mapConfig = new MapConfig();
-      mapConfig.setName("Default Missing Diamond Map");
+      MapConfigFileHandler fileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+      Map<Integer, MapConfig.Location> existingLocations = new HashMap<>();
 
-      // Add locations
+      // Check if default map already exists and load it
+      if (fileHandler.defaultMapExists()) {
+        try {
+          // Load existing configuration to preserve positions
+          mapConfig = fileHandler.loadFromDefaultLocation();
+
+          // Create a map of existing locations by ID for quick lookup
+          if (mapConfig.getLocations() != null) {
+            for (MapConfig.Location loc : mapConfig.getLocations()) {
+              existingLocations.put(loc.getId(), loc);
+            }
+          }
+          listener.onLogMessage("Updating existing default map configuration");
+        } catch (Exception e) {
+          // If loading fails, create a new configuration
+          mapConfig = new MapConfig();
+          mapConfig.setName("Default Missing Diamond Map");
+          listener.onLogMessage("Error loading existing map, creating new configuration");
+        }
+      } else {
+        // Create new configuration if none exists
+        mapConfig = new MapConfig();
+        mapConfig.setName("Default Missing Diamond Map");
+        listener.onLogMessage("Creating new default map configuration");
+      }
+
+      // Clear existing locations and connections
+      mapConfig.getLocations().clear();
+      mapConfig.getConnections().clear();
+
+      // Add locations, preserving positions for existing tiles
       for (CoordinatePoint point : capturedPoints) {
-        MapConfig.Location location = new MapConfig.Location(
-            point.getId(),
-            point.getName(),
-            point.getXPercent(),
-            point.getYPercent(),
-            point.isSpecial()
-        );
+        MapConfig.Location location;
+
+        // Check if this location already exists in the previous configuration
+        if (existingLocations.containsKey(point.getId())) {
+          // Use the existing location's position data
+          MapConfig.Location existingLoc = existingLocations.get(point.getId());
+          location = new MapConfig.Location(
+              point.getId(),
+              point.getName(),
+              existingLoc.getXPercent(),  // Use existing X position
+              existingLoc.getYPercent(),  // Use existing Y position
+              point.isSpecial()
+          );
+          listener.onLogMessage("Preserving position for tile " + point.getId());
+        } else {
+          // Create new location with current position
+          location = new MapConfig.Location(
+              point.getId(),
+              point.getName(),
+              point.getXPercent(),
+              point.getYPercent(),
+              point.isSpecial()
+          );
+        }
         mapConfig.addLocation(location);
       }
 
@@ -177,12 +224,16 @@ public class MapDesignerTool {
       }
 
       // Save to default location
-      MapConfigFileHandler fileHandler = new MapConfigFileHandler();
       fileHandler.saveToDefaultLocation(mapConfig);
 
       if (listener != null) {
-        listener.onMapDataExported("Map saved as default map configuration", true);
-        listener.onLogMessage("Map saved as default configuration and will be loaded automatically next time");
+        String message = existingLocations.isEmpty()
+            ? "Map saved as default map configuration"
+            : "Map updated and saved as default map configuration, preserving existing positions";
+        listener.onMapDataExported(message, true);
+        listener.onLogMessage(message);
+        listener.onLogMessage("Map contains " + mapConfig.getLocations().size() +
+            " locations and " + mapConfig.getConnections().size() + " connections");
       }
     } catch (Exception e) {
       if (listener != null) {
