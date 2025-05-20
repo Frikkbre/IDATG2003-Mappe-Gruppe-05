@@ -6,6 +6,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import javafx.event.ActionEvent;
@@ -149,11 +150,14 @@ public class GameSaveLoadHandler {
 
   /**
    * Loads the last save for the Missing Diamond game.
+   *
+   * @param missingDiamondGUI The GUI to update after loading the game
+   * @param controller The controller to apply the game state to
    */
-  public void loadLastSaveMissingDiamond(){
-    BoardFileHandler fileHandler = new BoardFileHandler();
-
-    if (!fileHandler.defaultSaveExists()) {
+  public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
+    // Check if the CSV file exists
+    File csvFile = new File(fullPath);
+    if (!csvFile.exists() || !csvFile.isFile()) {
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("No Save Found");
       alert.setHeaderText("No Save File Found");
@@ -163,19 +167,47 @@ public class GameSaveLoadHandler {
     }
 
     try {
-      GameState gameState = fileHandler.loadFromDefaultLocation();
+      // Read the CSV file
+      CSVReader reader = new CSVReader(new FileReader(csvFile));
+      System.out.println("Loading game from: " + fullPath);
 
-      // Create a new game with the loaded state
-      missingDiamondController = new MissingDiamondController();
-      missingDiamondController.applyGameState(gameState);
+      String[] header = reader.readNext(); // Skip header
+      System.out.println("Header: " + String.join(", ", header));
 
+      // Create GameState
+      GameState gameState = new GameState();
+      gameState.setCurrentPlayerIndex(0); // Default to first player's turn
+
+      // Read player data
+      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
+      String[] record;
+      while ((record = reader.readNext()) != null) {
+        if (record.length >= 4) {
+          String playerName = record[0];
+          int playerId = Integer.parseInt(record[1]);
+          int position = Integer.parseInt(record[3]);
+          System.out.println(position + " " + playerId + " " + playerName);
+
+          playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+        }
+      }
+      reader.close();
+
+      gameState.setPlayerPositions(playerPositions);
+
+      // Apply the game state to the existing controller
+      controller.applyGameState(gameState);
+
+      // Show success alert
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Game Loaded");
       alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved missing diamond game has been loaded");
+      alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv");
       alert.showAndWait();
 
-    } catch (FileHandlingException ex) {
+      // Update the UI
+      missingDiamondGUI.updateBoardUI();
+    } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
       alert.setHeaderText("Load Error");
