@@ -291,7 +291,7 @@ public class NavBar {
       if (ladderGameGUI != null) {
         ladderGameGUI.updateBoardUI();
       }
-      return false;
+      return true;
     }
     return false;
   }
