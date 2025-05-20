@@ -70,49 +70,13 @@ public class GameSaveLoadHandler {
     };
   }
 
-  /*public EventHandler<ActionEvent> quickSaveGameLadderGame(){
-    try {
-      BoardFileHandler fileHandler = new BoardFileHandler();
-      GameState gameState = ladderGameController.createGameState();
-      fileHandler.saveToDefaultLocation(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Saved");
-      alert.setHeaderText("Game Saved Successfully");
-      alert.setContentText("Your game has been saved to the default location.");
-      alert.showAndWait();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Save Error");
-      alert.setContentText("Could not save the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
-    return null;
-  }
-
-
-  public void quickSaveGameMissingDiamond(){
-    try {
-      BoardFileHandler fileHandler = new BoardFileHandler();
-      GameState gameState = missingDiamondController.createGameState();
-      fileHandler.saveToDefaultLocation(gameState);
-
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Saved");
-      alert.setHeaderText("Game Saved Successfully");
-      alert.setContentText("Your game has been saved to the default location.");
-      alert.showAndWait();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Save Error");
-      alert.setContentText("Could not save the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
-  }*/
-
-
+  /**
+   * loads a saved ladder game
+   * takes in ladderGameGUI
+   * and randomLadders to determine if the game is random or not
+   * @param ladderGameGUI
+   * @param randomLadders
+   */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, boolean randomLadders) {
     BoardFileHandler fileHandler = new BoardFileHandler();
 
@@ -136,10 +100,47 @@ public class GameSaveLoadHandler {
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Game Loaded");
       alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved game has been loaded.");
+      alert.setContentText("Your last saved ladder game has been loaded");
       alert.showAndWait();
 
       ladderGameGUI.updateBoardUI();
+    } catch (FileHandlingException ex) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText("Load Error");
+      alert.setContentText("Could not load the game: " + ex.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  /**
+   * Loads the last save for the Missing Diamond game.
+   */
+  public void loadLastSaveMissingDiamond(){
+    BoardFileHandler fileHandler = new BoardFileHandler();
+
+    if (!fileHandler.defaultSaveExists()) {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("No Save Found");
+      alert.setHeaderText("No Save File Found");
+      alert.setContentText("There is no saved game to load.");
+      alert.showAndWait();
+      return;
+    }
+
+    try {
+      GameState gameState = fileHandler.loadFromDefaultLocation();
+
+      // Create a new game with the loaded state
+      missingDiamondController = new MissingDiamondController();
+      missingDiamondController.applyGameState(gameState);
+
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Game Loaded");
+      alert.setHeaderText("Game Loaded Successfully");
+      alert.setContentText("Your last saved missing diamond game has been loaded");
+      alert.showAndWait();
+
     } catch (FileHandlingException ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
