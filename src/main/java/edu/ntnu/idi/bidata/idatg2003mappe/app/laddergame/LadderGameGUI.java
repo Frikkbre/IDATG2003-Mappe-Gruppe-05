@@ -35,7 +35,7 @@ public class LadderGameGUI extends Application {
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private boolean randomLadders = false;
-  private NavBar navBar;
+  public NavBar navBar;
   private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   /**
