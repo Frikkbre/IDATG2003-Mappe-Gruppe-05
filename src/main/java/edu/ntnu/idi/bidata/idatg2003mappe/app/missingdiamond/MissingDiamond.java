@@ -2,8 +2,13 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
+import java.util.Random;
+
 
 import java.util.*;
 
@@ -32,12 +37,90 @@ public class MissingDiamond {
   public MissingDiamond(int numberOfPlayers) {
     System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
     this.board = createBoard();
-    this.players = createPlayers(numberOfPlayers);
+    this.players = createPlayers(numberOfPlayers, this.board);
     this.die = new Die();
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.get(currentPlayerIndex);
     this.currentRoll = 0;
+  }
+
+  public MissingDiamond(int numberOfPlayers, String mapFilePath) {
+    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+
+    BoardBranching boardInstance; // Temporary local variable
+    List<Player> playersInstance;
+    Die dieInstance = new Die();
+    boolean gameFinishedInstance = false;
+    int currentPlayerIndexInstance = 0;
+
+    try {
+      // Load map configuration from file
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig = mapFileHandler.read(mapFilePath);
+
+      // Create board from configuration
+      boardInstance = createBoardFromConfig(mapConfig);
+
+      // Initialize players using the created board
+      playersInstance = createPlayers(numberOfPlayers, boardInstance);
+
+      // Randomly place the diamond at one of the locations
+      int randomTileId = new Random().nextInt(32) + 1;
+
+    } catch (FileHandlingException e) {
+      System.err.println("Error loading map configuration: " + e.getMessage());
+      // Fall back to default board creation
+      boardInstance = createDefaultBoard();
+      playersInstance = createPlayers(numberOfPlayers, boardInstance);
+    }
+
+    // Only assign to final fields once
+    this.board = boardInstance;
+    this.players = playersInstance;
+    this.die = dieInstance;
+    this.gameFinished = gameFinishedInstance;
+    this.currentPlayerIndex = currentPlayerIndexInstance;
+    this.currentPlayer = players.get(currentPlayerIndex);
+    this.currentRoll = 0;
+
+    // Place diamond after board is initialized
+    int randomTileId = new Random().nextInt(32) + 1;
+    this.diamondLocation = board.getTileById(randomTileId);
+  }
+
+  /**
+   * Creates a default board when no configuration file is available.
+   * This serves as a fallback when a map configuration cannot be loaded.
+   *
+   * @return A default board configuration
+   */
+  private BoardBranching createDefaultBoard() {
+    // Simply delegate to the existing createBoard method
+    return createBoard();
+  }
+
+  private BoardBranching createBoardFromConfig(MapConfig mapConfig) {
+    BoardBranching board = new BoardBranching();
+    board.setBoardName(mapConfig.getName());
+
+    // Create all tiles
+    for (MapConfig.Location location : mapConfig.getLocations()) {
+      Tile tile = new Tile(location.getId());
+      board.addTileToBoard(tile);
+    }
+
+    // Add all connections
+    for (MapConfig.Connection connection : mapConfig.getConnections()) {
+      Tile fromTile = board.getTileById(connection.getFromId());
+      Tile toTile = board.getTileById(connection.getToId());
+
+      if (fromTile != null && toTile != null) {
+        board.connectTiles(fromTile, toTile);
+      }
+    }
+
+    return board;
   }
 
   private BoardBranching createBoard() {
@@ -109,7 +192,7 @@ public class MissingDiamond {
     }
   }
 
-  private List<Player> createPlayers(int numberOfPlayers) {
+  private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
     List<Player> players = new ArrayList<>();
     Tile startTile = board.getStartTile();
 

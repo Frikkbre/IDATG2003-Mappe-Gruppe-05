@@ -1,6 +1,9 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerTool;
@@ -65,69 +68,51 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 // Location data with percentages of map width/height
   private static final Object[][] LOCATION_DATA = {
       // {id, name, x-percentage, y-percentage, isSpecial}
-      {1, "SpecialLoc1", 0.2375, 0.1457},
-      {2, "SpecialLoc2", 0.0758, 0.1929},
-      {3, "SpecialLoc3", 0.1796, 0.2014},
-      {4, "SpecialLoc4", 0.4351, 0.1600},
-      {5, "SpecialLoc5", 0.4790, 0.2143},
-      {6, "SpecialLoc6", 0.3473, 0.2714},
-      {7, "SpecialLoc7", 0.0259, 0.3571},
-      {8, "Location8", 0.1577, 0.1600},
-      {9, "Location9", 0.1197, 0.1686},
-      {10, "Location10", 0.2634, 0.1814},
-      {11, "Location11", 0.2295, 0.1986},
-      {12, "Location12", 0.2954, 0.1957},
-      {13, "Location13", 0.3413, 0.1957},
-      {14, "Location14", 0.3792, 0.1800},
-      {15, "Location15", 0.2535, 0.2086},
-      {16, "Location16", 0.2774, 0.2214},
-      {17, "Location17", 0.2974, 0.2471},
-      {18, "Location18", 0.2275, 0.2329},
-      {19, "Location19", 0.2275, 0.2614},
-      {20, "Location20", 0.1996, 0.2829},
-      {21, "Location21", 0.1696, 0.3043},
-      {22, "Location22", 0.1417, 0.3243},
-      {23, "Location23", 0.1018, 0.3186},
-      {24, "Location24", 0.0698, 0.3300},
-      {25, "Location25", 0.0279, 0.2214},
-      {26, "Location26", 0.0140, 0.2529},
-      {27, "Location27", 0.0080, 0.2857},
-      {28, "Location28", 0.0120, 0.3157},
   };
 
   // Connection data for paths between locations
   private static final int[][] CONNECTIONS = {
-      {1, 8},
-      {1, 11},
-      {1, 10},
-      {2, 25},
-      {3, 18},
-      {8, 9},
-      {9, 2},
-      {10, 12},
-      {11, 3},
-      {11, 15},
-      {12, 13},
-      {13, 14},
-      {14, 4},
-      {15, 16},
-      {16, 17},
-      {17, 6},
-      {18, 19},
-      {19, 20},
-      {20, 21},
-      {21, 22},
-      {22, 23},
-      {23, 24},
-      {24, 7},
-      {25, 26},
-      {26, 27},
-      {27, 28},
-      {28, 7},
   };
 
   @Override
   public void start(Stage primaryStage) {
+    gameController = new MissingDiamondController(numberOfPlayers);
+
+    // Load map configuration
+    try {
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapFileHandler.defaultMapExists()) {
+        mapConfig = mapFileHandler.loadFromDefaultLocation();
+      } else {
+        // Create a default map if none exists and save it
+        mapConfig = createDefaultMapConfig();
+        mapFileHandler.saveToDefaultLocation(mapConfig);
+      }
+
+      // Continue setting up the UI with the loaded map config...
+      // (rest of your existing start method, modified to use mapConfig)
+
+      // Update this part to use the loaded configuration
+      Platform.runLater(() -> {
+        createGameLocationsFromConfig(overlayPane, mapView, mapConfig);
+        synchronizeTilesWithDesigner();
+        updateBoardUI();
+      });
+
+    } catch (FileHandlingException e) {
+      gameLog.appendText("Error loading map configuration: " + e.getMessage() + "\n");
+      System.err.println("Error loading map configuration: " + e.getMessage());
+
+      // Fall back to hard-coded map data
+      Platform.runLater(() -> {
+        createGameLocations(overlayPane, mapView); // Your existing method
+        synchronizeTilesWithDesigner();
+        updateBoardUI();
+      });
+    }
+
     gameController = new MissingDiamondController(numberOfPlayers);
 
     mainLayout = new BorderPane();
@@ -220,6 +205,33 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       }
       updateBoardUI();
     });
+  }
+
+  private MapConfig createDefaultMapConfig() {
+    MapConfig mapConfig = new MapConfig();
+    mapConfig.setName("Default Missing Diamond Map");
+
+    // Add locations from your existing LOCATION_DATA
+    for (Object[] data : LOCATION_DATA) {
+      int id = (int) data[0];
+      String name = (String) data[1];
+      double xPercent = ((Number) data[2]).doubleValue();
+      double yPercent = ((Number) data[3]).doubleValue();
+      boolean isSpecial = name.contains("Special");
+
+      MapConfig.Location location = new MapConfig.Location(id, name, xPercent, yPercent, isSpecial);
+      mapConfig.addLocation(location);
+    }
+
+    // Add connections from your existing CONNECTIONS
+    for (int[] connection : CONNECTIONS) {
+      if (connection.length >= 2) {
+        MapConfig.Connection conn = new MapConfig.Connection(connection[0], connection[1]);
+        mapConfig.addConnection(conn);
+      }
+    }
+
+    return mapConfig;
   }
 
   private MenuBar createMenuBar() {
@@ -470,6 +482,74 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Create connections after adding all tiles
     createPaths(pane);
+  }
+
+  /**
+   * Method to create game locations from the map configuration.
+   */
+  private void createGameLocationsFromConfig(Pane pane, ImageView mapView, MapConfig mapConfig) {
+    System.out.println("Creating game locations from loaded configuration");
+
+    // Get the actual rendered dimensions
+    double mapWidth = mapView.getBoundsInParent().getWidth();
+    double mapHeight = mapView.getBoundsInParent().getHeight();
+
+    if (mapWidth <= 0 || mapHeight <= 0) {
+      System.out.println("ERROR: Invalid map dimensions: " + mapWidth + "x" + mapHeight);
+      return;
+    }
+
+    // Clear existing tiles
+    pane.getChildren().clear();
+    tileCircles.clear();
+
+    // Create and position the locations
+    for (MapConfig.Location location : mapConfig.getLocations()) {
+      int tileId = location.getId();
+      String name = location.getName();
+
+      // Calculate actual coordinates based on percentages
+      double xPercent = location.getXPercent();
+      double yPercent = location.getYPercent();
+      double x = mapWidth * xPercent;
+      double y = mapHeight * yPercent;
+
+      // Create the tile circle
+      boolean isSpecial = location.isSpecial();
+      Color tileColor = isSpecial ? Color.RED : Color.BLACK;
+      Circle tile = createTileCircle(x, y, tileId, tileColor);
+
+      pane.getChildren().add(tile);
+      tileCircles.put(tileId, tile);
+    }
+
+    // Create connections after adding all tiles
+    createPathsFromConfig(pane, mapConfig);
+  }
+
+  private void createPathsFromConfig(Pane pane, MapConfig mapConfig) {
+    // Create the paths between locations
+    for (MapConfig.Connection connection : mapConfig.getConnections()) {
+      int fromId = connection.getFromId();
+      int toId = connection.getToId();
+
+      // Find the circles for these IDs
+      Circle fromCircle = tileCircles.get(fromId);
+      Circle toCircle = tileCircles.get(toId);
+
+      if (fromCircle != null && toCircle != null) {
+        Line line = new Line(
+            fromCircle.getCenterX(), fromCircle.getCenterY(),
+            toCircle.getCenterX(), toCircle.getCenterY()
+        );
+        line.setStroke(Color.BLACK);
+        line.setStrokeWidth(1.5);
+        line.setUserData("connection"); // For identification
+
+        // Put lines under the circles
+        pane.getChildren().add(0, line);
+      }
+    }
   }
 
 
