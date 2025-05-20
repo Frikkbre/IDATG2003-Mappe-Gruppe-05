@@ -6,8 +6,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerTool;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -23,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * GUI class for the Missing Diamond game.
+ * GUI class for the Missing Diamond game. //TODO: Try to connect the dots, remove labels of tiles
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.4
@@ -59,12 +61,17 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   // Location data with percentages of map width/height
   private static final Object[][] LOCATION_DATA = {
       // {id, name, x-percentage, y-percentage}
-
+      {1, "Location1", 0.1577, 0.1571},
+      {2, "Location2", 0.1217, 0.1686},
+      {3, "Location3", 0.0239, 0.2200},
+      {4, "SpecialLoc4", 0.0778, 0.1971},
+      {5, "SpecialLoc5", 0.1816, 0.2000},
+      {6, "SpecialLoc6", 0.4411, 0.1614},
   };
 
   // Connection data for paths between locations
   private static final int[][] CONNECTIONS = {
-
+      // Empty for now
   };
 
   @Override
@@ -135,7 +142,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     grid.add(leftSidebar, 0, 0);
 
     StackPane mapContainer = new StackPane();
-    //mapContainer.setStyle("-fx-background-color: lightgray;");  // debug: see its full area
     mapContainer.setAlignment(Pos.CENTER);
     mapContainer.getChildren().add(boardPane);
 
@@ -151,7 +157,14 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     primaryStage.setScene(scene);
     primaryStage.show();
 
-    updateBoardUI();
+    // Wait for layout to complete after window is shown
+    Platform.runLater(() -> {
+      if (LOCATION_DATA.length > 0) {
+        System.out.println("Forcing creation of game locations after layout");
+        createGameLocations(overlayPane, mapView);
+      }
+      updateBoardUI();
+    });
   }
 
   private MenuBar createMenuBar() {
@@ -210,17 +223,24 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     root.setPrefSize(900, 700);
     root.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
+    System.out.println("Loading map image...");
     Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
+    if (mapImage.isError()) {
+      System.out.println("ERROR: Failed to load map image: " + mapImage.getException());
+    } else {
+      System.out.println("Image loaded successfully: " + mapImage.getWidth() + "x" + mapImage.getHeight());
+    }
+
     mapView = new ImageView(mapImage);
     mapView.setFitWidth(900);
     mapView.setFitHeight(700);
-    mapView.setPreserveRatio(false); //TODO: set to true if you want to keep the aspect ratio, will cause streching issue with tiles
+    mapView.setPreserveRatio(true);
 
     root.getChildren().add(mapView);
 
     // Create a transparent pane for game elements
     overlayPane = new Pane();
-    overlayPane.setPickOnBounds(true); // Make sure this is true to receive all clicks
+    overlayPane.setPickOnBounds(true);
     overlayPane.setPrefSize(900, 700);
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
     root.getChildren().add(overlayPane);
@@ -235,6 +255,24 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       }
     });
 
+    // Add a listener that will create game locations AFTER the image is rendered
+    mapView.imageProperty().addListener((obs, oldImg, newImg) -> {
+      if (newImg != null) {
+        // Add a small delay to ensure layout is complete
+        new Thread(() -> {
+          try {
+            Thread.sleep(100);
+            Platform.runLater(() -> {
+              createGameLocations(overlayPane, mapView);
+            });
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }).start();
+      }
+    });
+
+    // Update overlay size when map bounds change
     mapView.boundsInParentProperty().addListener((obs, old, bounds) -> {
       overlayPane.setPrefSize(bounds.getWidth(), bounds.getHeight());
       overlayPane.setMaxSize(bounds.getWidth(), bounds.getHeight());
@@ -243,10 +281,10 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       if (mapDesigner != null) {
         mapDesigner.updateMapDimensions(bounds.getWidth(), bounds.getHeight());
       }
-    });
 
-    // Create game locations on the overlay
-    createGameLocations(overlayPane, mapView);
+      // Update game location positions
+      updateGameLocations();
+    });
 
     return root;
   }
@@ -273,12 +311,23 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private void createGameLocations(Pane pane, ImageView mapView) {
-    // Get the actual rendered dimensions of the displayed map
-    double mapWidth = mapView.getFitWidth();
-    double mapHeight = mapView.getFitHeight();
+    System.out.println("CREATING GAME LOCATIONS");
 
-    // Log actual dimensions for debugging
-    System.out.println("Actual map dimensions: " + mapWidth + "x" + mapHeight);
+    // Get the ACTUAL rendered dimensions
+    double mapWidth = mapView.getBoundsInParent().getWidth();  // Try boundsInParent instead
+    double mapHeight = mapView.getBoundsInParent().getHeight();
+
+    if (mapWidth <= 0 || mapHeight <= 0) {
+      System.out.println("ERROR: Invalid map dimensions: " + mapWidth + "x" + mapHeight);
+      return;
+    }
+
+    System.out.println("Map dimensions: " + mapWidth + "x" + mapHeight);
+    System.out.println("Original image dimensions: " + mapView.getImage().getWidth() + "x" + mapView.getImage().getHeight());
+
+    // Clear existing tiles
+    pane.getChildren().clear();
+    tileCircles.clear();
 
     // Create and position the locations
     for (Object[] data : LOCATION_DATA) {
@@ -290,6 +339,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       double yPercent = ((Number) data[3]).doubleValue();
       double x = mapWidth * xPercent;
       double y = mapHeight * yPercent;
+
+      // Debug output for each tile
+      System.out.println("Creating tile " + tileId + " at " + x + "," + y + " from " + xPercent + "," + yPercent);
 
       // Check if the name contains "Special" to determine color
       boolean isSpecial = name.contains("Special");
@@ -303,13 +355,73 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       label.setLayoutY(y - 15);
       label.setTextFill(Color.WHITE);
       label.setStyle("-fx-background-color: rgba(0,0,0,0.7); -fx-padding: 2px; -fx-font-size: 8pt;");
+      label.setUserData(tileId);  // Line to set userData
 
       pane.getChildren().addAll(tile, label);
       tileCircles.put(tileId, tile);
     }
 
+    System.out.println("Created " + tileCircles.size() + " tiles");
+
     // Create connections after adding all tiles
     createPaths(pane);
+  }
+
+  private void updateGameLocations() {
+    // Only update if tiles already exist
+    if (tileCircles.isEmpty()) {
+      System.out.println("updateGameLocations: No tiles to update");
+      return;
+    }
+
+    double mapWidth = mapView.getBoundsInParent().getWidth();
+    double mapHeight = mapView.getBoundsInParent().getHeight();
+
+    System.out.println("Updating location positions. Map size: " + mapWidth + "x" + mapHeight);
+
+    for (Object[] data : LOCATION_DATA) {
+      int tileId = (int) data[0];
+      Circle circle = tileCircles.get(tileId);
+
+      if (circle != null) {
+        // Calculate new position based on percentages
+        double xPercent = ((Number) data[2]).doubleValue();
+        double yPercent = ((Number) data[3]).doubleValue();
+        double x = mapWidth * xPercent;
+        double y = mapHeight * yPercent;
+
+        // Update circle position
+        circle.setCenterX(x);
+        circle.setCenterY(y);
+
+        System.out.println("Updated tile " + tileId + " to " + x + "," + y);
+
+        // Update any labels associated with this tile
+        for (Node node : overlayPane.getChildren()) {
+          if (node instanceof Label && node.getUserData() != null
+              && node.getUserData().equals(tileId)) {
+            Label label = (Label) node;
+            label.setLayoutX(x + 5);
+            label.setLayoutY(y - 15);
+          }
+        }
+      } else {
+        System.out.println("Circle not found for tile ID: " + tileId);
+      }
+    }
+
+    // Update connections
+    updateConnections();
+  }
+
+  // Add a method to update connections
+  private void updateConnections() {
+    // Remove existing connections
+    overlayPane.getChildren().removeIf(node ->
+        node instanceof Line && "connection".equals(node.getUserData()));
+
+    // Recreate connections
+    createPaths(overlayPane);
   }
 
   private void createPaths(Pane pane) {
@@ -342,7 +454,16 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private Circle createTileCircle(double x, double y, int tileId, Color color) {
-    Circle tile = new Circle(x, y, 10, color);
+    // Create circle
+    Circle tile = new Circle();
+    tile.setCenterX(x);
+    tile.setCenterY(y);
+
+    // Special locations (red) get a larger radius
+    boolean isSpecial = color == Color.RED;
+    tile.setRadius(isSpecial ? 12 : 5);  // 15px for special, 10px for regular
+
+    tile.setFill(color);
     tile.setStroke(Color.WHITE);
     tile.setStrokeWidth(1.5);
     tile.setUserData(tileId);
