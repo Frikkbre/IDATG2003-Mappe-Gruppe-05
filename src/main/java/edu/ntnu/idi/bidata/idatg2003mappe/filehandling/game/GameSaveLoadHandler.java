@@ -1,16 +1,76 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
+import com.opencsv.CSVWriter;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.util.List;
 
 public class GameSaveLoadHandler {
   private LadderGameController ladderGameController;
   private MissingDiamondController missingDiamondController;
+  private Player player;
 
-  public void quickSaveGameLadderGame(){
+  private static final String lastSaveDir = "src/main/resources/saves";
+  private static final String lastSaveFile = "LastSave.csv";
+  private static final String fullPath = lastSaveDir + "/" + lastSaveFile;
+
+  private Object gameController;
+
+  public EventHandler<ActionEvent> quickSaveGame(List<Player> playersFromController) {
+    return event -> {
+      try {
+        // Make sure directory exists
+        File saveDir = new File(lastSaveDir);
+        if (!saveDir.exists()) {
+          saveDir.mkdirs();
+        }
+
+        if (playersFromController == null || playersFromController.isEmpty()) {
+          showAlert(Alert.AlertType.ERROR, "Error", "Save Error", "No players found to save.");
+          return;
+        }
+
+        // Save to CSV
+        File csvFile = new File(fullPath);
+        FileWriter outputFile = new FileWriter(csvFile);
+        CSVWriter writer = new CSVWriter(outputFile);
+
+        // Write header
+        String[] header = {"Player Name", "ID", "Color", "Position"};
+        writer.writeNext(header);
+
+        // Write player data
+        for (Player player : playersFromController) {
+          String[] data = {
+              player.getName(),
+              String.valueOf(player.getID()),
+              player.getColor(),
+              String.valueOf(player.getCurrentTile().getTileId())
+          };
+          writer.writeNext(data);
+        }
+
+        writer.close();
+
+        showAlert(Alert.AlertType.INFORMATION, "Game Saved", "Game Saved Successfully",
+            "Your game has been saved to LastSave.csv");
+      } catch (Exception ex) {
+        showAlert(Alert.AlertType.ERROR, "Error", "Save Error",
+            "Could not save the game: " + ex.getMessage());
+      }
+    };
+  }
+
+  /*public EventHandler<ActionEvent> quickSaveGameLadderGame(){
     try {
       BoardFileHandler fileHandler = new BoardFileHandler();
       GameState gameState = ladderGameController.createGameState();
@@ -28,7 +88,29 @@ public class GameSaveLoadHandler {
       alert.setContentText("Could not save the game: " + ex.getMessage());
       alert.showAndWait();
     }
+    return null;
   }
+
+
+  public void quickSaveGameMissingDiamond(){
+    try {
+      BoardFileHandler fileHandler = new BoardFileHandler();
+      GameState gameState = missingDiamondController.createGameState();
+      fileHandler.saveToDefaultLocation(gameState);
+
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Game Saved");
+      alert.setHeaderText("Game Saved Successfully");
+      alert.setContentText("Your game has been saved to the default location.");
+      alert.showAndWait();
+    } catch (FileHandlingException ex) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText("Save Error");
+      alert.setContentText("Could not save the game: " + ex.getMessage());
+      alert.showAndWait();
+    }
+  }*/
 
 
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, boolean randomLadders) {
@@ -65,5 +147,34 @@ public class GameSaveLoadHandler {
       alert.setContentText("Could not load the game: " + ex.getMessage());
       alert.showAndWait();
     }
+  }
+
+  /**
+   * Gets the players from the game controller.
+   * @return
+   */
+  private List<Player> getPlayersFromController() {
+    if (gameController instanceof LadderGameController) {
+      return ((LadderGameController) gameController).getPlayers();
+    } else if (gameController instanceof MissingDiamondController) {
+      return ((MissingDiamondController) gameController).getPlayers();
+    }
+    return null;
+  }
+
+  /**
+   * shows alert when saving and loading
+   * positive and negative
+   * @param type
+   * @param title
+   * @param header
+   * @param content
+   */
+  private void showAlert(Alert.AlertType type, String title, String header, String content) {
+    Alert alert = new Alert(type);
+    alert.setTitle(title);
+    alert.setHeaderText(header);
+    alert.setContentText(content);
+    alert.showAndWait();
   }
 }
