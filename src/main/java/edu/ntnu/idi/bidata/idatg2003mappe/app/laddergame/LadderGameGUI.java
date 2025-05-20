@@ -50,6 +50,7 @@ public class LadderGameGUI extends Application {
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
 
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
@@ -387,7 +388,7 @@ public class LadderGameGUI extends Application {
   /**
    * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
    */
-  private void updateBoardUI() {
+  public void updateBoardUI() {
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;
