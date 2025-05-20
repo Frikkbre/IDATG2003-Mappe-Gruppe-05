@@ -28,7 +28,7 @@ import java.util.List;
  * @version 0.3
  * @since 20.02.2025
  */
-public class LadderGameGUI extends Application implements NavBar.GameStateProvider {
+public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
@@ -50,7 +50,6 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
-    navBar.setGameStateProvider(this);
 
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
@@ -88,24 +87,6 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
     primaryStage.show();
 
     updateBoardUI();
-  }
-
-  @Override
-  public GameState getCurrentGameState() {
-    return gameController.createGameState();
-  }
-
-  @Override
-  public void loadGameState(GameState gameState) {
-    // Check if the game state is for ladder game
-    if (gameState != null) {
-      // Apply the game state
-      gameController.applyGameState(gameState);
-      // Update the UI
-      updateBoardUI();
-      // Display a confirmation in the game log
-      gameLog.appendText("Game state loaded successfully.\n");
-    }
   }
 
   /**
@@ -184,18 +165,10 @@ public class LadderGameGUI extends Application implements NavBar.GameStateProvid
     MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
     loadLastSaveMenuItem.setOnAction(e -> loadLastSave());
 
-    MenuItem openMenuItem = new MenuItem("Open");
-    openMenuItem.setOnAction(e -> loadGame(primaryStage));
-
-    MenuItem saveMenuItem = new MenuItem("Save As...");
-    saveMenuItem.setOnAction(e -> saveGame(primaryStage));
-
     MenuItem closeMenuItem = new MenuItem("Close");
     closeMenuItem.setOnAction(e -> primaryStage.close());
 
-    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem,
-        new SeparatorMenuItem(), openMenuItem, saveMenuItem,
-        new SeparatorMenuItem(), closeMenuItem);
+    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem, new SeparatorMenuItem(), closeMenuItem);
 
     // Settings Menu
     Menu settingsMenu = new Menu("Settings");
