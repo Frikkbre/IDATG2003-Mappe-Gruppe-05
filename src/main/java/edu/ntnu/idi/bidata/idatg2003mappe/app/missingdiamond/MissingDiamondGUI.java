@@ -43,6 +43,10 @@ public class MissingDiamondGUI extends Application {
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
 
+  /**
+   * Main method to launch the application.
+   * @param primaryStage
+   */
   @Override
   public void start(Stage primaryStage) {
     // Initialize game controller
@@ -81,7 +85,11 @@ public class MissingDiamondGUI extends Application {
     updateBoardUI();
   }
 
-  //Creates the left panel containing the scoreboard, roll button, and game log.
+  /**
+   * Creates the left panel with scoreboard, roll button, and game log.
+   *
+   * @return VBox containing the left panel components
+   */
   private VBox createLeftPanel() {
     VBox panel = new VBox(10);
     panel.setPadding(new Insets(10));
@@ -116,7 +124,11 @@ public class MissingDiamondGUI extends Application {
     return panel;
   }
 
-  //Creates the board pane with the game tiles.
+  /**
+   * Creates the board pane with a simple circular path and cross paths.
+   *
+   * @return Pane containing the board
+   */
   private Pane createBoardPane() {
     Pane pane = new Pane();
     pane.setStyle("-fx-background-color: lightblue;");
@@ -230,7 +242,9 @@ public class MissingDiamondGUI extends Application {
     return tile;
   }
 
-  //Updates the scoreboard with current player positions.
+  /**
+   * Updates the scoreboard with player names and their current tile.
+   */
   private void updateScoreBoard() {
     scoreBoard.clear();
     scoreBoard.appendText("Scoreboard:\n");
@@ -242,7 +256,9 @@ public class MissingDiamondGUI extends Application {
     }
   }
 
-  //Highlights the possible moves for the current player.
+  /**
+   * Highlights possible moves for the current player.
+   */
   private void highlightPossibleMoves() {
     // Reset all tiles to red
     for (Circle tile : tileCircles.values()) {
@@ -259,7 +275,9 @@ public class MissingDiamondGUI extends Application {
     }
   }
 
-  //Updates the board UI with current game state.
+  /**
+   * Updates the board UI with player positions and highlights possible moves.
+   */
   public void updateBoardUI() {
     // Clear existing player markers
     for (Circle marker : playerMarkers.values()) {
@@ -299,7 +317,11 @@ public class MissingDiamondGUI extends Application {
     updateScoreBoard();
   }
 
-  //Handles a click on a tile.
+  /**
+   * Handles tile click events.
+   *
+   * @param tileId The ID of the clicked tile.
+   */
   private void handleTileClick(int tileId) {
     // Check if the tile is a valid move
     List<Tile> possibleMoves = gameController.getPossibleMoves();
@@ -323,11 +345,16 @@ public class MissingDiamondGUI extends Application {
     }
   }
 
+  /**
+   * Returns the primary stage of the application.
+   *
+   * @return The primary stage
+   */
   public Stage getStage() {
     return primaryStage;
   }
 
-  //Main method to launch the application.
+
   public static void main(String[] args) {
     launch(args);
   }
