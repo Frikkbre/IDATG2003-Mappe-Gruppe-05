@@ -85,6 +85,10 @@ public class MissingDiamondController {
     }
   }
 
+  public GameState createGameState() {
+    return new GameState(game.getPlayers());
+  }
+
   public List<Player> getPlayers() {
     return game.getPlayers();
   }
