@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
@@ -11,7 +12,9 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameSaveLoadHandler {
@@ -78,9 +81,9 @@ public class GameSaveLoadHandler {
    * @param randomLadders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, boolean randomLadders) {
-    BoardFileHandler fileHandler = new BoardFileHandler();
-
-    if (!fileHandler.defaultSaveExists()) {
+    // Check if the CSV file exists
+    File csvFile = new File(fullPath);
+    if (!csvFile.exists() || !csvFile.isFile()) {
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("No Save Found");
       alert.setHeaderText("No Save File Found");
@@ -90,23 +93,52 @@ public class GameSaveLoadHandler {
     }
 
     try {
-      GameState gameState = fileHandler.loadFromDefaultLocation();
+      // Read the CSV file
+      CSVReader reader = new CSVReader(new FileReader(csvFile));
+      System.out.println("Loading game from: " + fullPath);
 
-      // Create a new game with the loaded state
-      randomLadders = gameState.isRandomLadders();
+      String[] header = reader.readNext(); // Skip heade
+
+      System.out.println("Header: " + String.join(", ", header));
+
+      // Create a new game with default randomLadders value
       ladderGameController = new LadderGameController(randomLadders);
+
+      // Create GameState
+      GameState gameState = new GameState();
+      gameState.setRandomLadders(randomLadders);
+      gameState.setCurrentPlayerIndex(0); // Default to first player's turn
+
+      // Read player data
+      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
+      String[] record;
+      while ((record = reader.readNext()) != null) {
+        if (record.length >= 4) {
+          String playerName = record[0];
+          int playerId = Integer.parseInt(record[1]);
+          int position = Integer.parseInt(record[3]);
+          System.out.println(position + " " + playerId + " " + playerName);
+
+          playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+        }
+      }
+      reader.close();
+
+      gameState.setPlayerPositions(playerPositions);
+
+      // Apply the game state
       ladderGameController.applyGameState(gameState);
 
-      // After reading playerDataList from CSV
-
+      // Show success alert
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Game Loaded");
       alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved ladder game has been loaded");
+      alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv");
       alert.showAndWait();
 
+      // Update the UI
       ladderGameGUI.updateBoardUI();
-    } catch (FileHandlingException ex) {
+    } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
       alert.setHeaderText("Load Error");
