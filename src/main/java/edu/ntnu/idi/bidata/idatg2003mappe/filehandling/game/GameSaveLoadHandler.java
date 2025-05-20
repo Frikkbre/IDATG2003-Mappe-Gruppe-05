@@ -9,6 +9,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondContr
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -137,7 +138,6 @@ public class GameSaveLoadHandler {
       alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv");
       alert.showAndWait();
 
-      // Update the UI
       ladderGameGUI.updateBoardUI();
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
