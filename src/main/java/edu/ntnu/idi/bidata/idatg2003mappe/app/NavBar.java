@@ -27,16 +27,22 @@ public class NavBar {
 
   private static final String lastSaveDir = "src/main/resources/saves";
   private static final String lastSaveFile = "LastSave.csv";
-  private static final String fullPath = lastSaveDir + "/" + lastSaveFile;
 
   private Stage stage;
   public Object gameController;
 
-
+  /**
+   * returns the stage of the NavBar
+   * @return stage
+   */
   public Stage getStage() {
     return stage;
   }
 
+  /**
+   * Set the stage for this NavBar
+   * @param stage The stage to set
+   */
   public void setStage(Stage stage) {
     this.stage = stage;
   }
@@ -107,6 +113,10 @@ public class NavBar {
     return menuBar;
   }
 
+  /**
+   * Determines the game type and loads the last save accordingly
+   * @return EventHandler for loading the last save
+   */
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
     return event -> {
       if (gameController instanceof LadderGameController) {
@@ -120,21 +130,15 @@ public class NavBar {
     };
   }
 
+  /**
+   * Closes the application
+   * @return EventHandler for closing the application
+   */
   private EventHandler<ActionEvent> closeFile() {
     return event -> {
       System.exit(0);
     };
   }
-
-  //TODO - remove
-  private void showAlert(Alert.AlertType type, String title, String header, String content) {
-    Alert alert = new Alert(type);
-    alert.setTitle(title);
-    alert.setHeaderText(header);
-    alert.setContentText(content);
-    alert.showAndWait();
-  }
-
 
   /**
    * Gets the list of players from the current game controller
