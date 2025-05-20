@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
@@ -35,6 +36,9 @@ import java.util.*;
  */
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
 
+  // Number of players for the game
+  private int numberOfPlayers = 2; // Default to 2 players if not specified
+
   // Game controller
   private MissingDiamondController gameController;
 
@@ -51,107 +55,47 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   // Board data
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
+  private Set<Integer> specialTileIds = new HashSet<>();
 
-private Map<Integer, Circle> tileCircles = new HashMap<>();
-private Map<Player, Circle> playerMarkers = new HashMap<>();
+  // Map designer tool
+  private MapDesignerTool mapDesigner;
 
-private Set<Integer> specialTileIds = new HashSet<>();
+  // Connection tracking
+  private int connectionSourceId = -1;
 
-// Map designer tool
-private MapDesignerTool mapDesigner;
+  // Player colors
+  private final Color[] playerColors = {
+      Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
+  };
 
-// Connection tracking
-private int connectionSourceId = -1;
+  @Override
+  public void start(Stage primaryStage) {
+    this.primaryStage = primaryStage; // Store the stage reference
 
-// Player colors
-private final Color[] playerColors = {
-    Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
-};
+    // Create board pane first to get overlay reference
+    boardPane = createBoardPane();
 
-@Override
-public void start(Stage primaryStage) {
     // Initialize game controller based on number of players
     if (numberOfPlayers > 0) {
-        // Use parametrized constructor when players are specified
-        gameController = new MissingDiamondController(numberOfPlayers);
+      gameController = new MissingDiamondController();
     } else {
-        // Use default constructor (reads from CSV) when no players are specified
-        gameController = new MissingDiamondController();
+      gameController = new MissingDiamondController(); // Default constructor
     }
-    
-    // Continue with the rest of the start method...
-    // Load map configuration
-    try {
-        MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-        // Additional map loading code here...
-    }
-
-    // Load map configuration
-    try {
-      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      MapConfig mapConfig;
-
-      if (mapFileHandler.defaultMapExists()) {
-        mapConfig = mapFileHandler.loadFromDefaultLocation();
-      } else {
-        // Create a default map if none exists and save it
-        mapConfig = createDefaultMapConfig();
-        mapFileHandler.saveToDefaultLocation(mapConfig);
-      }
-
-      // Update this part to use the loaded configuration
-      Platform.runLater(() -> {
-        createGameLocationsFromConfig(overlayPane, mapView, mapConfig);
-        synchronizeTilesWithDesigner();
-        updateBoardUI();
-      });
-
-    } catch (FileHandlingException e) {
-      gameLog.appendText("Error loading map configuration: " + e.getMessage() + "\n");
-      System.err.println("Error loading map configuration: " + e.getMessage());
-
-      // Fall back to hard-coded map data
-      Platform.runLater(() -> {
-        createGameLocations(overlayPane, mapView); // Your existing method
-        synchronizeTilesWithDesigner();
-        updateBoardUI();
-      });
-    }
-
-    gameController = new MissingDiamondController(numberOfPlayers);
 
     mainLayout = new BorderPane();
     mainLayout.setPrefSize(1440, 840);
     mainLayout.setStyle("-fx-background-color: white;");
     primaryStage.setTitle("Missing Diamond");
 
-    mainLayout.setStyle("-fx-background-color: white;");
-    primaryStage.setTitle("Missing Diamond");
-
-    // Create board pane first to get overlay reference
-    boardPane = createBoardPane();
-
     // Initialize the map designer (after overlay is created)
     mapDesigner = new MapDesignerTool(overlayPane, mapView.getFitWidth(), mapView.getFitHeight(), this);
 
     // Create the menu bar with designer menu
     MenuBar menuBar = createMenuBar();
 
-    // Add NavBar functionality 
+    // Add NavBar functionality
     NavBar navBar = new NavBar();
     navBar.setStage(primaryStage); // Set the stage in NavBar
-
-    // Set up the top container with all UI elements
-    VBox topContainer = new VBox(menuBar, mapDesigner.getStatusLabel(), navBar.createMenuBar());
-    mainLayout.setTop(topContainer);
-
-    // Continue with other UI setup...
-
-    // Initialize the map designer (after overlay is created)
-    mapDesigner = new MapDesignerTool(overlayPane, mapView.getFitWidth(), mapView.getFitHeight(), this);
-
-    // Create the menu bar with designer menu
-    MenuBar menuBar = createMenuBar();
 
     // Create developer controls HBox
     HBox devControls = new HBox(10);
@@ -172,8 +116,39 @@ public void start(Stage primaryStage) {
     mapDesigner.getTargetIdField().setVisible(false);
 
     // Set up the top container with all elements
-    VBox topContainer = new VBox(menuBar, mapDesigner.getStatusLabel(), devControls);
+    VBox topContainer = new VBox(menuBar, mapDesigner.getStatusLabel(), devControls, navBar.createMenuBar());
     mainLayout.setTop(topContainer);
+
+    // Load map configuration
+    try {
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapFileHandler.defaultMapExists()) {
+        mapConfig = mapFileHandler.loadFromDefaultLocation();
+      } else {
+        // Create a default map if none exists and save it
+        mapConfig = createDefaultMapConfig();
+        mapFileHandler.saveToDefaultLocation(mapConfig);
+      }
+
+      // Update this part to use the loaded configuration
+      Platform.runLater(() -> {
+        createGameLocationsFromConfig(overlayPane, mapView, mapConfig);
+        synchronizeTilesWithDesigner();
+        updateBoardUI();
+      });
+    } catch (FileHandlingException e) {
+      gameLog.appendText("Error loading map configuration: " + e.getMessage() + "\n");
+      System.err.println("Error loading map configuration: " + e.getMessage());
+
+      // Fall back to hard-coded map data
+      Platform.runLater(() -> {
+        createGameLocations(overlayPane, mapView); // Your existing method
+        synchronizeTilesWithDesigner();
+        updateBoardUI();
+      });
+    }
 
     // Create left panel
     VBox leftSidebar = createLeftPanel();
@@ -506,7 +481,6 @@ public void start(Stage primaryStage) {
     }
   }
 
-
   private void synchronizeTilesWithDesigner() {
     System.out.println("Synchronizing " + tileCircles.size() + " tiles with map designer...");
 
@@ -568,7 +542,6 @@ public void start(Stage primaryStage) {
       Circle circle = entry.getValue();
 
       if (circle != null) {
-
         double xPct = circle.getCenterX() / mapView.getFitWidth();
         double yPct = circle.getCenterY() / mapView.getFitHeight();
 
@@ -613,7 +586,6 @@ public void start(Stage primaryStage) {
   }
 
   private Circle createTileCircle(double x, double y, int tileId, Color color) {
-
     // Create circle
     Circle tile = new Circle();
     tile.setCenterX(x);
@@ -712,7 +684,6 @@ public void start(Stage primaryStage) {
             tileCircle.getCenterY() + offsetY,
             10,
             Paint.valueOf(player.getColor()) //Using valueOf to make string usable with Paint.
-
         );
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
