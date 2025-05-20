@@ -1,4 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+
 import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
@@ -29,13 +30,11 @@ import java.util.List;
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
-  private BoardGameSelectorGUI boardGameSelectorGui = new BoardGameSelectorGUI();
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
-  private final String[] playerColor = {"orange", "indigo", "green", "yellow", "brown", "purple"};
   private boolean randomLadders = false;
-  private int numberOfPlayers;
+  private NavBar navBar;
 
   /**
    * Start the game.
@@ -44,12 +43,14 @@ public class LadderGameGUI extends Application {
 
   @Override
   public void start(Stage primaryStage){
-    gameController = new LadderGameController(numberOfPlayers, randomLadders);
+    gameController = new LadderGameController(randomLadders);
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840); // cubed window
 
-    NavBar navBar = new NavBar();
+    navBar = new NavBar();
+    navBar.setStage(primaryStage);
+
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
 
@@ -86,18 +87,6 @@ public class LadderGameGUI extends Application {
     primaryStage.show();
 
     updateBoardUI();
-  }
-
-  /**
-   * sets the number of players.
-   * @param numberOfPlayers
-   */
-  public void setNumberOfPlayers(int numberOfPlayers) {
-    if (numberOfPlayers >= 2  && numberOfPlayers <= 6) {
-      this.numberOfPlayers = numberOfPlayers;
-    }else {
-      throw new IllegalArgumentException("Number of players must be between 2 and 6");
-    }
   }
 
   /**
@@ -176,18 +165,10 @@ public class LadderGameGUI extends Application {
     MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
     loadLastSaveMenuItem.setOnAction(e -> loadLastSave());
 
-    MenuItem openMenuItem = new MenuItem("Open");
-    openMenuItem.setOnAction(e -> loadGame(primaryStage));
-
-    MenuItem saveMenuItem = new MenuItem("Save As...");
-    saveMenuItem.setOnAction(e -> saveGame(primaryStage));
-
     MenuItem closeMenuItem = new MenuItem("Close");
     closeMenuItem.setOnAction(e -> primaryStage.close());
 
-    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem,
-        new SeparatorMenuItem(), openMenuItem, saveMenuItem,
-        new SeparatorMenuItem(), closeMenuItem);
+    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem, new SeparatorMenuItem(), closeMenuItem);
 
     // Settings Menu
     Menu settingsMenu = new Menu("Settings");
@@ -245,7 +226,7 @@ public class LadderGameGUI extends Application {
 
       // Create a new game with the loaded state
       this.randomLadders = gameState.isRandomLadders();
-      gameController = new LadderGameController(2, randomLadders);
+      gameController = new LadderGameController(randomLadders);
       gameController.applyGameState(gameState);
 
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -331,7 +312,7 @@ public class LadderGameGUI extends Application {
 
         // Create a new game with the loaded state
         this.randomLadders = gameState.isRandomLadders();
-        gameController = new LadderGameController(2, randomLadders);
+        gameController = new LadderGameController(randomLadders);
         gameController.applyGameState(gameState);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -436,14 +417,14 @@ public class LadderGameGUI extends Application {
     for (int i = 0; i < players.size(); i++) {
       Player player = players.get(i);
 
-      String playerColor = this.playerColor[i];
+      String playerColor = player.getColor();
       int tileId = player.getCurrentTile().getTileId();
       int index = tileId - 1;
       int row = index / 10;
       int col = index % 10;
       TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
       if (tileField.getText().contains("Player")) {
-        tileField.setText(tileField.getText() + ", " + player.getID());
+        tileField.setText(tileField.getText() + ", " + (player.getID() + 1)); //+1 to account for indexation, player 1 has ID 0 and so on.
       } else {
         tileField.setText(player.getName());
         tileField.setStyle("-fx-background-color: " + playerColor + ";");

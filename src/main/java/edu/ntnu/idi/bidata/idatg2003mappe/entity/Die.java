@@ -1,7 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.entity;
 
-//Imports
-
 import java.util.concurrent.ThreadLocalRandom;
 
 /**

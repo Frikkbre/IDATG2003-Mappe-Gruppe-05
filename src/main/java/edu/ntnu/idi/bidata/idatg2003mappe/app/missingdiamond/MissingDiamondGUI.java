@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
@@ -36,7 +37,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   // Game controller
   private MissingDiamondController gameController;
-  private int numberOfPlayers = 2;
 
   // UI components
   private BorderPane mainLayout;
@@ -46,26 +46,45 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private TextArea scoreBoard;
   private TextArea gameLog;
   private Button rollDieButton;
+  private Stage primaryStage;
 
   // Board data
   private Map<Integer, Circle> tileCircles = new HashMap<>();
   private Map<Player, Circle> playerMarkers = new HashMap<>();
 
-  private Set<Integer> specialTileIds = new HashSet<>();
+private Map<Integer, Circle> tileCircles = new HashMap<>();
+private Map<Player, Circle> playerMarkers = new HashMap<>();
 
-  // Map designer tool
-  private MapDesignerTool mapDesigner;
+private Set<Integer> specialTileIds = new HashSet<>();
 
-  // Connection tracking
-  private int connectionSourceId = -1;
+// Map designer tool
+private MapDesignerTool mapDesigner;
 
-  // Player colors
-  private final Color[] playerColors = {
-      Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
-  };
-  @Override
-  public void start(Stage primaryStage) {
-    gameController = new MissingDiamondController(numberOfPlayers);
+// Connection tracking
+private int connectionSourceId = -1;
+
+// Player colors
+private final Color[] playerColors = {
+    Color.ORANGE, Color.INDIGO, Color.GREEN, Color.YELLOW, Color.BROWN, Color.PURPLE
+};
+
+@Override
+public void start(Stage primaryStage) {
+    // Initialize game controller based on number of players
+    if (numberOfPlayers > 0) {
+        // Use parametrized constructor when players are specified
+        gameController = new MissingDiamondController(numberOfPlayers);
+    } else {
+        // Use default constructor (reads from CSV) when no players are specified
+        gameController = new MissingDiamondController();
+    }
+    
+    // Continue with the rest of the start method...
+    // Load map configuration
+    try {
+        MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+        // Additional map loading code here...
+    }
 
     // Load map configuration
     try {
@@ -106,8 +125,27 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     mainLayout.setStyle("-fx-background-color: white;");
     primaryStage.setTitle("Missing Diamond");
 
+    mainLayout.setStyle("-fx-background-color: white;");
+    primaryStage.setTitle("Missing Diamond");
+
     // Create board pane first to get overlay reference
     boardPane = createBoardPane();
+
+    // Initialize the map designer (after overlay is created)
+    mapDesigner = new MapDesignerTool(overlayPane, mapView.getFitWidth(), mapView.getFitHeight(), this);
+
+    // Create the menu bar with designer menu
+    MenuBar menuBar = createMenuBar();
+
+    // Add NavBar functionality 
+    NavBar navBar = new NavBar();
+    navBar.setStage(primaryStage); // Set the stage in NavBar
+
+    // Set up the top container with all UI elements
+    VBox topContainer = new VBox(menuBar, mapDesigner.getStatusLabel(), navBar.createMenuBar());
+    mainLayout.setTop(topContainer);
+
+    // Continue with other UI setup...
 
     // Initialize the map designer (after overlay is created)
     mapDesigner = new MapDesignerTool(overlayPane, mapView.getFitWidth(), mapView.getFitHeight(), this);
@@ -672,8 +710,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         Circle playerMarker = new Circle(
             tileCircle.getCenterX() + offsetX,
             tileCircle.getCenterY() + offsetY,
-            8,
-            playerColors[i]
+            10,
+            Paint.valueOf(player.getColor()) //Using valueOf to make string usable with Paint.
+
         );
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
@@ -714,13 +753,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
-  //Sets the number of players for the game.
-  public void setNumberOfPlayers(int numberOfPlayers) {
-    if (numberOfPlayers >= 2 && numberOfPlayers <= 6) {
-      this.numberOfPlayers = numberOfPlayers;
-    } else {
-      throw new IllegalArgumentException("Number of players must be between 2 and 6");
-    }
+  public Stage getStage() {
+    return primaryStage;
   }
 
   // MapDesignerListener implementation

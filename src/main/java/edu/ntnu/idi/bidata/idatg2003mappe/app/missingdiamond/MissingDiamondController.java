@@ -19,8 +19,8 @@ public class MissingDiamondController {
   private final MissingDiamond game;
   private boolean hasRolled = false;
 
-  public MissingDiamondController(int numberOfPlayers) {
-    this.game = new MissingDiamond(numberOfPlayers);
+  public MissingDiamondController() {
+    this.game = new MissingDiamond();
   }
 
   public String playTurn() {
