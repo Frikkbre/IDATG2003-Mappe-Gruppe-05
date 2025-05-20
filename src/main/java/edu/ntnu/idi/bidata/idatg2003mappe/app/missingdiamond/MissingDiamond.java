@@ -299,6 +299,15 @@ public class MissingDiamond {
     return result;
   }
 
+  public void skipTurn() {
+    // Reset current roll
+    currentRoll = 0;
+
+    // Move to next player
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    currentPlayer = players.get(currentPlayerIndex);
+  }
+
   /**
    * Gets the list of players.
    *
