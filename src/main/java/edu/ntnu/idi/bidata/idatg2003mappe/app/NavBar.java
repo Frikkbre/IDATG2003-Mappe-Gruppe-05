@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
@@ -61,7 +60,7 @@ public class NavBar {
     quickSaveMenuItem.setOnAction(gameSaveLoadHandler.quickSaveGame(getPlayersFromController()));
 
     MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
-    loadLastSaveMenuItem.setOnAction(loadLastSave());
+    loadLastSaveMenuItem.setOnAction(determineGameTypeAndLoad());
 
     MenuItem closeMenuItem = new MenuItem("Close");
     closeMenuItem.setOnAction(closeFile());
@@ -79,7 +78,7 @@ public class NavBar {
     navigateMenuItem.setOnAction(event -> {
       try {
         if(getStage().equals(boardGameSelectorGUI.getStage())) {
-          throw new FileHandlingException("Already in main menu.");
+          throw new IllegalArgumentException("Already in main menu.");
         }
         boardGameSelectorGUI.start(getStage());
       } catch (Exception e) {
@@ -96,11 +95,13 @@ public class NavBar {
     return menuBar;
   }
 
-
-  private EventHandler<ActionEvent> loadLastSave() {
-    return event -> {
-      // TODO - implement load last save
-    };
+  private EventHandler<ActionEvent> determineGameTypeAndLoad() {
+    if (gameController instanceof LadderGameController) {
+      gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, ((LadderGameController) gameController).isRandomLadders());
+    } else if (gameController instanceof MissingDiamondController) {
+      gameSaveLoadHandler.loadLastSaveMissingDiamond();
+    }
+    return null;
   }
 
   private EventHandler<ActionEvent> closeFile() {
@@ -109,6 +110,7 @@ public class NavBar {
     };
   }
 
+  //TODO - remove
   private void showAlert(Alert.AlertType type, String title, String header, String content) {
     Alert alert = new Alert(type);
     alert.setTitle(title);
