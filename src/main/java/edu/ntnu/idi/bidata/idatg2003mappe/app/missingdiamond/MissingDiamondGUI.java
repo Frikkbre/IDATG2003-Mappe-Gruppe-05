@@ -80,9 +80,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         mapFileHandler.saveToDefaultLocation(mapConfig);
       }
 
-      // Continue setting up the UI with the loaded map config...
-      // (rest of your existing start method, modified to use mapConfig)
-
       // Update this part to use the loaded configuration
       Platform.runLater(() -> {
         createGameLocationsFromConfig(overlayPane, mapView, mapConfig);
