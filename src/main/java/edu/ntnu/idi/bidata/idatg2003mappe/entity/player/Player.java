@@ -4,14 +4,16 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a player in the game with Observer pattern support.
  * Has methods to add player, place player and move player.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.2
- * @since 21.05.2025
+ * @version 0.0.3
+ * @since 23.05.2025
  */
 public class Player {
   private String name;
@@ -19,6 +21,7 @@ public class Player {
   private String color;
   private Tile currentTile;
   private boolean skipTurn = false;
+  private Set<String> inventory = new HashSet<>();
 
   // Observer pattern support
   private List<PlayerObserver> observers = new ArrayList<>();
@@ -26,7 +29,10 @@ public class Player {
   /**
    * Constructor for Player
    *
-   * @param name
+   * @param name Player's name
+   * @param ID Player's ID
+   * @param color Player's color
+   * @param startTile Starting tile for the player
    */
   public Player(String name, int ID, String color, Tile startTile) {
     setName(name);
@@ -67,6 +73,8 @@ public class Player {
 
   /**
    * Places the player on the board
+   *
+   * @param tile The tile to place the player on
    */
   public void placePlayer(Tile tile) {
     Tile oldTile = currentTile;
@@ -81,7 +89,7 @@ public class Player {
   /**
    * Moves the player on the board
    *
-   * @param tilesToMove
+   * @param tilesToMove Number of tiles to move
    */
   public void movePlayer(int tilesToMove) {
     if (currentTile == null) {
@@ -93,6 +101,44 @@ public class Player {
 
     // Notify observers about the movement
     notifyPlayerMoved(oldTile, currentTile);
+  }
+
+  /**
+   * Adds an item to the player's inventory
+   *
+   * @param itemName The name of the item to add
+   */
+  public void addInventoryItem(String itemName) {
+    inventory.add(itemName);
+  }
+
+  /**
+   * Removes an item from the player's inventory
+   *
+   * @param itemName The name of the item to remove
+   * @return True if the item was removed, false if it wasn't in the inventory
+   */
+  public boolean removeInventoryItem(String itemName) {
+    return inventory.remove(itemName);
+  }
+
+  /**
+   * Checks if the player has an item in their inventory
+   *
+   * @param itemName The name of the item to check for
+   * @return True if the player has the item, false otherwise
+   */
+  public boolean hasInventoryItem(String itemName) {
+    return inventory.contains(itemName);
+  }
+
+  /**
+   * Gets the player's inventory
+   *
+   * @return A set of all items in the player's inventory
+   */
+  public Set<String> getInventory() {
+    return new HashSet<>(inventory);
   }
 
   public void setColor(String color) {
@@ -130,7 +176,6 @@ public class Player {
    *
    * @return name
    */
-
   public String getName() {
     return name;
   }
@@ -140,7 +185,6 @@ public class Player {
    *
    * @return currentTile
    */
-
   public Tile getCurrentTile() {
     return currentTile;
   }
@@ -148,7 +192,6 @@ public class Player {
   public int getID() {
     return ID;
   }
-
 
   /**
    * returns if the player should skip a turn or not

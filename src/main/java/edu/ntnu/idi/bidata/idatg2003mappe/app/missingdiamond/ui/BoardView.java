@@ -8,6 +8,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -26,6 +27,13 @@ import java.util.*;
  * Component responsible for displaying the game board and handling interactions with it.
  */
 public class BoardView extends StackPane {
+  /**
+   * Interface for board update notifications.
+   */
+  public interface BoardUpdateListener {
+    void onBoardUpdated();
+  }
+
   // Game controller
   private MissingDiamondController gameController;
 
@@ -38,6 +46,8 @@ public class BoardView extends StackPane {
 
   private MapDesignerManager mapDesignerManager;
 
+  // Event listeners
+  private List<BoardUpdateListener> updateListeners = new ArrayList<>();
 
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
@@ -187,11 +197,17 @@ public class BoardView extends StackPane {
       return;
     }
 
-    // Only allow moves if the player has rolled
-    if (!gameController.hasRolled()) {
-      logMessage("You must roll the die first.");
-      return;
-    }
+    // Handle gameplay mode
+    handleGameplayTileClick(tileId);
+  }
+
+  /**
+   * Handles a tile click during gameplay (not in design mode).
+   *
+   * @param tileId The ID of the clicked tile
+   */
+  private void handleGameplayTileClick(int tileId) {
+    if (gameController == null) return;
 
     // Only allow moves if the player has rolled
     if (!gameController.hasRolled()) {
@@ -212,9 +228,59 @@ public class BoardView extends StackPane {
       // Reset highlighting and update the board
       highlightPossibleMoves();
       updateUI();
+
+      // Notify listeners that the board has been updated
+      notifyBoardUpdated();
+
+      // Check for game end
+      if (gameController.isGameFinished()) {
+        showGameOverDialog();
+      }
     } else {
       logMessage("Cannot move to tile " + tileId + ".");
     }
+  }
+
+  /**
+   * Shows a dialog when the game is over.
+   */
+  private void showGameOverDialog() {
+    if (gameController == null) return;
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Game Over");
+    alert.setHeaderText("Game Finished!");
+    alert.setContentText(gameController.getCurrentPlayer().getName() + " has won the game!");
+    alert.showAndWait();
+  }
+
+  /**
+   * Notifies listeners that the board has been updated.
+   */
+  private void notifyBoardUpdated() {
+    for (BoardUpdateListener listener : updateListeners) {
+      listener.onBoardUpdated();
+    }
+  }
+
+  /**
+   * Adds a board update listener.
+   *
+   * @param listener The listener to add
+   */
+  public void addBoardUpdateListener(BoardUpdateListener listener) {
+    if (listener != null && !updateListeners.contains(listener)) {
+      updateListeners.add(listener);
+    }
+  }
+
+  /**
+   * Removes a board update listener.
+   *
+   * @param listener The listener to remove
+   */
+  public void removeBoardUpdateListener(BoardUpdateListener listener) {
+    updateListeners.remove(listener);
   }
 
   public void createLocationsFromConfig(MapConfig mapConfig) {
@@ -515,6 +581,40 @@ public class BoardView extends StackPane {
     highlightPossibleMoves();
   }
 
+  /**
+   * Sets up board click handling.
+   * This should be called once after the board view is fully initialized.
+   */
+  public void setupBoardClickHandling() {
+    // We're inside BoardView, so use "this" instead of "boardView"
+    this.getOverlayPane().setOnMouseClicked(e -> {
+      // Handle clicks for map designer if in coordinate mode
+      if (mapDesignerManager != null && mapDesignerManager.isCoordinateMode()) {
+        mapDesignerManager.getMapDesignerTool().handleCoordinateClick(
+            e.getX(), e.getY(), this.getMapView());
+        return;
+      }
+
+      // Otherwise handle clicks for gameplay
+      for (Map.Entry<Integer, Circle> entry : this.getTileCircles().entrySet()) {
+        Circle circle = entry.getValue();
+        int tileId = entry.getKey();
+
+        // Calculate distance from click to circle center
+        double distance = Math.sqrt(
+            Math.pow(circle.getCenterX() - e.getX(), 2) +
+                Math.pow(circle.getCenterY() - e.getY(), 2)
+        );
+
+        // If click is within the circle
+        if (distance <= circle.getRadius()) {
+          handleGameplayTileClick(tileId);
+          break;
+        }
+      }
+    });
+  }
+
   public void highlightPossibleMoves() {
     if (tileHighlighter != null) {
       tileHighlighter.highlightPossibleMoves();
@@ -548,6 +648,11 @@ public class BoardView extends StackPane {
       }
     }
 
+    // Add controller as a board update listener if it implements the interface
+    if (controller instanceof BoardUpdateListener) {
+      addBoardUpdateListener((BoardUpdateListener)controller);
+    }
+
     if (!tileCircles.isEmpty()) {
       this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, controller);
     }
@@ -565,15 +670,40 @@ public class BoardView extends StackPane {
     return mapView;
   }
 
+  /**
+   * Sets the connection source ID.
+   * This tracks the first tile selected when creating connections in the map designer.
+   *
+   * @param id The ID of the tile selected as the connection source
+   */
   public void setConnectionSourceId(int id) {
     this.connectionSourceId = id;
+    // If we have a map designer manager, also update its state
+    if (mapDesignerManager != null) {
+      mapDesignerManager.setConnectionSourceId(id);
+    }
   }
 
+  /**
+   * Gets the connection source ID.
+   *
+   * @return The ID of the tile currently selected as the connection source, or -1 if none
+   */
   public int getConnectionSourceId() {
+    // If we have a map designer manager, sync with its state first
+    if (mapDesignerManager != null) {
+      this.connectionSourceId = mapDesignerManager.getConnectionSourceId();
+    }
     return connectionSourceId;
   }
 
+  /**
+   * Gets an unmodifiable view of the tile circles map.
+   *
+   * @return Map of tile IDs to Circle objects
+   */
   public Map<Integer, Circle> getTileCircles() {
+    // Return an unmodifiable view to prevent direct modification
     return Collections.unmodifiableMap(tileCircles);
   }
 }
