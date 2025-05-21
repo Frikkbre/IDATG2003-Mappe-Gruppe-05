@@ -210,6 +210,7 @@ public class GameSaveLoadHandler {
       alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv");
       alert.showAndWait();
 
+
       // Update the UI
       missingDiamondGUI.updateBoardUI();
     } catch (Exception ex) {
