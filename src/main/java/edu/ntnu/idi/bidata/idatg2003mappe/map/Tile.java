@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 
 public class Tile {
 
+  private String effect;
+
   /**
    * This is a unique identifier for the tile.
    * Either position or order of the tile.
@@ -167,5 +169,21 @@ public class Tile {
    */
   public List<Tile> getNextTiles() {
     return nextTilesOnBoard;
+  }
+
+  /**
+   * Gets the effect of the tile.
+   * @return
+   */
+  public String getEffect() {
+    return effect;
+  }
+
+  /**
+   * Sets the effect of the tile.
+   * @param effect
+   */
+  public void setEffect(String effect) { //TODO - redundant? hardcodes in LadderGameController and uses flag to set effect.
+    this.effect = effect;
   }
 }
