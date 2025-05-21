@@ -91,7 +91,7 @@ public class NavBar {
     );
 
     Menu modeMenu = new Menu("Mode");
-    MenuItem modeMenuItem = new MenuItem("Mode");
+    MenuItem modeMenuItem = new MenuItem("Random ladders");
     modeMenuItem.setOnAction(event -> {
       if (gameController instanceof LadderGameController) {
         LadderGameController ladderGameController = new LadderGameController(true);
