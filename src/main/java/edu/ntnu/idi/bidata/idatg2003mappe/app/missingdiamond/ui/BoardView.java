@@ -33,6 +33,8 @@ public class BoardView extends StackPane {
   private ImageView mapView;
   private TextArea gameLog;
 
+  private TileHighlighter tileHighlighter;
+
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
@@ -205,6 +207,9 @@ public class BoardView extends StackPane {
         specialTileIds.add(tileId);
       }
     }
+    if (gameController != null) {
+      this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, gameController);
+    }
 
     // Create connections after adding all tiles
     createConnectionsFromConfig(mapConfig);
@@ -281,6 +286,9 @@ public class BoardView extends StackPane {
       line.setUserData("connection");
 
       overlayPane.getChildren().add(0, line);
+    }
+    if (gameController != null) {
+      this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, gameController);
     }
   }
 
@@ -396,35 +404,6 @@ public class BoardView extends StackPane {
     return tile;
   }
 
-  public void highlightPossibleMoves() {
-    if (gameController == null) return;
-
-    // Reset all tiles to original colors
-    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      int tileId = entry.getKey();
-      Circle tile = entry.getValue();
-
-      // Check if it's a special tile
-      if (specialTileIds.contains(tileId)) {
-        tile.setFill(Color.RED);
-      } else {
-        tile.setFill(Color.BLACK);
-      }
-    }
-
-    // Only highlight possible moves if die has been rolled
-    if (gameController.hasRolled()) {
-      // Highlight possible moves in yellow
-      List<Tile> possibleMoves = gameController.getPossibleMoves();
-      for (Tile tile : possibleMoves) {
-        Circle tileCircle = tileCircles.get(tile.getTileId());
-        if (tileCircle != null) {
-          tileCircle.setFill(Color.YELLOW);
-        }
-      }
-    }
-  }
-
   public void updateUI() {
     if (gameController == null) return;
 
@@ -466,6 +445,17 @@ public class BoardView extends StackPane {
     highlightPossibleMoves();
   }
 
+  public void highlightPossibleMoves() {
+    if (tileHighlighter != null) {
+      tileHighlighter.highlightPossibleMoves();
+    } else if (gameController != null) {
+      if (!tileCircles.isEmpty()) {
+        this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, gameController);
+        tileHighlighter.highlightPossibleMoves();
+      }
+    }
+  }
+
   // Helper method to log messages
   private void logMessage(String message) {
     if (gameLog != null) {
@@ -476,6 +466,10 @@ public class BoardView extends StackPane {
   // Getters and setters
   public void setGameController(MissingDiamondController controller) {
     this.gameController = controller;
+
+    if (!tileCircles.isEmpty()) {
+      this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, controller);
+    }
   }
 
   public void setGameLog(TextArea gameLog) {
