@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.entity;
+package edu.ntnu.idi.bidata.idatg2003mappe.entity.die;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;

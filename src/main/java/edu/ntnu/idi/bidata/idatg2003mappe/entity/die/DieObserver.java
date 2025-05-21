@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.entity;
+package edu.ntnu.idi.bidata.idatg2003mappe.entity.die;
 
 /**
  * Observer interface for die events.

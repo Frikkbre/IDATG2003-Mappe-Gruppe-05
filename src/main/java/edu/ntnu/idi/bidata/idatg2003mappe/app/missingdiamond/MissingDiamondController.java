@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.ArrayList;

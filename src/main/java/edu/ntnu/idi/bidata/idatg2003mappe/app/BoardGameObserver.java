@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 /**

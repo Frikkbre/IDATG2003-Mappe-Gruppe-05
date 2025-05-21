@@ -1,8 +1,9 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.entity;
+package edu.ntnu.idi.bidata.idatg2003mappe.entity.player;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.board.Board;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class PlayerFactory {
    * @param board The board where players will be placed.
    * @return A list of players.
    */
-  public static List<Player> createPlayersFromCSV(String filePath, BoardBranching board) {
+  public static List<Player> createPlayersFromCSV(String filePath, Board board) {
     List<Player> players = new ArrayList<>();
 
     // Try to read from CSV file
@@ -78,7 +79,7 @@ public class PlayerFactory {
    * @param board The board where players will be placed.
    * @return A list of players.
    */
-  public static List<Player> createPlayersFromDefaultCSV(BoardBranching board) {
+  public static List<Player> createPlayersFromDefaultCSV(Board board) {
     return createPlayersFromCSV(DEFAULT_PLAYER_DATA_FILE, board);
   }
 
