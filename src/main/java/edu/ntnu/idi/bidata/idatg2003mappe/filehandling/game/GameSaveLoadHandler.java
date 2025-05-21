@@ -18,6 +18,9 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles saving and loading game states for both Ladder Game and Missing Diamond.
+ */
 public class GameSaveLoadHandler {
   private LadderGameController ladderGameController;
   private MissingDiamondController missingDiamondController;
@@ -29,6 +32,10 @@ public class GameSaveLoadHandler {
 
   private Object gameController;
 
+  /**
+   * Constructor for GameSaveLoadHandler.
+    * @param playersFromController
+   */
   public EventHandler<ActionEvent> quickSaveGame(List<Player> playersFromController) {
     return event -> {
       try {
