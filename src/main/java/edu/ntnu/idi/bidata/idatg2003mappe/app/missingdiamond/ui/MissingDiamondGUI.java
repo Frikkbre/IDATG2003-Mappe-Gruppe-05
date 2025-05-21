@@ -48,9 +48,14 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     // Create and set up board view first (needed for other components)
     boardView = new BoardView();
 
+    gameController = new MissingDiamondController();
+
     navBar = new NavBar();
     navBar.setStage(primaryStage);
     navBar.setGameController(gameController);
+    navBar.setMissingDiamondGUI(this);
+
+    boardView.setGameController(gameController);
 
     // Initialize game controller
     initializeGameController();

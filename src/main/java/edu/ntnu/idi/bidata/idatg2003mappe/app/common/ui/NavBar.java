@@ -80,7 +80,19 @@ public class NavBar {
   public MenuBar createMenuBar() {
 
     MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
-    quickSaveMenuItem.setOnAction(gameSaveLoadHandler.quickSaveGame(getPlayersFromController()));
+    quickSaveMenuItem.setOnAction(event -> {
+      List<Player> players = getPlayersFromController();
+      if (players != null && !players.isEmpty()) {
+        gameSaveLoadHandler.quickSaveGame(players).handle(event);
+      } else {
+        // Show error message
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Save Error");
+        alert.setContentText("No players found to save.");
+        alert.showAndWait();
+      }
+    });
 
     MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
     loadLastSaveMenuItem.setOnAction(determineGameTypeAndLoad());
