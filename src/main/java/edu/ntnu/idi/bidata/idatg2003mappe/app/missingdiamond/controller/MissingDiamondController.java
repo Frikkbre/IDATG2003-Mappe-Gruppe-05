@@ -1,8 +1,10 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class MissingDiamondController {
   private final MissingDiamond game;
   private boolean hasRolled = false;
+  private MapDesignerListener view;
 
   public MissingDiamondController() {
     this.game = new MissingDiamond();
@@ -132,5 +135,9 @@ public class MissingDiamondController {
 
   public boolean hasRolled() {
     return hasRolled;
+  }
+
+  public void registerView(MapDesignerListener view) {
+    this.view = view;
   }
 }

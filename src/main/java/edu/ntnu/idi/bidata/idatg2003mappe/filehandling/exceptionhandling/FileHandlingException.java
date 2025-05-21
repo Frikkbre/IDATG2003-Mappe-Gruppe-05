@@ -23,7 +23,7 @@ public class FileHandlingException extends Exception {
    * Constructs a new FileHandlingException with the specified detail message and cause.
    *
    * @param message The detail message.
-   * @param cause The cause of the exception.
+   * @param cause   The cause of the exception.
    */
 
   public FileHandlingException(String message, Throwable cause) {

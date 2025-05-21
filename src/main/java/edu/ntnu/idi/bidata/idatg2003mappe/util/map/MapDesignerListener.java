@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.util;
+package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
 /**
  * Interface for handling events from the MapDesignerTool.
@@ -34,7 +34,7 @@ public interface MapDesignerListener {
   /**
    * Called when map data is exported.
    *
-   * @param data The exported map data
+   * @param data    The exported map data
    * @param success Whether the export was successful
    */
   void onMapDataExported(String data, boolean success);

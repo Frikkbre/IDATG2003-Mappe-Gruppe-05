@@ -1,5 +1,7 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
@@ -9,11 +11,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -73,6 +71,8 @@ public class NavBar {
   }
 
   public MenuBar createMenuBar() {
+    MenuItem openMenuItem = new MenuItem("Open");
+    openMenuItem.setOnAction(openFile());
 
     MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
     quickSaveMenuItem.setOnAction(gameSaveLoadHandler.quickSaveGame(getPlayersFromController()));
@@ -88,8 +88,11 @@ public class NavBar {
         quickSaveMenuItem,
         loadLastSaveMenuItem,
         new SeparatorMenuItem(),
+        openMenuItem,
+        new SeparatorMenuItem(),
         closeMenuItem
     );
+
 
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
@@ -106,6 +109,7 @@ public class NavBar {
 
     navigateMenu.getItems().addAll(navigateMenuItem);
 
+
     MenuBar menuBar = new MenuBar();
     menuBar.getMenus().addAll(fileMenu, navigateMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
@@ -118,6 +122,19 @@ public class NavBar {
    * @return EventHandler for loading the last save
    */
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
+    return null;
+  }
+  private EventHandler<ActionEvent> openFile() {
+    // Implement file opening logic here
+    return null;
+  }
+
+  private EventHandler<ActionEvent> saveFile() {
+    // Implement file saving logic here
+    return null;
+  }
+
+  private EventHandler<ActionEvent> quickSaveGame() {
     return event -> {
       if (gameController instanceof LadderGameController) {
         LadderGameGUI ladderGameGUI = this.ladderGameGUI;

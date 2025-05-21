@@ -12,9 +12,9 @@ public interface FileWriter<T> {
   /**
    * Writes an object of type T to a file.
    *
-   * @param object The object to write.
+   * @param object   The object to write.
    * @param filePath The path to the file.
    * @throws FileHandlingException If an error occurs while writing the file.
    */
-    void write(T object, String filePath) throws FileHandlingException;
+  void write(T object, String filePath) throws FileHandlingException;
 }

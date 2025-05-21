@@ -1,9 +1,9 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
@@ -14,7 +14,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the Missing Diamond game.
@@ -158,7 +161,7 @@ public class MissingDiamond {
 
     // Connect the tiles in a simple path
     for (int i = 1; i <= 4; i++) {
-      board.connectTiles(board.getTileById(i), board.getTileById(i+1));
+      board.connectTiles(board.getTileById(i), board.getTileById(i + 1));
     }
 
     return board;
@@ -173,7 +176,7 @@ public class MissingDiamond {
 
     for (int i = 1; i <= numberOfPlayers; i++) {
       // Get color with wraparound if more players than colors
-      String color = playerColors[(i-1) % playerColors.length];
+      String color = playerColors[(i - 1) % playerColors.length];
 
       // Create player with correct parameter order: name, id, color, tile
       Player player = new Player("Player " + i, i, color, startTile);
@@ -230,7 +233,7 @@ public class MissingDiamond {
    * Uses a simple recursive approach to find all possible destinations.
    *
    * @param startTile The starting tile.
-   * @param steps The number of steps to move.
+   * @param steps     The number of steps to move.
    * @return Set of tiles that are exactly N steps away.
    */
   public Set<Tile> getTilesExactlyNStepsAway(Tile startTile, int steps) {

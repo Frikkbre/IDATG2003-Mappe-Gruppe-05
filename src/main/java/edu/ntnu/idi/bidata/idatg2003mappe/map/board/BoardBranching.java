@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 22.04.2025
  */
 
-public class BoardBranching extends Board{
+public class BoardBranching extends Board {
 
   private final Map<Integer, Tile> tilesById;
 

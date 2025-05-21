@@ -1,13 +1,17 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Die;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
+import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,8 +24,8 @@ import java.util.*;
  * The game is won by the first player to reach the last tile on the board.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.3
- * @since 14.02.2025
+ * @version 0.4
+ * @since 21.05.2025
  */
 
 public class LadderGame {
@@ -33,6 +37,11 @@ public class LadderGame {
   private final Die die;
   private final int numberOfTiles;
   private final boolean randomLadders;
+  private Player winner;
+  private boolean gameFinished = false;
+
+  // Observer pattern support
+  private final List<BoardGameObserver> observers = new ArrayList<>();
 
   public LadderGame(boolean randomLadders) {
     System.out.println("Starting Ladder Game with players from file.");
@@ -42,18 +51,72 @@ public class LadderGame {
     this.board = createBoard(numberOfTiles);
     this.players = readPlayersFromCSV();
     this.die = new Die();
-
-    //playGame();
   }
 
   /**
-   * Method to create a board for the game.
-   * The board consists of a number of tiles, each with a number.
-   * The tiles are connected in a linear fashion.
-   * The board also contains ladders that connect two tiles.
+   * Adds an observer to the game.
    *
-   * @return the board
+   * @param observer The observer to add.
    */
+  public void addObserver(BoardGameObserver observer) {
+    observers.add(observer);
+  }
+
+  /**
+   * Removes an observer from the game.
+   *
+   * @param observer The observer to remove.
+   */
+  public void removeObserver(BoardGameObserver observer) {
+    observers.remove(observer);
+  }
+
+  /**
+   * Notifies observers that a player has moved.
+   *
+   * @param player The player who moved.
+   * @param fromTile The tile the player moved from.
+   * @param toTile The tile the player moved to.
+   */
+  private void notifyPlayerMoved(Player player, Tile fromTile, Tile toTile) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerMoved(player, fromTile, toTile);
+    }
+  }
+
+  /**
+   * Notifies observers that a die has been rolled.
+   *
+   * @param player The player who rolled.
+   * @param rollValue The value rolled.
+   */
+  private void notifyDieRolled(Player player, int rollValue) {
+    for (BoardGameObserver observer : observers) {
+      observer.onDieRolled(player, rollValue);
+    }
+  }
+
+  /**
+   * Notifies observers that the game has ended.
+   *
+   * @param winner The winning player.
+   */
+  private void notifyGameEnded(Player winner) {
+    for (BoardGameObserver observer : observers) {
+      observer.onGameEnded(winner);
+    }
+  }
+
+  /**
+   * Notifies observers that the turn has changed.
+   *
+   * @param newCurrentPlayer The new current player.
+   */
+  private void notifyTurnChanged(Player newCurrentPlayer) {
+    for (BoardGameObserver observer : observers) {
+      observer.onTurnChanged(newCurrentPlayer);
+    }
+  }
 
   protected BoardLinear createBoard(int numberOfTiles) {
     BoardLinear board = new BoardLinear();
@@ -86,24 +149,24 @@ public class LadderGame {
 
   private void setClassicLadders(Tile[] tiles) {
     if (numberOfTiles >= 100) {
-      //Ladders
-      tiles[2].setDestinationTile(tiles[38]);
-      tiles[5].setDestinationTile(tiles[15]);
-      tiles[10].setDestinationTile(tiles[32]);
-      tiles[22].setDestinationTile(tiles[43]);
-      tiles[29].setDestinationTile(tiles[85]);
-      tiles[52].setDestinationTile(tiles[67]);
-      tiles[73].setDestinationTile(tiles[92]);
-      tiles[80].setDestinationTile(tiles[99]);
+      // Create ladders using the TileActionFactory
+      TileActionFactory.createLadderAction(tiles[2], tiles[38]);
+      TileActionFactory.createLadderAction(tiles[5], tiles[15]);
+      TileActionFactory.createLadderAction(tiles[10], tiles[32]);
+      TileActionFactory.createLadderAction(tiles[22], tiles[43]);
+      TileActionFactory.createLadderAction(tiles[29], tiles[85]);
+      TileActionFactory.createLadderAction(tiles[52], tiles[67]);
+      TileActionFactory.createLadderAction(tiles[73], tiles[92]);
+      TileActionFactory.createLadderAction(tiles[80], tiles[99]);
 
-      //Snakes
-      tiles[18].setDestinationTile(tiles[8]);
-      tiles[62].setDestinationTile(tiles[12]);
-      tiles[55].setDestinationTile(tiles[35]);
-      tiles[65].setDestinationTile(tiles[61]);
-      tiles[88].setDestinationTile(tiles[37]);
-      tiles[94].setDestinationTile(tiles[74]);
-      tiles[98].setDestinationTile(tiles[80]);
+      // Create snakes (also using ladder action but with downward movement)
+      TileActionFactory.createLadderAction(tiles[18], tiles[8]);
+      TileActionFactory.createLadderAction(tiles[62], tiles[12]);
+      TileActionFactory.createLadderAction(tiles[55], tiles[35]);
+      TileActionFactory.createLadderAction(tiles[65], tiles[61]);
+      TileActionFactory.createLadderAction(tiles[88], tiles[37]);
+      TileActionFactory.createLadderAction(tiles[94], tiles[74]);
+      TileActionFactory.createLadderAction(tiles[98], tiles[80]);
     }
   }
 
@@ -148,7 +211,7 @@ public class LadderGame {
       int end = start + random.nextInt(15) + 5; // End at least 5 tiles ahead but within 100
 
       if (end < 100 && tiles[start].getDestinationTile() == null) {
-        tiles[start].setDestinationTile(tiles[end]);
+        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
       } else {
         i--; // Retry this ladder if it was invalid
       }
@@ -160,7 +223,7 @@ public class LadderGame {
       int end = start - random.nextInt(Math.min(start - 1, 15)) - 5; // Ensure it doesn't go below 1
 
       if (end > 1 && tiles[start].getDestinationTile() == null) {
-        tiles[start].setDestinationTile(tiles[end]);
+        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
       } else {
         i--; // Retry this snake if it was invalid
       }
@@ -173,39 +236,8 @@ public class LadderGame {
    * @return the list of players
    */
   protected List<Player> readPlayersFromCSV() {
-    List<Player> players = new ArrayList<>();
-    Tile startTile = board.getTiles().get(0);
-
-    // Try to read from CSV file
-    File file = new File(PLAYER_DATA_FILE);
-    if (file.exists() && file.isFile()) {
-      try (CSVReader reader = new CSVReader(new FileReader(file))) {
-        String[] record;
-        reader.readNext();
-
-        while ((record = reader.readNext()) != null) {
-          // Expected format: Player Name, Player ID, Color, Position
-          if (record.length >= 2) {
-            String playerName = record[0];
-            int playerID = Integer.parseInt(record[1]);
-            String playerColor = record[2];
-            int position = Integer.parseInt(record[3]);
-            Tile playerTile = board.getTiles().get(position);
-
-            Player player = new Player(playerName, playerID, playerColor, playerTile);
-            players.add(player);
-            System.out.println("Player " + playerName + " added to the game.");
-            System.out.println("Player ID: " + playerID);
-            System.out.println("Player Color: " + playerColor);
-            System.out.println("Player Position: " + position);
-            System.out.println("----------------------");
-          }
-        }
-      } catch (IOException | CsvValidationException e) {
-        System.out.println("Error reading player data: " + e.getMessage());
-      }
-    }
-    return players;
+    // Use PlayerFactory to create players from CSV
+    return PlayerFactory.createPlayersFromCSV(PLAYER_DATA_FILE, board);
   }
 
 
@@ -228,11 +260,19 @@ public class LadderGame {
       System.out.println("Player " + (indexCurrentPlayer + 1) + " turn.");
 
       roll = die.rollDie();
+      // Notify observers about die roll
+      notifyDieRolled(currentPlayer, roll);
+
       System.out.println("Die : die rolled: " + roll);
 
-      System.out.println("Tile Current : Tile before moving " + currentPlayer.getCurrentTile().getTileId());
+      Tile oldTile = currentPlayer.getCurrentTile();
+      System.out.println("Tile Current : Tile before moving " + oldTile.getTileId());
       currentPlayer.movePlayer(roll);
-      System.out.println("Tile Moved :  Tile after moving " + currentPlayer.getCurrentTile().getTileId());
+      Tile newTile = currentPlayer.getCurrentTile();
+      System.out.println("Tile Moved :  Tile after moving " + newTile.getTileId());
+
+      // Notify observers about player movement
+      notifyPlayerMoved(currentPlayer, oldTile, newTile);
 
       // Check if the tile has a ladder destination
       Tile currentTile = currentPlayer.getCurrentTile();
@@ -240,7 +280,14 @@ public class LadderGame {
 
         // Create and perform the ladder action
         LadderAction ladderAction = new LadderAction(currentTile);
+
+        oldTile = currentTile; // Before ladder movement
         ladderAction.performAction(currentPlayer);
+        newTile = currentPlayer.getCurrentTile(); // After ladder movement
+
+        // Notify observers about ladder movement
+        notifyPlayerMoved(currentPlayer, oldTile, newTile);
+
         System.out.println("After ladder action: moved to tile " + currentPlayer.getCurrentTile().getTileId());
         System.out.println(currentPlayer.getName() + " is now at tile " + currentPlayer.getCurrentTile().getTileId());
       }
@@ -249,10 +296,20 @@ public class LadderGame {
       if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) {
         System.out.println(currentPlayer.getName() + " wins the game!");
         hasWon = true;
+        winner = currentPlayer;
+        gameFinished = true;
+
+        // Notify observers about game end
+        notifyGameEnded(winner);
       }
 
       // Next player's turn
       indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
+
+      // Notify observers about turn change
+      if (!hasWon) {
+        notifyTurnChanged(players.get(indexCurrentPlayer));
+      }
     }
   }
 
@@ -294,5 +351,13 @@ public class LadderGame {
 
   public int getNumberOfTiles() {
     return numberOfTiles;
+  }
+
+  public boolean isFinished() {
+    return gameFinished;
+  }
+
+  public Player getWinner() {
+    return winner;
   }
 }
