@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.movement.EffectTile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
 import java.util.List;
@@ -44,6 +45,13 @@ public class LadderGameController {
     // Move the player
     currentPlayer.movePlayer(roll);
     message.append("Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
+
+    // Check for effect tile action
+    if (currentPlayer.getCurrentTile().getEffect() != null) {
+      EffectTile effectTile = new EffectTile(currentPlayer.getCurrentTile(), currentPlayer.getCurrentTile().getEffect());
+      effectTile.performAction(currentPlayer);
+      message.append("Effect tile! " + currentPlayer.getCurrentTile().getEffect() + "\n");
+    }
 
     // Check for ladder action
     if (currentPlayer.getCurrentTile().getDestinationTile() != null) {
