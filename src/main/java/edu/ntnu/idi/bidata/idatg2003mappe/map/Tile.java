@@ -178,4 +178,12 @@ public class Tile {
   public String getEffect() {
     return effect;
   }
+
+  /**
+   * Sets the effect of the tile.
+   * @param effect
+   */
+  public void setEffect(String effect) {
+    this.effect = effect;
+  }
 }
