@@ -24,6 +24,7 @@ public class PriceList {
     priceRegister.put("YellowGem", 2000);
     priceRegister.put("PlaneTicket", 3000);
     priceRegister.put("ShipTicket", 1500);
+    priceRegister.put("Visa", 1500);
   }
 
   /**

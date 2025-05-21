@@ -50,15 +50,23 @@ public class MissingDiamondAction implements TileAction {
         break;
       case "PurchaseMarker":
         // This would require the banker for actual implementation
+        System.out.println("You have opened a marker!");
         break;
       case "Transport":
-        // Move the player to a connected tile (plane/ship)
+        // This would require the banker for actual implementation
+        System.out.println("You have been transported to a new tile!");
         break;
       case "Diamond":
         // Found the diamond - win the game
+        System.out.println("Congratulations! You found the diamond! Get back to the start tile!");
         break;
       case "Bandit":
         // Bandit takes all your markers
+        System.out.println("A bandit has stolen all your markers!");
+        break;
+      case "Visa":
+        // When a player reveals a Visa, it allows free airplane travel
+        System.out.println("You found a Visa! You can now travel by airplane for free.");
         break;
       default:
         System.out.println("Unknown action type: " + actionType);
