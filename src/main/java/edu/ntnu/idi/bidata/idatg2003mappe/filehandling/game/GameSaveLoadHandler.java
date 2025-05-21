@@ -2,9 +2,9 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
@@ -18,9 +18,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles saving and loading game states for both Ladder Game and Missing Diamond.
- */
 public class GameSaveLoadHandler {
   private LadderGameController ladderGameController;
   private MissingDiamondController missingDiamondController;
@@ -32,10 +29,6 @@ public class GameSaveLoadHandler {
 
   private Object gameController;
 
-  /**
-   * Constructor for GameSaveLoadHandler.
-    * @param playersFromController
-   */
   public EventHandler<ActionEvent> quickSaveGame(List<Player> playersFromController) {
     return event -> {
       try {
@@ -86,7 +79,6 @@ public class GameSaveLoadHandler {
    * takes in ladderGameGUI
    * and randomLadders to determine if the game is random or not
    * @param ladderGameGUI
-   * @param controller
    * @param randomLadders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
@@ -211,11 +203,8 @@ public class GameSaveLoadHandler {
       alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv");
       alert.showAndWait();
 
-
-      // Update the UI - make sure MissingDiamondGUI has this method implemented
-      if (missingDiamondGUI != null) {
-        missingDiamondGUI.updateBoardUI();
-      }
+      // Update the UI
+      missingDiamondGUI.updateBoardUI();
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
