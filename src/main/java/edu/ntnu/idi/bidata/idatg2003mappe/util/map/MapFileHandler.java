@@ -1,7 +1,9 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.util;
+package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.CoordinatePoint;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.PointManager;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.FileChooser;

@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.ArrayList;
 import java.util.List;

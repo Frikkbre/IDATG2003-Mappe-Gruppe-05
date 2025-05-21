@@ -1,8 +1,8 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.util;
+package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.util.CoordinatePoint;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 /**

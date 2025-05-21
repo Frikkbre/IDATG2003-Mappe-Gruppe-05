@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
-import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerTool;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerTool;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;

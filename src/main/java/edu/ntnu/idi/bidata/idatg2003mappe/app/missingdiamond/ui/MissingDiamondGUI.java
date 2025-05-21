@@ -1,12 +1,11 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.UIComponentFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.service.MapConfigService;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
-import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

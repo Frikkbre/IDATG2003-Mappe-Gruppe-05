@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.util;
+package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
 /**
  * Interface for handling events from the MapDesignerTool.
