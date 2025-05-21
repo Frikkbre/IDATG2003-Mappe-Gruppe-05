@@ -105,11 +105,14 @@ public class Tile {
    */
 
   public Tile getTileAtDistance(int steps) {
-    if (steps < 0) {
+    Tile current = this;
+    if(steps == -44){ // Back to start
+      current = current.getNextTile();
+    }else if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
     }
 
-    Tile current = this;
+
     for (int i = 0; i < steps && current.getNextTile() != null; i++) {
       current = current.getNextTile();
     }
