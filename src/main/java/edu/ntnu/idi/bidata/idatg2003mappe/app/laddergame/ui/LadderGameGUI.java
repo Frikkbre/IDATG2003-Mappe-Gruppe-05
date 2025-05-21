@@ -164,7 +164,7 @@ public class LadderGameGUI extends Application {
    * @return the menu bar
    */
 
-  private MenuBar createMenuBar(Stage primaryStage) {
+  private MenuBar createMenuBar(Stage primaryStage) { //TODO - NOT in use
     MenuBar menuBar = new MenuBar();
 
     // File Menu
