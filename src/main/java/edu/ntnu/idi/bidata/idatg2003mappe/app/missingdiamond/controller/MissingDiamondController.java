@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
@@ -23,9 +24,26 @@ import java.util.Set;
  * @since 23.05.2025
  */
 public class MissingDiamondController {
+  private List<BoardGameObserver> observers = new ArrayList<>();
   private final MissingDiamond game;
   private boolean hasRolled = false;
   private MapDesignerListener view;
+
+  public void addObserver(BoardGameObserver observer) {
+    if (!observers.contains(observer)) {
+      observers.add(observer);
+    }
+  }
+
+  public void removeObserver(BoardGameObserver observer) {
+    observers.remove(observer);
+  }
+
+  private void notifyPlayerMoved(Player player, Tile oldTile, Tile newTile) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerMoved(player, oldTile, newTile);
+    }
+  }
 
   // Action state tracking
   private enum ActionState {
@@ -109,6 +127,7 @@ public class MissingDiamondController {
    * @return A message describing the move result
    */
   public String movePlayer(int tileId) {
+
     // Check if player has rolled
     if (currentState != ActionState.AWAITING_MOVE) {
       return "You need to roll the die first.";
@@ -143,6 +162,24 @@ public class MissingDiamondController {
     }
 
     return moveResult;
+  }
+
+  public boolean isSpecialTile(int tileId) {
+    // Check if the tile contains a token
+    Tile tile = getTileById(tileId);
+    if (tile != null) {
+      return hasTokenAtTile(tile);
+    }
+    return false;
+  }
+
+  public boolean hasTokenAtTile(Tile tile) {
+    if (tile == null) {
+      return false;
+    }
+
+    // Delegate to the game model
+    return game.hasTokenAtTile(tile);
   }
 
   /**

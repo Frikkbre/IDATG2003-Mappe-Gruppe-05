@@ -18,6 +18,14 @@ import java.util.Set;
  */
 public class BoardViewUpdates {
 
+  private final MissingDiamondController gameController;
+
+  private TileHighlighter tileHighlighter;
+
+  public BoardViewUpdates(MissingDiamondController gameController) {
+    this.gameController = gameController;
+  }
+
   /**
    * Handles a click on a game tile during gameplay.
    *
@@ -64,6 +72,21 @@ public class BoardViewUpdates {
     } else {
       logMessage("Cannot move to tile " + tileId + ".", gameLog);
     }
+  }
+
+  private void showGameOverDialog() {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Game Over");
+    alert.setHeaderText("Game Finished!");
+
+    // Get the winner info from the game controller
+    if (gameController != null && gameController.getCurrentPlayer() != null) {
+      alert.setContentText(gameController.getCurrentPlayer().getName() + " has won the game!");
+    } else {
+      alert.setContentText("The game has ended!");
+    }
+
+    alert.showAndWait();
   }
 
   /**

@@ -87,17 +87,32 @@ public class TileHighlighter {
    * Highlights possible moves based on the current game state.
    * Uses different colors for regular tiles and special tiles.
    */
+  /**
+   * Highlights possible moves, with different colors for special tiles
+   */
   public void highlightPossibleMoves() {
     if (gameController == null) return;
 
     // Reset all tiles to original colors
     resetTileColors();
 
-    // Only highlight possible moves if die has been rolled
+    // Only highlight if die has been rolled
     if (gameController.hasRolled()) {
-      // Get possible moves from controller
       List<Tile> possibleMoves = gameController.getPossibleMoves();
-      highlightTiles(possibleMoves);
+
+      for (Tile tile : possibleMoves) {
+        Circle tileCircle = tileCircles.get(tile.getTileId());
+        if (tileCircle != null) {
+          // Different highlighting for special tiles
+          if (specialTileIds.contains(tile.getTileId())) {
+            tileCircle.setFill(Color.ORANGE);
+            tileCircle.setStrokeWidth(3.0);
+          } else {
+            tileCircle.setFill(Color.YELLOW);
+            tileCircle.setStrokeWidth(2.0);
+          }
+        }
+      }
     }
   }
 }
