@@ -86,6 +86,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Add mouse click handler for coordinate mode
     boardView.getOverlayPane().setOnMouseClicked(e -> {
+      // Add debug message
+      System.out.println("DEBUG: Map clicked at (" + e.getX() + ", " + e.getY() + ")");
+      System.out.println("DEBUG: Coordinate mode active: " +
+          mapDesignerManager.getMapDesignerTool().isCoordinateMode());
+
       if (mapDesignerManager.getMapDesignerTool().isCoordinateMode()) {
         mapDesignerManager.getMapDesignerTool().handleCoordinateClick(e.getX(), e.getY(), boardView.getMapView());
       }

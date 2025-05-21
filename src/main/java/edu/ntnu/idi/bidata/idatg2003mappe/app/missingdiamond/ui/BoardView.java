@@ -112,16 +112,22 @@ public class BoardView extends StackPane {
 
   // In BoardView.java - make sure overlayPane is correctly set up
   private void createOverlayPane() {
-    // Create a transparent pane for game elements
     overlayPane = new Pane();
-    overlayPane.setPickOnBounds(false); // Important: allow clicks to pass through transparent areas
+    overlayPane.setPickOnBounds(false);
     overlayPane.setPrefSize(900, 700);
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
+    // Make sure pane is visible
+    overlayPane.setStyle("-fx-background-color: transparent;");
+
     getChildren().add(overlayPane);
 
-    // Ensure the overlayPane is above the map image
+    // Ensure overlay is on top
     overlayPane.toFront();
+
+    // Add debug
+    System.out.println("DEBUG: Overlay pane created with dimensions: " +
+        overlayPane.getPrefWidth() + "x" + overlayPane.getPrefHeight());
   }
 
   private void handleGameClick(double x, double y) {
