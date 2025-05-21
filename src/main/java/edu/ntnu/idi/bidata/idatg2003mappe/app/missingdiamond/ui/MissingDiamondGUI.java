@@ -208,6 +208,19 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return sidebar;
   }
 
+  public void updateBoardUI() {
+    if (boardView != null) {
+      boardView.updateUI();
+
+      // Also update the player status panel if available
+      if (statusPanel != null) {
+        statusPanel.updateScoreBoard();
+      }
+    } else {
+      System.err.println("Error: Cannot update board UI - boardView is null");
+    }
+  }
+
   private void loadMapConfiguration() {
     try {
       MapConfig mapConfig = MapConfigService.loadMapConfig();

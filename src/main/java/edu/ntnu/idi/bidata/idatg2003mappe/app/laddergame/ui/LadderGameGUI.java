@@ -401,7 +401,7 @@ public class LadderGameGUI extends Application {
   /**
    * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
    */
-  private void updateBoardUI() {
+  public void updateBoardUI() {
 
     if ((boardGrid) == null) {
       return; // Avoid NullPointerException

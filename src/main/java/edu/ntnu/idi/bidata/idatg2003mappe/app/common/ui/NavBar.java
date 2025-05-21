@@ -1,14 +1,14 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;

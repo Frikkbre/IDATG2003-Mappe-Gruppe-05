@@ -2,12 +2,12 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameGUI;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -79,6 +79,7 @@ public class GameSaveLoadHandler {
    * takes in ladderGameGUI
    * and randomLadders to determine if the game is random or not
    * @param ladderGameGUI
+   * @param controller
    * @param randomLadders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
@@ -203,8 +204,10 @@ public class GameSaveLoadHandler {
       alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv");
       alert.showAndWait();
 
-      // Update the UI
-      missingDiamondGUI.updateBoardUI();
+      // Update the UI - make sure MissingDiamondGUI has this method implemented
+      if (missingDiamondGUI != null) {
+        missingDiamondGUI.updateBoardUI();
+      }
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");

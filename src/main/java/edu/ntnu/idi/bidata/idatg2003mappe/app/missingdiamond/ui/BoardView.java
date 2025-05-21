@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.service.MapConfigService;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Platform;
@@ -521,6 +522,13 @@ public class BoardView extends StackPane {
   // Getters and setters
   public void setGameController(MissingDiamondController controller) {
     this.gameController = controller;
+
+    // Register as an observer if implementing the observer interface
+    if (this instanceof PlayerObserver) {
+      for (Player player : controller.getPlayers()) {
+        player.addObserver((PlayerObserver)this);
+      }
+    }
 
     if (!tileCircles.isEmpty()) {
       this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, controller);
