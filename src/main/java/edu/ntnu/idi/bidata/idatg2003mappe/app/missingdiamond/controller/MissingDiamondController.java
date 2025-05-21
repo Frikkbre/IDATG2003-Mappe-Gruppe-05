@@ -149,16 +149,21 @@ public class MissingDiamondController {
     // Move the player
     String moveResult = game.movePlayerToTile(destinationTile);
 
-    // Check if there's a token at the destination
-    if (game.hasTokenAtTile(destinationTile)) {
+    // Check if the destination is a special tile with a token
+    if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
       currentState = ActionState.AWAITING_TOKEN_DECISION;
       return moveResult + "\nYou've reached a location with a token. You can buy it for £" +
           game.getTokenPurchaseCost() + ", try to win it with a dice roll, or skip.";
     }
 
-    // End turn if game is not finished and no token action is needed
-    if (!game.isGameFinished()) {
+    // If it's not a special tile, automatically end the turn
+    if (!isSpecialTile(destinationTile.getTileId())) {
       endTurn();
+      return moveResult + "\nYou've moved to a regular location. Turn ended.";
+    }
+
+    // End turn only if game is finished
+    if (game.isGameFinished()) {
     }
 
     return moveResult;
@@ -183,41 +188,24 @@ public class MissingDiamondController {
   }
 
   /**
-   * Buys the token at the current player's location.
+   * Opens a token at the current player's location, with a chance to get gems, bandit, visa, or diamond.
+   * This combines the former "buyToken" and "tryWinToken" functionality.
    *
-   * @return A message describing the purchase result
+   * @return A message describing the result of the token interaction
    */
-  public String buyToken() {
+  public String openToken() {
     if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
-      return "There is no token to buy at your current location.";
+      return "There is no token to open at your current location.";
     }
 
-    String result = game.buyToken();
+    String result = game.openToken();
 
-    // End turn after token action
+    // End turn after token action if game is not finished
     if (!game.isGameFinished()) {
       endTurn();
     }
 
-    return result;
-  }
-
-  /**
-   * Tries to win the token at the current player's location with a dice roll.
-   *
-   * @return A message describing the attempt
-   */
-  public String tryWinToken() {
-    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
-      return "There is no token to win at your current location.";
-    }
-
-    String result = game.tryWinToken();
-
-    // End turn after token action
-    if (!game.isGameFinished()) {
-      endTurn();
-    }
+    currentState = ActionState.AWAITING_ROLL;
 
     return result;
   }
@@ -231,6 +219,8 @@ public class MissingDiamondController {
     if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
       return "No token action to skip.";
     }
+
+    currentState = ActionState.AWAITING_ROLL;
 
     endTurn();
     return "You chose to ignore the token and continue your journey.";
@@ -305,10 +295,23 @@ public class MissingDiamondController {
   /**
    * Ends the current player's turn and moves to the next player.
    */
-  private void endTurn() {
-    hasRolled = false;
-    currentState = ActionState.AWAITING_ROLL;
+  public void endTurn() {
+    // Switch to next player
     game.nextPlayer();
+
+    // Reset roll state
+    hasRolled = false;
+
+    // Reset action state
+    currentState = ActionState.AWAITING_ROLL;
+
+    // Reinitialize the action list instead of trying to update it
+    initializeAvailableActions();
+
+    // Notify observers about turn change only
+    for (BoardGameObserver observer : observers) {
+      observer.onTurnChanged(game.getCurrentPlayer());
+    }
   }
 
   /**

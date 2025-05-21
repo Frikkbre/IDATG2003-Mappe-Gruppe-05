@@ -23,11 +23,12 @@ public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;
   private final BoardView boardView;
   private final Button rollDieButton;
-  private final Button buyTokenButton;
-  private final Button tryWinTokenButton;
+  private final Button openTokenButton;
   private final Button skipTokenButton;
   private final Button planeButton;
   private final Button shipButton;
+  private final Label selectMoveLabel;
+  private final Button endTurnButton;
   private final TextArea gameLog;
   private final Label playerMoneyLabel;
 
@@ -53,17 +54,9 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // Create token interaction buttons
-    buyTokenButton = UIComponentFactory.createActionButton("Buy Token", e -> {
-      String result = gameController.buyToken();
-      logMessage(result);
-      boardView.updateUI();
-      updateControls();
-      updatePlayerInfo();
-    });
-
-    tryWinTokenButton = UIComponentFactory.createActionButton("Try to Win Token", e -> {
-      String result = gameController.tryWinToken();
+    // Create combined token interaction button
+    openTokenButton = UIComponentFactory.createActionButton("Open Token", e -> {
+      String result = gameController.openToken();
       logMessage(result);
       boardView.updateUI();
       updateControls();
@@ -94,6 +87,20 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
+    // Add a label for selecting a move
+    selectMoveLabel = new Label("Select a highlighted tile to move");
+    selectMoveLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
+    selectMoveLabel.setTextFill(Color.DARKBLUE);
+
+    // Add an emergency end turn button
+    endTurnButton = UIComponentFactory.createActionButton("End Turn", e -> {
+      gameController.endTurn();
+      logMessage("Turn ended.");
+      boardView.updateUI();
+      updateControls();
+      updatePlayerInfo();
+    });
+
     // Create game log
     gameLog = UIComponentFactory.createGameLog();
 
@@ -107,11 +114,12 @@ public class GameControlPanel extends VBox {
         playerMoneyLabel,
         actionsLabel,
         rollDieButton,
-        buyTokenButton,
-        tryWinTokenButton,
+        selectMoveLabel,
+        openTokenButton,
         skipTokenButton,
         planeButton,
         shipButton,
+        endTurnButton,
         gameLog
     );
 
@@ -139,23 +147,44 @@ public class GameControlPanel extends VBox {
    */
   private void updateControls() {
     // Hide all action buttons by default
-    buyTokenButton.setVisible(false);
-    tryWinTokenButton.setVisible(false);
+    openTokenButton.setVisible(false);
     skipTokenButton.setVisible(false);
     planeButton.setVisible(false);
     shipButton.setVisible(false);
+    selectMoveLabel.setVisible(false);
+    endTurnButton.setVisible(false);
 
     // Show roll button only when awaiting roll
-    rollDieButton.setVisible(!gameController.hasRolled());
+    boolean hasRolled = gameController.hasRolled();
+    rollDieButton.setVisible(!hasRolled);
 
-    // Show token buttons when at a location with a token
-    Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
-    boolean hasToken = gameController.getTokenAtTileId(currentTile.getTileId()) != null;
+    // Show the end turn button in all states as a failsafe
+    endTurnButton.setVisible(true);
 
-    if (gameController.hasRolled() && hasToken) {
-      buyTokenButton.setVisible(true);
-      tryWinTokenButton.setVisible(true);
-      skipTokenButton.setVisible(true);
+    // Determine current state and show appropriate controls
+    if (hasRolled) {
+      // If player has rolled, they need to select a move location
+      List<Tile> possibleMoves = gameController.getPossibleMoves();
+      if (!possibleMoves.isEmpty()) {
+        selectMoveLabel.setVisible(true);
+      }
+
+      // Only show travel options when on a special (red) tile
+      Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
+      boolean isOnSpecialTile = gameController.isSpecialTile(currentTile.getTileId());
+
+      if (isOnSpecialTile) {
+        // Show travel options on special tiles
+        planeButton.setVisible(true);
+        shipButton.setVisible(true);
+
+        // Show token buttons when at a location with a token
+        boolean hasToken = gameController.getTokenAtTileId(currentTile.getTileId()) != null;
+        if (hasToken) {
+          openTokenButton.setVisible(true);
+          skipTokenButton.setVisible(true);
+        }
+      }
     }
   }
 

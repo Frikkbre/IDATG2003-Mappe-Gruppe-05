@@ -503,40 +503,12 @@ public class MissingDiamond {
   }
 
   /**
-   * Buys the token at the current player's tile.
-   *
-   * @return A message describing the result of the purchase
-   */
-  public String buyToken() {
-    Tile currentTile = currentPlayer.getCurrentTile();
-    Marker token = tokenSystem.getTokenAtTile(currentTile);
-
-    if (token == null) {
-      return "No token at this location.";
-    }
-
-    if (banker.withdraw(currentPlayer, TOKEN_PURCHASE_COST)) {
-      String tokenType = token.getType();
-
-      boolean success = tokenSystem.buyToken(currentPlayer, currentTile, banker);
-      if (success) {
-        return "You bought the token for £" + TOKEN_PURCHASE_COST + ". It was a " + tokenType + "!";
-      } else {
-        // Refund the money since token buy failed
-        banker.deposit(currentPlayer, TOKEN_PURCHASE_COST);
-        return "Error processing token purchase.";
-      }
-    } else {
-      return "You don't have enough money to buy the token.";
-    }
-  }
-
-  /**
-   * Attempts to win the token at the current player's tile with a die roll.
+   * Opens a token at the current player's location with a random chance outcome.
+   * This combines the former buyToken and tryWinToken functionality.
    *
    * @return A message describing the result
    */
-  public String tryWinToken() {
+  public String openToken() {
     Tile currentTile = currentPlayer.getCurrentTile();
     Marker token = tokenSystem.getTokenAtTile(currentTile);
 
@@ -544,15 +516,15 @@ public class MissingDiamond {
       return "No token at this location.";
     }
 
-    die.rollToTurnMarker();
-    int roll = die.getDieValue();
-    boolean success = tokenSystem.tryWinToken(currentPlayer, currentTile, roll, banker);
+    // Roll the die to determine success and outcome
+    int roll = die.rollDie();
+    boolean success = tokenSystem.openToken(currentPlayer, currentTile, roll, banker);
 
     if (success) {
       String tokenType = token.getType();
-      return "You rolled a " + roll + " and won the token! It was a " + tokenType + "!";
+      return "You opened the token and found: " + tokenType + "!";
     } else {
-      return "You rolled a " + roll + " and failed to win the token.";
+      return "You rolled a " + roll + " but couldn't open the token. Better luck next time!";
     }
   }
 

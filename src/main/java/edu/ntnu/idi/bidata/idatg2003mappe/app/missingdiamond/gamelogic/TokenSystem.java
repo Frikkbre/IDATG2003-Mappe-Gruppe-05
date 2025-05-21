@@ -158,6 +158,39 @@ public class TokenSystem {
   }
 
   /**
+   * Opens a token with a random chance to get different outcomes.
+   * This combines the former buyToken and tryWinToken functionality.
+   *
+   * @param player The player attempting to open the token
+   * @param tile The tile with the token
+   * @param diceRoll The dice roll result
+   * @param banker The banker for financial transactions
+   * @return True if the token was successfully opened, false otherwise
+   */
+  public boolean openToken(Player player, Tile tile, int diceRoll, Banker banker) {
+    // Check if tile has a token
+    Marker token = getTokenAtTile(tile);
+    if (token == null) {
+      return false;
+    }
+
+    // Determine success based on dice roll
+    // 1-2: Fail to open
+    // 3-6: Success with different outcomes
+    if (diceRoll < 3) {
+      return false;
+    }
+
+    // Process the token
+    processToken(token, player, banker);
+
+    // Remove the token from the board
+    removeTokenFromTile(tile);
+
+    return true;
+  }
+
+  /**
    * Processes buying a token and its effects.
    *
    * @param player The player buying the token
