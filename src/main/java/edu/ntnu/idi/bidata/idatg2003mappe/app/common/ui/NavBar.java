@@ -23,9 +23,6 @@ public class NavBar {
   private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
-  private static final String lastSaveDir = "src/main/resources/saves";
-  private static final String lastSaveFile = "LastSave.csv";
-
   private Stage stage;
   public Object gameController;
 
