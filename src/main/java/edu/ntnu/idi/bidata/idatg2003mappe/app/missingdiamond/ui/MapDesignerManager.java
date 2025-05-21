@@ -72,4 +72,8 @@ public class MapDesignerManager {
   public boolean isConnectionMode() {
     return mapDesigner.isConnectionMode();
   }
+
+  public MapDesignerTool getMapDesignerTool() {
+    return mapDesigner;
+  }
 }

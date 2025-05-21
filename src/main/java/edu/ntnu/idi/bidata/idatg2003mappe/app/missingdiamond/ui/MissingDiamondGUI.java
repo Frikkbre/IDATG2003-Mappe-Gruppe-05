@@ -75,13 +75,20 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     boardView.setGameController(gameController);
   }
 
-  public void initializeUIComponents() {
+  private void initializeUIComponents() {
     mapDesignerManager = createMapDesignerManager();
     controlPanel = new GameControlPanel(gameController, boardView);
     statusPanel = new PlayerStatusPanel(gameController);
 
     // Connect UI components with controller
     gameController.registerView(this);
+
+    // Add mouse click handler for coordinate mode
+    boardView.getOverlayPane().setOnMouseClicked(e -> {
+      if (mapDesignerManager.getMapDesignerTool().isCoordinateMode()) {
+        mapDesignerManager.getMapDesignerTool().handleCoordinateClick(e.getX(), e.getY(), boardView.getMapView());
+      }
+    });
   }
 
   private MapDesignerManager createMapDesignerManager() {
@@ -89,6 +96,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         boardView.getOverlayPane(),
         boardView.getMapView().getFitWidth(),
         boardView.getMapView().getFitHeight(),
+
         this
     );
   }
