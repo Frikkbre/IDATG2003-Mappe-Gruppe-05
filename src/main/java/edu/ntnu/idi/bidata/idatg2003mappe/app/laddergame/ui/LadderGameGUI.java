@@ -5,6 +5,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameCo
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
@@ -37,7 +38,8 @@ public class LadderGameGUI extends Application {
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   private boolean randomLadders = false;
-  private NavBar navBar;
+  public NavBar navBar;
+  private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   /**
    * Start the game.
@@ -54,6 +56,7 @@ public class LadderGameGUI extends Application {
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
 
     borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
@@ -399,6 +402,11 @@ public class LadderGameGUI extends Application {
    * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
    */
   private void updateBoardUI() {
+
+    if ((boardGrid) == null) {
+      return; // Avoid NullPointerException
+    }
+
     for (int row = 0; row < 10; row++) {
       for (int col = 0; col < 10; col++) {
         int tileNumber = row * 10 + col + 1;

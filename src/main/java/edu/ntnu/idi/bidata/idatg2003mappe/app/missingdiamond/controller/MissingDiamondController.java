@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
@@ -74,6 +75,31 @@ public class MissingDiamondController {
     hasRolled = false;
 
     return moveResult;
+  }
+
+  public void applyGameState(GameState gameState) {
+    game.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex());
+
+    // Restore player positions
+    if (gameState.getPlayerPositions() != null) {
+      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+      List<Player> players = game.getPlayers();
+
+      for (int i = 0; i < players.size() && i < positions.size(); i++) {
+        GameState.PlayerPosition pos = positions.get(i);
+        Player player = players.get(i);
+
+        // Find the tile with the saved ID and place player there
+        Tile tile = game.getBoard().getTileById(pos.getTileId());
+        if (tile != null) {
+          player.placePlayer(tile);
+        }
+      }
+    }
+  }
+
+  public GameState createGameState() {
+    return new GameState(game.getPlayers());
   }
 
   public List<Player> getPlayers() {
