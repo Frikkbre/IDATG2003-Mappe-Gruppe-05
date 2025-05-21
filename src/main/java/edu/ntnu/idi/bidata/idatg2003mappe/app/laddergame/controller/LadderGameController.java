@@ -11,11 +11,12 @@ import java.util.List;
 
 public class LadderGameController {
   private final LadderGame game;
-  private final boolean randomLadders;
+  private boolean randomLadders;
   private int currentPlayerIndex = 0;
 
   public LadderGameController(boolean randomLadders) {
     this.randomLadders = randomLadders;
+    System.out.println(randomLadders);
     game = new LadderGame(randomLadders);
   }
 
@@ -119,6 +120,13 @@ public class LadderGameController {
    */
   public boolean isRandomLadders() {
     return randomLadders;
+  }
+
+  /**
+   * Returns the game instance.
+   */
+  public void setRandomLadders(boolean randomLadders) {
+    this.randomLadders = randomLadders;
   }
 
   /**
