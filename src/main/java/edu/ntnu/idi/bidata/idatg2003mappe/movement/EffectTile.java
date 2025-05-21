@@ -7,22 +7,17 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
  * Class that handles effect tiles in Ladder game
  * Has effects like making a player skip a turn or get extra points
  */
-public class effectTile implements TileAction {
+public class EffectTile implements TileAction {
 
-  private final Tile currentTile;
-
-  public effectTile(Tile currentTile) {
-    this.currentTile = currentTile;
-
-  }
 
   @Override
   public void performAction(Player player) {
-    if(currentTile.getEffect() != null) {
+    /*if(currentTile.getEffect() != null) {
       currentTile.getEffect().applyEffect(player);
     } else {
       System.out.println("No effect action on this tile.");
-    }
+    }*/
+    System.out.println("Effect action: applying effect to player on tile ");
   }
 
   public void skipTurn(Player player) {
