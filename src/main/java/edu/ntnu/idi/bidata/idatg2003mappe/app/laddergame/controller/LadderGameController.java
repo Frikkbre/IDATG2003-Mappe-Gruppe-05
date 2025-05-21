@@ -1,5 +1,6 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;

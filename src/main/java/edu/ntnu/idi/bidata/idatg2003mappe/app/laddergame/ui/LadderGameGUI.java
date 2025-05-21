@@ -1,6 +1,7 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;

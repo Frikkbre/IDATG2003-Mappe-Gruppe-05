@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;

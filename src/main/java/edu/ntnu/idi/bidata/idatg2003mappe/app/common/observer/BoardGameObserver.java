@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;

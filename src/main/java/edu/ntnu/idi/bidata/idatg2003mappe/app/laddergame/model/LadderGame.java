@@ -1,6 +1,6 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameObserver;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerFactory;

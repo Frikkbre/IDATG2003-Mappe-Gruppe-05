@@ -1,5 +1,6 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

@@ -1,5 +1,6 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
