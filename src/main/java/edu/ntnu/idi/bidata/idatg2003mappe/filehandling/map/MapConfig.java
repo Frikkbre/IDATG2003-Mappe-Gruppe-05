@@ -29,16 +29,45 @@ public class MapConfig {
     }
 
     // Getters and setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public double getXPercent() { return xPercent; }
-    public void setXPercent(double xPercent) { this.xPercent = xPercent; }
-    public double getYPercent() { return yPercent; }
-    public void setYPercent(double yPercent) { this.yPercent = yPercent; }
-    public boolean isSpecial() { return isSpecial; }
-    public void setSpecial(boolean special) { isSpecial = special; }
+    public int getId() {
+      return id;
+    }
+
+    public void setId(int id) {
+      this.id = id;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public double getXPercent() {
+      return xPercent;
+    }
+
+    public void setXPercent(double xPercent) {
+      this.xPercent = xPercent;
+    }
+
+    public double getYPercent() {
+      return yPercent;
+    }
+
+    public void setYPercent(double yPercent) {
+      this.yPercent = yPercent;
+    }
+
+    public boolean isSpecial() {
+      return isSpecial;
+    }
+
+    public void setSpecial(boolean special) {
+      isSpecial = special;
+    }
   }
 
   // A connection between two locations
@@ -52,10 +81,21 @@ public class MapConfig {
     }
 
     // Getters and setters
-    public int getFromId() { return fromId; }
-    public void setFromId(int fromId) { this.fromId = fromId; }
-    public int getToId() { return toId; }
-    public void setToId(int toId) { this.toId = toId; }
+    public int getFromId() {
+      return fromId;
+    }
+
+    public void setFromId(int fromId) {
+      this.fromId = fromId;
+    }
+
+    public int getToId() {
+      return toId;
+    }
+
+    public void setToId(int toId) {
+      this.toId = toId;
+    }
   }
 
   private String name;
@@ -63,12 +103,29 @@ public class MapConfig {
   private List<Connection> connections = new ArrayList<>();
 
   // Getters and setters
-  public String getName() { return name; }
-  public void setName(String name) { this.name = name; }
-  public List<Location> getLocations() { return locations; }
-  public void setLocations(List<Location> locations) { this.locations = locations; }
-  public List<Connection> getConnections() { return connections; }
-  public void setConnections(List<Connection> connections) { this.connections = connections; }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Location> getLocations() {
+    return locations;
+  }
+
+  public void setLocations(List<Location> locations) {
+    this.locations = locations;
+  }
+
+  public List<Connection> getConnections() {
+    return connections;
+  }
+
+  public void setConnections(List<Connection> connections) {
+    this.connections = connections;
+  }
 
   // Helper methods
   public void addLocation(Location location) {

@@ -9,8 +9,8 @@ import java.util.List;
 
 public class LadderGameController {
   private final LadderGame game;
-  private int currentPlayerIndex = 0;
   private final boolean randomLadders;
+  private int currentPlayerIndex = 0;
 
   public LadderGameController(boolean randomLadders) {
     this.randomLadders = randomLadders;

@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
@@ -11,7 +10,10 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -38,11 +40,12 @@ public class LadderGameGUI extends Application {
 
   /**
    * Start the game.
+   *
    * @param primaryStage the primary stage
    */
 
   @Override
-  public void start(Stage primaryStage){
+  public void start(Stage primaryStage) {
     gameController = new LadderGameController(randomLadders);
 
     BorderPane borderPane = new BorderPane();
@@ -91,6 +94,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Create the board grid.
+   *
    * @return the board grid
    */
   private GridPane createBoardGrid() {
@@ -119,6 +123,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Create a tile for the board.
+   *
    * @param tileNumber the number of the tile
    * @return the tile
    */
@@ -150,6 +155,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Create the menu bar.
+   *
    * @param primaryStage the primary stage
    * @return the menu bar
    */
@@ -247,6 +253,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Save the current game state to a file.
+   *
    * @param primaryStage the primary stage
    */
   private void saveGame(Stage primaryStage) {
@@ -289,6 +296,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Load a game state from a file.
+   *
    * @param primaryStage the primary stage
    */
   private void loadGame(Stage primaryStage) {
@@ -350,6 +358,7 @@ public class LadderGameGUI extends Application {
 
   /**
    * Create the scoreboard.
+   *
    * @return the scoreboard
    */
   private TextArea createScoreBoard() {
@@ -363,6 +372,7 @@ public class LadderGameGUI extends Application {
   /**
    * Update the scoreBoard with the current player positions.
    * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
+   *
    * @param scoreBoard takes in the TextArea scoreBoard to update
    */
   private void updateScoreBoard(TextArea scoreBoard) {
@@ -380,7 +390,7 @@ public class LadderGameGUI extends Application {
     for (Player player : sortedPlayerPositionList) {
       scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
     }
-    String s = "Scoreboard:"+ "\n" + scoreBoard.getText();
+    String s = "Scoreboard:" + "\n" + scoreBoard.getText();
     scoreBoard.setText(s); // Update the scoreBoard
   }
 

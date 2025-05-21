@@ -8,7 +8,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerListener;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.MapDesignerTool;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -107,7 +106,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         new Label("Tile Type:"), mapDesigner.getTileTypeSelector(),
         new Label("Source ID:"), mapDesigner.getSourceIdField(),
         new Label("Target ID:"), mapDesigner.getTargetIdField(),
-        new Button("Create Connection") {{ setOnAction(e -> mapDesigner.createConnection()); }}
+        new Button("Create Connection") {{
+          setOnAction(e -> mapDesigner.createConnection());
+        }}
     );
 
     // Hide developer controls initially
@@ -210,7 +211,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
       // Add basic connections
       if (i > 1) {
-        mapConfig.addConnection(new MapConfig.Connection(i-1, i));
+        mapConfig.addConnection(new MapConfig.Connection(i - 1, i));
       }
     }
 

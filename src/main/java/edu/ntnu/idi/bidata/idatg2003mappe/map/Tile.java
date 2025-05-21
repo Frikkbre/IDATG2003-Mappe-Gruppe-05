@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
 /**
  * Represents a tile on the board.
  *

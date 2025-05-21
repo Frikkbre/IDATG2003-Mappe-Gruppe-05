@@ -31,8 +31,6 @@ public class Player {
   }
 
 
-
-
   /**
    * Places the player on the board
    */
@@ -52,7 +50,7 @@ public class Player {
     currentTile = currentTile.getTileAtDistance(tilesToMove);
   }
 
-  public void setColor(String color){
+  public void setColor(String color) {
     if (color.isBlank()) {
       throw new IllegalArgumentException("Color cannot be blank");
     }
@@ -72,7 +70,7 @@ public class Player {
   }
 
   void setID(int id) {
-    if(id < 0 || id > 6) {
+    if (id < 0 || id > 6) {
       throw new IllegalArgumentException("ID cannot be negative");
     }
     this.ID = id;

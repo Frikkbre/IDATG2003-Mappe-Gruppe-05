@@ -6,7 +6,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondGUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -14,7 +15,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -47,6 +47,7 @@ public class BoardGameSelectorGUI extends Application {
   /**
    * Returns the color of the index passed in.
    * Used to assign colors to players.
+   *
    * @param index
    * @return color
    */
@@ -59,6 +60,7 @@ public class BoardGameSelectorGUI extends Application {
 
   /**
    * Method to set the stage of the application.
+   *
    * @param primaryStage
    */
   public void setStage(Stage primaryStage) {
@@ -68,6 +70,7 @@ public class BoardGameSelectorGUI extends Application {
   /**
    * Used to get the stage of the application.
    * Used in other game classes to add their scene to the stage.
+   *
    * @return the primaryStage
    */
   public Stage getStage() {
@@ -117,7 +120,7 @@ public class BoardGameSelectorGUI extends Application {
     return centerPane;
   }
 
-  public void writeToFile(String game){ //TODO - remove dobble if statements that check for the same param?
+  public void writeToFile(String game) { //TODO - remove dobble if statements that check for the same param?
     try {
       // Make sure directory exists
       File playerDir = new File("src/main/resources/saves/playerData/");
@@ -130,28 +133,28 @@ public class BoardGameSelectorGUI extends Application {
       playerWriter = new CSVWriter(outputfile);
 
       // Write header
-      String[] header = { "Player name", "ID", "Color", "Position" };
+      String[] header = {"Player name", "ID", "Color", "Position"};
       playerWriter.writeNext(header);
 
       // Write player data specific to game chosen
-      if(game.equals("ladderGame")) {
+      if (game.equals("ladderGame")) {
         for (int i = 0; i < numberOfPlayers.getValue(); i++) {
           String[] playerData = {"Player " + (i + 1), String.valueOf(i), getColor(i), "0"};
           playerWriter.writeNext(playerData);
         }
-      } else if (game.equals("missingDiamond")){
-          for (int i = 0; i < numberOfPlayers.getValue(); i++) {
-            String[] playerData = { "Player " + (i + 1), String.valueOf(i), getColor(i), "1" };
-            playerWriter.writeNext(playerData);
+      } else if (game.equals("missingDiamond")) {
+        for (int i = 0; i < numberOfPlayers.getValue(); i++) {
+          String[] playerData = {"Player " + (i + 1), String.valueOf(i), getColor(i), "1"};
+          playerWriter.writeNext(playerData);
         }
 
       }
 
       playerWriter.flush();
       playerWriter.close();
-      if(game.equals("ladderGame")){
+      if (game.equals("ladderGame")) {
         ladderGameGUI.start(getStage());
-      } else if(game.equals("missingDiamond")){
+      } else if (game.equals("missingDiamond")) {
         missingDiamondGUI.start(getStage());
       }
     } catch (Exception e) {

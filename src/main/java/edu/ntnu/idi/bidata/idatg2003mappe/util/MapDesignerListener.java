@@ -34,7 +34,7 @@ public interface MapDesignerListener {
   /**
    * Called when map data is exported.
    *
-   * @param data The exported map data
+   * @param data    The exported map data
    * @param success Whether the export was successful
    */
   void onMapDataExported(String data, boolean success);

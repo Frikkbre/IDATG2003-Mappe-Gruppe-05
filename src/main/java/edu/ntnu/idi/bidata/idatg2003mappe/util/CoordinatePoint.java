@@ -29,9 +29,9 @@ public class CoordinatePoint {
   /**
    * Creates a new coordinate point.
    *
-   * @param id The unique identifier for this point
-   * @param x The x-coordinate
-   * @param y The y-coordinate
+   * @param id       The unique identifier for this point
+   * @param x        The x-coordinate
+   * @param y        The y-coordinate
    * @param xPercent The x-coordinate as a percentage of the map width
    * @param yPercent The y-coordinate as a percentage of the map height
    */
@@ -98,7 +98,7 @@ public class CoordinatePoint {
   /**
    * Updates the visual position of this point based on new map dimensions.
    *
-   * @param mapWidth Current map width
+   * @param mapWidth  Current map width
    * @param mapHeight Current map height
    */
   public void updatePosition(double mapWidth, double mapHeight) {

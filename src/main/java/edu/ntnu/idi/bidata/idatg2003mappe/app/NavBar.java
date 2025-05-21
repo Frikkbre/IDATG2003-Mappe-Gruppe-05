@@ -3,11 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 
@@ -52,7 +48,7 @@ public class NavBar {
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
       try {
-        if(getStage().equals(boardGameSelectorGUI.getStage())) {
+        if (getStage().equals(boardGameSelectorGUI.getStage())) {
           throw new FileHandlingException("Already in main menu.");
         }
         boardGameSelectorGUI.start(getStage());
@@ -62,7 +58,6 @@ public class NavBar {
     });
 
     navigateMenu.getItems().addAll(navigateMenuItem);
-
 
 
     MenuBar menuBar = new MenuBar();
@@ -76,6 +71,7 @@ public class NavBar {
     // Implement file opening logic here
     return null;
   }
+
   private EventHandler<ActionEvent> saveFile() {
     // Implement file saving logic here
     return null;

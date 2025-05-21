@@ -2,22 +2,15 @@ package edu.ntnu.idi.bidata.idatg2003mappe.util;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.CheckMenuItem;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.image.ImageView;
-import javafx.scene.Node;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -60,9 +53,9 @@ public class MapDesignerTool {
    * Creates a new MapDesignerTool.
    *
    * @param overlayPane The pane where map elements will be drawn
-   * @param mapWidth The width of the map
-   * @param mapHeight The height of the map
-   * @param listener A listener for map designer events
+   * @param mapWidth    The width of the map
+   * @param mapHeight   The height of the map
+   * @param listener    A listener for map designer events
    */
   public MapDesignerTool(Pane overlayPane, double mapWidth, double mapHeight, MapDesignerListener listener) {
     this.overlayPane = overlayPane;
@@ -73,11 +66,11 @@ public class MapDesignerTool {
     // Initialize UI components
     statusLabel = new Label("COORDINATE MODE: Click on map to place points");
     statusLabel.setStyle("""
-            -fx-background-color: red;
-            -fx-text-fill: white;
-            -fx-padding: 5px;
-            -fx-font-weight: bold;
-          """);
+          -fx-background-color: red;
+          -fx-text-fill: white;
+          -fx-padding: 5px;
+          -fx-font-weight: bold;
+        """);
     statusLabel.setVisible(false);
 
     tileTypeSelector = new ChoiceBox<>();
@@ -261,9 +254,10 @@ public class MapDesignerTool {
 
   /**
    * Checks if a connection already exists in the list
+   *
    * @param connections The list of connections to check
-   * @param fromId The source tile ID
-   * @param toId The target tile ID
+   * @param fromId      The source tile ID
+   * @param toId        The target tile ID
    * @return true if the connection exists, false otherwise
    */
   private boolean connectionExists(List<MapConfig.Connection> connections, int fromId, int toId) {
@@ -332,7 +326,7 @@ public class MapDesignerTool {
   /**
    * Updates the map dimensions and repositions all coordinate points.
    *
-   * @param width The new width
+   * @param width  The new width
    * @param height The new height
    */
   public void updateMapDimensions(double width, double height) {
@@ -564,8 +558,8 @@ public class MapDesignerTool {
   /**
    * Handles a click on the map in coordinate mode.
    *
-   * @param x The x-coordinate of the click
-   * @param y The y-coordinate of the click
+   * @param x       The x-coordinate of the click
+   * @param y       The y-coordinate of the click
    * @param mapView The map image view
    */
   public void handleCoordinateClick(double x, double y, ImageView mapView) {
