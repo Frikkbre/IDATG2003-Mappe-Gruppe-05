@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Map;
  * @since 22.04.2025
  */
 
-public class BoardBranching extends Board{
+public class BoardBranching extends Board {
 
   private final Map<Integer, Tile> tilesById;
 
@@ -47,4 +48,7 @@ public class BoardBranching extends Board{
     tile1.addTileToTileBranch(tile2);
   }
 
+  public List<Tile> getTiles() {
+    return tiles;
+  }
 }

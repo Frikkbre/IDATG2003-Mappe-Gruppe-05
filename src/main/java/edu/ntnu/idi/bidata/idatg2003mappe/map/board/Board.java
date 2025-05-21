@@ -66,4 +66,19 @@ public class Board {
     return boardName;
   }
 
+  public Tile getTileById(int tileId) {
+    if (tiles == null) {
+      return null;
+    }
+
+    for (Tile tile : tiles) {
+      if (tile.getTileId() == tileId) {
+        return tile;
+      }
+    }
+    return null;
+  }
+
+
+
 }
