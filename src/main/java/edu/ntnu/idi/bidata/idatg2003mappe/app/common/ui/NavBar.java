@@ -92,43 +92,9 @@ public class NavBar {
     );
 
     Menu modeMenu = new Menu("Mode");
-    MenuItem modeMenuItem = new MenuItem("Random ladders");
+    MenuItem modeMenuItem = new MenuItem("Random Ladders");
     modeMenuItem.setOnAction(event -> {
-      if (gameController instanceof LadderGameController) {
-        try {
-          Stage currentStage = getStage();
-
-          LadderGameController randomLadderGameController = new LadderGameController(true);
-
-          // Set the game controller to the new random ladders game
-          setGameController(randomLadderGameController);
-
-          // Restart the game on the current stage
-          LadderGameGUI randomLadderGameGUI = new LadderGameGUI();
-          //randomLadderGameController.setRandomLadders(true);
-          randomLadderGameGUI.start(currentStage);
-
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Random Ladders");
-          alert.setHeaderText("Game Mode Updated");
-          alert.setContentText("A new game with random ladders has been started!");
-          alert.showAndWait();
-
-        } catch (Exception e) {
-          e.printStackTrace();
-          Alert alert = new Alert(Alert.AlertType.ERROR);
-          alert.setTitle("Error");
-          alert.setHeaderText("Game Restart Failed");
-          alert.setContentText("Could not restart the game with random ladders.");
-          alert.showAndWait();
-        }
-      } else if (gameController instanceof MissingDiamondController) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Mode");
-        alert.setHeaderText("Mode");
-        alert.setContentText("Random ladders mode is only available for Ladder Game.");
-        alert.showAndWait();
-      }
+      ladderGameGUI.toggleGameMode(getStage());
     });
     modeMenu.getItems().addAll(modeMenuItem);
 
@@ -167,24 +133,6 @@ public class NavBar {
     return null;
   }
 
-  private EventHandler<ActionEvent> saveFile() {
-    // Implement file saving logic here
-    return null;
-  }
-
-  private EventHandler<ActionEvent> quickSaveGame() {
-    return event -> {
-      if (gameController instanceof LadderGameController) {
-        LadderGameGUI ladderGameGUI = this.ladderGameGUI;
-        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController,
-            ((LadderGameController) gameController).isRandomLadders());
-      } else if (gameController instanceof MissingDiamondController) {
-        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI; // Add this field to NavBar
-        gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, (MissingDiamondController) gameController);
-      }
-    };
-  }
-
   /**
    * Closes the application
    * @return EventHandler for closing the application
@@ -208,64 +156,7 @@ public class NavBar {
     return null;
   }
 
-  /**
-   * Applies player data loaded from CSV to the current game
-   * @param playerDataList List of player data
-   * @return true if successful, false otherwise
-   */
-  private boolean applyPlayerDataToGame(List<PlayerData> playerDataList) {
-    if (gameController instanceof LadderGameController) {
-      // For LadderGameController, we need to create a GameState and apply it
-      LadderGameController ladderGameController = (LadderGameController) gameController;
 
-      // Create player positions for GameState
-      List<GameState.PlayerPosition> positions = new ArrayList<>();
-      for (PlayerData data : playerDataList) {
-        positions.add(new GameState.PlayerPosition(
-            data.getName(), data.getId(), data.getPosition()));
-      }
-
-      // Create GameState
-      GameState ladderGameState = new GameState();
-      ladderGameState.setPlayerPositions(positions);
-      ladderGameState.setRandomLadders(ladderGameController.isRandomLadders());
-      ladderGameState.setCurrentPlayerIndex(ladderGameController.getCurrentPlayerIndex());
-
-      // Apply GameState
-      ladderGameController.applyGameState(ladderGameState);
-
-      // Update the board UI if ladder game GUI is set
-      if (ladderGameGUI != null) {
-        ladderGameGUI.updateBoardUI();
-      }
-
-      return true;
-    } else if (gameController instanceof MissingDiamondController) {
-      MissingDiamondController missingDiamondController = (MissingDiamondController) gameController;
-
-      // Create player positions for GameState
-      List<GameState.PlayerPosition> positions = new ArrayList<>();
-      for (PlayerData data : playerDataList) {
-        positions.add(new GameState.PlayerPosition(
-            data.getName(), data.getId(), data.getPosition()));
-      }
-
-      // Create GameState
-      GameState missingDiamondGameState = new GameState();
-      missingDiamondGameState.setPlayerPositions(positions);
-      missingDiamondGameState.setCurrentPlayerIndex(missingDiamondController.getCurrentPlayerIndex());
-
-      // Apply GameState
-      missingDiamondController.applyGameState(missingDiamondGameState);
-
-      // Update the board UI if ladder game GUI is set
-      if (ladderGameGUI != null) {
-        ladderGameGUI.updateBoardUI();
-      }
-      return true;
-    }
-    return false;
-  }
 
   /**
    * Helper class to store player data from CSV
