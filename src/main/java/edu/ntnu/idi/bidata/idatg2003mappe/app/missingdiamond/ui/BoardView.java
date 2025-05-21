@@ -154,22 +154,34 @@ public class BoardView extends StackPane {
   private void handleTileClick(int tileId) {
     if (gameController == null) return;
 
+    // Add debugging statements
+    System.out.println("DEBUG: Tile clicked: " + tileId);
+    System.out.println("DEBUG: Connection mode active: " +
+        (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
+
     // Add this block to handle connection mode
     if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {
       int connectionSourceId = mapDesignerManager.getConnectionSourceId();
-
+      System.out.println("DEBUG: Current connection source ID: " + connectionSourceId);
 
       if (connectionSourceId == -1) {
         // First click - store source ID
         mapDesignerManager.setConnectionSourceId(tileId);
-        System.out.println("Connection source set to: " + tileId);
+        System.out.println("DEBUG: Set connection source to: " + tileId);
       } else {
         // Second click - create connection
+        System.out.println("DEBUG: Creating connection from " + connectionSourceId + " to " + tileId);
         boolean success = mapDesignerManager.createDirectConnection(connectionSourceId, tileId);
-        System.out.println("Creating connection from " + connectionSourceId + " to " + tileId + ": " + (success ? "Success" : "Failed"));
+
         if (success) {
+          // Draw the connection line
           createConnectionLine(connectionSourceId, tileId);
+          System.out.println("DEBUG: Connection created successfully");
+        } else {
+          System.out.println("DEBUG: Connection creation failed");
         }
+
+        // Reset for next connection
         mapDesignerManager.setConnectionSourceId(-1);
       }
       return;
