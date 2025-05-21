@@ -25,10 +25,10 @@ public class BoardGameSelectorGUI extends Application {
   private MissingDiamondGUI missingDiamondGUI;
   private Stage primaryStage;
   private Spinner<Integer> numberOfPlayers;
-  private File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
+  private final File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
   private CSVWriter playerWriter;
   private FileWriter outputfile;
-  private ArrayList<String> ColorList = new ArrayList<>();
+  private final ArrayList<String> ColorList = new ArrayList<>();
 
 
   /**

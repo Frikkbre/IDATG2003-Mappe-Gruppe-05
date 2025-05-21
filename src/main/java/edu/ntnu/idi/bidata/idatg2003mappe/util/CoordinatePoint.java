@@ -16,14 +16,15 @@ import java.util.List;
  * @since 25.04.2025
  */
 public class CoordinatePoint {
-  private int id;
+  private final int id;
   private double x, y;
-  private double xPercent, yPercent;
+  private final double xPercent;
+  private final double yPercent;
   private Circle circle;
   private Label label;
   private String name;
   private boolean isSpecial = false;
-  private List<Integer> connections = new ArrayList<>();
+  private final List<Integer> connections = new ArrayList<>();
 
   /**
    * Creates a new coordinate point.

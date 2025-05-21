@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class TestPlayer {
 
   private Player player;
-  private Tile startingTile = new Tile(0);
+  private final Tile startingTile = new Tile(0);
 
   @BeforeEach
   void setUp() {

@@ -37,7 +37,7 @@ import java.util.*;
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
 
   // Number of players for the game
-  private int numberOfPlayers = 2; // Default to 2 players if not specified
+  private final int numberOfPlayers = 2; // Default to 2 players if not specified
 
   // Game controller
   private MissingDiamondController gameController;
@@ -53,9 +53,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private Stage primaryStage;
 
   // Board data
-  private Map<Integer, Circle> tileCircles = new HashMap<>();
-  private Map<Player, Circle> playerMarkers = new HashMap<>();
-  private Set<Integer> specialTileIds = new HashSet<>();
+  private final Map<Integer, Circle> tileCircles = new HashMap<>();
+  private final Map<Player, Circle> playerMarkers = new HashMap<>();
+  private final Set<Integer> specialTileIds = new HashSet<>();
 
   // Map designer tool
   private MapDesignerTool mapDesigner;
@@ -554,9 +554,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
         // Update any labels associated with this tile
         for (Node node : overlayPane.getChildren()) {
-          if (node instanceof Label && node.getUserData() != null
+          if (node instanceof Label label && node.getUserData() != null
               && node.getUserData().equals(tileId)) {
-            Label label = (Label) node;
             label.setLayoutX(x + 5);
             label.setLayoutY(y - 15);
           }

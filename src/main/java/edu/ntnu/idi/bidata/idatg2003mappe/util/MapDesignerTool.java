@@ -35,26 +35,26 @@ import java.util.*;
 public class MapDesignerTool {
 
   // UI Components
-  private Label statusLabel;
-  private ChoiceBox<String> tileTypeSelector;
-  private TextField sourceIdField;
-  private TextField targetIdField;
+  private final Label statusLabel;
+  private final ChoiceBox<String> tileTypeSelector;
+  private final TextField sourceIdField;
+  private final TextField targetIdField;
 
   // Design mode flags
   private boolean coordinateMode = false;
   private boolean connectionMode = false;
 
   // Data storage
-  private List<CoordinatePoint> capturedPoints = new ArrayList<>();
-  private Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
+  private final List<CoordinatePoint> capturedPoints = new ArrayList<>();
+  private final Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
   private int selectedSourceId = -1;
 
   // References
-  private Pane overlayPane;
+  private final Pane overlayPane;
   private double mapWidth;
   private double mapHeight;
-  private MapDesignerListener listener;
+  private final MapDesignerListener listener;
 
   /**
    * Creates a new MapDesignerTool.
@@ -739,8 +739,7 @@ public class MapDesignerTool {
 
     // If the circle exists in the overlay, link it to the point
     for (Node node : overlayPane.getChildren()) {
-      if (node instanceof Circle) {
-        Circle circle = (Circle) node;
+      if (node instanceof Circle circle) {
         if (circle.getUserData() != null && circle.getUserData().equals(id)) {
           point.setCircle(circle);
           break;
