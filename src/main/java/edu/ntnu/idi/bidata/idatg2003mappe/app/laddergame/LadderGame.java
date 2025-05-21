@@ -114,7 +114,11 @@ public class LadderGame {
   private void setupTileEffects(BoardLinear board, Tile[] tiles) {
     tileEffects.put(13, "skipTurn");
     tileEffects.put(25, "skipTurn");
+    tileEffects.put(57, "skipTurn");
     tileEffects.put(70, "skipTurn");
+    tileEffects.put(96, "skipTurn");
+
+    tileEffects.put(45, "backToStart");
 
     // Apply effects directly to the tiles array
     for (Map.Entry<Integer, String> entry : tileEffects.entrySet()) {
