@@ -54,7 +54,12 @@ public class LadderGameController {
           currentPlayer.getCurrentTile().getEffect(),
           startTile // Pass start tile
       );
-      message.append("Effect! " + currentPlayer.getName() + " has to move back to start" + "\n");
+      if(currentPlayer.getCurrentTile().getEffect().equals("skipTurn")) {
+        message.append("Effect! " + currentPlayer.getName() + " has to skip their next turn" + "\n");
+      } else if (currentPlayer.getCurrentTile().getEffect().equals("backToStart")) {
+        message.append("Effect! " + currentPlayer.getName() + " has to move back to start" + "\n");
+      }
+
       effectTile.performAction(currentPlayer);
     }
 
