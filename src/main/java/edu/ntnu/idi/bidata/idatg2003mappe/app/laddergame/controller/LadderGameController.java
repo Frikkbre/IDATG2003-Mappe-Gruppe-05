@@ -34,8 +34,6 @@ public class LadderGameController {
     int roll = game.getDie().rollDie();
     StringBuilder message = new StringBuilder();
 
-    message.append(currentPlayer.getName() + " rolled: " + roll + "\n");
-
     if (currentPlayer.isSkipTurn()) {
       message.append(currentPlayer.getName() + " skips their turn!\n");
       currentPlayer.setSkipTurn(false);
@@ -43,6 +41,8 @@ public class LadderGameController {
       return message.toString();
     }
 
+
+    message.append(currentPlayer.getName() + " rolled: " + roll + "\n");
     // Move the player
     currentPlayer.movePlayer(roll);
     message.append("Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
