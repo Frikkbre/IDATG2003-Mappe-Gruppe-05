@@ -77,6 +77,7 @@ public class ConnectionManager {
   /**
    * Draws a connection line between two points.
    */
+// In ConnectionManager.java - modify the drawConnection method
   public void drawConnection(CoordinatePoint source, CoordinatePoint target) {
     if (source.getCircle() == null || target.getCircle() == null) {
       logMessage("Cannot draw connection: circles not initialized for points " +
@@ -84,17 +85,25 @@ public class ConnectionManager {
       return;
     }
 
+    // Create line with correct coordinates
     Line line = new Line(
         source.getCircle().getCenterX(), source.getCircle().getCenterY(),
         target.getCircle().getCenterX(), target.getCircle().getCenterY()
     );
+
+    // Make sure the line is visible
     line.setStroke(Color.BLACK);
-    line.setStrokeWidth(1.5);
+    line.setStrokeWidth(2.5); // Increase width for better visibility
     line.setUserData("connection"); // For identification
 
-    // Add the line to the overlay (below circles)
+    // Add line to overlay pane - IMPORTANT: Add at index 0 to ensure it's below circles
     overlayPane.getChildren().add(0, line);
     connectionLines.add(line);
+
+    // Debug
+    System.out.println("Connection line created at: (" +
+        source.getCircle().getCenterX() + "," + source.getCircle().getCenterY() + ") to (" +
+        target.getCircle().getCenterX() + "," + target.getCircle().getCenterY() + ")");
 
     logMessage("Created connection from " + source.getId() + " to " + target.getId());
   }

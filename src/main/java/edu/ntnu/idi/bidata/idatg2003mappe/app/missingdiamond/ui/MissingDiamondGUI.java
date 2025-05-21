@@ -80,6 +80,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     controlPanel = new GameControlPanel(gameController, boardView);
     statusPanel = new PlayerStatusPanel(gameController);
 
+    boardView.setMapDesignerManager(mapDesignerManager);
+
     // Connect UI components with controller
     gameController.registerView(this);
 

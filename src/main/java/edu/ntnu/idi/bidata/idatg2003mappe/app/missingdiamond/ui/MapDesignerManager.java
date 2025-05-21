@@ -29,7 +29,13 @@ public class MapDesignerManager {
   }
 
   public boolean createDirectConnection(int sourceId, int targetId) {
-    return mapDesigner.createDirectConnection(sourceId, targetId);
+    boolean success = mapDesigner.createDirectConnection(sourceId, targetId);
+    if (success) {
+      System.out.println("Connection created successfully between " + sourceId + " and " + targetId);
+    } else {
+      System.out.println("Failed to create connection between " + sourceId + " and " + targetId);
+    }
+    return success;
   }
 
   public void registerExistingPoint(int id, double x, double y, double xPercent, double yPercent,

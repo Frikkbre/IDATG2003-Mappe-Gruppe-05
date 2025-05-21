@@ -35,6 +35,9 @@ public class BoardView extends StackPane {
 
   private TileHighlighter tileHighlighter;
 
+  private MapDesignerManager mapDesignerManager;
+
+
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
@@ -100,23 +103,24 @@ public class BoardView extends StackPane {
     });
   }
 
+  private void setupEventHandling() {
+    overlayPane.setOnMouseClicked(e -> {
+      handleGameClick(e.getX(), e.getY());
+    });
+  }
+
+  // In BoardView.java - make sure overlayPane is correctly set up
   private void createOverlayPane() {
     // Create a transparent pane for game elements
     overlayPane = new Pane();
-    overlayPane.setPickOnBounds(true);
+    overlayPane.setPickOnBounds(false); // Important: allow clicks to pass through transparent areas
     overlayPane.setPrefSize(900, 700);
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
     getChildren().add(overlayPane);
-  }
 
-  private void setupEventHandling() {
-    overlayPane.setOnMouseClicked(e -> {
-      if (gameController == null) return;
-
-      // Handle game clicks - in a full implementation, this would check
-      // for map designer modes and delegate accordingly
-      handleGameClick(e.getX(), e.getY());
-    });
+    // Ensure the overlayPane is above the map image
+    overlayPane.toFront();
   }
 
   private void handleGameClick(double x, double y) {
@@ -142,6 +146,33 @@ public class BoardView extends StackPane {
 
   private void handleTileClick(int tileId) {
     if (gameController == null) return;
+
+    // Add this block to handle connection mode
+    if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {
+      int connectionSourceId = mapDesignerManager.getConnectionSourceId();
+
+
+      if (connectionSourceId == -1) {
+        // First click - store source ID
+        mapDesignerManager.setConnectionSourceId(tileId);
+        System.out.println("Connection source set to: " + tileId);
+      } else {
+        // Second click - create connection
+        boolean success = mapDesignerManager.createDirectConnection(connectionSourceId, tileId);
+        System.out.println("Creating connection from " + connectionSourceId + " to " + tileId + ": " + (success ? "Success" : "Failed"));
+        if (success) {
+          createConnectionLine(connectionSourceId, tileId);
+        }
+        mapDesignerManager.setConnectionSourceId(-1);
+      }
+      return;
+    }
+
+    // Only allow moves if the player has rolled
+    if (!gameController.hasRolled()) {
+      logMessage("You must roll the die first.");
+      return;
+    }
 
     // Only allow moves if the player has rolled
     if (!gameController.hasRolled()) {
@@ -213,6 +244,26 @@ public class BoardView extends StackPane {
 
     // Create connections after adding all tiles
     createConnectionsFromConfig(mapConfig);
+  }
+
+  public void createConnectionLine(int fromId, int toId) {
+    Circle fromCircle = tileCircles.get(fromId);
+    Circle toCircle = tileCircles.get(toId);
+
+    if (fromCircle != null && toCircle != null) {
+      Line line = new Line(
+          fromCircle.getCenterX(), fromCircle.getCenterY(),
+          toCircle.getCenterX(), toCircle.getCenterY()
+      );
+      line.setStroke(Color.BLACK);
+      line.setStrokeWidth(2.5); // Thicker for visibility
+      line.setUserData("connection");
+
+      // Important: Add to overlay pane at index 0 so it appears below circles
+      overlayPane.getChildren().add(0, line);
+
+      System.out.println("Created visual connection line from " + fromId + " to " + toId);
+    }
   }
 
   private void createConnectionsFromConfig(MapConfig mapConfig) {
@@ -461,6 +512,10 @@ public class BoardView extends StackPane {
     if (gameLog != null) {
       gameLog.appendText(message + "\n");
     }
+  }
+
+  public void setMapDesignerManager(MapDesignerManager manager) {
+    this.mapDesignerManager = manager;
   }
 
   // Getters and setters

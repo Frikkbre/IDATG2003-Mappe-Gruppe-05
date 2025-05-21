@@ -139,8 +139,18 @@ public class MapDesignerTool {
   /**
    * Creates a connection directly using IDs.
    */
+// In MapDesignerTool.java - ensure createDirectConnection does this
   public boolean createDirectConnection(int sourceId, int targetId) {
-    return connectionManager.createConnection(sourceId, targetId);
+    boolean success = connectionManager.createConnection(sourceId, targetId);
+
+    if (success) {
+      uiManager.logMessage("Connection created successfully between " + sourceId + " and " + targetId, false);
+
+      // This is important - force a redraw of all connections to ensure visibility
+      connectionManager.redrawConnections();
+    }
+
+    return success;
   }
 
   /**
