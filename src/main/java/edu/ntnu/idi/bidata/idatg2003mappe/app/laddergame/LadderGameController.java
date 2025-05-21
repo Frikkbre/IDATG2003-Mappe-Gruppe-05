@@ -48,9 +48,14 @@ public class LadderGameController {
 
     // Check for effect tile action
     if (currentPlayer.getCurrentTile().getEffect() != null) {
-      EffectTile effectTile = new EffectTile(currentPlayer.getCurrentTile(), currentPlayer.getCurrentTile().getEffect());
+      Tile startTile = getTileByIdLinear(1); // Get tile with ID 1
+      EffectTile effectTile = new EffectTile(
+          currentPlayer.getCurrentTile(),
+          currentPlayer.getCurrentTile().getEffect(),
+          startTile // Pass start tile
+      );
+      message.append("Effect! " + currentPlayer.getName() + " has to move back to start" + "\n");
       effectTile.performAction(currentPlayer);
-      message.append("Effect tile! " + currentPlayer.getCurrentTile().getEffect() + "\n");
     }
 
     // Check for ladder action
