@@ -90,6 +90,23 @@ public class NavBar {
         closeMenuItem
     );
 
+    Menu modeMenu = new Menu("Mode");
+    MenuItem modeMenuItem = new MenuItem("Mode");
+    modeMenuItem.setOnAction(event -> {
+      if (gameController instanceof LadderGameController) {
+        LadderGameController ladderGameController = new LadderGameController(true);
+        LadderGameGUI ladderGameGUI = new LadderGameGUI();
+        ladderGameGUI.updateBoardUI();
+      } else if (gameController instanceof MissingDiamondController) {
+        //make button unavalible
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Mode");
+        alert.setHeaderText("Mode");
+        alert.setContentText("This game does not have a mode to toggle.");
+      }
+    });
+
+    modeMenu.getItems().addAll(modeMenuItem);
 
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
@@ -108,7 +125,7 @@ public class NavBar {
 
 
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu, navigateMenu);
+    menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
 
     return menuBar;
