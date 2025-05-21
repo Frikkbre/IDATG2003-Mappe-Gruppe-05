@@ -10,13 +10,17 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 import java.util.List;
 
 public class LadderGameController {
-  private final LadderGame game;
+  private LadderGame game;
   private boolean randomLadders;
   private int currentPlayerIndex = 0;
 
+  /**
+   * Constructor for the LadderGameController.
+   * @param randomLadders
+   */
   public LadderGameController(boolean randomLadders) {
     this.randomLadders = randomLadders;
-    System.out.println(randomLadders);
+    System.out.println("LadderGameController: Initializing with randomLadders=" + randomLadders);
     game = new LadderGame(randomLadders);
   }
 
@@ -100,42 +104,10 @@ public class LadderGameController {
   }
 
   /**
-   * Returns the current player index.
-   */
-  public int getCurrentPlayerIndex() {
-    return currentPlayerIndex;
-  }
-
-  /**
-   * Sets the current player index.
-   *
-   * @param index The new current player index.
-   */
-  public void setCurrentPlayerIndex(int index) {
-    this.currentPlayerIndex = index;
-  }
-
-  /**
    * Returns whether the game uses random ladders.
    */
   public boolean isRandomLadders() {
     return randomLadders;
-  }
-
-  /**
-   * Returns the game instance.
-   */
-  public void setRandomLadders(boolean randomLadders) {
-    this.randomLadders = randomLadders;
-  }
-
-  /**
-   * Creates a GameState object representing the current state of the game.
-   *
-   * @return A GameState object.
-   */
-  public GameState createGameState() {
-    return new GameState(currentPlayerIndex, randomLadders, game.getPlayers());
   }
 
   /**
