@@ -544,7 +544,8 @@ public class MissingDiamond {
       return "No token at this location.";
     }
 
-    int roll = die.rollToTurnMarker(); // 4, 5, or 6 to win
+    die.rollToTurnMarker();
+    int roll = die.getDieValue();
     boolean success = tokenSystem.tryWinToken(currentPlayer, currentTile, roll, banker);
 
     if (success) {
