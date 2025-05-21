@@ -77,7 +77,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     this.primaryStage = primaryStage; // Store the stage reference
 
     // Create board pane first to get overlay reference
-    boardPane = createBoardPane();
+    boardPane = (StackPane) createBoardPane(); //TODO: check if this is correct
 
     // Initialize game controller based on number of players
     if (numberOfPlayers > 0) {
@@ -689,7 +689,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
    */
 
   //Updates the board UI with current game state.
-  private void updateBoardUI() {
+  public void updateBoardUI() { //TODO: check if this is correct
     // First clear existing player markers from the board
     for (Circle marker : playerMarkers.values()) {
       overlayPane.getChildren().remove(marker);
