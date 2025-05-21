@@ -158,42 +158,6 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Create the menu bar.
-   *
-   * @param primaryStage the primary stage
-   * @return the menu bar
-   */
-
-  private MenuBar createMenuBar(Stage primaryStage) {
-    MenuBar menuBar = new MenuBar();
-
-    // File Menu
-    Menu fileMenu = new Menu("File");
-    MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
-    quickSaveMenuItem.setOnAction(e -> quickSaveGame());
-
-    MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
-    loadLastSaveMenuItem.setOnAction(e -> loadLastSave());
-
-    MenuItem closeMenuItem = new MenuItem("Close");
-    closeMenuItem.setOnAction(e -> primaryStage.close());
-
-    fileMenu.getItems().addAll(quickSaveMenuItem, loadLastSaveMenuItem, new SeparatorMenuItem(), closeMenuItem);
-
-    // Settings Menu
-    Menu settingsMenu = new Menu("Settings");
-    MenuItem toggleModeItem = new MenuItem("Toggle Classic/Random Mode");
-    MenuItem restartGameItem = new MenuItem("Restart Game");
-    toggleModeItem.setOnAction(e -> toggleGameMode(primaryStage));
-    restartGameItem.setOnAction(e -> restartGame(primaryStage));
-    settingsMenu.getItems().addAll(toggleModeItem, restartGameItem);
-
-    // Add both menus to the menu bar
-    menuBar.getMenus().addAll(fileMenu, settingsMenu);
-    return menuBar;
-  }
-
-  /**
    * Quick save the game to the default location.
    */
   private void quickSaveGame() {
