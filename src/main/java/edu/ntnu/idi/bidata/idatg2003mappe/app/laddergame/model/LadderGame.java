@@ -199,33 +199,56 @@ public class LadderGame {
    * The ladders and snakes are randomly generated on the board.
    * The number of ladders and snakes are hardcoded for now.
    */
-
   private void generateRandomLadders(Tile[] tiles) {
     Random random = new Random();
-    int numLadders = 8; // Number of ladders to generate
-    int numSnakes = 8;  // Number of snakes to generate
+    int numLadders = 8; // Number of ladders and snakes
+    int maxAttempts = 50;
 
-    // Generate ladders
-    for (int i = 0; i < numLadders; i++) {
-      int start = random.nextInt(99) + 1; // Start between 1 and 99
-      int end = start + random.nextInt(15) + 5; // End at least 5 tiles ahead but within 100
-
-      if (end < 100 && tiles[start].getDestinationTile() == null) {
-        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
-      } else {
-        i--; // Retry this ladder if it was invalid
-      }
+    // Clear existing ladders first
+    for (Tile tile : tiles) {
+      tile.setDestinationTile(null);
     }
 
-    // Generate snakes
-    for (int i = 0; i < numSnakes; i++) {
-      int start = random.nextInt(89) + 10; // Start between 10 and 99
-      int end = start - random.nextInt(Math.min(start - 1, 15)) - 5; // Ensure it doesn't go below 1
+    // Track used start tiles to prevent multiple ladders from same tile
+    Set<Integer> usedStartTiles = new HashSet<>();
 
-      if (end > 1 && tiles[start].getDestinationTile() == null) {
-        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
-      } else {
-        i--; // Retry this snake if it was invalid
+    for (int i = 0; i < numLadders; i++) {
+      int attempts = 0;
+      while (attempts < maxAttempts) {
+        // Choose a random start tile, avoiding first and last few tiles
+        int startIndex = random.nextInt(tiles.length - 10) + 5;
+
+        // Ensure this tile hasn't been used before
+        if (usedStartTiles.contains(startIndex)) {
+          attempts++;
+          continue;
+        }
+
+        // Randomly decide upward or downward ladder
+        if (random.nextBoolean()) {
+          // Upward ladder
+          int endIndex = startIndex + random.nextInt(10) + 5;
+          if (endIndex < tiles.length &&
+              tiles[startIndex].getDestinationTile() == null &&
+              tiles[endIndex].getDestinationTile() == null) {
+
+            TileActionFactory.createLadderAction(tiles[startIndex], tiles[endIndex]);
+            usedStartTiles.add(startIndex);
+            break;
+          }
+        } else {
+          // Downward ladder (snake)
+          int endIndex = startIndex - random.nextInt(10) - 5;
+          if (endIndex > 0 &&
+              tiles[startIndex].getDestinationTile() == null &&
+              tiles[endIndex].getDestinationTile() == null) {
+
+            TileActionFactory.createLadderAction(tiles[startIndex], tiles[endIndex]);
+            usedStartTiles.add(startIndex);
+            break;
+          }
+        }
+        attempts++;
       }
     }
   }
