@@ -178,12 +178,4 @@ public class Tile {
   public String getEffect() {
     return effect;
   }
-
-  /**
-   * Sets the effect of the tile.
-   * @param effect
-   */
-  public void setEffect(String effect) { //TODO - redundant? hardcodes in LadderGameController and uses flag to set effect.
-    this.effect = effect;
-  }
 }
