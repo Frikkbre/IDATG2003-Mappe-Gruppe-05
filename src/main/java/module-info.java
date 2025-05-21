@@ -14,8 +14,6 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires com.opencsv;
   opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe;
-  exports edu.ntnu.idi.bidata.idatg2003mappe.app;
-  opens edu.ntnu.idi.bidata.idatg2003mappe.app to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.map;
   opens edu.ntnu.idi.bidata.idatg2003mappe.map to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.filehandling;
