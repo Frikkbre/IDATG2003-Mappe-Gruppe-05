@@ -43,6 +43,10 @@ public class EffectTile implements TileAction {
         skipTurn(player);
         System.out.println(player.getName() + " will skip their next turn!");
         break;
+      case "backToStart":
+        backToStart(player);
+        System.out.println(player.getName() + " Has to go back to start!");
+        break;
       default:
         System.out.println("Unknown effect type: " + effectType);
         break;
@@ -56,5 +60,9 @@ public class EffectTile implements TileAction {
    */
   public void skipTurn(Player player) {
     player.setSkipTurn(true);
+  }
+
+  public void backToStart(Player player) {
+    player.movePlayer(-44); // Move back to start
   }
 }
