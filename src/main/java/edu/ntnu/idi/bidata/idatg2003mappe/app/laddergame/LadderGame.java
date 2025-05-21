@@ -11,9 +11,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Class to represent a game of Ladder.
@@ -31,6 +29,7 @@ public class LadderGame {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardLinear board;
   private final List<Player> players;
+  private Map<Integer, String> tileEffects = new HashMap<>();
   private final Die die;
   private final int numberOfTiles;
   private final boolean randomLadders;
@@ -71,8 +70,10 @@ public class LadderGame {
 
     if (randomLadders) {
       generateRandomLadders(tiles);
+      setupTileEffects();
     } else {
       setClassicLadders(tiles);
+      setupTileEffects();
     }
 
     return board;
@@ -104,6 +105,16 @@ public class LadderGame {
       tiles[94].setDestinationTile(tiles[74]);
       tiles[98].setDestinationTile(tiles[80]);
     }
+  }
+
+  /**
+   * sets hardcoded tile effects for the game.
+   * Does so by adding the tile number and the effect to a map.
+   */
+  private void setupTileEffects() {
+    tileEffects.put(13, "skipTurn");
+    tileEffects.put(25, "skipTurn");
+    tileEffects.put(70, "skipTurn");
   }
 
   /**
