@@ -18,6 +18,7 @@ public class Player {
   private int ID;
   private String color;
   private Tile currentTile;
+  private boolean skipTurn = false;
 
   // Observer pattern support
   private List<PlayerObserver> observers = new ArrayList<>();
@@ -146,5 +147,23 @@ public class Player {
 
   public int getID() {
     return ID;
+  }
+
+
+  /**
+   * returns if the player should skip a turn or not
+   * @return skipTurn
+   */
+  public boolean isSkipTurn() {
+    return skipTurn;
+  }
+
+  /**
+   * sets if the player should skip a turn or not
+   * called when a player lands on a skip turn tile
+   * @param skipTurn
+   */
+  public void setSkipTurn(boolean skipTurn) {
+    this.skipTurn = skipTurn;
   }
 }

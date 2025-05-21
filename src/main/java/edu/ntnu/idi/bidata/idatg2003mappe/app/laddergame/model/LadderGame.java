@@ -12,9 +12,16 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 /**
- * Class to represent a game of Ladder with Observer pattern support.
+ * Class to represent a game of Ladder.
+ * The game consists of a board, a number of players, a dice and a number of tiles.
+ * The game is played by the players taking turns to roll the dice and move their markers on the board.
+ * The game is won by the first player to reach the last tile on the board.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.4
@@ -26,6 +33,7 @@ public class LadderGame {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
   private final BoardLinear board;
   private final List<Player> players;
+  private Map<Integer, String> tileEffects = new HashMap<>();
   private final Die die;
   private final int numberOfTiles;
   private final boolean randomLadders;
@@ -125,8 +133,10 @@ public class LadderGame {
 
     if (randomLadders) {
       generateRandomLadders(tiles);
+      setupTileEffects(board, tiles);
     } else {
       setClassicLadders(tiles);
+      setupTileEffects(board, tiles);
     }
 
     return board;
@@ -157,6 +167,30 @@ public class LadderGame {
       TileActionFactory.createLadderAction(tiles[88], tiles[37]);
       TileActionFactory.createLadderAction(tiles[94], tiles[74]);
       TileActionFactory.createLadderAction(tiles[98], tiles[80]);
+    }
+  }
+
+  /**
+   * sets hardcoded tile effects for the game.
+   * Does so by adding the tile number and the effect to a map.
+   */
+  private void setupTileEffects(BoardLinear board, Tile[] tiles) {
+    tileEffects.put(13, "skipTurn");
+    tileEffects.put(25, "skipTurn");
+    tileEffects.put(57, "skipTurn");
+    tileEffects.put(70, "skipTurn");
+    tileEffects.put(96, "skipTurn");
+
+    tileEffects.put(45, "backToStart");
+
+    // Apply effects directly to the tiles array
+    for (Map.Entry<Integer, String> entry : tileEffects.entrySet()) {
+      int tileId = entry.getKey();
+      String effect = entry.getValue();
+      // Use the tiles array directly since we have it
+      if (tileId > 0 && tileId <= tiles.length) {
+        tiles[tileId - 1].setEffect(effect);
+      }
     }
   }
 

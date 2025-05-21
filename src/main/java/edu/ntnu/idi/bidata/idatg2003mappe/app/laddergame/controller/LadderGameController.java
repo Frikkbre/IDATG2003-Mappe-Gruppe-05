@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.movement.EffectTile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
 import java.util.List;
@@ -35,9 +36,33 @@ public class LadderGameController {
 
     message.append(currentPlayer.getName() + " rolled: " + roll + "\n");
 
+    if (currentPlayer.isSkipTurn()) {
+      message.append(currentPlayer.getName() + " skips their turn!\n");
+      currentPlayer.setSkipTurn(false);
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      return message.toString();
+    }
+
     // Move the player
     currentPlayer.movePlayer(roll);
     message.append("Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
+
+    // Check for effect tile action
+    if (currentPlayer.getCurrentTile().getEffect() != null) {
+      Tile startTile = getTileByIdLinear(1); // Get tile with ID 1
+      EffectTile effectTile = new EffectTile(
+          currentPlayer.getCurrentTile(),
+          currentPlayer.getCurrentTile().getEffect(),
+          startTile // Pass start tile
+      );
+      if(currentPlayer.getCurrentTile().getEffect().equals("skipTurn")) {
+        message.append("Effect! " + currentPlayer.getName() + " has to skip their next turn" + "\n");
+      } else if (currentPlayer.getCurrentTile().getEffect().equals("backToStart")) {
+        message.append("Effect! " + currentPlayer.getName() + " has to move back to start" + "\n");
+      }
+
+      effectTile.performAction(currentPlayer);
+    }
 
     // Check for ladder action
     if (currentPlayer.getCurrentTile().getDestinationTile() != null) {

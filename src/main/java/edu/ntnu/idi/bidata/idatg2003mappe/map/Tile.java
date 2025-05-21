@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 
 public class Tile {
 
+  private String effect;
+
   /**
    * This is a unique identifier for the tile.
    * Either position or order of the tile.
@@ -104,11 +106,14 @@ public class Tile {
    */
 
   public Tile getTileAtDistance(int steps) {
-    if (steps < 0) {
+    Tile current = this;
+    if(steps == -44){ // Back to start
+      current = current.getNextTile();
+    }else if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
     }
 
-    Tile current = this;
+
     for (int i = 0; i < steps && current.getNextTile() != null; i++) {
       current = current.getNextTile();
     }
@@ -168,5 +173,21 @@ public class Tile {
    */
   public List<Tile> getNextTiles() {
     return nextTilesOnBoard;
+  }
+
+  /**
+   * Gets the effect of the tile.
+   * @return
+   */
+  public String getEffect() {
+    return effect;
+  }
+
+  /**
+   * Sets the effect of the tile.
+   * @param effect
+   */
+  public void setEffect(String effect) {
+    this.effect = effect;
   }
 }
