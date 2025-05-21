@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
 
 /**
  * Main class for the application.

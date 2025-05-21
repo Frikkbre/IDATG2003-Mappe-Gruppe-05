@@ -1,8 +1,10 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Set;
 public class MissingDiamondController {
   private final MissingDiamond game;
   private boolean hasRolled = false;
+  private MapDesignerListener view;
 
   public MissingDiamondController() {
     this.game = new MissingDiamond();
@@ -33,6 +36,16 @@ public class MissingDiamondController {
     // Roll the die
     String result = game.playTurn();
     hasRolled = true;
+
+    // Check if there are any valid moves after rolling
+    List<Tile> possibleMoves = getPossibleMoves();
+    if (possibleMoves.isEmpty()) {
+      // No valid moves, so automatically end turn
+      hasRolled = false;
+      game.skipTurn(); // You'll need to add this method to MissingDiamond class
+      return result + "\nNo valid moves available. Turn passed to next player.";
+    }
+
     return result;
   }
 
@@ -122,5 +135,9 @@ public class MissingDiamondController {
 
   public boolean hasRolled() {
     return hasRolled;
+  }
+
+  public void registerView(MapDesignerListener view) {
+    this.view = view;
   }
 }

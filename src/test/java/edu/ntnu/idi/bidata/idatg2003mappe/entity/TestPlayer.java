@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.entity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class TestPlayer {
 
   private Player player;
-  private Tile startingTile = new Tile(0);
+  private final Tile startingTile = new Tile(0);
 
   @BeforeEach
   void setUp() {

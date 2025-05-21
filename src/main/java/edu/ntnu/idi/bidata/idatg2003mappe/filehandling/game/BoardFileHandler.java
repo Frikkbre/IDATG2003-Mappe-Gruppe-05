@@ -1,10 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.JsonParsingException;
 
@@ -36,7 +32,7 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
    * Writes a game state to a file in JSON format.
    *
    * @param gameState The game state to write.
-   * @param filePath The path to the file.
+   * @param filePath  The path to the file.
    * @throws FileHandlingException If an error occurs while writing the file.
    */
   @Override

@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.LadderGameController;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.MissingDiamondController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 
 /**
  * A registry to track the current active game controller.

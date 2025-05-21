@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.movement;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 
 /**
  * Represents a TileAction.
