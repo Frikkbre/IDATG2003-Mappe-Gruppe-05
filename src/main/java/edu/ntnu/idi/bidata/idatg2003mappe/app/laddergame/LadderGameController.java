@@ -34,6 +34,13 @@ public class LadderGameController {
 
     message.append(currentPlayer.getName() + " rolled: " + roll + "\n");
 
+    if (currentPlayer.isSkipTurn()) {
+      message.append(currentPlayer.getName() + " skips their turn!\n");
+      currentPlayer.setSkipTurn(false);
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      return message.toString();
+    }
+
     // Move the player
     currentPlayer.movePlayer(roll);
     message.append("Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
