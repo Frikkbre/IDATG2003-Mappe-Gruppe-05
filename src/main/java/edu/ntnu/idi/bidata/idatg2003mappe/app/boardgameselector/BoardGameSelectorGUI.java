@@ -78,6 +78,13 @@ public class BoardGameSelectorGUI extends Application {
     return primaryStage;
   }
 
+  /**
+   * Start method for the JavaFX application.
+   * This method is used to start the JavaFX application.
+   *
+   * @param primaryStage The primary stage for this application.
+   * @throws Exception If an error occurs during startup.
+   */
   @Override
   public void start(Stage primaryStage) throws Exception {
     BorderPane borderPane = new BorderPane();
@@ -105,6 +112,12 @@ public class BoardGameSelectorGUI extends Application {
     this.missingDiamondGUI = new MissingDiamondGUI();
   }
 
+  /**
+   * Method to create the center pane of the GUI.
+   * This method is used to create the center pane of the GUI.
+   *
+   * @return centerPane
+   */
   private Pane createCenterPane() {
     Button button1 = new Button("Ladder game");
     button1.setOnAction(event -> writeToFile("ladderGame"));
@@ -121,7 +134,13 @@ public class BoardGameSelectorGUI extends Application {
     return centerPane;
   }
 
-  public void writeToFile(String game) { //TODO - remove dobble if statements that check for the same param?
+  /**
+   * Method to write the player data to a file.
+   * This method is used to write the player data to a CSV file.
+   *
+   * @param game The game chosen by the user.
+   */
+  public void writeToFile(String game) {
     try {
       // Make sure directory exists
       File playerDir = new File("src/main/resources/saves/playerData/");
