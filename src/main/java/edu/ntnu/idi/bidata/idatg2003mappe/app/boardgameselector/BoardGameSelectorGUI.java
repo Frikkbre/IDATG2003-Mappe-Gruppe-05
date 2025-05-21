@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -127,9 +128,10 @@ public class BoardGameSelectorGUI extends Application {
 
     numberOfPlayers = new Spinner<>(2, 5, 2);
     numberOfPlayers.setEditable(true);
+    Label spinnerLabel = new Label("   Number of players: ");
 
     FlowPane centerPane = new FlowPane();
-    centerPane.getChildren().addAll(button1, button2, numberOfPlayers);
+    centerPane.getChildren().addAll(button1, button2, spinnerLabel, numberOfPlayers);
     centerPane.setAlignment(Pos.CENTER);
     return centerPane;
   }
