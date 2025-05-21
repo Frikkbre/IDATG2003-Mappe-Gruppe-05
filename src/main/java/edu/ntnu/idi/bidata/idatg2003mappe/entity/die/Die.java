@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.4
- * @since 25.05.2025
+ * @since 03.02.2025
  */
 public class Die {
 
