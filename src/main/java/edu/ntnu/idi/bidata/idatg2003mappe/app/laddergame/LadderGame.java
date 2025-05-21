@@ -70,10 +70,10 @@ public class LadderGame {
 
     if (randomLadders) {
       generateRandomLadders(tiles);
-      setupTileEffects();
+      setupTileEffects(board, tiles);
     } else {
       setClassicLadders(tiles);
-      setupTileEffects();
+      setupTileEffects(board, tiles);
     }
 
     return board;
@@ -111,10 +111,20 @@ public class LadderGame {
    * sets hardcoded tile effects for the game.
    * Does so by adding the tile number and the effect to a map.
    */
-  private void setupTileEffects() {
+  private void setupTileEffects(BoardLinear board, Tile[] tiles) {
     tileEffects.put(13, "skipTurn");
     tileEffects.put(25, "skipTurn");
     tileEffects.put(70, "skipTurn");
+
+    // Apply effects directly to the tiles array
+    for (Map.Entry<Integer, String> entry : tileEffects.entrySet()) {
+      int tileId = entry.getKey();
+      String effect = entry.getValue();
+      // Use the tiles array directly since we have it
+      if (tileId > 0 && tileId <= tiles.length) {
+        tiles[tileId - 1].setEffect(effect);
+      }
+    }
   }
 
   /**
