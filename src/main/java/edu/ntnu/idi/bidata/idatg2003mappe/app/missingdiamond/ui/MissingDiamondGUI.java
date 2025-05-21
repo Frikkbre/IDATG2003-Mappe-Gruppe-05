@@ -75,25 +75,22 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     boardView.setGameController(gameController);
   }
 
-  private void initializeUIComponents() {
-    // Create map designer manager
-    mapDesignerManager = new MapDesignerManager(
+  public void initializeUIComponents() {
+    mapDesignerManager = createMapDesignerManager();
+    controlPanel = new GameControlPanel(gameController, boardView);
+    statusPanel = new PlayerStatusPanel(gameController);
+
+    // Connect UI components with controller
+    gameController.registerView(this);
+  }
+
+  private MapDesignerManager createMapDesignerManager() {
+    return new MapDesignerManager(
         boardView.getOverlayPane(),
         boardView.getMapView().getFitWidth(),
         boardView.getMapView().getFitHeight(),
         this
     );
-
-    // Create other UI components
-    controlPanel = new GameControlPanel(gameController, boardView);
-    statusPanel = new PlayerStatusPanel(gameController);
-
-    // Create NavBar
-    NavBar navBar = new NavBar();
-    navBar.setStage(primaryStage);
-
-    // Set logging component
-    boardView.setGameLog(controlPanel.getGameLog());
   }
 
   private void setupLayout() {
