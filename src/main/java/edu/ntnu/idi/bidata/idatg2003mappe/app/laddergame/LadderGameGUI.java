@@ -4,7 +4,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.BoardGameSelectorGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
