@@ -11,19 +11,21 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
  * @since 21.05.2025
  */
 public class EffectTile implements TileAction {
-
   private final Tile currentTile;
   private final String effectType;
+  private final Tile startTile; // Add this field
 
   /**
    * Constructor for the EffectTile class.
    *
    * @param currentTile The tile where the effect is triggered
-   * @param effectType The type of effect to apply
+   * @param effectType  The type of effect to apply
+   * @param startTile
    */
-  public EffectTile(Tile currentTile, String effectType) {
+  public EffectTile(Tile currentTile, String effectType, Tile startTile) {
     this.currentTile = currentTile;
     this.effectType = effectType;
+    this.startTile = startTile; // Store the start tile
   }
 
   /**
@@ -62,7 +64,11 @@ public class EffectTile implements TileAction {
     player.setSkipTurn(true);
   }
 
+  /**
+   * Moves the player back to the start tile.
+   * @param player
+   */
   public void backToStart(Player player) {
-    player.movePlayer(-44); // Move back to start
+    player.placePlayer(startTile);
   }
 }
