@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
@@ -94,18 +95,41 @@ public class NavBar {
     MenuItem modeMenuItem = new MenuItem("Random ladders");
     modeMenuItem.setOnAction(event -> {
       if (gameController instanceof LadderGameController) {
-        LadderGameController ladderGameController = new LadderGameController(true);
-        LadderGameGUI ladderGameGUI = new LadderGameGUI();
-        ladderGameGUI.updateBoardUI();
+        try {
+          Stage currentStage = getStage();
+
+          LadderGameController randomLadderGameController = new LadderGameController(true);
+
+          // Set the game controller to the new random ladders game
+          setGameController(randomLadderGameController);
+
+          // Restart the game on the current stage
+          LadderGameGUI randomLadderGameGUI = new LadderGameGUI();
+          //randomLadderGameController.setRandomLadders(true);
+          randomLadderGameGUI.start(currentStage);
+
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Random Ladders");
+          alert.setHeaderText("Game Mode Updated");
+          alert.setContentText("A new game with random ladders has been started!");
+          alert.showAndWait();
+
+        } catch (Exception e) {
+          e.printStackTrace();
+          Alert alert = new Alert(Alert.AlertType.ERROR);
+          alert.setTitle("Error");
+          alert.setHeaderText("Game Restart Failed");
+          alert.setContentText("Could not restart the game with random ladders.");
+          alert.showAndWait();
+        }
       } else if (gameController instanceof MissingDiamondController) {
-        //make button unavalible
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Mode");
         alert.setHeaderText("Mode");
-        alert.setContentText("This game does not have a mode to toggle.");
+        alert.setContentText("Random ladders mode is only available for Ladder Game.");
+        alert.showAndWait();
       }
     });
-
     modeMenu.getItems().addAll(modeMenuItem);
 
     Menu navigateMenu = new Menu("Navigate");
