@@ -130,9 +130,9 @@ public class GameControlPanel extends VBox {
       }
 
       // End the turn automatically after token interaction
-      gameController.endTurn();
+      //gameController.endTurn();
       // Reset roll state to ensure the next player can roll
-      gameController.resetRollState();
+      //gameController.resetRollState();
 
       logMessage("Turn ended.");
       boardView.updateUI();
@@ -246,7 +246,7 @@ public class GameControlPanel extends VBox {
         break;
       case "Visa":
         player.addInventoryItem("visa");
-        logMessage("You found a visa card for free travel!");
+        logMessage("You found a visa card!");
         break;
       case "Blank":
         logMessage("This token was empty. Nothing here!");
