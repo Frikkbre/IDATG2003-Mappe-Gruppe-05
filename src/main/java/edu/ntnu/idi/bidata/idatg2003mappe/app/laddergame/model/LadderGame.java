@@ -6,358 +6,274 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
 
 /**
- * Class to represent a game of Ladder.
- * The game consists of a board, a number of players, a dice and a number of tiles.
- * The game is played by the players taking turns to roll the dice and move their markers on the board.
- * The game is won by the first player to reach the last tile on the board.
+ * Represents a Ladder Game (Snakes and Ladders) with configurable board setup.
+ * This class handles the core game logic including board creation, player management,
+ * and turn-based gameplay mechanics.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.4
+ * @version 1.0.0
  * @since 21.05.2025
  */
-
 public class LadderGame {
 
+  // Game configuration constants
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  private static final int BOARD_SIZE = 100;
+  private static final int NUM_LADDERS = 8;
+  private static final int NUM_SNAKES = 8;
+
+  // Core game components
   private final BoardLinear board;
   private final List<Player> players;
-  private Map<Integer, String> tileEffects = new HashMap<>();
   private final Die die;
-  private final int numberOfTiles;
   private final boolean randomLadders;
-  private Player winner;
-  private boolean gameFinished = false;
 
-  // Observer pattern support
-  private final List<BoardGameObserver> observers = new ArrayList<>();
+  // Special tile effects configuration
+  private final Map<Integer, String> tileEffects;
 
+  /**
+   * Creates a new Ladder Game with the specified configuration.
+   *
+   * @param randomLadders true for random placement, false for classic setup
+   * @throws IllegalStateException if game initialization fails
+   */
   public LadderGame(boolean randomLadders) {
-    System.out.println("Starting Ladder Game with players from file.");
-
     this.randomLadders = randomLadders;
-    this.numberOfTiles = 100;
-    this.board = createBoard(numberOfTiles);
-    this.players = readPlayersFromCSV();
+    this.tileEffects = new HashMap<>();
     this.die = new Die();
-  }
 
-  /**
-   * Adds an observer to the game.
-   *
-   * @param observer The observer to add.
-   */
-  public void addObserver(BoardGameObserver observer) {
-    observers.add(observer);
-  }
+    // Initialize game components
+    this.board = createBoard();
+    this.players = loadPlayers();
 
-  /**
-   * Removes an observer from the game.
-   *
-   * @param observer The observer to remove.
-   */
-  public void removeObserver(BoardGameObserver observer) {
-    observers.remove(observer);
-  }
-
-  /**
-   * Notifies observers that a player has moved.
-   *
-   * @param player The player who moved.
-   * @param fromTile The tile the player moved from.
-   * @param toTile The tile the player moved to.
-   */
-  private void notifyPlayerMoved(Player player, Tile fromTile, Tile toTile) {
-    for (BoardGameObserver observer : observers) {
-      observer.onPlayerMoved(player, fromTile, toTile);
+    if (players.isEmpty()) {
+      throw new IllegalStateException("No players could be loaded for the game");
     }
   }
 
   /**
-   * Notifies observers that a die has been rolled.
+   * Creates and configures the game board with tiles, ladders, and effects.
    *
-   * @param player The player who rolled.
-   * @param rollValue The value rolled.
+   * @return configured BoardLinear instance
    */
-  private void notifyDieRolled(Player player, int rollValue) {
-    for (BoardGameObserver observer : observers) {
-      observer.onDieRolled(player, rollValue);
-    }
-  }
-
-  /**
-   * Notifies observers that the game has ended.
-   *
-   * @param winner The winning player.
-   */
-  private void notifyGameEnded(Player winner) {
-    for (BoardGameObserver observer : observers) {
-      observer.onGameEnded(winner);
-    }
-  }
-
-  /**
-   * Notifies observers that the turn has changed.
-   *
-   * @param newCurrentPlayer The new current player.
-   */
-  private void notifyTurnChanged(Player newCurrentPlayer) {
-    for (BoardGameObserver observer : observers) {
-      observer.onTurnChanged(newCurrentPlayer);
-    }
-  }
-
-  protected BoardLinear createBoard(int numberOfTiles) {
-    BoardLinear board = new BoardLinear();
-    Tile[] tiles = new Tile[numberOfTiles];
-
-    for (int i = 0; i < numberOfTiles; i++) {
-      tiles[i] = new Tile(i + 1);
-      board.addTileToBoard(tiles[i]);
-    }
-
-    for (int i = 0; i < numberOfTiles - 1; i++) {
-      tiles[i].setNextTile(tiles[i + 1]);
-    }
+  private BoardLinear createBoard() {
+    BoardLinear gameBoard = new BoardLinear();
+    Tile[] tiles = createTiles(gameBoard);
+    connectTiles(tiles);
 
     if (randomLadders) {
       generateRandomLadders(tiles);
-      setupTileEffects(board, tiles);
     } else {
       setClassicLadders(tiles);
-      setupTileEffects(board, tiles);
     }
 
-    return board;
+    setupTileEffects(tiles);
+    return gameBoard;
   }
 
   /**
-   * Method to set the classic ladders and snakes on the board.
-   * The ladders and snakes are hardcoded to the board. For a classic game of Ladder,
+   * Creates all tiles for the board.
    */
+  private Tile[] createTiles(BoardLinear gameBoard) {
+    Tile[] tiles = new Tile[BOARD_SIZE];
 
+    for (int i = 0; i < BOARD_SIZE; i++) {
+      tiles[i] = new Tile(i + 1);
+      gameBoard.addTileToBoard(tiles[i]);
+    }
+
+    return tiles;
+  }
+
+  /**
+   * Connects tiles in sequence to form the game path.
+   */
+  private void connectTiles(Tile[] tiles) {
+    for (int i = 0; i < BOARD_SIZE - 1; i++) {
+      tiles[i].setNextTile(tiles[i + 1]);
+    }
+  }
+
+  /**
+   * Sets up the classic ladder and snake configuration.
+   *
+   * @param tiles array of game tiles
+   */
   private void setClassicLadders(Tile[] tiles) {
-    if (numberOfTiles >= 100) {
-      // Create ladders using the TileActionFactory
-      TileActionFactory.createLadderAction(tiles[2], tiles[38]);
-      TileActionFactory.createLadderAction(tiles[5], tiles[15]);
-      TileActionFactory.createLadderAction(tiles[10], tiles[32]);
-      TileActionFactory.createLadderAction(tiles[22], tiles[43]);
-      TileActionFactory.createLadderAction(tiles[29], tiles[85]);
-      TileActionFactory.createLadderAction(tiles[52], tiles[67]);
-      TileActionFactory.createLadderAction(tiles[73], tiles[92]);
-      TileActionFactory.createLadderAction(tiles[80], tiles[99]);
+    // Classic ladders (going up)
+    createLadder(tiles, 3, 39);   // 3 → 39
+    createLadder(tiles, 6, 16);   // 6 → 16
+    createLadder(tiles, 11, 33);  // 11 → 33
+    createLadder(tiles, 23, 44);  // 23 → 44
+    createLadder(tiles, 30, 86);  // 30 → 86
+    createLadder(tiles, 53, 68);  // 53 → 68
+    createLadder(tiles, 74, 93);  // 74 → 93
+    createLadder(tiles, 81, 100); // 81 → 100
 
-      // Create snakes (also using ladder action but with downward movement)
-      TileActionFactory.createLadderAction(tiles[18], tiles[8]);
-      TileActionFactory.createLadderAction(tiles[62], tiles[12]);
-      TileActionFactory.createLadderAction(tiles[55], tiles[35]);
-      TileActionFactory.createLadderAction(tiles[65], tiles[61]);
-      TileActionFactory.createLadderAction(tiles[88], tiles[37]);
-      TileActionFactory.createLadderAction(tiles[94], tiles[74]);
-      TileActionFactory.createLadderAction(tiles[98], tiles[80]);
+    // Classic snakes (going down)
+    createLadder(tiles, 19, 9);   // 19 → 9
+    createLadder(tiles, 63, 13);  // 63 → 13
+    createLadder(tiles, 56, 36);  // 56 → 36
+    createLadder(tiles, 66, 62);  // 66 → 62
+    createLadder(tiles, 89, 38);  // 89 → 38
+    createLadder(tiles, 95, 75);  // 95 → 75
+    createLadder(tiles, 99, 81);  // 99 → 81
+  }
+
+  /**
+   * Helper method to create a ladder/snake connection.
+   */
+  private void createLadder(Tile[] tiles, int from, int to) {
+    if (isValidTileRange(from) && isValidTileRange(to)) {
+      TileActionFactory.createLadderAction(tiles[from - 1], tiles[to - 1]);
     }
   }
 
   /**
-   * sets hardcoded tile effects for the game.
-   * Does so by adding the tile number and the effect to a map.
+   * Validates if a tile number is within the valid range.
    */
-  private void setupTileEffects(BoardLinear board, Tile[] tiles) {
-    tileEffects.put(13, "skipTurn");
-    tileEffects.put(25, "skipTurn");
-    tileEffects.put(57, "skipTurn");
-    tileEffects.put(70, "skipTurn");
-    tileEffects.put(96, "skipTurn");
-
-    tileEffects.put(45, "backToStart");
-
-    // Apply effects directly to the tiles array
-    for (Map.Entry<Integer, String> entry : tileEffects.entrySet()) {
-      int tileId = entry.getKey();
-      String effect = entry.getValue();
-      // Use the tiles array directly since we have it
-      if (tileId > 0 && tileId <= tiles.length) {
-        tiles[tileId - 1].setEffect(effect);
-      }
-    }
+  private boolean isValidTileRange(int tileNumber) {
+    return tileNumber >= 1 && tileNumber <= BOARD_SIZE;
   }
 
   /**
-   * Method to generate random ladders and snakes on the board.
-   * The ladders and snakes are randomly generated on the board.
-   * The number of ladders and snakes are hardcoded for now.
+   * Generates random ladders and snakes on the board.
+   *
+   * @param tiles array of game tiles
    */
-
   private void generateRandomLadders(Tile[] tiles) {
     Random random = new Random();
-    int numLadders = 8; // Number of ladders to generate
-    int numSnakes = 8;  // Number of snakes to generate
 
-    // Generate ladders
-    for (int i = 0; i < numLadders; i++) {
-      int start = random.nextInt(99) + 1; // Start between 1 and 99
-      int end = start + random.nextInt(15) + 5; // End at least 5 tiles ahead but within 100
+    // Generate ladders (going up)
+    generateRandomConnections(tiles, random, NUM_LADDERS, true);
 
-      if (end < 100 && tiles[start].getDestinationTile() == null) {
-        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
+    // Generate snakes (going down)
+    generateRandomConnections(tiles, random, NUM_SNAKES, false);
+  }
+
+  /**
+   * Generates random connections (ladders or snakes).
+   */
+  private void generateRandomConnections(Tile[] tiles, Random random, int count, boolean isLadder) {
+    int attempts = 0;
+    int created = 0;
+
+    while (created < count && attempts < count * 3) { // Prevent infinite loops
+      attempts++;
+
+      if (isLadder) {
+        createRandomLadder(tiles, random, created);
       } else {
-        i--; // Retry this ladder if it was invalid
+        createRandomSnake(tiles, random, created);
       }
-    }
-
-    // Generate snakes
-    for (int i = 0; i < numSnakes; i++) {
-      int start = random.nextInt(89) + 10; // Start between 10 and 99
-      int end = start - random.nextInt(Math.min(start - 1, 15)) - 5; // Ensure it doesn't go below 1
-
-      if (end > 1 && tiles[start].getDestinationTile() == null) {
-        TileActionFactory.createLadderAction(tiles[start], tiles[end]);
-      } else {
-        i--; // Retry this snake if it was invalid
-      }
+      created++;
     }
   }
 
   /**
-   * Method to create a list of players for the game from the CSV file.
-   *
-   * @return the list of players
+   * Creates a single random ladder.
    */
-  protected List<Player> readPlayersFromCSV() {
-    // Use PlayerFactory to create players from CSV
+  private void createRandomLadder(Tile[] tiles, Random random, int created) {
+    int start = random.nextInt(BOARD_SIZE - 20) + 1; // Avoid tiles too close to end
+    int end = start + random.nextInt(15) + 5; // Jump forward 5-19 spaces
+
+    if (end < BOARD_SIZE && tiles[start].getDestinationTile() == null) {
+      TileActionFactory.createLadderAction(tiles[start], tiles[end]);
+    }
+  }
+
+  /**
+   * Creates a single random snake.
+   */
+  private void createRandomSnake(Tile[] tiles, Random random, int created) {
+    int start = random.nextInt(BOARD_SIZE - 20) + 20; // Start from middle-to-end
+    int end = start - random.nextInt(15) - 5; // Jump back 5-19 spaces
+
+    if (end > 0 && tiles[start].getDestinationTile() == null) {
+      TileActionFactory.createLadderAction(tiles[start], tiles[end]);
+    }
+  }
+
+  /**
+   * Sets up special tile effects throughout the board.
+   *
+   * @param tiles array of game tiles
+   */
+  private void setupTileEffects(Tile[] tiles) {
+    // Configure skip turn tiles
+    int[] skipTurnTiles = {13, 25, 57, 70, 96};
+    for (int tileId : skipTurnTiles) {
+      setTileEffect(tiles, tileId, "skipTurn");
+    }
+
+    // Configure back to start tiles
+    setTileEffect(tiles, 45, "backToStart");
+  }
+
+  /**
+   * Helper method to set an effect on a specific tile.
+   */
+  private void setTileEffect(Tile[] tiles, int tileId, String effect) {
+    if (isValidTileRange(tileId)) {
+      tiles[tileId - 1].setEffect(effect);
+      tileEffects.put(tileId, effect);
+    }
+  }
+
+  /**
+   * Loads players from CSV file using PlayerFactory.
+   *
+   * @return list of players for the game
+   */
+  private List<Player> loadPlayers() {
     return PlayerFactory.createPlayersFromCSV(PLAYER_DATA_FILE, board);
   }
 
+  // Public getters
 
   /**
-   * Method to play the game.
-   * The game is played by the players taking turns
-   * to roll the dice and move their markers on the board.
-   * If a player lands on a tile with a ladder, the player
-   * is moved to the destination tile of the ladder.
-   * The game is won by the first player to
-   * reach the last tile on the board.
-   */
-  void playGame() {
-    boolean hasWon = false;
-    int indexCurrentPlayer = 0;
-    int roll = 0;
-
-    while (!hasWon) {
-      Player currentPlayer = players.get(indexCurrentPlayer);
-      System.out.println("Player " + (indexCurrentPlayer + 1) + " turn.");
-
-      roll = die.rollDie();
-      // Notify observers about die roll
-      notifyDieRolled(currentPlayer, roll);
-
-      System.out.println("Die : die rolled: " + roll);
-
-      Tile oldTile = currentPlayer.getCurrentTile();
-      System.out.println("Tile Current : Tile before moving " + oldTile.getTileId());
-      currentPlayer.movePlayer(roll);
-      Tile newTile = currentPlayer.getCurrentTile();
-      System.out.println("Tile Moved :  Tile after moving " + newTile.getTileId());
-
-      // Notify observers about player movement
-      notifyPlayerMoved(currentPlayer, oldTile, newTile);
-
-      // Check if the tile has a ladder destination
-      Tile currentTile = currentPlayer.getCurrentTile();
-      if (currentTile.getDestinationTile() != null) {
-
-        // Create and perform the ladder action
-        LadderAction ladderAction = new LadderAction(currentTile);
-
-        oldTile = currentTile; // Before ladder movement
-        ladderAction.performAction(currentPlayer);
-        newTile = currentPlayer.getCurrentTile(); // After ladder movement
-
-        // Notify observers about ladder movement
-        notifyPlayerMoved(currentPlayer, oldTile, newTile);
-
-        System.out.println("After ladder action: moved to tile " + currentPlayer.getCurrentTile().getTileId());
-        System.out.println(currentPlayer.getName() + " is now at tile " + currentPlayer.getCurrentTile().getTileId());
-      }
-
-      // Check win condition (reached the last tile)
-      if (currentPlayer.getCurrentTile().getTileId() == numberOfTiles) {
-        System.out.println(currentPlayer.getName() + " wins the game!");
-        hasWon = true;
-        winner = currentPlayer;
-        gameFinished = true;
-
-        // Notify observers about game end
-        notifyGameEnded(winner);
-      }
-
-      // Next player's turn
-      indexCurrentPlayer = (indexCurrentPlayer + 1) % players.size();
-
-      // Notify observers about turn change
-      if (!hasWon) {
-        notifyTurnChanged(players.get(indexCurrentPlayer));
-      }
-    }
-  }
-
-  /**
-   * Method to get the list of players in the game.
+   * Gets all players in the game.
    *
-   * @return the list of players
+   * @return unmodifiable list of players
    */
-
   public List<Player> getPlayers() {
-    return players;
+    return new ArrayList<>(players);
   }
 
   /**
-   * Method to get the board of the game.
+   * Gets the game board.
    *
-   * @return the board
+   * @return the board instance
    */
-
   public BoardLinear getBoard() {
     return board;
   }
 
   /**
-   * Method to get the die of the game.
+   * Gets the game die.
    *
-   * @return the die
+   * @return the die instance
    */
-
   public Die getDie() {
     return die;
   }
 
   /**
-   * Method to get the number of tiles on the board.
+   * Gets the total number of tiles on the board.
    *
-   * @return the number of tiles
+   * @return number of tiles
    */
-
   public int getNumberOfTiles() {
-    return numberOfTiles;
+    return BOARD_SIZE;
   }
 
-  public boolean isFinished() {
-    return gameFinished;
-  }
-
-  public Player getWinner() {
-    return winner;
-  }
 }
