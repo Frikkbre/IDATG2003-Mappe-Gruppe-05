@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Factory class for creating Player objects.
@@ -21,6 +22,8 @@ import java.util.List;
 public class PlayerFactory {
 
   private static final String DEFAULT_PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+
+  private static final Logger logger = Logger.getLogger(PlayerFactory.class.getName());
 
   /**
    * Creates players from a CSV file.
@@ -56,11 +59,11 @@ public class PlayerFactory {
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             players.add(player);
-            System.out.println("Player " + playerName + " added to the game.");
+            logger.info("Player " + playerName + " added to the game.");
           }
         }
       } catch (IOException | CsvValidationException e) {
-        System.out.println("Error reading player data: " + e.getMessage());
+        logger.warning("Error reading player data: " + e.getMessage());
       }
     }
 

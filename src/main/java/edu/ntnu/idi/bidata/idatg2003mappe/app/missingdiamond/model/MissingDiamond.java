@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Represents the Missing Diamond game.
@@ -30,6 +31,10 @@ import java.util.Set;
  * @since 23.05.2025
  */
 public class MissingDiamond {
+
+  // Logger for logging messages
+  private static final Logger logger = Logger.getLogger(MissingDiamond.class.getName());
+
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
   // Starting money
@@ -72,7 +77,7 @@ public class MissingDiamond {
    * @param mapFilePath     The path to the map file
    */
   public MissingDiamond(int numberOfPlayers, String mapFilePath) {
-    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+    logger.info("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
 
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
@@ -323,11 +328,11 @@ public class MissingDiamond {
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             localPlayers.add(player);
-            System.out.println("Player " + playerName + " added to the game.");
+            logger.info("Player " + playerName + " added to the game.");
           }
         }
       } catch (IOException | CsvValidationException e) {
-        System.out.println("Error reading player data: " + e.getMessage());
+        logger.warning("Error reading player data: " + e.getMessage());
       }
     }
 

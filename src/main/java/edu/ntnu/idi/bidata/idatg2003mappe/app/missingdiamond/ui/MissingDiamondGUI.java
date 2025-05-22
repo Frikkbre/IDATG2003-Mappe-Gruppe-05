@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import java.util.logging.Logger;
 
 /**
  * GUI class for the Missing Diamond game.
@@ -24,6 +25,10 @@ import javafx.stage.Stage;
  * @since 23.04.2025
  */
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
+
+  // Logger for logging messages
+  private static final Logger logger = Logger.getLogger(MissingDiamondGUI.class.getName());
+
   // Game components
   private MissingDiamondController gameController;
   private Stage primaryStage;
@@ -95,10 +100,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Add mouse click handler for coordinate mode
     boardView.getOverlayPane().setOnMouseClicked(e -> {
-      // Add debug message
-      System.out.println("DEBUG: Map clicked at (" + e.getX() + ", " + e.getY() + ")");
-      System.out.println("DEBUG: Coordinate mode active: " +
-          mapDesignerManager.getMapDesignerTool().isCoordinateMode());
+
+      // Check if coordinate mode is enabled
+          mapDesignerManager.getMapDesignerTool().isCoordinateMode();
 
       if (mapDesignerManager.getMapDesignerTool().isCoordinateMode()) {
         mapDesignerManager.getMapDesignerTool().handleCoordinateClick(e.getX(), e.getY(), boardView.getMapView());
@@ -215,7 +219,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         statusPanel.updateScoreBoard();
       }
     } else {
-      System.err.println("Error: Cannot update board UI - boardView is null");
+      logger.severe("Error: Cannot update board UI - boardView is null");
     }
   }
 
@@ -231,7 +235,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
       });
     } catch (FileHandlingException e) {
       controlPanel.logMessage("Error loading map configuration: " + e.getMessage());
-      System.err.println("Error loading map configuration: " + e.getMessage());
+      logger.severe("Error loading map configuration: " + e.getMessage());
 
       // Fall back to hard-coded map data
       Platform.runLater(() -> {
@@ -245,7 +249,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   @Override
   public void onLogMessage(String message) {
     controlPanel.logMessage(message);
-    System.out.println("Log: " + message);
   }
 
   @Override
@@ -256,18 +259,18 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     controlPanel.setRollButtonDisabled(enabled);
 
-    System.out.println("Coordinate mode toggled: " + enabled);
+    logger.info("Coordinate mode toggled: " + enabled);
   }
 
   @Override
   public void onConnectionModeToggled(boolean enabled) {
-    System.out.println("Connection mode toggled: " + enabled);
+    logger.info("Connection mode toggled: " + enabled);
     mapDesignerManager.resetConnectionSourceId();
   }
 
   @Override
   public void onMapDataExported(String data, boolean success) {
-    System.out.println("Map data exported: " + success);
+    logger.info("Map data exported: " + success);
   }
 
   public static void main(String[] args) {

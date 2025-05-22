@@ -5,6 +5,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Manages coordinate points for the map designer.
@@ -13,6 +14,8 @@ public class PointManager {
   private final List<CoordinatePoint> capturedPoints = new ArrayList<>();
   private final Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
+
+  private static final Logger logger = Logger.getLogger(PointManager.class.getName());
 
   /**
    * Creates a new point with the given parameters.
@@ -115,6 +118,6 @@ public class PointManager {
     }
 
     sb.append("==================================");
-    System.out.println(sb);
+    logger.info(String.valueOf(sb));
   }
 }

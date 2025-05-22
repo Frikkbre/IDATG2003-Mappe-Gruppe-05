@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelector;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class NavBar {
-  BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
+  BoardGameSelector boardGameSelector = new BoardGameSelector();
   private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
   private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
@@ -109,10 +109,10 @@ public class NavBar {
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
       try {
-        if (getStage().equals(boardGameSelectorGUI.getStage())) {
+        if (getStage().equals(boardGameSelector.getStage())) {
           throw new IllegalArgumentException("Already in main menu.");
         }
-        boardGameSelectorGUI.start(getStage());
+        boardGameSelector.start(getStage());
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

@@ -77,7 +77,6 @@ public class TileHighlighter {
    */
   public void highlightPossibleMoves() {
     if (gameController == null) {
-      System.out.println("DEBUG: Game controller is null, cannot highlight moves");
       return;
     }
 
@@ -89,13 +88,11 @@ public class TileHighlighter {
 
     // Only highlight possible moves if die has been rolled
     if (!gameController.hasRolled()) {
-      System.out.println("DEBUG: Die not rolled yet, no moves to highlight");
       return;
     }
 
     // Get possible moves from controller
     List<Tile> possibleMoves = gameController.getPossibleMoves();
-    System.out.println("DEBUG: Highlighting " + possibleMoves.size() + " possible moves");
 
     // Highlight each possible move
     for (Tile tile : possibleMoves) {
@@ -126,7 +123,6 @@ public class TileHighlighter {
   private void highlightTile(Tile tile) {
     Circle tileCircle = tileCircles.get(tile.getTileId());
     if (tileCircle == null) {
-      System.out.println("DEBUG: No circle found for tile " + tile.getTileId());
       return;
     }
 
@@ -136,17 +132,15 @@ public class TileHighlighter {
     // Choose highlighting color based on tile type and whether it has a token
     Color highlightColor;
     if (isSpecialTile && hasToken) {
-      // Special tile with token - most important
+      // Special tile with token
       highlightColor = SPECIAL_VALID_MOVE_COLOR;
-      System.out.println("DEBUG: Highlighting special tile with token: " + tile.getTileId());
+
     } else if (isSpecialTile) {
       // Special tile without token
       highlightColor = Color.LIGHTCORAL;
-      System.out.println("DEBUG: Highlighting special tile without token: " + tile.getTileId());
     } else {
       // Regular movement tile
       highlightColor = VALID_MOVE_COLOR;
-      System.out.println("DEBUG: Highlighting regular tile: " + tile.getTileId());
     }
 
     // Apply highlighting

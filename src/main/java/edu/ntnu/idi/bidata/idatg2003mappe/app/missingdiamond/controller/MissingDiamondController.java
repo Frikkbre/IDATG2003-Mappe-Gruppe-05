@@ -224,9 +224,6 @@ public class MissingDiamondController {
     for (BoardGameObserver observer : observers) {
       observer.onTurnChanged(newPlayer);
     }
-
-    System.out.println("DEBUG: Turn ended. Previous: " + previousPlayer.getName() +
-        ", New: " + newPlayer.getName() + ", State: " + currentState);
   }
 
   /**
