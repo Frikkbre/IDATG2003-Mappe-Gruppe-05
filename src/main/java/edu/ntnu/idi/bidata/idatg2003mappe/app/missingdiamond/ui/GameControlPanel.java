@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingD
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -320,13 +319,6 @@ public class GameControlPanel extends VBox {
     }
   }
 
-  /**
-   * Checks if a tile is a red tile (special location) based on the map configuration.
-   */
-  private boolean isRedTileFromMapConfig(int tileId) {
-    return gameController.isRedTileFromConfig(tileId);
-  }
-
   public void logMessage(String message) {
     gameLog.appendText(message + "\n");
   }
@@ -335,7 +327,4 @@ public class GameControlPanel extends VBox {
     rollDieButton.setDisable(disabled);
   }
 
-  public TextArea getGameLog() {
-    return gameLog;
-  }
 }

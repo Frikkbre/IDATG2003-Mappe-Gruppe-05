@@ -581,40 +581,6 @@ public class BoardView extends StackPane {
     highlightPossibleMoves();
   }
 
-  /**
-   * Sets up board click handling.
-   * This should be called once after the board view is fully initialized.
-   */
-  public void setupBoardClickHandling() {
-    // We're inside BoardView, so use "this" instead of "boardView"
-    this.getOverlayPane().setOnMouseClicked(e -> {
-      // Handle clicks for map designer if in coordinate mode
-      if (mapDesignerManager != null && mapDesignerManager.isCoordinateMode()) {
-        mapDesignerManager.getMapDesignerTool().handleCoordinateClick(
-            e.getX(), e.getY(), this.getMapView());
-        return;
-      }
-
-      // Otherwise handle clicks for gameplay
-      for (Map.Entry<Integer, Circle> entry : this.getTileCircles().entrySet()) {
-        Circle circle = entry.getValue();
-        int tileId = entry.getKey();
-
-        // Calculate distance from click to circle center
-        double distance = Math.sqrt(
-            Math.pow(circle.getCenterX() - e.getX(), 2) +
-                Math.pow(circle.getCenterY() - e.getY(), 2)
-        );
-
-        // If click is within the circle
-        if (distance <= circle.getRadius()) {
-          handleGameplayTileClick(tileId);
-          break;
-        }
-      }
-    });
-  }
-
   public void highlightPossibleMoves() {
     if (tileHighlighter != null) {
       tileHighlighter.highlightPossibleMoves();
@@ -697,13 +663,4 @@ public class BoardView extends StackPane {
     return connectionSourceId;
   }
 
-  /**
-   * Gets an unmodifiable view of the tile circles map.
-   *
-   * @return Map of tile IDs to Circle objects
-   */
-  public Map<Integer, Circle> getTileCircles() {
-    // Return an unmodifiable view to prevent direct modification
-    return Collections.unmodifiableMap(tileCircles);
-  }
 }

@@ -100,13 +100,6 @@ public class MissingDiamond {
       } else {
         System.err.println("Error: Map configuration is null or could not be read. Falling back to default board.");
         boardInstance = createDefaultBoard();
-        // For default board, define default special tiles if any.
-        // Example: if default board has known special tiles.
-        // For now, if no mapConfig, specialTileIdsSet might remain empty or be populated by createDefaultBoard.
-        // Let's assume createDefaultBoard might also populate it or we define some defaults here.
-        // If createDefaultBoard defines them:
-        // this.specialTileIdsSet.addAll(getSpecialIdsForDefaultBoard());
-        // For this example, let's assume default board has no specific special tiles defined this way unless createDefaultBoard handles it.
       }
 
     } catch (FileHandlingException e) {
@@ -138,7 +131,6 @@ public class MissingDiamond {
    * Constructor for MissingDiamond that reads players from CSV file.
    */
   public MissingDiamond() {
-    System.out.println("Starting Missing Diamond Game with players from file.");
 
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
@@ -165,7 +157,6 @@ public class MissingDiamond {
         // Define default special tiles if any for default board
       }
     } catch (FileHandlingException e) {
-      System.err.println("Error loading map configuration: " + e.getMessage());
       boardInstance = createDefaultBoard();
       // Handle special tiles for default board after fallback
     }
@@ -202,8 +193,6 @@ public class MissingDiamond {
     // Create all tiles
     for (MapConfig.Location location : mapConfig.getLocations()) {
       Tile tile = new Tile(location.getId());
-      // Store the location name as a property of the tile
-      // (This would require adding a name field to the Tile class)
       board.addTileToBoard(tile);
     }
 
