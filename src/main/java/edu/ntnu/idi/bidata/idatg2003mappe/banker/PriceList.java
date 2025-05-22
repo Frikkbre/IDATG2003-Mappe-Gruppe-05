@@ -25,14 +25,12 @@ public class PriceList {
     priceRegister.put("GreenGem", 4000);
     priceRegister.put("YellowGem", 2000);
 
-    // Transportation costs
-    priceRegister.put("PlaneTicket", 3000);
-    priceRegister.put("ShipTicket", 1500);
+    // Visa
     priceRegister.put("Visa", 1500);
 
     // Token interaction costs
-    priceRegister.put("TokenPurchase", 100);      // Direct token purchase
-    priceRegister.put("TokenFlip", 300);          // NEW: Guaranteed token flip
+    priceRegister.put("TokenPurchase", 100);
+    priceRegister.put("TokenFlip", 300);
   }
 
   /**

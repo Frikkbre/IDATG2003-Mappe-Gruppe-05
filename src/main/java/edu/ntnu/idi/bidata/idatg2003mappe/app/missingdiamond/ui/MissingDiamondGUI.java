@@ -116,9 +116,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private void setupLayout() {
-    // Create menu bar with designer menu
-    //Menu designerMenu = mapDesignerManager.createDesignerMenu(); TODO - fix this
-    //MenuBar menuBar = createMenuBar(designerMenu);
     MenuBar menuBar = navBar.createMenuBar();
 
     // Create developer controls
@@ -187,20 +184,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return devControls;
   }
 
-  private MenuBar createMenuBar(Menu designerMenu) {
-    // File menu
-    Menu fileMenu = new Menu("File");
-    MenuItem exitItem = new MenuItem("Exit");
-    exitItem.setOnAction(e -> System.exit(0));
-    fileMenu.getItems().add(exitItem);
-
-    MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu, designerMenu);
-    menuBar.setStyle("-fx-background-color: #57B9FF;");
-
-    return menuBar;
-  }
-
   private VBox createLeftSidebar() {
     VBox sidebar = new VBox(10);
     sidebar.setPrefWidth(250);
@@ -258,11 +241,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
-  public Stage getStage() {
-    return primaryStage;
-  }
-
-  // MapDesignerListener implementation
   @Override
   public void onLogMessage(String message) {
     controlPanel.logMessage(message);

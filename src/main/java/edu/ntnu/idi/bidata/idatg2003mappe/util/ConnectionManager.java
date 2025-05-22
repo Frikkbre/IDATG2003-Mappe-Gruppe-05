@@ -27,15 +27,6 @@ public class ConnectionManager {
   }
 
   /**
-   * Creates a new ConnectionManager with a listener.
-   */
-  public ConnectionManager(Pane overlayPane, PointManager pointManager, MapDesignerListener listener) {
-    this.overlayPane = overlayPane;
-    this.pointManager = pointManager;
-    this.listener = listener;
-  }
-
-  /**
    * Creates a connection between two points.
    */
   public boolean createConnection(int sourceId, int targetId) {

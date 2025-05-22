@@ -164,10 +164,6 @@ public class CoordinatePoint {
     this.circle = circle;
   }
 
-  public Label getLabel() {
-    return label;
-  }
-
   public String getName() {
     return name;
   }

@@ -22,14 +22,12 @@ public class TileHighlighter {
   private final MissingDiamondController gameController;
   private final MissingDiamondMovement movementLogic;
 
-  // Color constants for different tile states
   private static final Color SPECIAL_TILE_COLOR = Color.RED;
   private static final Color NORMAL_TILE_COLOR = Color.BLACK;
   private static final Color VALID_MOVE_COLOR = Color.YELLOW;
   private static final Color SPECIAL_VALID_MOVE_COLOR = Color.ORANGE;
   private static final Color CURRENT_PLAYER_COLOR = Color.LIME;
 
-  // Stroke settings for highlighting
   private static final double NORMAL_STROKE_WIDTH = 1.5;
   private static final double HIGHLIGHTED_STROKE_WIDTH = 3.0;
 
@@ -153,116 +151,6 @@ public class TileHighlighter {
     tileCircle.setFill(highlightColor);
     tileCircle.setStroke(Color.WHITE);
     tileCircle.setStrokeWidth(HIGHLIGHTED_STROKE_WIDTH);
-  }
-
-  /**
-   * Alternative highlighting method that uses the movement logic directly.
-   * This can be used for debugging or alternative movement calculation.
-   *
-   * @param startTile The starting tile
-   * @param dieRoll The die roll value
-   */
-  public void highlightMovesWithMovementLogic(Tile startTile, int dieRoll) {
-    if (startTile == null || dieRoll <= 0) {
-      return;
-    }
-
-    // Reset tiles first
-    resetTileColors();
-
-    // Use movement logic to find valid moves
-    Set<Tile> validMoves = movementLogic.getValidMoves(startTile, dieRoll);
-
-    System.out.println("DEBUG: Movement logic found " + validMoves.size() + " valid moves");
-
-    // Highlight each valid move
-    for (Tile tile : validMoves) {
-      highlightTile(tile);
-    }
-  }
-
-  /**
-   * Highlights tiles that can be reached with different path lengths.
-   * Useful for showing all reachable locations within N steps.
-   *
-   * @param startTile The starting tile
-   * @param maxSteps Maximum number of steps
-   */
-  public void highlightReachableTiles(Tile startTile, int maxSteps) {
-    if (startTile == null || maxSteps <= 0) {
-      return;
-    }
-
-    // Reset tiles first
-    resetTileColors();
-
-    // Get all reachable tiles with their distances
-    Map<Tile, Integer> reachableTiles = movementLogic.getAllReachableTiles(startTile, maxSteps);
-
-    System.out.println("DEBUG: Found " + reachableTiles.size() + " reachable tiles");
-
-    // Highlight tiles with different colors based on distance
-    for (Map.Entry<Tile, Integer> entry : reachableTiles.entrySet()) {
-      Tile tile = entry.getKey();
-      int distance = entry.getValue();
-      Circle tileCircle = tileCircles.get(tile.getTileId());
-
-      if (tileCircle != null) {
-        // Color based on distance (closer = brighter)
-        double opacity = 1.0 - (distance - 1) * 0.2; // Fade with distance
-        opacity = Math.max(0.3, opacity); // Minimum opacity
-
-        Color highlightColor;
-        if (specialTileIds.contains(tile.getTileId())) {
-          highlightColor = Color.ORANGE.deriveColor(0, 1, 1, opacity);
-        } else {
-          highlightColor = Color.YELLOW.deriveColor(0, 1, 1, opacity);
-        }
-
-        tileCircle.setFill(highlightColor);
-        tileCircle.setStroke(Color.WHITE);
-        tileCircle.setStrokeWidth(HIGHLIGHTED_STROKE_WIDTH);
-      }
-    }
-  }
-
-  /**
-   * Highlights only special tiles (red tiles) that are reachable.
-   * This method focuses specifically on tiles where players can interact with tokens.
-   *
-   * @param startTile The starting tile
-   * @param dieRoll The die roll value
-   */
-  public void highlightSpecialTilesOnly(Tile startTile, int dieRoll) {
-    if (startTile == null || dieRoll <= 0) {
-      return;
-    }
-
-    // Reset tiles first
-    resetTileColors();
-
-    // Get valid moves
-    Set<Tile> validMoves = movementLogic.getValidMoves(startTile, dieRoll);
-
-    // Only highlight special tiles
-    for (Tile tile : validMoves) {
-      if (specialTileIds.contains(tile.getTileId())) {
-        Circle tileCircle = tileCircles.get(tile.getTileId());
-        if (tileCircle != null) {
-          boolean hasToken = gameController.hasTokenAtTile(tile);
-
-          // Different highlighting for tiles with/without tokens
-          Color highlightColor = hasToken ? SPECIAL_VALID_MOVE_COLOR : Color.LIGHTCORAL;
-
-          tileCircle.setFill(highlightColor);
-          tileCircle.setStroke(Color.WHITE);
-          tileCircle.setStrokeWidth(HIGHLIGHTED_STROKE_WIDTH);
-
-          System.out.println("DEBUG: Highlighted special tile " + tile.getTileId() +
-              " (has token: " + hasToken + ")");
-        }
-      }
-    }
   }
 
   /**

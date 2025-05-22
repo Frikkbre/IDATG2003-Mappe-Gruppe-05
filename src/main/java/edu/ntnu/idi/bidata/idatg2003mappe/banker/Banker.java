@@ -14,7 +14,7 @@ import java.util.Map;
  * @since 03.02.2025
  */
 public class Banker {
-  private static final int STARTING_BALANCE = 5000;
+  private static final int STARTING_BALANCE = 500;
   private final Map<Player, Integer> playerAccounts = new HashMap<>();
   private final PriceList priceList;
 
@@ -80,53 +80,4 @@ public class Banker {
     return true;
   }
 
-  /**
-   * Transfers money from one player to another.
-   *
-   * @param fromPlayer The player to transfer money from
-   * @param toPlayer The player to transfer money to
-   * @param amount The amount to transfer
-   * @return true if the transfer was successful, false if the fromPlayer has insufficient funds
-   */
-  public boolean transfer(Player fromPlayer, Player toPlayer, int amount) {
-    if (withdraw(fromPlayer, amount)) {
-      deposit(toPlayer, amount);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Gets the price for a gem.
-   *
-   * @param gemType The type of gem
-   * @return The price of the gem
-   */
-  public int getGemPrice(String gemType) {
-    return priceList.getPrice(gemType);
-  }
-
-  /**
-   * Checks if a player can afford to buy a gem.
-   *
-   * @param player The player
-   * @param gemType The type of gem
-   * @return true if the player can afford the gem, false otherwise
-   */
-  public boolean canAffordGem(Player player, String gemType) {
-    int price = getGemPrice(gemType);
-    return getBalance(player) >= price;
-  }
-
-  /**
-   * Buys a gem for a player.
-   *
-   * @param player The player
-   * @param gemType The type of gem
-   * @return true if the purchase was successful, false otherwise
-   */
-  public boolean buyGem(Player player, String gemType) {
-    int price = getGemPrice(gemType);
-    return withdraw(player, price);
-  }
 }

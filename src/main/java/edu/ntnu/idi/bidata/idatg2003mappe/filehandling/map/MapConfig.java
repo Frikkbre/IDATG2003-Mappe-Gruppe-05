@@ -115,16 +115,8 @@ public class MapConfig {
     return locations;
   }
 
-  public void setLocations(List<Location> locations) {
-    this.locations = locations;
-  }
-
   public List<Connection> getConnections() {
     return connections;
-  }
-
-  public void setConnections(List<Connection> connections) {
-    this.connections = connections;
   }
 
   // Helper methods

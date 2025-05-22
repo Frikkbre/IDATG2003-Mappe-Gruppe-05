@@ -19,24 +19,6 @@ public class Die {
   private List<DieObserver> observers = new ArrayList<>();
 
   /**
-   * Adds an observer to the die.
-   *
-   * @param observer The observer to add.
-   */
-  public void addObserver(DieObserver observer) {
-    observers.add(observer);
-  }
-
-  /**
-   * Removes an observer from the die.
-   *
-   * @param observer The observer to remove.
-   */
-  public void removeObserver(DieObserver observer) {
-    observers.remove(observer);
-  }
-
-  /**
    * Notifies observers that the die has been rolled.
    *
    * @param value The value rolled.

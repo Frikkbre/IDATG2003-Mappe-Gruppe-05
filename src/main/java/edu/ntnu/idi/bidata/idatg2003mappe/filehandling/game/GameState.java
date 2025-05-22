@@ -18,9 +18,6 @@ public class GameState {
   private List<PlayerPosition> playerPositions;
   private String saveTime;
 
-  public GameState(List<Player> players) {
-  }
-
   /**
    * Inner class to represent a player's position on the board.
    */

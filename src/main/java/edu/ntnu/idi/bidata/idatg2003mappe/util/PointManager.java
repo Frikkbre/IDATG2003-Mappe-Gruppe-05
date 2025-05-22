@@ -1,7 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.util;
 
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 

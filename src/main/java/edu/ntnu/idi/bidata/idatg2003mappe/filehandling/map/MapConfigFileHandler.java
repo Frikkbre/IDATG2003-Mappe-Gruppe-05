@@ -80,14 +80,4 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
     return file.exists() && file.isFile();
   }
 
-  /**
-   * Lists all available map files.
-   */
-  public String[] listAvailableMaps() {
-    File mapsDir = new File(DEFAULT_MAPS_DIR);
-    if (mapsDir.exists() && mapsDir.isDirectory()) {
-      return mapsDir.list((dir, name) -> name.toLowerCase().endsWith(".json"));
-    }
-    return new String[0];
-  }
 }
