@@ -31,21 +31,7 @@ public class BoardGameSelectorGUI extends Application {
   private final File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
   private CSVWriter playerWriter;
   private FileWriter outputfile;
-  private final ArrayList<String> ColorList = new ArrayList<>();
-
-  /**
-   * Returns the color of the index passed in.
-   * Used to assign colors to players.
-   *
-   * @param index
-   * @return color
-   */
-  public String getColor(int index) {
-    if (index < 0 || index >= ColorList.size()) {
-      throw new IndexOutOfBoundsException("Invalid index: " + index);
-    }
-    return ColorList.get(index);
-  }
+  private final ArrayList<String> colorList = new ArrayList<>();
 
   /**
    * Method to set the stage of the application.
@@ -93,25 +79,38 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
-    getColors();
+    getColorList();
 
     this.ladderGameGUI = new LadderGameGUI();
     this.missingDiamondGUI = new MissingDiamondGUI();
   }
 
+  /**
+   * Returns the color of the index passed in.
+   * Used to assign colors to players.
+   *
+   * @param index
+   * @return color
+   */
+  public String getColor(int index) {
+    if (index < 0 || index >= colorList.size()) {
+      throw new IndexOutOfBoundsException("Invalid index: " + index);
+    }
+    return colorList.get(index);
+  }
 
   /**
    * Returns a stream of all available colors.
    *
    * @return Stream of colors
    */
-  public Stream<String> getColors() {
-    ColorList.add("LightGreen");
-    ColorList.add("LightPink");
-    ColorList.add("Green");
-    ColorList.add("HotPink");
-    ColorList.add("Orange");
-    return ColorList.stream();
+  public Stream<String> getColorList() {
+    colorList.add("LightGreen");
+    colorList.add("LightPink");
+    colorList.add("Green");
+    colorList.add("HotPink");
+    colorList.add("Orange");
+    return colorList.stream();
   }
 
   /**

@@ -2,12 +2,12 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
-
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Class that serves as a start screen for the user to select a game to play and how many players to play with.
+ * Class that serves as a start screen for the user to select a
+ * game to play and how many players to play with.
  * The user can select between Ladder Game and Missing Diamond.
  * The user can also exit the program.
  *
@@ -23,7 +23,8 @@ public class BoardGameSelector {
 
   /**
    * Constructor for the BoardGameSelector class.
-   * Serves as a start screen for the user to select a game to play and how many players to play with.
+   * Serves as a start screen for the user to select a game
+   * to play and how many players to play with.
    * The user can select between Ladder Game and Missing Diamond.
    * The user can also exit the program.
    */
@@ -68,7 +69,8 @@ public class BoardGameSelector {
         if (players > 0 && players < 7) {
           validInput = true;
         } else {
-          System.out.println("Number of players must be a positive integer less than 7. Please try again.");
+          System.out.println("Number of players must be a positive "
+              + "integer less than 7. Please try again.");
         }
       } catch (InputMismatchException e) {
         System.out.println("Invalid input. Please enter a valid number.");
