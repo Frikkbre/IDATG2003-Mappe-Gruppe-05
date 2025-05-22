@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 /**
  * Class for the board game selector GUI.
@@ -31,20 +32,6 @@ public class BoardGameSelectorGUI extends Application {
   private CSVWriter playerWriter;
   private FileWriter outputfile;
   private final ArrayList<String> ColorList = new ArrayList<>();
-
-
-  /**
-   * populateColors method.
-   * This method is used to populate the color list with colors.
-   */
-  public void populateColors() {
-    // Add colors to the color list
-    ColorList.add("LightGreen");
-    ColorList.add("LightPink");
-    ColorList.add("Green");
-    ColorList.add("HotPink");
-    ColorList.add("Orange");
-  }
 
   /**
    * Returns the color of the index passed in.
@@ -106,11 +93,25 @@ public class BoardGameSelectorGUI extends Application {
     primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
-    // Populate the color list
-    populateColors();
+    getColors();
 
     this.ladderGameGUI = new LadderGameGUI();
     this.missingDiamondGUI = new MissingDiamondGUI();
+  }
+
+
+  /**
+   * Returns a stream of all available colors.
+   *
+   * @return Stream of colors
+   */
+  public Stream<String> getColors() {
+    ColorList.add("LightGreen");
+    ColorList.add("LightPink");
+    ColorList.add("Green");
+    ColorList.add("HotPink");
+    ColorList.add("Orange");
+    return ColorList.stream();
   }
 
   /**
