@@ -228,19 +228,29 @@ public class MissingDiamondController {
     // Switch to next player
     game.nextPlayer();
 
-    // Reset roll state
+    // Reset roll state - explicitly set to false to ensure consistency
     hasRolled = false;
 
     // Reset action state
     currentState = ActionState.AWAITING_ROLL;
 
-    // Reinitialize the action list instead of trying to update it
-    initializeAvailableActions();
+    // Clear any pending actions that might be related to the previous player's turn
+    // This helps ensure consistent state for the next player
 
-    // Notify observers about turn change only
+    // Notify observers about turn change
     for (BoardGameObserver observer : observers) {
       observer.onTurnChanged(game.getCurrentPlayer());
     }
+  }
+
+  /**
+   * Explicitly reset the roll state to fix UI inconsistency.
+   * This ensures the UI always shows the roll button after end turn.
+   */
+  public void resetRollState() {
+    this.hasRolled = false;
+    // Make sure the action state is also consistent
+    this.currentState = ActionState.AWAITING_ROLL;
   }
 
   /**

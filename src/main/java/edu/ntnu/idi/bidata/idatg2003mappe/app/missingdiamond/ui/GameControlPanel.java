@@ -85,6 +85,12 @@ public class GameControlPanel extends VBox {
         logMessage("You rolled " + roll + " but couldn't get the token (need 4-6). The token remains here.");
       }
 
+      // End the turn automatically after token interaction
+      gameController.endTurn();
+      // Reset roll state to ensure the next player can roll
+      gameController.resetRollState();
+
+      logMessage("Turn ended.");
       boardView.updateUI();
       updateControls();
       updatePlayerInfo();
@@ -123,6 +129,12 @@ public class GameControlPanel extends VBox {
         logMessage("Failed to buy token flip. Transaction error occurred.");
       }
 
+      // End the turn automatically after token interaction
+      gameController.endTurn();
+      // Reset roll state to ensure the next player can roll
+      gameController.resetRollState();
+
+      logMessage("Turn ended.");
       boardView.updateUI();
       updateControls();
       updatePlayerInfo();
@@ -131,6 +143,13 @@ public class GameControlPanel extends VBox {
     skipTokenButton = UIComponentFactory.createActionButton("Skip (Continue Journey)", e -> {
       String result = gameController.skipTokenAction();
       logMessage(result);
+
+      // End the turn automatically after token interaction
+      gameController.endTurn();
+      // Reset roll state to ensure the next player can roll
+      gameController.resetRollState();
+
+      logMessage("Turn ended.");
       boardView.updateUI();
       updateControls();
       updatePlayerInfo();
@@ -144,10 +163,16 @@ public class GameControlPanel extends VBox {
     // Add an emergency end turn button
     endTurnButton = UIComponentFactory.createActionButton("End Turn", e -> {
       gameController.endTurn();
+
+      // Force reset roll state to make sure the roll button appears for next player
+      gameController.resetRollState();
+
       logMessage("Turn ended.");
-      boardView.updateUI();
-      updateControls();
-      updatePlayerInfo();
+
+      // Update the UI elements in a specific order to ensure consistency
+      updateControls();  // First update controls based on new game state
+      updatePlayerInfo(); // Then update player info
+      boardView.updateUI(); // Finally update the board view
     });
 
     // Create game log
@@ -250,28 +275,25 @@ public class GameControlPanel extends VBox {
   private void updateControls() {
     // Hide all action buttons by default
     selectMoveLabel.setVisible(false);
-    endTurnButton.setVisible(false);
 
-    // Show roll button only when awaiting roll
+    // ALWAYS show roll button and end turn button - never hide them
+    rollDieButton.setVisible(true);
+
+    openTokenButton.setVisible(true);
+    buyTokenFlipButton.setVisible(true);
+    skipTokenButton.setVisible(true);
+
+    endTurnButton.setVisible(true);
+
+    // Get the fresh state from controller
     boolean hasRolled = gameController.hasRolled();
-    rollDieButton.setVisible(!hasRolled);
+
+    // Only disable (not hide) the roll button if the user has already rolled
+    rollDieButton.setDisable(hasRolled);
+
 
     // Show token buttons only when at a tile with a token
     Player currentPlayer = gameController.getCurrentPlayer();
-    boolean hasToken = false;
-
-    if (currentPlayer != null) {
-      Tile currentTile = currentPlayer.getCurrentTile();
-      hasToken = gameController.isSpecialTile(currentTile.getTileId()) &&
-          gameController.hasTokenAtTile(currentTile);
-    }
-
-    openTokenButton.setVisible(hasToken);
-    buyTokenFlipButton.setVisible(hasToken);  // NEW: Show buy token flip button when there's a token
-    skipTokenButton.setVisible(hasToken);
-
-    // Show the end turn button in all states as a failsafe
-    endTurnButton.setVisible(true);
 
     // Show move selection label if player has rolled and has moves
     if (hasRolled) {
