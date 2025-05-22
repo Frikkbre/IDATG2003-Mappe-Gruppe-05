@@ -99,12 +99,15 @@ class TestBanker {
   @Test
   @DisplayName("Should return correct balance after transactions")
   void testGetBalance_AfterTransactions() {
+    // Arrange
     banker.registerPlayer(testPlayer1);
     banker.deposit(testPlayer1, 300);
     banker.withdraw(testPlayer1, 100);
 
+    // Act
     int balance = banker.getBalance(testPlayer1);
 
+    // Assert
     assertEquals(700, balance,
         "Balance should be 500 + 300 - 100 = 700");
   }
@@ -264,8 +267,6 @@ class TestBanker {
     assertFalse(result,
         "Withdrawal should fail for unregistered player (zero balance)");
   }
-
-  // ==================== Complex Transaction Tests ====================
 
   @Test
   @DisplayName("Should handle multiple sequential transactions correctly")
