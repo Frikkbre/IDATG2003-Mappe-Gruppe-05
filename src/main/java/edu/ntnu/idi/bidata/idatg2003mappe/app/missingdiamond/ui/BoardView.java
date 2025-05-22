@@ -161,10 +161,10 @@ public class BoardView extends StackPane {
   private void handleTileClick(int tileId) {
     if (gameController == null) return;
 
-    // Add debugging statements
-    logger.info("DEBUG: Tile clicked: " + tileId);
-    logger.info("DEBUG: Connection mode active: " +
-        (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
+    // debugging statements
+    //logger.info("DEBUG: Tile clicked: " + tileId);
+    //logger.info("DEBUG: Connection mode active: " +
+    //    (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
 
     // Add this block to handle connection mode
     if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {

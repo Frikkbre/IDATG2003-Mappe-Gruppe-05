@@ -65,16 +65,16 @@ public class MapDesignerTool {
     saveAsDefaultItem.setOnAction(e -> fileHandler.saveAsDefaultMap());
 
     // Debug
-    MenuItem dumpPointsMapItem = new MenuItem("Debug: Dump Points Map");
-    dumpPointsMapItem.setOnAction(e -> pointManager.dumpPointsMap());
+    //MenuItem dumpPointsMapItem = new MenuItem("Debug: Dump Points Map");
+    //dumpPointsMapItem.setOnAction(e -> pointManager.dumpPointsMap());
 
     // Add all items to menu
     devMenu.getItems().addAll(
         coordModeItem, new SeparatorMenuItem(),
         copyItem, clearItem, new SeparatorMenuItem(),
         toggleConnectionModeItem, exportMapItem, new SeparatorMenuItem(),
-        saveAsDefaultItem, new SeparatorMenuItem(),
-        dumpPointsMapItem
+        saveAsDefaultItem, new SeparatorMenuItem()
+        //dumpPointsMapItem
     );
 
     return devMenu;
