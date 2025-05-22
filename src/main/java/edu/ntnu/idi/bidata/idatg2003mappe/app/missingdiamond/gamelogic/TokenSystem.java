@@ -31,11 +31,11 @@ public class TokenSystem {
   private static final int NUM_RED_GEMS = 5;    // Rubies
   private static final int NUM_GREEN_GEMS = 5;  // Emeralds
   private static final int NUM_YELLOW_GEMS = 5; // Topazes
-  private static final int NUM_BANDITS = 7;     // Robbers
+  private static final int NUM_BANDITS = 4;     // Robbers
+  private static final int NUM_VISAS = 3;
 
   // Token interaction costs
   private static final int TOKEN_FLIP_COST = 300;  // NEW: Cost to buy a token flip
-  private static final int TOKEN_PURCHASE_COST = 100; // Existing cost to buy token directly
 
   /**
    * Constructor for TokenSystem.
@@ -115,6 +115,11 @@ public class TokenSystem {
       tokens.add(new Bandit());
     }
 
+    // Add visas
+    for (int i = 0; i < NUM_VISAS; i++) {
+      tokens.add(new Visa());
+    }
+
     // Calculate how many blank tokens we need
     int blankTokensNeeded = Math.max(0, cityCount - tokens.size());
 
@@ -134,16 +139,6 @@ public class TokenSystem {
    */
   public Marker getTokenAtTile(Tile tile) {
     return tokenMap.get(tile);
-  }
-
-  /**
-   * Gets the token at a tile by the tile's ID.
-   *
-   * @param tileId The ID of the tile to check
-   * @return The marker at the tile, or null if no marker exists
-   */
-  public Marker getTokenAtTileId(int tileId) {
-    return tokensByTileId.get(tileId);
   }
 
   /**
@@ -188,66 +183,6 @@ public class TokenSystem {
     }
 
     // Process the token (guaranteed success)
-    processToken(token, player, banker);
-
-    // Remove the token from the board
-    removeTokenFromTile(tile);
-
-    return true;
-  }
-
-  /**
-   * MODIFIED: Processes buying a token directly for 100 coins.
-   * This is the existing direct purchase option.
-   *
-   * @param player The player buying the token
-   * @param tile The tile with the token
-   * @param banker The banker handling the transaction
-   * @return True if the purchase was successful, false otherwise
-   */
-  public boolean buyToken(Player player, Tile tile, Banker banker) {
-    // Check if tile has a token
-    Marker token = getTokenAtTile(tile);
-    if (token == null) {
-      return false;
-    }
-
-    // Attempt to pay for the token
-    if (!banker.withdraw(player, TOKEN_PURCHASE_COST)) {
-      return false; // Not enough money
-    }
-
-    // Process the token
-    processToken(token, player, banker);
-
-    // Remove the token from the board
-    removeTokenFromTile(tile);
-
-    return true;
-  }
-
-  /**
-   * Attempts to win a token with a dice roll (free option).
-   *
-   * @param player The player attempting to win the token
-   * @param tile The tile with the token
-   * @param diceRoll The dice roll result
-   * @param banker The banker for financial transactions
-   * @return True if the token was won, false otherwise
-   */
-  public boolean tryWinToken(Player player, Tile tile, int diceRoll, Banker banker) {
-    // Check if tile has a token
-    Marker token = getTokenAtTile(tile);
-    if (token == null) {
-      return false;
-    }
-
-    // Need a 4, 5, or 6 to win
-    if (diceRoll < 4) {
-      return false;
-    }
-
-    // Process the token
     processToken(token, player, banker);
 
     // Remove the token from the board
@@ -310,21 +245,6 @@ public class TokenSystem {
   }
 
   /**
-   * Checks if a tile is a starting tile by ID.
-   *
-   * @param tileId The tile ID to check
-   * @return True if it's a starting tile, false otherwise
-   */
-  public boolean isStartingTileById(int tileId) {
-    for (Tile startingTile : startingTiles) {
-      if (startingTile.getTileId() == tileId) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Checks if a player has the diamond.
    *
    * @param player The player to check
@@ -345,64 +265,18 @@ public class TokenSystem {
   }
 
   /**
-   * Checks if the diamond has been found.
-   *
-   * @return True if the diamond has been found, false otherwise
-   */
-  public boolean isDiamondFound() {
-    return diamondFound;
-  }
-
-  /**
-   * Sets whether the diamond has been found.
-   *
-   * @param diamondFound True if the diamond has been found
-   */
-  public void setDiamondFound(boolean diamondFound) {
-    this.diamondFound = diamondFound;
-  }
-
-  /**
-   * Gets the location of the diamond.
-   *
-   * @return The tile where the diamond is located
-   */
-  public Tile getDiamondLocation() {
-    return diamondLocation;
-  }
-
-  /**
    * Checks the victory condition for a player.
+   * Checks if the player has met the conditions to win:
+   * 1. Be at a starting tile (Cairo or Tangiers)
+   * 2. Have the diamond OR have a visa card (if diamond found)
    *
    * @param player The player to check
    * @param currentTile The current tile of the player
    * @return True if the victory condition is met, false otherwise
    */
   public boolean checkVictoryCondition(Player player, Tile currentTile) {
-    // To win, player needs:
-    // 1. To be at a starting tile (Cairo or Tangiers)
-    // 2. AND either have the diamond OR have a visa card (if diamond found)
     return isStartingTile(currentTile) &&
         (playerHasDiamond(player) || (diamondFound && playerHasVisa(player)));
   }
 
-  // NEW: Getter methods for costs
-
-  /**
-   * Gets the cost of buying a token flip.
-   *
-   * @return The cost of buying a token flip
-   */
-  public int getTokenFlipCost() {
-    return TOKEN_FLIP_COST;
-  }
-
-  /**
-   * Gets the cost of buying a token directly.
-   *
-   * @return The cost of buying a token directly
-   */
-  public int getTokenPurchaseCost() {
-    return TOKEN_PURCHASE_COST;
-  }
 }
