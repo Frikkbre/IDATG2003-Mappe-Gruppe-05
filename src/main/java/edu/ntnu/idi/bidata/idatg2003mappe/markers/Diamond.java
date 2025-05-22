@@ -9,7 +9,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.markers;
  */
 public class Diamond extends Marker {
   private static final String TYPE = "Diamond";
-  private static final int VALUE = 10000;
+  private static final int VALUE = 2000;
   private boolean isMissing;
 
   /**

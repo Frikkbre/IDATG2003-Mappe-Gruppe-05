@@ -9,7 +9,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.markers;
  */
 public class YellowGem extends Marker {
   private static final String TYPE = "YellowGem";
-  private static final int VALUE = 2000;
+  private static final int VALUE = 1000;
 
   /**
    * Constructor for the YellowGem class.
