@@ -44,10 +44,6 @@ public class BoardBranching extends Board {
     tile2.addTileToTileBranch(tile1);
   }
 
-  public void createOneWayConnection(Tile tile1, Tile tile2) {
-    tile1.addTileToTileBranch(tile2);
-  }
-
   public List<Tile> getTiles() {
     return tiles;
   }
