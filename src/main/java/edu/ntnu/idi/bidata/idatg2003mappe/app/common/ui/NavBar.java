@@ -108,6 +108,25 @@ public class NavBar {
         closeMenuItem
     );
 
+    Menu modeMenu = new Menu("Mode");
+    MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
+    randomLadders.setOnAction(event -> {
+      if (gameController instanceof LadderGameController) {
+        LadderGameController randomLadderGameController = new LadderGameController(true);
+        randomLadderGameController.setRandomLadders(!randomLadderGameController.isRandomLadders());
+        setGameController(randomLadderGameController);
+        LadderGameGUI randomLadderGameGUI = new LadderGameGUI();
+        setLadderGameGUI(randomLadderGameGUI);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Mode Changed");
+        alert.setHeaderText("Random Ladders Mode");
+        alert.setContentText("Random ladders mode is now " + (randomLadderGameController.isRandomLadders() ? "enabled" : "disabled"));
+        alert.showAndWait();
+      }
+    });
+
+    modeMenu.getItems().addAll(randomLadders);
+
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
@@ -124,7 +143,7 @@ public class NavBar {
     navigateMenu.getItems().addAll(navigateMenuItem);
 
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu, navigateMenu);
+    menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
 
     return menuBar;
