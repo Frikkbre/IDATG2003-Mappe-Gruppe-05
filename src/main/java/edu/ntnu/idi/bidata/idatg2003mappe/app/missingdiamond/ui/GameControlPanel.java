@@ -19,15 +19,15 @@ import java.util.List;
 
 /**
  * Panel containing game controls like dice rolling and game log.
- * Now includes the new "Buy Token Flip" option for 300 coins.
+ * Includes token interaction options for 300 coins guaranteed flip.
+ * Skip functionality removed - End Turn serves the same purpose.
  */
 public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;
   private final BoardView boardView;
   private final Button rollDieButton;
   private final Button openTokenButton;
-  private final Button buyTokenFlipButton;  // NEW: Buy token flip button
-  private final Button skipTokenButton;
+  private final Button buyTokenFlipButton;
   private final Label selectMoveLabel;
   private final Button endTurnButton;
   private final TextArea gameLog;
@@ -95,7 +95,7 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // NEW: Create buy token flip button (guaranteed success for 300 coins)
+    // Create buy token flip button (guaranteed success for 300 coins)
     buyTokenFlipButton = UIComponentFactory.createActionButton("Buy Token Flip (£300 - Guaranteed)", e -> {
       Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
       Marker token = gameController.getTokenAtTileId(currentTile.getTileId());
@@ -127,21 +127,6 @@ public class GameControlPanel extends VBox {
       } else {
         logMessage("Failed to buy token flip. Transaction error occurred.");
       }
-
-      // End the turn automatically after token interaction
-      gameController.endTurn();
-      // Reset roll state to ensure the next player can roll
-      gameController.resetRollState();
-
-      logMessage("Turn ended.");
-      boardView.updateUI();
-      updateControls();
-      updatePlayerInfo();
-    });
-
-    skipTokenButton = UIComponentFactory.createActionButton("Skip (Continue Journey)", e -> {
-      String result = gameController.skipTokenAction();
-      logMessage(result);
 
       // End the turn automatically after token interaction
       gameController.endTurn();
@@ -186,7 +171,7 @@ public class GameControlPanel extends VBox {
     tokenOptionsLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
     tokenOptionsLabel.setTextFill(Color.DARKRED);
 
-    // Add components to panel
+    // Add components to panel (Skip button removed)
     getChildren().addAll(
         playerLabel,
         playerMoneyLabel,
@@ -195,8 +180,7 @@ public class GameControlPanel extends VBox {
         selectMoveLabel,
         tokenOptionsLabel,
         openTokenButton,
-        buyTokenFlipButton,  // NEW: Add the buy token flip button
-        skipTokenButton,
+        buyTokenFlipButton,
         endTurnButton,
         gameLog
     );
@@ -270,6 +254,7 @@ public class GameControlPanel extends VBox {
 
   /**
    * Updates the controls based on the current game state.
+   * Skip button removed - End Turn always available for same functionality.
    */
   private void updateControls() {
     // Hide all action buttons by default
@@ -280,7 +265,6 @@ public class GameControlPanel extends VBox {
 
     openTokenButton.setVisible(true);
     buyTokenFlipButton.setVisible(true);
-    skipTokenButton.setVisible(true);
 
     endTurnButton.setVisible(true);
 
@@ -289,7 +273,6 @@ public class GameControlPanel extends VBox {
 
     // Only disable (not hide) the roll button if the user has already rolled
     rollDieButton.setDisable(hasRolled);
-
 
     // Show token buttons only when at a tile with a token
     Player currentPlayer = gameController.getCurrentPlayer();
@@ -326,5 +309,4 @@ public class GameControlPanel extends VBox {
   public void setRollButtonDisabled(boolean disabled) {
     rollDieButton.setDisable(disabled);
   }
-
 }

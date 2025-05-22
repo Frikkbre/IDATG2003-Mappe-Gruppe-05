@@ -21,10 +21,11 @@ import java.util.Set;
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
- * Now includes support for buying token flips for 300 coins.
+ * Skip turn functionality removed - End Turn button serves same purpose.
+ * Includes support for buying token flips for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.2.0
+ * @version 0.3.0
  * @since 23.05.2025
  */
 public class MissingDiamondController {
@@ -58,7 +59,7 @@ public class MissingDiamondController {
 
   private ActionState currentState = ActionState.AWAITING_ROLL;
 
-  // Available actions for the current state
+  // Available actions for the current state (Skip action removed)
   private final Map<ActionState, List<String>> availableActions = new HashMap<>();
 
   /**
@@ -71,6 +72,7 @@ public class MissingDiamondController {
 
   /**
    * Initializes the available actions for each game state.
+   * Skip action removed from AWAITING_TOKEN_DECISION state.
    */
   private void initializeAvailableActions() {
     // Actions for each state
@@ -88,8 +90,8 @@ public class MissingDiamondController {
     availableActions.get(ActionState.AWAITING_MOVE).add("moveToTile");
 
     availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("openToken");
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");  // NEW: Add to available actions
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");
+    // REMOVED: availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
   }
 
   /**
@@ -152,7 +154,7 @@ public class MissingDiamondController {
       return moveResult + "\nYou've reached a location with a token. You can:" +
           "\n• Try to get it free (roll 4-6 to succeed)" +
           "\n• Buy a guaranteed token flip for £300" +
-          "\n• Skip and continue your journey";
+          "\n• Use 'End Turn' to continue your journey";
     }
 
     // End turn only if game is finished
@@ -163,7 +165,7 @@ public class MissingDiamondController {
   }
 
   /**
-   * NEW: Buys a token flip for 300 coins (guaranteed success).
+   * Buys a token flip for 300 coins (guaranteed success).
    *
    * @param tile The tile with the token
    * @return True if the purchase was successful, false otherwise
@@ -206,20 +208,10 @@ public class MissingDiamondController {
   }
 
   /**
-   * Skips the token action and ends the turn.
-   *
-   * @return A message indicating the action was skipped
+   * REMOVED: skipTokenAction method
+   * The End Turn button serves the same purpose and is always available.
+   * Players can use End Turn to skip token interactions.
    */
-  public String skipTokenAction() {
-    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
-      return "No token action to skip.";
-    }
-
-    currentState = ActionState.AWAITING_ROLL;
-
-    endTurn();
-    return "You chose to ignore the token and continue your journey.";
-  }
 
   /**
    * Ends the current player's turn and moves to the next player.
@@ -381,6 +373,7 @@ public class MissingDiamondController {
 
   /**
    * Gets a list of available actions for the current state.
+   * Skip action no longer included.
    *
    * @return A list of available actions
    */
@@ -458,4 +451,3 @@ public class MissingDiamondController {
     return game.getDie();
   }
 }
-
