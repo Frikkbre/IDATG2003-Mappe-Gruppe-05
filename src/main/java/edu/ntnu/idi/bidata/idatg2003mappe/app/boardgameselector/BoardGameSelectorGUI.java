@@ -22,6 +22,12 @@ import java.util.stream.Stream;
 
 /**
  * Class for the board game selector GUI.
+ * It allows the user to select between
+ * Ladder Game and Missing Diamond.
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.1
+ * @since 21.05.2025
  */
 public class BoardGameSelectorGUI extends Application {
   private LadderGameGUI ladderGameGUI;
