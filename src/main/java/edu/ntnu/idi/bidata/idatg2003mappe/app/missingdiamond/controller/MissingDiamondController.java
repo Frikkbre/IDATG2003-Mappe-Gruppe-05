@@ -19,8 +19,6 @@ import java.util.Set;
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
- * Skip turn functionality removed - End Turn button serves same purpose.
- * Includes support for buying token flips for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.3.0
