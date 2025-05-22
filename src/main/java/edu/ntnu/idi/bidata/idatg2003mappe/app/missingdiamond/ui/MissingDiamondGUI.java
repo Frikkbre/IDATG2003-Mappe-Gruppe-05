@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.UIComponentFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.service.MapConfigService;
@@ -26,6 +27,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private MissingDiamondController gameController;
   private Stage primaryStage;
   private BorderPane mainLayout;
+  private NavBar navBar;
 
   // UI Components
   private BoardView boardView;
@@ -48,6 +50,12 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Initialize game controller
     initializeGameController();
+
+    // Now set up NavBar with the proper controller reference
+    navBar = new NavBar();
+    navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
+    navBar.setMissingDiamondGUI(this);
 
     // Initialize UI components
     initializeUIComponents();
@@ -109,8 +117,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   private void setupLayout() {
     // Create menu bar with designer menu
-    Menu designerMenu = mapDesignerManager.createDesignerMenu();
-    MenuBar menuBar = createMenuBar(designerMenu);
+    //Menu designerMenu = mapDesignerManager.createDesignerMenu(); TODO - fix this
+    //MenuBar menuBar = createMenuBar(designerMenu);
+    MenuBar menuBar = navBar.createMenuBar();
 
     // Create developer controls
     HBox devControls = createDevControls();

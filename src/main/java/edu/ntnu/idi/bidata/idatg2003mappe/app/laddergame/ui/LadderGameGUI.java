@@ -157,6 +157,161 @@ public class LadderGameGUI extends Application {
     return tile;
   }
 
+  /**
+   * Quick save the game to the default location.
+   */
+  private void quickSaveGame() {
+    try {
+      BoardFileHandler fileHandler = new BoardFileHandler();
+      GameState gameState = gameController.createGameState();
+      fileHandler.saveToDefaultLocation(gameState);
+
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Game Saved");
+      alert.setHeaderText("Game Saved Successfully");
+      alert.setContentText("Your game has been saved to the default location.");
+      alert.showAndWait();
+    } catch (FileHandlingException ex) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText("Save Error");
+      alert.setContentText("Could not save the game: " + ex.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  /**
+   * Load the last saved game from the default location.
+   */
+  private void loadLastSave() {
+    BoardFileHandler fileHandler = new BoardFileHandler();
+
+    if (!fileHandler.defaultSaveExists()) {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("No Save Found");
+      alert.setHeaderText("No Save File Found");
+      alert.setContentText("There is no saved game to load.");
+      alert.showAndWait();
+      return;
+    }
+
+    try {
+      GameState gameState = fileHandler.loadFromDefaultLocation();
+
+      // Create a new game with the loaded state
+      this.randomLadders = gameState.isRandomLadders();
+      gameController = new LadderGameController(randomLadders);
+      gameController.applyGameState(gameState);
+
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Game Loaded");
+      alert.setHeaderText("Game Loaded Successfully");
+      alert.setContentText("Your last saved game has been loaded.");
+      alert.showAndWait();
+
+      updateBoardUI();
+    } catch (FileHandlingException ex) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setTitle("Error");
+      alert.setHeaderText("Load Error");
+      alert.setContentText("Could not load the game: " + ex.getMessage());
+      alert.showAndWait();
+    }
+  }
+
+  /**
+   * Save the current game state to a file.
+   *
+   * @param primaryStage the primary stage
+   */
+  private void saveGame(Stage primaryStage) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Game");
+    fileChooser.getExtensionFilters().add(
+        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+
+    // Set initial directory to the saves folder
+    File saveDir = new File("src/main/resources/saves");
+    if (saveDir.exists() && saveDir.isDirectory()) {
+      fileChooser.setInitialDirectory(saveDir);
+    }
+
+    // Set default filename
+    fileChooser.setInitialFileName("game_save.json");
+
+    File file = fileChooser.showSaveDialog(primaryStage);
+
+    if (file != null) {
+      try {
+        BoardFileHandler fileHandler = new BoardFileHandler();
+        GameState gameState = gameController.createGameState();
+        fileHandler.write(gameState, file.getAbsolutePath());
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Saved");
+        alert.setHeaderText("Game Saved Successfully");
+        alert.setContentText("Your game has been saved to " + file.getName());
+        alert.showAndWait();
+      } catch (FileHandlingException ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Save Error");
+        alert.setContentText("Could not save the game: " + ex.getMessage());
+        alert.showAndWait();
+      }
+    }
+  }
+
+  /**
+   * Load a game state from a file.
+   *
+   * @param primaryStage the primary stage
+   */
+  private void loadGame(Stage primaryStage) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Load Game");
+    fileChooser.getExtensionFilters().add(
+        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
+
+    // Set initial directory to the saves folder
+    File saveDir = new File("src/main/resources/saves");
+    if (saveDir.exists() && saveDir.isDirectory()) {
+      fileChooser.setInitialDirectory(saveDir);
+    }
+
+    File file = fileChooser.showOpenDialog(primaryStage);
+
+    if (file != null) {
+      try {
+        BoardFileHandler fileHandler = new BoardFileHandler();
+        GameState gameState = fileHandler.read(file.getAbsolutePath());
+
+        // Create a new game with the loaded state
+        this.randomLadders = gameState.isRandomLadders();
+        gameController = new LadderGameController(randomLadders);
+        gameController.applyGameState(gameState);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Loaded");
+        alert.setHeaderText("Game Loaded Successfully");
+        alert.setContentText("Your game has been loaded from " + file.getName());
+        alert.showAndWait();
+
+        updateBoardUI();
+      } catch (FileHandlingException ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Load Error");
+        alert.setContentText("Could not load the game: " + ex.getMessage());
+        alert.showAndWait();
+      }
+    }
+  }
+
+  /**
+   * Toggles the game mode between classic and random ladders.
+   */
+
 
   public void toggleGameMode(Stage primaryStage) {
     randomLadders = !randomLadders; // Toggle mode
