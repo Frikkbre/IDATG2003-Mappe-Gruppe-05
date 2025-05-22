@@ -128,16 +128,16 @@ class TestTokenSystem {
 
   @Test
   @DisplayName("Should create diamond token during initialization")
-  void testInitializeTokens_CreatesDialitondToken() {
+  void testInitializeTokens_CreatesDiamondToken() {
     // Arrange
-    List<Tile> largeCityList = createLargeCityTilesList(20);
+    List<Tile> cityTiles = createLargeCityTilesList(20);
 
     // Act
-    tokenSystem.initializeTokens(largeCityList);
+    tokenSystem.initializeTokens(cityTiles);
 
     // Assert
     boolean diamondFound = false;
-    for (Tile tile : largeCityList) {
+    for (Tile tile : cityTiles) {
       Marker token = tokenSystem.getTokenAtTile(tile);
       if (token instanceof Diamond) {
         diamondFound = true;
