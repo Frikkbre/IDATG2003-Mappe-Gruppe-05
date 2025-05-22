@@ -474,31 +474,6 @@ public class MissingDiamond {
     return result;
   }
 
-  /**
-   * Opens a token at the current player's location with a random chance outcome.
-   * This combines the former buyToken and tryWinToken functionality.
-   *
-   * @return A message describing the result
-   */
-  public String openToken() {
-    Tile currentTile = currentPlayer.getCurrentTile();
-    Marker token = tokenSystem.getTokenAtTile(currentTile);
-
-    if (token == null) {
-      return "No token at this location.";
-    }
-
-    // Roll the die to determine success and outcome
-    int roll = die.rollDie();
-    boolean success = tokenSystem.openToken(currentPlayer, currentTile, roll, banker);
-
-    if (success) {
-      String tokenType = token.getType();
-      return "You opened the token and found: " + tokenType + "!";
-    } else {
-      return "You rolled a " + roll + " but couldn't open the token. Better luck next time!";
-    }
-  }
 
   /**
    * Checks if there is a token at a specific tile.

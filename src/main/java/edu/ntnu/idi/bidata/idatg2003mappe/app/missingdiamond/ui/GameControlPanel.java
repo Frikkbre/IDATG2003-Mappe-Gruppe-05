@@ -5,6 +5,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingD
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -54,8 +56,33 @@ public class GameControlPanel extends VBox {
 
     // Create combined token interaction button
     openTokenButton = UIComponentFactory.createActionButton("Open Token", e -> {
-      String result = gameController.openToken();
-      logMessage(result);
+      Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
+      Marker token = gameController.getTokenAtTileId(currentTile.getTileId());
+
+      if (token == null) {
+        logMessage("There is no token at your current location.");
+        return;
+      }
+
+      // Roll die for token opening
+      int roll = gameController.getDie().rollDie();
+      logMessage("You rolled a " + roll + " to open the token...");
+
+      // Check success (4-6 succeeds, 1-3 fails)
+      if (roll >= 4) {
+        // Success - remove token and apply effects
+        gameController.removeTokenFromTile(currentTile);
+
+        String tokenType = token.getType();
+        logMessage("Success! You opened the token and found: " + tokenType + "!");
+
+        // Apply token effects
+        applyTokenEffects(token, gameController.getCurrentPlayer());
+
+      } else {
+        logMessage("You rolled a " + roll + " but couldn't open the token (need 4-6). Better luck next time!");
+      }
+
       boardView.updateUI();
       updateControls();
       updatePlayerInfo();
@@ -122,13 +149,46 @@ public class GameControlPanel extends VBox {
     }
   }
 
+  private void applyTokenEffects(Marker token, Player player) {
+    Banker banker = gameController.getBanker();
+
+    logMessage("DEBUG: Token type is: '" + token.getType() + "'");
+
+    switch (token.getType()) {
+      case "Diamond":
+        player.addInventoryItem("diamond");
+        break;
+      case "RedGem":
+        banker.deposit(player, token.getValue());
+        logMessage("You found a ruby worth " + token.getValue() + "!");
+        break;
+      case "GreenGem":
+        banker.deposit(player, token.getValue());
+        logMessage("You found an emerald worth " + token.getValue() + "!");
+        break;
+      case "YellowGem":
+        banker.deposit(player, token.getValue());
+        logMessage("You found a topaz worth " + token.getValue() + "!");
+        break;
+      case "Bandit":
+        int currentBalance = banker.getBalance(player);
+        banker.withdraw(player, currentBalance);
+        break;
+      case "Visa":
+        player.addInventoryItem("visa");
+        logMessage("You found a visa for free travel!");
+        break;
+      default:
+        logMessage("Nothing special here.");
+        break;
+    }
+  }
+
   /**
    * Updates the controls based on the current game state.
    */
   private void updateControls() {
     // Hide all action buttons by default
-    openTokenButton.setVisible(false);
-    skipTokenButton.setVisible(false);
     selectMoveLabel.setVisible(false);
     endTurnButton.setVisible(false);
 
@@ -136,30 +196,29 @@ public class GameControlPanel extends VBox {
     boolean hasRolled = gameController.hasRolled();
     rollDieButton.setVisible(!hasRolled);
 
+    // Always show token buttons
+    openTokenButton.setVisible(true);
+    skipTokenButton.setVisible(true);
+
     // Show the end turn button in all states as a failsafe
     endTurnButton.setVisible(true);
 
-    // Determine current state and show appropriate controls
+    // Show move selection label if player has rolled and has moves
     if (hasRolled) {
-      // If player has rolled, they need to select a move location
       List<Tile> possibleMoves = gameController.getPossibleMoves();
       if (!possibleMoves.isEmpty()) {
         selectMoveLabel.setVisible(true);
       }
-
-      // Only show token buttons when at a location with a token
-      Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
-      boolean isOnSpecialTile = gameController.isSpecialTile(currentTile.getTileId());
-
-      if (isOnSpecialTile) {
-        // Show token buttons when at a location with a token
-        boolean hasToken = gameController.getTokenAtTileId(currentTile.getTileId()) != null;
-        if (hasToken) {
-          openTokenButton.setVisible(true);
-          skipTokenButton.setVisible(true);
-        }
-      }
     }
+  }
+
+  /**
+   * Checks if a tile is a red tile (special location) based on the map configuration.
+   * You can implement this by checking against the special tile IDs from your map config.
+   */
+  private boolean isRedTileFromMapConfig(int tileId) {
+    // Simply use the controller's method to check if this is a red tile
+    return gameController.isRedTileFromConfig(tileId);
   }
 
   public void logMessage(String message) {

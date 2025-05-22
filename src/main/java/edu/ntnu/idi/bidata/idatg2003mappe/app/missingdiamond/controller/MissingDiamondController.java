@@ -2,9 +2,12 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
@@ -156,7 +159,6 @@ public class MissingDiamondController {
   }
 
   public boolean isSpecialTile(int tileId) {
-    // Check if the tile contains a token
     Tile tile = getTileById(tileId);
     if (tile != null) {
       return hasTokenAtTile(tile);
@@ -171,29 +173,6 @@ public class MissingDiamondController {
 
     // Delegate to the game model
     return game.hasTokenAtTile(tile);
-  }
-
-  /**
-   * Opens a token at the current player's location, with a chance to get gems, bandit, visa, or diamond.
-   * This combines the former "buyToken" and "tryWinToken" functionality.
-   *
-   * @return A message describing the result of the token interaction
-   */
-  public String openToken() {
-    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
-      return "There is no token to open at your current location.";
-    }
-
-    String result = game.openToken();
-
-    // End turn after token action if game is not finished
-    if (!game.isGameFinished()) {
-      endTurn();
-    }
-
-    currentState = ActionState.AWAITING_ROLL;
-
-    return result;
   }
 
   /**
@@ -262,6 +241,36 @@ public class MissingDiamondController {
     // Reset controller state
     hasRolled = false;
     currentState = ActionState.AWAITING_ROLL;
+  }
+
+  public boolean isRedTileFromConfig(int tileId) {
+    try {
+      // Load the map configuration to check if this tile is marked as special
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapFileHandler.defaultMapExists()) {
+        mapConfig = mapFileHandler.loadFromDefaultLocation();
+      } else {
+        return false; // No config available
+      }
+
+      // Find the location with this ID and check if it's special
+      for (MapConfig.Location location : mapConfig.getLocations()) {
+        if (location.getId() == tileId) {
+          return location.isSpecial();
+        }
+      }
+
+      return false;
+
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Error checking if tile is red: " + e.getMessage());
+    }
+  }
+
+  public Marker removeTokenFromTile(Tile tile) {
+    return game.getTokenSystem().removeTokenFromTile(tile);
   }
 
   /**
@@ -399,5 +408,9 @@ public class MissingDiamondController {
    */
   public Banker getBanker() {
     return game.getBanker();
+  }
+
+  public Die getDie() {
+    return game.getDie();
   }
 }
