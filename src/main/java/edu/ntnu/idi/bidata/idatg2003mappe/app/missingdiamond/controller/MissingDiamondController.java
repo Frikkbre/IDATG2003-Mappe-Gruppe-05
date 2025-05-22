@@ -105,7 +105,6 @@ public class MissingDiamondController {
    * @return A message describing the move result
    */
   public String movePlayer(int tileId) {
-
     // Check if player has rolled
     if (currentState != ActionState.AWAITING_MOVE) {
       return "You need to roll the die first.";
@@ -127,6 +126,12 @@ public class MissingDiamondController {
     // Move the player
     String moveResult = game.movePlayerToTile(destinationTile);
 
+    // Check if game is finished (win condition)
+    if (game.isGameFinished()) {
+      // Don't end turn - game is over
+      return moveResult;
+    }
+
     // Check if the destination is a special tile with a token
     if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
       currentState = ActionState.AWAITING_TOKEN_DECISION;
@@ -136,11 +141,17 @@ public class MissingDiamondController {
           "\n• Use 'End Turn' to continue your journey";
     }
 
-    // End turn only if game is finished
-    if (game.isGameFinished()) {
-    }
+    endTurn();
+    return moveResult + "\nTurn ended. Next player's turn.";
+  }
 
-    return moveResult;
+  /**
+   * Resets the roll state to allow the next player to roll.
+   * This should be called when ending turns to ensure the next player
+   * can roll the die in their turn.
+   */
+  public void resetRollState() {
+    this.hasRolled = false;
   }
 
   /**
@@ -202,29 +213,24 @@ public class MissingDiamondController {
    * Ends the current player's turn and moves to the next player.
    */
   public void endTurn() {
-    // Switch to next player
+    // Store current player for notification
+    Player previousPlayer = game.getCurrentPlayer();
+
+    // Switch to next player (this updates the game state)
     game.nextPlayer();
 
-    // Reset roll state - explicitly set to false to ensure consistency
+    // Reset controller state completely
     hasRolled = false;
-
-    // Reset action state
     currentState = ActionState.AWAITING_ROLL;
 
     // Notify observers about turn change
+    Player newPlayer = game.getCurrentPlayer();
     for (BoardGameObserver observer : observers) {
-      observer.onTurnChanged(game.getCurrentPlayer());
+      observer.onTurnChanged(newPlayer);
     }
-  }
 
-  /**
-   * Explicitly reset the roll state to fix UI inconsistency.
-   * This ensures the UI always shows the roll button after end turn.
-   */
-  public void resetRollState() {
-    this.hasRolled = false;
-    // Make sure the action state is also consistent
-    this.currentState = ActionState.AWAITING_ROLL;
+    System.out.println("DEBUG: Turn ended. Previous: " + previousPlayer.getName() +
+        ", New: " + newPlayer.getName() + ", State: " + currentState);
   }
 
   /**
