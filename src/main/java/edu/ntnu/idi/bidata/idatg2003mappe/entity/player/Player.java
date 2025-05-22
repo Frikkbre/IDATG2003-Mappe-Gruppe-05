@@ -141,7 +141,7 @@ public class Player {
     this.name = name;
   }
 
-  void setID(int id) {
+  public void setID(int id) {
     if (id < 0 || id > 6) {
       throw new IllegalArgumentException("ID cannot be negative or greater than 6");
     }

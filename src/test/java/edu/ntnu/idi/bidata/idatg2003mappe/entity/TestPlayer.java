@@ -15,7 +15,7 @@ class TestPlayer {
 
   @BeforeEach
   void setUp() {
-    player = new Player("1", startingTile, 1);
+    player = new Player("TestPlayer", 1, "Red", startingTile);
   }
 
   @AfterEach
@@ -51,7 +51,7 @@ class TestPlayer {
   void testMovePlayer_CurrentTileNotSet_ThrowsException() {
     player.placePlayer(null);
 
-    Player playerWithoutTile = new Player("1", null, 1);
+    Player playerWithoutTile = new Player("TestPlayer", 1, "Red", null);
 
     assertNull(playerWithoutTile.getCurrentTile(), "currentTile should be null for this test.");
 

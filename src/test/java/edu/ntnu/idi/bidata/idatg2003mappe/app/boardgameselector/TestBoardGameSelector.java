@@ -1,4 +1,4 @@
-package edu.ntnu.idi.bidata.idatg2003mappe.app;
+package edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

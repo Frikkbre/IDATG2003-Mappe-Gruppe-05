@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
  * Tests all banking operations including registration, deposits, withdrawals,
  * and balance inquiries with both positive and negative test cases.
  *
- * @author Test Suite
+ * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 1.0.0
- * @since 2025
+ * @since 23.5.2025
  */
 @DisplayName("Banker Test Suite")
 class TestBanker {
