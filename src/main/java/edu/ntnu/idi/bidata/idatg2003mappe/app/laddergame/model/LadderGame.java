@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerFactory;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardFactory;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.board.LadderGameBoardFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 
 import java.util.*;
@@ -53,9 +53,9 @@ public class LadderGame {
    */
   private BoardLinear createBoard(boolean randomLadders) {
     if (randomLadders) {
-      return BoardFactory.createRandomLadderBoard();
+      return LadderGameBoardFactory.createRandomLadderBoard();
     } else {
-      return BoardFactory.createClassicLadderBoard();
+      return LadderGameBoardFactory.createClassicLadderBoard();
     }
   }
 

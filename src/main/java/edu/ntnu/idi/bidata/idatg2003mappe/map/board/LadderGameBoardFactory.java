@@ -12,7 +12,7 @@ import java.util.*;
  * @version 0.0.1
  * @since 19.04.2025
  */
-public class BoardFactory {
+public class LadderGameBoardFactory {
   private static final int BOARD_SIZE = 100;
   private static final int NUM_LADDERS = 8;
   private static final int NUM_SNAKES = 8;
