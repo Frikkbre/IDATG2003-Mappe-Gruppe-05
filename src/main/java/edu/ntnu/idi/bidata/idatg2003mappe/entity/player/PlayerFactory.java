@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.Board;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 
 import java.io.File;
 import java.io.FileReader;
@@ -27,7 +26,7 @@ public class PlayerFactory {
    * Creates players from a CSV file.
    *
    * @param filePath The path to the CSV file.
-   * @param board The board where players will be placed.
+   * @param board    The board where players will be placed.
    * @return A list of players.
    */
   public static List<Player> createPlayersFromCSV(String filePath, Board board) {
@@ -86,7 +85,7 @@ public class PlayerFactory {
   /**
    * Creates a specified number of default players.
    *
-   * @param count The number of players to create.
+   * @param count     The number of players to create.
    * @param startTile The starting tile for the players.
    * @return A list of players.
    */

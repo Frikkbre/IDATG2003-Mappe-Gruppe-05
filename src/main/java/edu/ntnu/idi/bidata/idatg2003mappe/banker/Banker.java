@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.banker;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 

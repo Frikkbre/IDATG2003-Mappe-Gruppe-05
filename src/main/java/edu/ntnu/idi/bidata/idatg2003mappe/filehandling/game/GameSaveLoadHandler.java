@@ -78,6 +78,7 @@ public class GameSaveLoadHandler {
    * loads a saved ladder game
    * takes in ladderGameGUI
    * and randomLadders to determine if the game is random or not
+   *
    * @param ladderGameGUI
    * @param randomLadders
    */
@@ -150,7 +151,7 @@ public class GameSaveLoadHandler {
    * Loads the last save for the Missing Diamond game.
    *
    * @param missingDiamondGUI The GUI to update after loading the game
-   * @param controller The controller to apply the game state to
+   * @param controller        The controller to apply the game state to
    */
   public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
     // Check if the CSV file exists
@@ -216,6 +217,7 @@ public class GameSaveLoadHandler {
 
   /**
    * Gets the players from the game controller.
+   *
    * @return
    */
   private List<Player> getPlayersFromController() {
@@ -230,6 +232,7 @@ public class GameSaveLoadHandler {
   /**
    * shows alert when saving and loading
    * positive and negative
+   *
    * @param type
    * @param title
    * @param header

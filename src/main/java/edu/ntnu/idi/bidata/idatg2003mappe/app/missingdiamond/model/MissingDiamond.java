@@ -11,13 +11,15 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the Missing Diamond game.
@@ -52,7 +54,7 @@ public class MissingDiamond {
   private final List<Tile> startingTiles = new ArrayList<>();
 
   // NEW: Set of IDs for special tiles where players can choose to stop
-  private Set<Integer> specialTileIdsSet;
+  private final Set<Integer> specialTileIdsSet;
 
   /**
    * Constructor for MissingDiamond with specified number of players.
@@ -67,7 +69,7 @@ public class MissingDiamond {
    * Constructor for MissingDiamond with specified number of players and map file.
    *
    * @param numberOfPlayers The number of players in the game
-   * @param mapFilePath The path to the map file
+   * @param mapFilePath     The path to the map file
    */
   public MissingDiamond(int numberOfPlayers, String mapFilePath) {
     System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
@@ -251,10 +253,10 @@ public class MissingDiamond {
 
     // If specialTileIdsSet is empty (meaning no map config defined them), add defaults for this board.
     if (this.specialTileIdsSet.isEmpty()) {
-        // Example: Make tiles 5, 10, 15 special for the default board
-        this.specialTileIdsSet.add(5);
-        this.specialTileIdsSet.add(10);
-        this.specialTileIdsSet.add(15);
+      // Example: Make tiles 5, 10, 15 special for the default board
+      this.specialTileIdsSet.add(5);
+      this.specialTileIdsSet.add(10);
+      this.specialTileIdsSet.add(15);
     }
 
     return board;
@@ -264,7 +266,7 @@ public class MissingDiamond {
    * Creates players for the game.
    *
    * @param numberOfPlayers The number of players to create
-   * @param board The game board
+   * @param board           The game board
    * @return A list of players
    */
   private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
@@ -396,27 +398,27 @@ public class MissingDiamond {
 
     // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
     if (currentDepth > 0) { // Only consider tiles reached after at least one step
-        if (isSpecialTile(currentTile)) {
-            resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
-        } else { // Not a special tile
-            if (currentDepth == dieRoll) {
-                resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
-            }
+      if (isSpecialTile(currentTile)) {
+        resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
+      } else { // Not a special tile
+        if (currentDepth == dieRoll) {
+          resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
         }
+      }
     }
 
     // Stop condition for recursion: if current depth has reached die roll, no more steps can be taken from here.
     if (currentDepth >= dieRoll) {
-        return;
+      return;
     }
 
     // Recursive step: explore neighbors
     for (Tile neighbor : currentTile.getNextTiles()) {
-        if (!visitedInCall.contains(neighbor)) {
-            visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
-            recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
-            // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
-        }
+      if (!visitedInCall.contains(neighbor)) {
+        visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
+        recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
+        // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
+      }
     }
   }
 

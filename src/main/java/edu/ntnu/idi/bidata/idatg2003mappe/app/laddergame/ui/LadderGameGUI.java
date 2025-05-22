@@ -11,7 +11,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -39,7 +42,7 @@ public class LadderGameGUI extends Application {
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
   public boolean randomLadders = false;
   public NavBar navBar;
-  private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+  private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
   /**
    * Start the game.

@@ -5,21 +5,15 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameCo
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
-
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
-import java.util.Collections;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NavBar {
@@ -33,6 +27,7 @@ public class NavBar {
 
   /**
    * returns the stage of the NavBar
+   *
    * @return stage
    */
   public Stage getStage() {
@@ -41,6 +36,7 @@ public class NavBar {
 
   /**
    * Set the stage for this NavBar
+   *
    * @param stage The stage to set
    */
   public void setStage(Stage stage) {
@@ -49,6 +45,7 @@ public class NavBar {
 
   /**
    * Set the game controller for this NavBar
+   *
    * @param controller The game controller (LadderGameController or MissingDiamondController)
    */
   public void setGameController(Object controller) {
@@ -57,6 +54,7 @@ public class NavBar {
 
   /**
    * Set the missing diamond GUI instance
+   *
    * @param gui The MissingDiamondGUI instance
    */
   public void setMissingDiamondGUI(MissingDiamondGUI gui) {
@@ -111,7 +109,7 @@ public class NavBar {
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
       try {
-        if(getStage().equals(boardGameSelectorGUI.getStage())) {
+        if (getStage().equals(boardGameSelectorGUI.getStage())) {
           throw new IllegalArgumentException("Already in main menu.");
         }
         boardGameSelectorGUI.start(getStage());
@@ -150,6 +148,7 @@ public class NavBar {
 
   /**
    * Determines the game type and loads the last save accordingly
+   *
    * @return EventHandler for loading the last save
    */
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
@@ -167,6 +166,7 @@ public class NavBar {
 
   /**
    * Closes the application
+   *
    * @return EventHandler for closing the application
    */
   private EventHandler<ActionEvent> closeFile() {
@@ -175,6 +175,7 @@ public class NavBar {
 
   /**
    * Gets the list of players from the current game controller
+   *
    * @return List of players or null if no controller is set
    */
   private List<Player> getPlayersFromController() {

@@ -1,7 +1,9 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.util.CoordinatePoint;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 
@@ -130,11 +132,31 @@ public class MapUIManager {
   }
 
   // Getters for UI components
-  public Label getStatusLabel() { return statusLabel; }
-  public ChoiceBox<String> getTileTypeSelector() { return tileTypeSelector; }
-  public TextField getSourceIdField() { return sourceIdField; }
-  public TextField getTargetIdField() { return targetIdField; }
-  public boolean isCoordinateMode() { return coordinateMode; }
-  public boolean isConnectionMode() { return connectionMode; }
-  public Pane getOverlayPane() { return overlayPane; }
+  public Label getStatusLabel() {
+    return statusLabel;
+  }
+
+  public ChoiceBox<String> getTileTypeSelector() {
+    return tileTypeSelector;
+  }
+
+  public TextField getSourceIdField() {
+    return sourceIdField;
+  }
+
+  public TextField getTargetIdField() {
+    return targetIdField;
+  }
+
+  public boolean isCoordinateMode() {
+    return coordinateMode;
+  }
+
+  public boolean isConnectionMode() {
+    return connectionMode;
+  }
+
+  public Pane getOverlayPane() {
+    return overlayPane;
+  }
 }

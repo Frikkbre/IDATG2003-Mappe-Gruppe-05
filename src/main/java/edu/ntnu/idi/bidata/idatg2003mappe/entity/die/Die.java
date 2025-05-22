@@ -16,7 +16,7 @@ public class Die {
   private int dieValue;
 
   // Observer pattern support
-  private List<DieObserver> observers = new ArrayList<>();
+  private final List<DieObserver> observers = new ArrayList<>();
 
   /**
    * Notifies observers that the die has been rolled.

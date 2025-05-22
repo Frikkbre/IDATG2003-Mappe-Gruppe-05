@@ -6,7 +6,9 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Enhanced tile highlighter that properly handles Missing Diamond movement rules.
@@ -34,7 +36,7 @@ public class TileHighlighter {
   /**
    * Creates a new enhanced TileHighlighter.
    *
-   * @param tileCircles Map of tile IDs to Circle objects
+   * @param tileCircles    Map of tile IDs to Circle objects
    * @param specialTileIds Set of IDs for special tiles (red tiles)
    * @param gameController Game controller reference
    */

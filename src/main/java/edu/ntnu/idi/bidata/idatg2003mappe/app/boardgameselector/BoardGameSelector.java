@@ -2,6 +2,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

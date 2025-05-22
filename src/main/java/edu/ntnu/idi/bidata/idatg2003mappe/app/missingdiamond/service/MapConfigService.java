@@ -30,7 +30,7 @@ public class MapConfigService {
 
   /**
    * Creates a default map configuration.
-   *
+   * <p>
    * If no map configuration is found, this method will create a simple
    * map with 5 locations and connections.
    *

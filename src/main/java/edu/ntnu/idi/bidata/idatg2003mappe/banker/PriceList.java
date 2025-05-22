@@ -47,7 +47,7 @@ public class PriceList {
    * Sets the price for a service.
    *
    * @param service The service to set the price for
-   * @param price The new price
+   * @param price   The new price
    */
   public void setPrice(String service, int price) {
     if (price < 0) {

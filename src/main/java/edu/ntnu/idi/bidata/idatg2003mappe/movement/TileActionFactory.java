@@ -14,7 +14,7 @@ public class TileActionFactory {
   /**
    * Creates a ladder action that moves a player to a destination tile.
    *
-   * @param currentTile The tile where the action is placed.
+   * @param currentTile     The tile where the action is placed.
    * @param destinationTile The destination tile.
    * @return A LadderAction object.
    */

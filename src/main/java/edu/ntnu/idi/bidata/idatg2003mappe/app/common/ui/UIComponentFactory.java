@@ -24,7 +24,7 @@ public class UIComponentFactory {
   /**
    * Creates an action button with standard styling.
    *
-   * @param text The button text
+   * @param text   The button text
    * @param action The action to perform when clicked
    * @return The created button
    */

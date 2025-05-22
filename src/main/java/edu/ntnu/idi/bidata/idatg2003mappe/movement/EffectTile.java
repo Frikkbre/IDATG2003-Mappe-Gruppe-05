@@ -66,6 +66,7 @@ public class EffectTile implements TileAction {
 
   /**
    * Moves the player back to the start tile.
+   *
    * @param player
    */
   public void backToStart(Player player) {

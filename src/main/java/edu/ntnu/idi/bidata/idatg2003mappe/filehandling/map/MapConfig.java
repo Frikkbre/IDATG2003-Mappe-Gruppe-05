@@ -99,8 +99,8 @@ public class MapConfig {
   }
 
   private String name;
-  private List<Location> locations = new ArrayList<>();
-  private List<Connection> connections = new ArrayList<>();
+  private final List<Location> locations = new ArrayList<>();
+  private final List<Connection> connections = new ArrayList<>();
 
   // Getters and setters
   public String getName() {

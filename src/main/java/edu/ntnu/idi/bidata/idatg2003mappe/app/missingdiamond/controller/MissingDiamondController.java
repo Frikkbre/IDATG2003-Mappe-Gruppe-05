@@ -1,20 +1,16 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Controller class for the Missing Diamond game.
@@ -25,7 +21,7 @@ import java.util.Set;
  * @since 23.05.2025
  */
 public class MissingDiamondController {
-  private List<BoardGameObserver> observers = new ArrayList<>();
+  private final List<BoardGameObserver> observers = new ArrayList<>();
   private final MissingDiamond game;
   private boolean hasRolled = false;
   private MapDesignerListener view;

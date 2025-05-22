@@ -3,7 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 /**
  * Helper class to store player data from CSV file.
  * This class is used to store the player data
- *  read from the CSV file.
+ * read from the CSV file.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1

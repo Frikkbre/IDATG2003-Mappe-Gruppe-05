@@ -47,7 +47,7 @@ public class BoardView extends StackPane {
   private MapDesignerManager mapDesignerManager;
 
   // Event listeners
-  private List<BoardUpdateListener> updateListeners = new ArrayList<>();
+  private final List<BoardUpdateListener> updateListeners = new ArrayList<>();
 
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
@@ -598,13 +598,13 @@ public class BoardView extends StackPane {
     // Register as an observer if implementing the observer interface
     if (this instanceof PlayerObserver) {
       for (Player player : controller.getPlayers()) {
-        player.addObserver((PlayerObserver)this);
+        player.addObserver((PlayerObserver) this);
       }
     }
 
     // Add controller as a board update listener if it implements the interface
     if (controller instanceof BoardUpdateListener) {
-      addBoardUpdateListener((BoardUpdateListener)controller);
+      addBoardUpdateListener((BoardUpdateListener) controller);
     }
 
     if (!tileCircles.isEmpty()) {

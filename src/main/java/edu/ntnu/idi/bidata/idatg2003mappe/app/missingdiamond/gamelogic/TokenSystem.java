@@ -161,7 +161,7 @@ public class TokenSystem {
    * This is a guaranteed way to get the token without rolling dice.
    *
    * @param player The player buying the token flip
-   * @param tile The tile with the token
+   * @param tile   The tile with the token
    * @param banker The banker handling the transaction
    * @return True if the purchase was successful, false otherwise
    */
@@ -194,41 +194,35 @@ public class TokenSystem {
   /**
    * Processes a token's effects for a player.
    *
-   * @param token The token to process
+   * @param token  The token to process
    * @param player The player receiving the effects
    * @param banker The banker for financial transactions
    */
   private void processToken(Marker token, Player player, Banker banker) {
     token.reveal(); // Reveal the token
 
-    if (token instanceof Diamond) {
-      Diamond diamond = (Diamond) token;
+    if (token instanceof Diamond diamond) {
       diamond.find();
       this.diamondFound = true;
 
       // Add the diamond to player's inventory
       player.addInventoryItem("diamond");
-    }
-    else if (token instanceof RedGem) {
+    } else if (token instanceof RedGem) {
       // Ruby worth £1000
       banker.deposit(player, 1000);
-    }
-    else if (token instanceof GreenGem) {
+    } else if (token instanceof GreenGem) {
       // Emerald worth £4000
       banker.deposit(player, 4000);
-    }
-    else if (token instanceof YellowGem) {
+    } else if (token instanceof YellowGem) {
       // Topaz worth £2000
       banker.deposit(player, 2000);
-    }
-    else if (token instanceof Bandit) {
+    } else if (token instanceof Bandit) {
       // Robber - lose all money (only if player has money)
       int currentBalance = banker.getBalance(player);
       if (currentBalance > 0) {
         banker.withdraw(player, currentBalance);
       }
-    }
-    else if (token instanceof Visa) {
+    } else if (token instanceof Visa) {
       // Visa card
       player.addInventoryItem("visa");
     }
@@ -270,7 +264,7 @@ public class TokenSystem {
    * 1. Be at a starting tile (Cairo or Tangiers)
    * 2. Have the diamond OR have a visa card (if diamond found)
    *
-   * @param player The player to check
+   * @param player      The player to check
    * @param currentTile The current tile of the player
    * @return True if the victory condition is met, false otherwise
    */

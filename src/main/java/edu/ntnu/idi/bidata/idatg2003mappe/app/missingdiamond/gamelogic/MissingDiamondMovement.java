@@ -1,6 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.gamelogic;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+
 import java.util.*;
 
 /**
@@ -29,7 +30,7 @@ public class MissingDiamondMovement {
    * This allows players to stop at special tiles even if they're not at exactly N steps.
    *
    * @param startTile The starting tile
-   * @param dieRoll The die roll value
+   * @param dieRoll   The die roll value
    * @return Set of tiles that can be reached with the roll
    */
   public Set<Tile> getValidMoves(Tile startTile, int dieRoll) {
@@ -54,10 +55,10 @@ public class MissingDiamondMovement {
    * Helper method for finding all reachable tiles, stopping at special tiles.
    * Uses breadth-first search to explore the board.
    *
-   * @param currentTile The current tile in the search
-   * @param maxSteps The maximum number of steps to take
-   * @param visited Set of visited tiles to avoid cycles
-   * @param result The set of result tiles
+   * @param currentTile  The current tile in the search
+   * @param maxSteps     The maximum number of steps to take
+   * @param visited      Set of visited tiles to avoid cycles
+   * @param result       The set of result tiles
    * @param currentDepth The current search depth
    */
   private void findReachableTiles(Tile currentTile, int maxSteps,
@@ -106,7 +107,7 @@ public class MissingDiamondMovement {
    * highlighting special tiles as important stopping points.
    *
    * @param startTile The starting tile
-   * @param dieRoll The die roll value
+   * @param dieRoll   The die roll value
    * @return Map of tiles to their path length from start
    */
   public Map<Tile, Integer> getAllReachableTiles(Tile startTile, int dieRoll) {
