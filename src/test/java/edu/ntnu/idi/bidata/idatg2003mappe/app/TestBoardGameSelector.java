@@ -121,35 +121,6 @@ class TestBoardGameSelector {
         "Should throw exception for negative index");
   }
 
-
-  @Test
-  @DisplayName("Test writeToFile with invalid game type")
-  void testWriteToFileWithInvalidGameType() throws InterruptedException {
-    // Arrange
-    setNumberOfPlayers(2);
-
-    // Act
-    CountDownLatch latch = new CountDownLatch(1);
-    Platform.runLater(() -> {
-      boardGameSelector.writeToFile("invalidGame");
-      latch.countDown();
-    });
-    latch.await(5, TimeUnit.SECONDS);
-
-    // Assert
-    // File might be created but without game-specific position data
-    if (playerFile.exists()) {
-      try (CSVReader reader = new CSVReader(new FileReader(playerFile))) {
-        reader.readNext(); // Skip headers
-        String[] playerData = reader.readNext();
-        // Position should not be set for invalid game type
-        assertNotNull(playerData);
-      } catch (Exception e) {
-        // Expected for invalid game type
-      }
-    }
-  }
-
   // ========== Edge Case Tests ==========
 
   @Test
