@@ -312,7 +312,8 @@ public class LadderGameGUI extends Application {
    * Toggles the game mode between classic and random ladders.
    */
 
-  private void toggleGameMode(Stage primaryStage) {
+
+  public void toggleGameMode(Stage primaryStage) {
     randomLadders = !randomLadders; // Toggle mode
 
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
