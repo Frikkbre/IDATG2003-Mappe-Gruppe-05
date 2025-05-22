@@ -273,6 +273,10 @@ public class MissingDiamondController {
     currentState = ActionState.AWAITING_ROLL;
   }
 
+  public MissingDiamond getGame() {
+    return this.game;
+  }
+
   public boolean isRedTileFromConfig(int tileId) {
     try {
       // Load the map configuration to check if this tile is marked as special
@@ -444,3 +448,4 @@ public class MissingDiamondController {
     return game.getDie();
   }
 }
+

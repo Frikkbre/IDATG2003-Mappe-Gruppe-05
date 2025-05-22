@@ -55,6 +55,9 @@ public class MissingDiamond {
   private final List<Tile> cityTiles = new ArrayList<>();
   private final List<Tile> startingTiles = new ArrayList<>();
 
+  // NEW: Set of IDs for special tiles where players can choose to stop
+  private Set<Integer> specialTileIdsSet;
+
   /**
    * Constructor for MissingDiamond with specified number of players.
    *
@@ -73,53 +76,58 @@ public class MissingDiamond {
   public MissingDiamond(int numberOfPlayers, String mapFilePath) {
     System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
 
-    // Create game components
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
     this.die = new Die();
+    this.specialTileIdsSet = new HashSet<>(); // Initialize NEW field
 
-    // Initialize the board
     BoardBranching boardInstance;
+    MapConfig mapConfig = null;
     try {
-      // Load map configuration from file
       MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      MapConfig mapConfig = mapFileHandler.read(mapFilePath);
+      mapConfig = mapFileHandler.read(mapFilePath); // mapConfig might be null if file not found or error
 
-      // Only try to create board from config if mapConfig is not null
       if (mapConfig != null) {
-        // Create board from configuration
         boardInstance = createBoardFromConfig(mapConfig);
+        // Populate specialTileIdsSet from mapConfig
+        if (mapConfig.getLocations() != null) {
+          for (MapConfig.Location location : mapConfig.getLocations()) {
+            if (location.isSpecial()) {
+              this.specialTileIdsSet.add(location.getId());
+            }
+          }
+        }
       } else {
-        System.err.println("Error: Map configuration is null");
+        System.err.println("Error: Map configuration is null or could not be read. Falling back to default board.");
         boardInstance = createDefaultBoard();
+        // For default board, define default special tiles if any.
+        // Example: if default board has known special tiles.
+        // For now, if no mapConfig, specialTileIdsSet might remain empty or be populated by createDefaultBoard.
+        // Let's assume createDefaultBoard might also populate it or we define some defaults here.
+        // If createDefaultBoard defines them:
+        // this.specialTileIdsSet.addAll(getSpecialIdsForDefaultBoard());
+        // For this example, let's assume default board has no specific special tiles defined this way unless createDefaultBoard handles it.
       }
 
     } catch (FileHandlingException e) {
       System.err.println("Error loading map configuration: " + e.getMessage());
-      // Fall back to default board creation
       boardInstance = createDefaultBoard();
+      // Handle special tiles for default board after fallback
     }
 
     this.board = boardInstance;
-
-    // Initialize players
     this.players = createPlayers(numberOfPlayers, boardInstance);
-
-    // Initialize game state
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.get(currentPlayerIndex);
     this.currentRoll = 0;
 
-    // Identify city tiles and starting tiles
-    identifyCityTiles();
+    identifyCityTiles(); // This might be redundant if mapConfig is used for special tiles
     identifyStartingTiles();
 
-    // Initialize tokens on city tiles
     tokenSystem.setStartingTiles(startingTiles);
     tokenSystem.initializeTokens(cityTiles);
 
-    // Register players with banker and give starting money
     for (Player player : players) {
       banker.registerPlayer(player);
       banker.deposit(player, STARTING_MONEY);
@@ -132,49 +140,49 @@ public class MissingDiamond {
   public MissingDiamond() {
     System.out.println("Starting Missing Diamond Game with players from file.");
 
-    // Create game components
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
     this.die = new Die();
+    this.specialTileIdsSet = new HashSet<>(); // Initialize NEW field
 
-    // Initialize the board
     BoardBranching boardInstance;
+    MapConfig mapConfig = null;
     try {
       MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      MapConfig mapConfig;
-
       if (mapFileHandler.defaultMapExists()) {
         mapConfig = mapFileHandler.loadFromDefaultLocation();
         boardInstance = createBoardFromConfig(mapConfig);
+        // Populate specialTileIdsSet from mapConfig
+        if (mapConfig != null && mapConfig.getLocations() != null) {
+          for (MapConfig.Location location : mapConfig.getLocations()) {
+            if (location.isSpecial()) {
+              this.specialTileIdsSet.add(location.getId());
+            }
+          }
+        }
       } else {
-        // Fall back to default board if no JSON file exists
         boardInstance = createDefaultBoard();
+        // Define default special tiles if any for default board
       }
     } catch (FileHandlingException e) {
       System.err.println("Error loading map configuration: " + e.getMessage());
       boardInstance = createDefaultBoard();
+      // Handle special tiles for default board after fallback
     }
 
     this.board = boardInstance;
-
-    // Read players from CSV
     this.players = readPlayersFromCSV();
-
-    // Initialize game state
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
     this.currentRoll = 0;
 
-    // Identify city tiles and starting tiles
     identifyCityTiles();
     identifyStartingTiles();
 
-    // Initialize tokens on city tiles
     tokenSystem.setStartingTiles(startingTiles);
     tokenSystem.initializeTokens(cityTiles);
 
-    // Register players with banker and give starting money
     for (Player player : players) {
       banker.registerPlayer(player);
       banker.deposit(player, STARTING_MONEY);
@@ -214,6 +222,7 @@ public class MissingDiamond {
 
   /**
    * Creates a default board with a simple structure.
+   * Also populates specialTileIdsSet with default special tiles if not already populated by a map config.
    *
    * @return A default board
    */
@@ -253,6 +262,14 @@ public class MissingDiamond {
           board.connectTiles(current, crossTile);
         }
       }
+    }
+
+    // If specialTileIdsSet is empty (meaning no map config defined them), add defaults for this board.
+    if (this.specialTileIdsSet.isEmpty()) {
+        // Example: Make tiles 5, 10, 15 special for the default board
+        this.specialTileIdsSet.add(5);
+        this.specialTileIdsSet.add(10);
+        this.specialTileIdsSet.add(15);
     }
 
     return board;
@@ -381,7 +398,7 @@ public class MissingDiamond {
 
   /**
    * Gets all tiles that are exactly N steps away from a starting tile.
-   *
+   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
    * @param startTile The starting tile
    * @param steps The number of steps to move
    * @return Set of tiles that are exactly N steps away
@@ -402,6 +419,7 @@ public class MissingDiamond {
 
   /**
    * Helper method for finding all tiles exactly N steps away.
+   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
    *
    * @param currentTile The current tile in the search
    * @param previousTile The previous tile in the search (to avoid backtracking)
@@ -423,17 +441,68 @@ public class MissingDiamond {
     }
   }
 
+  // NEW helper method to check if a tile is special
+  private boolean isSpecialTile(Tile tile) {
+    if (tile == null || this.specialTileIdsSet == null) {
+      return false;
+    }
+    return this.specialTileIdsSet.contains(tile.getTileId());
+  }
+
+  // NEW recursive helper for finding valid moves (including special tile stops)
+  private void recursiveMoveFinder(Tile currentTile, int dieRoll, Set<Tile> visitedInCall, Set<Tile> resultOutput, int currentDepth) {
+    // currentDepth is the number of steps from the original startTile.
+    // original startTile is at depth 0.
+
+    // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
+    if (currentDepth > 0) { // Only consider tiles reached after at least one step
+        if (isSpecialTile(currentTile)) {
+            resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
+        } else { // Not a special tile
+            if (currentDepth == dieRoll) {
+                resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
+            }
+        }
+    }
+
+    // Stop condition for recursion: if current depth has reached die roll, no more steps can be taken from here.
+    if (currentDepth >= dieRoll) {
+        return;
+    }
+
+    // Recursive step: explore neighbors
+    for (Tile neighbor : currentTile.getNextTiles()) {
+        if (!visitedInCall.contains(neighbor)) {
+            visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
+            recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
+            // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
+        }
+    }
+  }
+
   /**
    * Gets all possible moves for the current player based on the last die roll.
+   * Allows stopping on special tiles if encountered within the die roll distance.
    *
    * @return Set of tiles that the player can move to
    */
   public Set<Tile> getPossibleMovesForCurrentRoll() {
-    if (currentRoll < 1) {
-      return new HashSet<>();
+    Set<Tile> possibleMoves = new HashSet<>();
+    if (currentRoll < 1 || currentPlayer == null || currentPlayer.getCurrentTile() == null) {
+      return possibleMoves;
     }
 
-    return getTilesExactlyNStepsAway(currentPlayer.getCurrentTile(), currentRoll);
+    Tile startTile = currentPlayer.getCurrentTile();
+    Set<Tile> visitedForThisCall = new HashSet<>();
+
+    // Add the start tile itself to visited so the recursion starts by exploring its neighbors
+    visitedForThisCall.add(startTile);
+
+    // Call the recursive helper, starting at depth 0 for the player's current tile.
+    // The recursive function will add valid destination tiles to 'possibleMoves'.
+    recursiveMoveFinder(startTile, currentRoll, visitedForThisCall, possibleMoves, 0);
+
+    return possibleMoves;
   }
 
   /**
@@ -473,7 +542,6 @@ public class MissingDiamond {
 
     return result;
   }
-
 
   /**
    * Checks if there is a token at a specific tile.
