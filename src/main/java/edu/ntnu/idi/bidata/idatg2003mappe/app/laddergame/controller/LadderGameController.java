@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LadderGameController {
   private final LadderGame game;
-  private final boolean randomLadders;
+  private boolean randomLadders;
   private int currentPlayerIndex = 0;
 
   public LadderGameController(boolean randomLadders) {
@@ -98,21 +98,6 @@ public class LadderGameController {
     return game.getPlayers();
   }
 
-  /**
-   * Returns the current player index.
-   */
-  public int getCurrentPlayerIndex() {
-    return currentPlayerIndex;
-  }
-
-  /**
-   * Sets the current player index.
-   *
-   * @param index The new current player index.
-   */
-  public void setCurrentPlayerIndex(int index) {
-    this.currentPlayerIndex = index;
-  }
 
   /**
    * Returns whether the game uses random ladders.

@@ -37,7 +37,7 @@ public class LadderGameGUI extends Application {
   private GridPane boardGrid;
   private TextArea gameLog;
   private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
-  private boolean randomLadders = false;
+  public boolean randomLadders = false;
   public NavBar navBar;
   private GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
 
@@ -306,22 +306,6 @@ public class LadderGameGUI extends Application {
         alert.showAndWait();
       }
     }
-  }
-
-  /**
-   * Toggles the game mode between classic and random ladders.
-   */
-
-  private void toggleGameMode(Stage primaryStage) {
-    randomLadders = !randomLadders; // Toggle mode
-
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle("Game Mode Changed");
-    alert.setHeaderText("Ladder Mode Updated");
-    alert.setContentText(randomLadders ? "Switched to Randomized Ladders" : "Switched to Classic Mode");
-    alert.showAndWait();
-
-    restartGame(primaryStage);
   }
 
   /**
