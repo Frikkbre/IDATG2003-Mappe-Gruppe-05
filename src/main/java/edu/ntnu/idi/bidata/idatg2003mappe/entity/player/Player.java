@@ -113,16 +113,6 @@ public class Player {
   }
 
   /**
-   * Removes an item from the player's inventory
-   *
-   * @param itemName The name of the item to remove
-   * @return True if the item was removed, false if it wasn't in the inventory
-   */
-  public boolean removeInventoryItem(String itemName) {
-    return inventory.remove(itemName);
-  }
-
-  /**
    * Checks if the player has an item in their inventory
    *
    * @param itemName The name of the item to check for
@@ -130,15 +120,6 @@ public class Player {
    */
   public boolean hasInventoryItem(String itemName) {
     return inventory.contains(itemName);
-  }
-
-  /**
-   * Gets the player's inventory
-   *
-   * @return A set of all items in the player's inventory
-   */
-  public Set<String> getInventory() {
-    return new HashSet<>(inventory);
   }
 
   public void setColor(String color) {

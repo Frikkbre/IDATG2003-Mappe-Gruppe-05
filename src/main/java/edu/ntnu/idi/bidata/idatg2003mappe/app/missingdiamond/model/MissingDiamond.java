@@ -30,15 +30,11 @@ import java.util.*;
 public class MissingDiamond {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
-  // Token cost constant
-  private static final int TOKEN_PURCHASE_COST = 100;
-
   // Starting money
   private static final int STARTING_MONEY = 300;
 
   // Game components
   private final BoardBranching board;
-  private final BoardLinear boardLinear = new BoardLinear();
   private List<Player> players = new ArrayList<>();
   private final Die die;
   private final TokenSystem tokenSystem;
@@ -348,7 +344,7 @@ public class MissingDiamond {
   private void identifyCityTiles() {
     // In a real implementation, this would be based on map data
     // For now, assuming tiles with IDs 1-20 are cities
-    for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 32; i++) {
       Tile tile = board.getTileById(i);
       if (tile != null) {
         cityTiles.add(tile);
@@ -383,51 +379,6 @@ public class MissingDiamond {
     // Roll the die
     this.currentRoll = die.rollDie();
     return currentPlayer.getName() + " rolled a " + currentRoll + ".";
-  }
-
-  /**
-   * Gets all tiles that are exactly N steps away from a starting tile.
-   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
-   * @param startTile The starting tile
-   * @param steps The number of steps to move
-   * @return Set of tiles that are exactly N steps away
-   */
-  public Set<Tile> getTilesExactlyNStepsAway(Tile startTile, int steps) {
-    Set<Tile> result = new HashSet<>();
-
-    // No valid moves if steps is invalid
-    if (steps <= 0) {
-      return result;
-    }
-
-    // Use a helper method to do a depth-first search of exactly N steps
-    findExactPathsOfLength(startTile, null, steps, result);
-
-    return result;
-  }
-
-  /**
-   * Helper method for finding all tiles exactly N steps away.
-   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
-   *
-   * @param currentTile The current tile in the search
-   * @param previousTile The previous tile in the search (to avoid backtracking)
-   * @param remainingSteps The remaining number of steps to take
-   * @param result The set of result tiles
-   */
-  private void findExactPathsOfLength(Tile currentTile, Tile previousTile, int remainingSteps, Set<Tile> result) {
-    // If we've used all our steps, add the current tile to our result
-    if (remainingSteps == 0) {
-      result.add(currentTile);
-      return;
-    }
-
-    // Otherwise, continue the search from each neighbor (except the one we just came from)
-    for (Tile neighbor : currentTile.getNextTiles()) {
-      if (neighbor != previousTile) {  // Prevent immediate backtracking
-        findExactPathsOfLength(neighbor, currentTile, remainingSteps - 1, result);
-      }
-    }
   }
 
   // NEW helper method to check if a tile is special
@@ -575,17 +526,6 @@ public class MissingDiamond {
     }
   }
 
-  /**
-   * Skips the current player's turn.
-   */
-  public void skipTurn() {
-    // Reset current roll
-    currentRoll = 0;
-
-    // Move to next player
-    nextPlayer();
-  }
-
   // Getters and setters
 
   /**
@@ -631,15 +571,6 @@ public class MissingDiamond {
    */
   public boolean isGameFinished() {
     return gameFinished;
-  }
-
-  /**
-   * Sets whether the game is finished.
-   *
-   * @param gameFinished True if the game is finished, false otherwise
-   */
-  public void setGameFinished(boolean gameFinished) {
-    this.gameFinished = gameFinished;
   }
 
   /**
@@ -689,41 +620,5 @@ public class MissingDiamond {
    */
   public TokenSystem getTokenSystem() {
     return tokenSystem;
-  }
-
-  /**
-   * Gets the winning player.
-   *
-   * @return The winning player, or null if no winner yet
-   */
-  public Player getWinner() {
-    return winner;
-  }
-
-  /**
-   * Gets the cost of purchasing a token.
-   *
-   * @return The cost of purchasing a token
-   */
-  public int getTokenPurchaseCost() {
-    return TOKEN_PURCHASE_COST;
-  }
-
-  /**
-   * Gets all city tiles on the board.
-   *
-   * @return A list of all city tiles
-   */
-  public List<Tile> getCityTiles() {
-    return new ArrayList<>(cityTiles);
-  }
-
-  /**
-   * Gets all starting tiles (Cairo and Tangiers).
-   *
-   * @return A list of starting tiles
-   */
-  public List<Tile> getStartingTiles() {
-    return new ArrayList<>(startingTiles);
   }
 }

@@ -107,7 +107,7 @@ public class Tile {
 
   public Tile getTileAtDistance(int steps) {
     Tile current = this;
-    if(steps == -44){ // Back to start
+    if(steps == -44){
       current = current.getNextTile();
     }else if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
@@ -155,15 +155,6 @@ public class Tile {
    */
   public Tile getDestinationTile() {
     return destinationTile;
-  }
-
-  /**
-   * Gets the list of next tiles.
-   *
-   * @return The list of next tiles.
-   */
-  public Stream<Tile> streamNextTiles() {
-    return nextTilesOnBoard.stream();
   }
 
   /**
