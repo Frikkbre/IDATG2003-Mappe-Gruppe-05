@@ -1,11 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
-
-import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
-
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
-
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
@@ -33,6 +29,9 @@ public class NavBar {
   private LadderGameGUI ladderGameGUI = new LadderGameGUI();
   private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+
+  private static final String lastSaveDir = "src/main/resources/saves";
+  private static final String lastSaveFile = "LastSave.csv";
 
   private Stage stage;
   public Object gameController;
@@ -109,15 +108,6 @@ public class NavBar {
         closeMenuItem
     );
 
-
-    Menu modeMenu = new Menu("Mode");
-    MenuItem modeMenuItem = new MenuItem("Random Ladders");
-    modeMenuItem.setOnAction(event -> {
-      ladderGameGUI.toggleGameMode(getStage());
-    });
-    modeMenu.getItems().addAll(modeMenuItem);
-
-
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
@@ -134,7 +124,7 @@ public class NavBar {
     navigateMenu.getItems().addAll(navigateMenuItem);
 
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
+    menuBar.getMenus().addAll(fileMenu, navigateMenu);
     menuBar.setStyle("-fx-background-color: #57B9FF;");
 
     return menuBar;
@@ -180,7 +170,64 @@ public class NavBar {
     return null;
   }
 
+  /**
+   * Applies player data loaded from CSV to the current game
+   * @param playerDataList List of player data
+   * @return true if successful, false otherwise
+   */
+  private boolean applyPlayerDataToGame(List<PlayerData> playerDataList) {
+    if (gameController instanceof LadderGameController) {
+      // For LadderGameController, we need to create a GameState and apply it
+      LadderGameController ladderGameController = (LadderGameController) gameController;
 
+      // Create player positions for GameState
+      List<GameState.PlayerPosition> positions = new ArrayList<>();
+      for (PlayerData data : playerDataList) {
+        positions.add(new GameState.PlayerPosition(
+            data.getName(), data.getId(), data.getPosition()));
+      }
+
+      // Create GameState
+      GameState ladderGameState = new GameState();
+      ladderGameState.setPlayerPositions(positions);
+      ladderGameState.setRandomLadders(ladderGameController.isRandomLadders());
+      ladderGameState.setCurrentPlayerIndex(ladderGameController.getCurrentPlayerIndex());
+
+      // Apply GameState
+      ladderGameController.applyGameState(ladderGameState);
+
+      // Update the board UI if ladder game GUI is set
+      if (ladderGameGUI != null) {
+        ladderGameGUI.updateBoardUI();
+      }
+
+      return true;
+    } else if (gameController instanceof MissingDiamondController) {
+      MissingDiamondController missingDiamondController = (MissingDiamondController) gameController;
+
+      // Create player positions for GameState
+      List<GameState.PlayerPosition> positions = new ArrayList<>();
+      for (PlayerData data : playerDataList) {
+        positions.add(new GameState.PlayerPosition(
+            data.getName(), data.getId(), data.getPosition()));
+      }
+
+      // Create GameState
+      GameState missingDiamondGameState = new GameState();
+      missingDiamondGameState.setPlayerPositions(positions);
+      missingDiamondGameState.setCurrentPlayerIndex(missingDiamondController.getCurrentPlayerIndex());
+
+      // Apply GameState
+      missingDiamondController.applyGameState(missingDiamondGameState);
+
+      // Update the board UI if ladder game GUI is set
+      if (ladderGameGUI != null) {
+        ladderGameGUI.updateBoardUI();
+      }
+      return true;
+    }
+    return false;
+  }
 
   /**
    * Helper class to store player data from CSV
