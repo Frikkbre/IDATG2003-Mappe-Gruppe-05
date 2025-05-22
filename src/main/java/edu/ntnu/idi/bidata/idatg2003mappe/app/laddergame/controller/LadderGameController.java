@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LadderGameController {
   private final LadderGame game;
-  private final boolean randomLadders;
+  private boolean randomLadders;
   private int currentPlayerIndex = 0;
 
   public LadderGameController(boolean randomLadders) {
@@ -154,5 +154,9 @@ public class LadderGameController {
         }
       }
     }
+  }
+
+  public void setRandomLadders(boolean b) {
+    this.randomLadders = b;
   }
 }
