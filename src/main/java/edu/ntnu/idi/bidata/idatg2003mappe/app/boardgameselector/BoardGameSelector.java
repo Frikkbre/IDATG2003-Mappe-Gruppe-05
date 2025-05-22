@@ -37,16 +37,10 @@ public class BoardGameSelector {
     switch (gameSelector) {
       case 1:
         numberOfPlayers = getNumberOfPlayers();
-        // Create player data for CSV here
-        writePlayersToCSV(numberOfPlayers);
-        // Now create the game with updated constructor
         new LadderGame(false);
         break;
       case 2:
         numberOfPlayers = getNumberOfPlayers();
-        // Create player data for CSV here
-        writePlayersToCSV(numberOfPlayers);
-        // Now create the game with updated constructor
         new MissingDiamond();
         break;
       case 0:
@@ -56,47 +50,6 @@ public class BoardGameSelector {
         System.out.println("Invalid selection. Exiting...");
         break;
     }
-  }
-
-  /**
-   * Method to write player data to the CSV file
-   *
-   * @param numberOfPlayers the number of players to create
-   */
-  private void writePlayersToCSV(int numberOfPlayers) {
-    // This method would create the CSV file with player data
-    // For now, it's just a placeholder - the full implementation would be similar to
-    // what we did in BoardGameSelectorGUI
-    System.out.println("Setting up " + numberOfPlayers + " players...");
-
-    // In a real implementation, this would create the CSV file:
-    /*
-    try {
-      File playerDir = new File("src/main/resources/saves/playerData/");
-      if (!playerDir.exists()) {
-        playerDir.mkdirs();
-      }
-
-      File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
-      FileWriter outputfile = new FileWriter(playerFile);
-      CSVWriter playerWriter = new CSVWriter(outputfile);
-
-      // Write header
-      String[] header = { "Player", "Color", "Score" };
-      playerWriter.writeNext(header);
-
-      // Write player data
-      for (int i = 0; i < numberOfPlayers; i++) {
-        String[] playerData = { "Player " + (i + 1), "Color" + i, "0" };
-        playerWriter.writeNext(playerData);
-      }
-
-      playerWriter.flush();
-      playerWriter.close();
-    } catch (IOException e) {
-      System.err.println("Error writing player data: " + e.getMessage());
-    }
-    */
   }
 
   /**
