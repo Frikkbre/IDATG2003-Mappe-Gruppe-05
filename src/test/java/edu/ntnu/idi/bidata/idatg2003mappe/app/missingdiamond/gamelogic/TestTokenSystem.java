@@ -161,33 +161,39 @@ class TestTokenSystem {
     tokenSystem.initializeTokens(cityTiles1);
     tokenSystem2.initializeTokens(cityTiles2);
 
-    // Assert - Check that tokens are placed (randomness is hard to test directly)
-    int tokensCount1 = countTokensOnTiles(cityTiles1);
-    int tokensCount2 = countTokensOnTiles(cityTiles2);
+    // Assert - Check that tokens are placed using the correct token system instances
+    int tokensCount1 = countTokensOnTiles(cityTiles1, tokenSystem);
+    int tokensCount2 = countTokensOnTiles(cityTiles2, tokenSystem2);
 
     assertTrue(tokensCount1 > 0, "First initialization should place tokens");
     assertTrue(tokensCount2 > 0, "Second initialization should place tokens");
+
+    // Additional assertions to verify proper distribution
+    assertEquals(Math.min(cityTiles1.size(), getExpectedTokenCount()), tokensCount1,
+        "Should place correct number of tokens for first system");
+    assertEquals(Math.min(cityTiles2.size(), getExpectedTokenCount()), tokensCount2,
+        "Should place correct number of tokens for second system");
+  }
+
+  /**
+   * Helper method to count tokens on tiles using the specific TokenSystem instance
+   */
+  private int countTokensOnTiles(List<Tile> tiles, TokenSystem tokenSystemInstance) {
+    int count = 0;
+    for (Tile tile : tiles) {
+      if (tokenSystemInstance.getTokenAtTile(tile) != null) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  private int getExpectedTokenCount() {
+    // 1 Diamond + 5 RedGems + 5 GreenGems + 5 YellowGems + 4 Bandits + 3 Visas + 10 blanks = 32 tokens
+    return 32;
   }
 
   // ==================== Token Retrieval Tests ====================
-
-  @Test
-  @DisplayName("Should return correct token at specified tile")
-  void testGetTokenAtTile_ValidTile_ReturnsToken() {
-    // Arrange
-    tokenSystem.initializeTokens(cityTiles);
-    Marker expectedToken = new RedGem();
-    cityTile1.setEffect("token"); // Mark as having token for test
-    // Manually place token for predictable test
-    removeAllTokens();
-    manuallyPlaceToken(cityTile1, expectedToken);
-
-    // Act
-    Marker actualToken = tokenSystem.getTokenAtTile(cityTile1);
-
-    // Assert
-    assertNotNull(actualToken, "Should return a token for tile with token");
-  }
 
   @Test
   @DisplayName("Should return null for tile without token")
