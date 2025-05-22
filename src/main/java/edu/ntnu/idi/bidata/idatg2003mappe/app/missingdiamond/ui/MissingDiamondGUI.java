@@ -248,6 +248,10 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     }
   }
 
+  public MapDesignerManager getMapDesignerManager() {
+    return mapDesignerManager;
+  }
+
   @Override
   public void onLogMessage(String message) {
     controlPanel.logMessage(message);

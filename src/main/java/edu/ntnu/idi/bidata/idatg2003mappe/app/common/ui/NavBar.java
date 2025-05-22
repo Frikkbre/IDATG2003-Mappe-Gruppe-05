@@ -7,6 +7,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingD
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerTool;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
@@ -24,6 +25,7 @@ public class NavBar {
 
   private Stage stage;
   public Object gameController;
+  private MapDesignerTool mapDesignerTool;
 
   /**
    * returns the stage of the NavBar
@@ -121,7 +123,14 @@ public class NavBar {
     navigateMenu.getItems().addAll(navigateMenuItem);
 
     MenuBar menuBar = new MenuBar();
-    menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
+
+    if (gameController instanceof MissingDiamondController && missingDiamondGUI != null) {
+      Menu developerMenu = missingDiamondGUI.getMapDesignerManager().getMapDesignerTool().createDesignerMenu();
+      menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu, developerMenu);
+    } else {
+      menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
+    }
+
     menuBar.setStyle("-fx-background-color: #57B9FF;");
 
     return menuBar;
