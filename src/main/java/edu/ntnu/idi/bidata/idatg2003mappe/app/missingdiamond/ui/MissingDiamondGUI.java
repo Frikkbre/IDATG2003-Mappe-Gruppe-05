@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.*;
@@ -40,6 +41,12 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private GameControlPanel controlPanel;
   private PlayerStatusPanel statusPanel;
   private MapDesignerManager mapDesignerManager;
+
+  // Developer controls
+  private Label tileTypeLabel;
+  private Label sourceIdLabel;
+  private Label targetIdLabel;
+  private Button createConnectionButton;
 
   @Override
   public void start(Stage primaryStage) {
@@ -174,22 +181,36 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     devControls.setPadding(new Insets(5));
     devControls.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
+    // Create labels and button as class fields so we can show/hide them
+    tileTypeLabel = new Label("Tile Type:");
+    sourceIdLabel = new Label("Source ID:");
+    targetIdLabel = new Label("Target ID:");
+    createConnectionButton = UIComponentFactory.createActionButton("Create Connection", e ->
+        mapDesignerManager.createConnection());
+
     // Add map designer components
     devControls.getChildren().addAll(
-        new Label("Tile Type:"), mapDesignerManager.getTileTypeSelector(),
-        new Label("Source ID:"), mapDesignerManager.getSourceIdField(),
-        new Label("Target ID:"), mapDesignerManager.getTargetIdField(),
-        UIComponentFactory.createActionButton("Create Connection", e ->
-            mapDesignerManager.createConnection())
+        tileTypeLabel, mapDesignerManager.getTileTypeSelector(),
+        sourceIdLabel, mapDesignerManager.getSourceIdField(),
+        targetIdLabel, mapDesignerManager.getTargetIdField(),
+        createConnectionButton
     );
 
-    // Hide developer controls initially
-    mapDesignerManager.getTileTypeSelector().setVisible(false);
-    mapDesignerManager.getSourceIdField().setVisible(false);
-    mapDesignerManager.getTargetIdField().setVisible(false);
+    setDevControlsVisible(false);
 
     return devControls;
   }
+
+  private void setDevControlsVisible(boolean visible) {
+    tileTypeLabel.setVisible(visible);
+    mapDesignerManager.getTileTypeSelector().setVisible(visible);
+    sourceIdLabel.setVisible(visible);
+    mapDesignerManager.getSourceIdField().setVisible(visible);
+    targetIdLabel.setVisible(visible);
+    mapDesignerManager.getTargetIdField().setVisible(visible);
+    createConnectionButton.setVisible(visible);
+  }
+
 
   private VBox createLeftSidebar() {
     VBox sidebar = new VBox(10);
@@ -259,12 +280,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
   @Override
   public void onCoordinateModeToggled(boolean enabled) {
-    mapDesignerManager.getTileTypeSelector().setVisible(enabled);
-    mapDesignerManager.getSourceIdField().setVisible(enabled);
-    mapDesignerManager.getTargetIdField().setVisible(enabled);
-
+    setDevControlsVisible(enabled);
     controlPanel.setRollButtonDisabled(enabled);
-
     logger.info("Coordinate mode toggled: " + enabled);
   }
 
