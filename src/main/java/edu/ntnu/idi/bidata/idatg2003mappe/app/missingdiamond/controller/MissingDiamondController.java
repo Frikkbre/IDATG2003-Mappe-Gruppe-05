@@ -1,58 +1,133 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
+import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
+import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
+ * Now includes support for buying token flips for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.2
- * @since 23.04.2025
+ * @version 0.2.0
+ * @since 23.05.2025
  */
 public class MissingDiamondController {
+  private List<BoardGameObserver> observers = new ArrayList<>();
   private final MissingDiamond game;
   private boolean hasRolled = false;
   private MapDesignerListener view;
 
-  public MissingDiamondController() {
-    this.game = new MissingDiamond();
+  public void addObserver(BoardGameObserver observer) {
+    if (!observers.contains(observer)) {
+      observers.add(observer);
+    }
   }
 
+  public void removeObserver(BoardGameObserver observer) {
+    observers.remove(observer);
+  }
+
+  private void notifyPlayerMoved(Player player, Tile oldTile, Tile newTile) {
+    for (BoardGameObserver observer : observers) {
+      observer.onPlayerMoved(player, oldTile, newTile);
+    }
+  }
+
+  // Action state tracking
+  private enum ActionState {
+    AWAITING_ROLL,
+    AWAITING_MOVE,
+    AWAITING_TOKEN_DECISION
+  }
+
+  private ActionState currentState = ActionState.AWAITING_ROLL;
+
+  // Available actions for the current state
+  private final Map<ActionState, List<String>> availableActions = new HashMap<>();
+
+  /**
+   * Constructor for MissingDiamondController.
+   */
+  public MissingDiamondController() {
+    this.game = new MissingDiamond();
+    initializeAvailableActions();
+  }
+
+  /**
+   * Initializes the available actions for each game state.
+   */
+  private void initializeAvailableActions() {
+    // Actions for each state
+    List<ActionState> states = new ArrayList<>();
+    states.add(ActionState.AWAITING_ROLL);
+    states.add(ActionState.AWAITING_MOVE);
+    states.add(ActionState.AWAITING_TOKEN_DECISION);
+
+    for (ActionState state : states) {
+      availableActions.put(state, new ArrayList<>());
+    }
+
+    availableActions.get(ActionState.AWAITING_ROLL).add("rollDie");
+
+    availableActions.get(ActionState.AWAITING_MOVE).add("moveToTile");
+
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("openToken");
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");  // NEW: Add to available actions
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
+  }
+
+  /**
+   * Rolls the die and updates the game state.
+   *
+   * @return A message describing the roll result
+   */
   public String playTurn() {
-    // Check if player has already rolled
-    if (hasRolled) {
-      return "Player " + getCurrentPlayer().getName() + " must move before rolling again.";
+    if (currentState != ActionState.AWAITING_ROLL) {
+      return "You need to complete your current action first.";
     }
 
     // Roll the die
     String result = game.playTurn();
     hasRolled = true;
+    currentState = ActionState.AWAITING_MOVE;
 
-    // Check if there are any valid moves after rolling
+    // Check if there are any valid moves
     List<Tile> possibleMoves = getPossibleMoves();
     if (possibleMoves.isEmpty()) {
-      // No valid moves, so automatically end turn
-      hasRolled = false;
-      game.skipTurn(); // You'll need to add this method to MissingDiamond class
-      return result + "\nNo valid moves available. Turn passed to next player.";
+      result += "\nNo valid moves available. Turn passed to next player.";
+      endTurn();
     }
 
     return result;
   }
 
+  /**
+   * Moves the player to the selected tile.
+   *
+   * @param tileId The ID of the tile to move to
+   * @return A message describing the move result
+   */
   public String movePlayer(int tileId) {
+
     // Check if player has rolled
-    if (!hasRolled) {
-      return "Player must roll the die first.";
+    if (currentState != ActionState.AWAITING_MOVE) {
+      return "You need to roll the die first.";
     }
 
     // Get destination tile
@@ -61,7 +136,7 @@ public class MissingDiamondController {
       return "Invalid tile ID.";
     }
 
-    // Check if the destination tile is a valid move based on the die roll
+    // Check if the destination tile is a valid move
     Set<Tile> validMoves = game.getPossibleMovesForCurrentRoll();
     if (!validMoves.contains(destinationTile)) {
       return "Cannot move to tile " + tileId + " - it's not exactly " +
@@ -71,12 +146,118 @@ public class MissingDiamondController {
     // Move the player
     String moveResult = game.movePlayerToTile(destinationTile);
 
-    // Reset rolled state after move
-    hasRolled = false;
+    // Check if the destination is a special tile with a token
+    if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
+      currentState = ActionState.AWAITING_TOKEN_DECISION;
+      return moveResult + "\nYou've reached a location with a token. You can:" +
+          "\n• Try to get it free (roll 4-6 to succeed)" +
+          "\n• Buy a guaranteed token flip for £300" +
+          "\n• Skip and continue your journey";
+    }
+
+    // End turn only if game is finished
+    if (game.isGameFinished()) {
+    }
 
     return moveResult;
   }
 
+  /**
+   * NEW: Buys a token flip for 300 coins (guaranteed success).
+   *
+   * @param tile The tile with the token
+   * @return True if the purchase was successful, false otherwise
+   */
+  public boolean buyTokenFlip(Tile tile) {
+    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
+      return false;
+    }
+
+    Player currentPlayer = game.getCurrentPlayer();
+    Banker banker = game.getBanker();
+
+    // Use the token system's buyTokenFlip method
+    boolean success = game.getTokenSystem().buyTokenFlip(currentPlayer, tile, banker);
+
+    if (success) {
+      // Reset state and end turn after successful token flip
+      currentState = ActionState.AWAITING_ROLL;
+      endTurn();
+    }
+
+    return success;
+  }
+
+  public boolean isSpecialTile(int tileId) {
+    Tile tile = getTileById(tileId);
+    if (tile != null) {
+      return hasTokenAtTile(tile);
+    }
+    return false;
+  }
+
+  public boolean hasTokenAtTile(Tile tile) {
+    if (tile == null) {
+      return false;
+    }
+
+    // Delegate to the game model
+    return game.hasTokenAtTile(tile);
+  }
+
+  /**
+   * Skips the token action and ends the turn.
+   *
+   * @return A message indicating the action was skipped
+   */
+  public String skipTokenAction() {
+    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
+      return "No token action to skip.";
+    }
+
+    currentState = ActionState.AWAITING_ROLL;
+
+    endTurn();
+    return "You chose to ignore the token and continue your journey.";
+  }
+
+  /**
+   * Ends the current player's turn and moves to the next player.
+   */
+  public void endTurn() {
+    // Switch to next player
+    game.nextPlayer();
+
+    // Reset roll state - explicitly set to false to ensure consistency
+    hasRolled = false;
+
+    // Reset action state
+    currentState = ActionState.AWAITING_ROLL;
+
+    // Clear any pending actions that might be related to the previous player's turn
+    // This helps ensure consistent state for the next player
+
+    // Notify observers about turn change
+    for (BoardGameObserver observer : observers) {
+      observer.onTurnChanged(game.getCurrentPlayer());
+    }
+  }
+
+  /**
+   * Explicitly reset the roll state to fix UI inconsistency.
+   * This ensures the UI always shows the roll button after end turn.
+   */
+  public void resetRollState() {
+    this.hasRolled = false;
+    // Make sure the action state is also consistent
+    this.currentState = ActionState.AWAITING_ROLL;
+  }
+
+  /**
+   * Applies a game state to this controller.
+   *
+   * @param gameState The game state to apply
+   */
   public void applyGameState(GameState gameState) {
     game.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex());
 
@@ -96,36 +277,60 @@ public class MissingDiamondController {
         }
       }
     }
+
+    // Reset controller state
+    hasRolled = false;
+    currentState = ActionState.AWAITING_ROLL;
   }
 
+  public MissingDiamond getGame() {
+    return this.game;
+  }
+
+  public boolean isRedTileFromConfig(int tileId) {
+    try {
+      // Load the map configuration to check if this tile is marked as special
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapFileHandler.defaultMapExists()) {
+        mapConfig = mapFileHandler.loadFromDefaultLocation();
+      } else {
+        return false; // No config available
+      }
+
+      // Find the location with this ID and check if it's special
+      for (MapConfig.Location location : mapConfig.getLocations()) {
+        if (location.getId() == tileId) {
+          return location.isSpecial();
+        }
+      }
+
+      return false;
+
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Error checking if tile is red: " + e.getMessage());
+    }
+  }
+
+  public Marker removeTokenFromTile(Tile tile) {
+    return game.getTokenSystem().removeTokenFromTile(tile);
+  }
+
+  /**
+   * Creates a game state from the current game.
+   *
+   * @return A game state object
+   */
   public GameState createGameState() {
-    return new GameState(game.getPlayers());
+    return new GameState(game.getCurrentPlayerIndex(), false, game.getPlayers());
   }
 
-  public List<Player> getPlayers() {
-    return game.getPlayers();
-  }
-
-  public Player getCurrentPlayer() {
-    return game.getCurrentPlayer();
-  }
-
-  public int getCurrentPlayerIndex() {
-    return game.getCurrentPlayerIndex();
-  }
-
-  public int getCurrentRoll() {
-    return game.getCurrentRoll();
-  }
-
-  public boolean isGameFinished() {
-    return game.isGameFinished();
-  }
-
-  public Tile getTileById(int tileId) {
-    return game.getBoard().getTileById(tileId);
-  }
-
+  /**
+   * Gets a list of possible moves based on the current roll.
+   *
+   * @return A list of tiles that the player can move to
+   */
   public List<Tile> getPossibleMoves() {
     if (!hasRolled) {
       return new ArrayList<>();
@@ -133,11 +338,124 @@ public class MissingDiamondController {
     return new ArrayList<>(game.getPossibleMovesForCurrentRoll());
   }
 
+  /**
+   * Gets the token at a specific tile ID.
+   *
+   * @param tileId The ID of the tile to check
+   * @return The marker at the tile, or null if no marker exists
+   */
+  public Marker getTokenAtTileId(int tileId) {
+    Tile tile = game.getBoard().getTileById(tileId);
+    if (tile != null) {
+      return game.getTokenAtTile(tile);
+    }
+    return null;
+  }
+
+  /**
+   * Registers a view to receive notifications about game events.
+   *
+   * @param view The view to register
+   */
+  public void registerView(MapDesignerListener view) {
+    this.view = view;
+  }
+
+  /**
+   * Checks if the player has rolled the die.
+   *
+   * @return True if the player has rolled, false otherwise
+   */
   public boolean hasRolled() {
     return hasRolled;
   }
 
-  public void registerView(MapDesignerListener view) {
-    this.view = view;
+  /**
+   * Gets the current action state.
+   *
+   * @return The current action state
+   */
+  public ActionState getCurrentState() {
+    return currentState;
+  }
+
+  /**
+   * Gets a list of available actions for the current state.
+   *
+   * @return A list of available actions
+   */
+  public List<String> getAvailableActions() {
+    return new ArrayList<>(availableActions.getOrDefault(currentState, new ArrayList<>()));
+  }
+
+  // Delegation methods to the game model
+
+  /**
+   * Gets the list of players.
+   *
+   * @return The list of players
+   */
+  public List<Player> getPlayers() {
+    return game.getPlayers();
+  }
+
+  /**
+   * Gets the current player.
+   *
+   * @return The current player
+   */
+  public Player getCurrentPlayer() {
+    return game.getCurrentPlayer();
+  }
+
+  /**
+   * Gets the current player index.
+   *
+   * @return The current player index
+   */
+  public int getCurrentPlayerIndex() {
+    return game.getCurrentPlayerIndex();
+  }
+
+  /**
+   * Gets the current roll value.
+   *
+   * @return The current roll value
+   */
+  public int getCurrentRoll() {
+    return game.getCurrentRoll();
+  }
+
+  /**
+   * Checks if the game is finished.
+   *
+   * @return True if the game is finished, false otherwise
+   */
+  public boolean isGameFinished() {
+    return game.isGameFinished();
+  }
+
+  /**
+   * Gets a tile by its ID.
+   *
+   * @param tileId The ID of the tile to get
+   * @return The tile with the specified ID, or null if not found
+   */
+  public Tile getTileById(int tileId) {
+    return game.getBoard().getTileById(tileId);
+  }
+
+  /**
+   * Gets the banker.
+   *
+   * @return The banker
+   */
+  public Banker getBanker() {
+    return game.getBanker();
+  }
+
+  public Die getDie() {
+    return game.getDie();
   }
 }
+

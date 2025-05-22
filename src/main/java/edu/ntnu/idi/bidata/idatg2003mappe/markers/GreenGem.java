@@ -7,6 +7,14 @@ package edu.ntnu.idi.bidata.idatg2003mappe.markers;
  * @version 0.0.1
  * @since 03.02.2025
  */
+public class GreenGem extends Marker {
+  private static final String TYPE = "GreenGem";
+  private static final int VALUE = 500;
 
-public class GreenGem {
+  /**
+   * Constructor for the GreenGem class.
+   */
+  public GreenGem() {
+    super(TYPE, VALUE);
+  }
 }
