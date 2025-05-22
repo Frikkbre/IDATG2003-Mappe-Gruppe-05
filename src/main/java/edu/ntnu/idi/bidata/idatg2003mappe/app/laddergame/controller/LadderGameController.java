@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model.LadderGame;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
@@ -7,21 +8,41 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.EffectTile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for the Ladder Game.
+ * Acts as the bridge between the game model and the UI view.
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 1.0.0
+ * @since 21.05.2025
+ */
 public class LadderGameController {
   private final LadderGame game;
-  private boolean randomLadders;
-  private int currentPlayerIndex = 0;
+  private final boolean randomLadders;
+  private int currentPlayerIndex;
 
+  // Observer pattern for UI updates
+  private final List<BoardGameObserver> observers = new ArrayList<>();
+
+  /**
+   * Creates a new controller with the specified ladder configuration.
+   *
+   * @param randomLadders true for random ladder placement, false for classic
+   */
   public LadderGameController(boolean randomLadders) {
     this.randomLadders = randomLadders;
-    game = new LadderGame(randomLadders);
+    this.currentPlayerIndex = 0;
+    this.game = new LadderGame(randomLadders);
   }
 
   /**
-   * Plays a single turn. Returns a message describing the move.
-   * If the game is finished, it returns a winning message.
+   * Plays a complete turn for the current player.
+   * Handles dice rolling, movement, effects, ladders, and win checking.
+   *
+   * @return message describing what happened during the turn
    */
   public String playTurn() {
     List<Player> players = game.getPlayers();
@@ -30,97 +51,153 @@ public class LadderGameController {
     }
 
     Player currentPlayer = players.get(currentPlayerIndex);
-    // Use the die from the game instance
-    int roll = game.getDie().rollDie();
     StringBuilder message = new StringBuilder();
 
+    // Handle skip turn
     if (currentPlayer.isSkipTurn()) {
-      message.append(currentPlayer.getName() + " skips their turn!\n");
+      message.append(currentPlayer.getName()).append(" skips their turn!\n");
       currentPlayer.setSkipTurn(false);
-      currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+      advanceToNextPlayer();
       return message.toString();
     }
 
+    // Roll dice and move
+    int roll = game.getDie().rollDie();
+    message.append(currentPlayer.getName()).append(" rolled: ").append(roll).append("\n");
 
-    message.append(currentPlayer.getName() + " rolled: " + roll + "\n");
-    // Move the player
+    Tile oldTile = currentPlayer.getCurrentTile();
     currentPlayer.movePlayer(roll);
-    message.append("Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
+    Tile newTile = currentPlayer.getCurrentTile();
 
-    // Check for effect tile action
-    if (currentPlayer.getCurrentTile().getEffect() != null) {
-      Tile startTile = getTileByIdLinear(1); // Get tile with ID 1
-      EffectTile effectTile = new EffectTile(
-          currentPlayer.getCurrentTile(),
-          currentPlayer.getCurrentTile().getEffect(),
-          startTile // Pass start tile
-      );
-      if(currentPlayer.getCurrentTile().getEffect().equals("skipTurn")) {
-        message.append("Effect! " + currentPlayer.getName() + " has to skip their next turn" + "\n");
-      } else if (currentPlayer.getCurrentTile().getEffect().equals("backToStart")) {
-        message.append("Effect! " + currentPlayer.getName() + " has to move back to start" + "\n");
-      }
+    message.append("Moved to tile ").append(newTile.getTileId()).append("\n");
+    notifyPlayerMoved(currentPlayer, oldTile, newTile);
 
-      effectTile.performAction(currentPlayer);
-    }
+    // Handle tile effects
+    handleTileEffects(currentPlayer, message);
 
-    // Check for ladder action
-    if (currentPlayer.getCurrentTile().getDestinationTile() != null) {
-      LadderAction ladderAction = new LadderAction(currentPlayer.getCurrentTile());
-      ladderAction.performAction(currentPlayer);
-      message.append("Ladder! Moved to tile " + currentPlayer.getCurrentTile().getTileId() + "\n");
-    }
+    // Handle ladders
+    handleLadders(currentPlayer, message);
 
     // Check win condition
     if (currentPlayer.getCurrentTile().getTileId() == game.getNumberOfTiles()) {
-      message.append(currentPlayer.getName() + " wins the game!");
+      message.append(currentPlayer.getName()).append(" wins the game!");
+      notifyGameEnded(currentPlayer);
       return message.toString();
     }
 
-    // Update to next player
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    // Next player's turn
+    advanceToNextPlayer();
     return message.toString();
   }
 
   /**
-   * Updates the board UI.
+   * Handles special tile effects like skip turn or back to start.
    */
+  private void handleTileEffects(Player player, StringBuilder message) {
+    String effect = player.getCurrentTile().getEffect();
+    if (effect == null) return;
 
+    Tile startTile = getTileByIdLinear(1);
+    EffectTile effectTile = new EffectTile(player.getCurrentTile(), effect, startTile);
+
+    if ("skipTurn".equals(effect)) {
+      message.append("Effect! ").append(player.getName()).append(" will skip next turn\n");
+    } else if ("backToStart".equals(effect)) {
+      message.append("Effect! ").append(player.getName()).append(" goes back to start\n");
+    }
+
+    effectTile.performAction(player);
+  }
+
+  /**
+   * Handles ladder actions when player lands on a ladder tile.
+   */
+  private void handleLadders(Player player, StringBuilder message) {
+    if (player.getCurrentTile().getDestinationTile() != null) {
+      Tile oldTile = player.getCurrentTile();
+      LadderAction ladderAction = new LadderAction(player.getCurrentTile());
+      ladderAction.performAction(player);
+
+      message.append("Ladder! Moved to tile ").append(player.getCurrentTile().getTileId()).append("\n");
+      notifyPlayerMoved(player, oldTile, player.getCurrentTile());
+    }
+  }
+
+  /**
+   * Advances to the next player's turn.
+   */
+  private void advanceToNextPlayer() {
+    currentPlayerIndex = (currentPlayerIndex + 1) % game.getPlayers().size();
+    notifyTurnChanged(game.getPlayers().get(currentPlayerIndex));
+  }
+
+  /**
+   * Adds an observer to receive game events.
+   *
+   * @param observer the observer to add
+   */
+  public void addObserver(BoardGameObserver observer) {
+    if (observer != null && !observers.contains(observer)) {
+      observers.add(observer);
+    }
+  }
+
+  /**
+   * Removes an observer.
+   *
+   * @param observer the observer to remove
+   */
+  public void removeObserver(BoardGameObserver observer) {
+    observers.remove(observer);
+  }
+
+  /**
+   * Gets a tile by its ID.
+   *
+   * @param tileNumber the tile ID
+   * @return the tile, or null if not found
+   */
   public Tile getTileByIdLinear(int tileNumber) {
     return game.getBoard().getTileByIdLinear(tileNumber);
   }
 
   /**
-   * Returns the players in the game.
+   * Gets all players in the game.
+   *
+   * @return list of players
    */
-
   public List<Player> getPlayers() {
     return game.getPlayers();
   }
 
-
   /**
-   * Returns whether the game uses random ladders.
+   * Checks if using random ladders.
+   *
+   * @return true if random ladders enabled
    */
   public boolean isRandomLadders() {
     return randomLadders;
   }
 
   /**
-   * Creates a GameState object representing the current state of the game.
+   * Creates a save state of the current game.
    *
-   * @return A GameState object.
+   * @return GameState object for saving
    */
   public GameState createGameState() {
     return new GameState(currentPlayerIndex, randomLadders, game.getPlayers());
   }
 
   /**
-   * Applies a GameState to this controller.
+   * Restores the game from a saved state.
    *
-   * @param gameState The GameState to apply.
+   * @param gameState the state to restore
    */
   public void applyGameState(GameState gameState) {
+    if (gameState == null) {
+      throw new IllegalArgumentException("GameState cannot be null");
+    }
+
     this.currentPlayerIndex = gameState.getCurrentPlayerIndex();
 
     // Restore player positions
@@ -128,16 +205,46 @@ public class LadderGameController {
       List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
       List<Player> players = game.getPlayers();
 
-      for (int i = 0; i < players.size() && i < positions.size(); i++) {
+      for (int i = 0; i < Math.min(players.size(), positions.size()); i++) {
         GameState.PlayerPosition pos = positions.get(i);
         Player player = players.get(i);
 
-        // Find the tile with the saved ID and place player there
         Tile tile = game.getBoard().getTileByIdLinear(pos.getTileId());
         if (tile != null) {
           player.placePlayer(tile);
         }
       }
     }
+  }
+
+  // Observer notification methods
+
+  /**
+   * Notifies observers that a player has moved.
+   *
+   * @param player the player who moved
+   * @param from   the tile they moved from
+   * @param to     the tile they moved to
+   */
+  private void notifyPlayerMoved(Player player, Tile from, Tile to) {
+    observers.forEach(observer -> observer.onPlayerMoved(player, from, to));
+  }
+
+  /**
+   * Notifies observers that the game has ended.
+   *
+   * @param winner the winning player
+   */
+  private void notifyGameEnded(Player winner) {
+    observers.forEach(observer -> observer.onGameEnded(winner));
+  }
+
+  /**
+   * Notifies observers that the turn has changed.
+   *
+   * @param newPlayer the player whose turn it is now
+   */
+  private void notifyTurnChanged(Player newPlayer) {
+    observers.forEach(observer -> observer.onTurnChanged(newPlayer));
   }
 }

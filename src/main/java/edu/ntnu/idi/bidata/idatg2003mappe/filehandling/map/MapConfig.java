@@ -49,16 +49,8 @@ public class MapConfig {
       return xPercent;
     }
 
-    public void setXPercent(double xPercent) {
-      this.xPercent = xPercent;
-    }
-
     public double getYPercent() {
       return yPercent;
-    }
-
-    public void setYPercent(double yPercent) {
-      this.yPercent = yPercent;
     }
 
     public boolean isSpecial() {
@@ -75,6 +67,7 @@ public class MapConfig {
     private int fromId;
     private int toId;
 
+
     public Connection(int fromId, int toId) {
       this.fromId = fromId;
       this.toId = toId;
@@ -85,22 +78,15 @@ public class MapConfig {
       return fromId;
     }
 
-    public void setFromId(int fromId) {
-      this.fromId = fromId;
-    }
-
     public int getToId() {
       return toId;
     }
 
-    public void setToId(int toId) {
-      this.toId = toId;
-    }
   }
 
   private String name;
-  private List<Location> locations = new ArrayList<>();
-  private List<Connection> connections = new ArrayList<>();
+  private final List<Location> locations = new ArrayList<>();
+  private final List<Connection> connections = new ArrayList<>();
 
   // Getters and setters
   public String getName() {
@@ -115,16 +101,8 @@ public class MapConfig {
     return locations;
   }
 
-  public void setLocations(List<Location> locations) {
-    this.locations = locations;
-  }
-
   public List<Connection> getConnections() {
     return connections;
-  }
-
-  public void setConnections(List<Connection> connections) {
-    this.connections = connections;
   }
 
   // Helper methods

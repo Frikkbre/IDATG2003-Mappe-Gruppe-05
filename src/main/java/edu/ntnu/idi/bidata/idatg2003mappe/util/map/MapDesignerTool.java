@@ -165,10 +165,27 @@ public class MapDesignerTool {
   }
 
   // Delegate methods to expose UI components
-  public Label getStatusLabel() { return uiManager.getStatusLabel(); }
-  public ChoiceBox<String> getTileTypeSelector() { return uiManager.getTileTypeSelector(); }
-  public TextField getSourceIdField() { return uiManager.getSourceIdField(); }
-  public TextField getTargetIdField() { return uiManager.getTargetIdField(); }
-  public boolean isCoordinateMode() { return uiManager.isCoordinateMode(); }
-  public boolean isConnectionMode() { return uiManager.isConnectionMode(); }
+  public Label getStatusLabel() {
+    return uiManager.getStatusLabel();
+  }
+
+  public ChoiceBox<String> getTileTypeSelector() {
+    return uiManager.getTileTypeSelector();
+  }
+
+  public TextField getSourceIdField() {
+    return uiManager.getSourceIdField();
+  }
+
+  public TextField getTargetIdField() {
+    return uiManager.getTargetIdField();
+  }
+
+  public boolean isCoordinateMode() {
+    return uiManager.isCoordinateMode();
+  }
+
+  public boolean isConnectionMode() {
+    return uiManager.isConnectionMode();
+  }
 }

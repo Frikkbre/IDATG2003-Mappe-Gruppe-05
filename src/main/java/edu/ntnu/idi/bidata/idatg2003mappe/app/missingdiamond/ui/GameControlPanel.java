@@ -5,7 +5,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingD
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -20,19 +19,20 @@ import java.util.List;
 
 /**
  * Panel containing game controls like dice rolling and game log.
- * Now includes the new "Buy Token Flip" option for 300 coins.
+ * Includes token interaction options for 300 coins guaranteed flip.
+ * Skip functionality removed - End Turn serves the same purpose.
  */
 public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;
   private final BoardView boardView;
   private final Button rollDieButton;
   private final Button openTokenButton;
-  private final Button buyTokenFlipButton;  // NEW: Buy token flip button
-  private final Button skipTokenButton;
+  private final Button buyTokenFlipButton;
   private final Label selectMoveLabel;
   private final Button endTurnButton;
   private final TextArea gameLog;
   private final Label playerMoneyLabel;
+  private PlayerStatusPanel statusPanel;
 
   public GameControlPanel(MissingDiamondController controller, BoardView boardView) {
     super(10); // 10px spacing
@@ -96,7 +96,7 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // NEW: Create buy token flip button (guaranteed success for 300 coins)
+    // Create buy token flip button (guaranteed success for 300 coins)
     buyTokenFlipButton = UIComponentFactory.createActionButton("Buy Token Flip (£300 - Guaranteed)", e -> {
       Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
       Marker token = gameController.getTokenAtTileId(currentTile.getTileId());
@@ -130,24 +130,9 @@ public class GameControlPanel extends VBox {
       }
 
       // End the turn automatically after token interaction
-      gameController.endTurn();
+      //gameController.endTurn();
       // Reset roll state to ensure the next player can roll
-      gameController.resetRollState();
-
-      logMessage("Turn ended.");
-      boardView.updateUI();
-      updateControls();
-      updatePlayerInfo();
-    });
-
-    skipTokenButton = UIComponentFactory.createActionButton("Skip (Continue Journey)", e -> {
-      String result = gameController.skipTokenAction();
-      logMessage(result);
-
-      // End the turn automatically after token interaction
-      gameController.endTurn();
-      // Reset roll state to ensure the next player can roll
-      gameController.resetRollState();
+      //gameController.resetRollState();
 
       logMessage("Turn ended.");
       boardView.updateUI();
@@ -187,7 +172,7 @@ public class GameControlPanel extends VBox {
     tokenOptionsLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
     tokenOptionsLabel.setTextFill(Color.DARKRED);
 
-    // Add components to panel
+    // Add components to panel (Skip button removed)
     getChildren().addAll(
         playerLabel,
         playerMoneyLabel,
@@ -196,8 +181,7 @@ public class GameControlPanel extends VBox {
         selectMoveLabel,
         tokenOptionsLabel,
         openTokenButton,
-        buyTokenFlipButton,  // NEW: Add the buy token flip button
-        skipTokenButton,
+        buyTokenFlipButton,
         endTurnButton,
         gameLog
     );
@@ -219,6 +203,10 @@ public class GameControlPanel extends VBox {
       playerMoneyLabel.setText(String.format("Player: %s - Money: £%d",
           currentPlayer.getName(), balance));
     }
+  }
+
+  public void setStatusPanel(PlayerStatusPanel statusPanel) {
+    this.statusPanel = statusPanel;
   }
 
   private void applyTokenEffects(Marker token, Player player) {
@@ -258,7 +246,7 @@ public class GameControlPanel extends VBox {
         break;
       case "Visa":
         player.addInventoryItem("visa");
-        logMessage("You found a visa card for free travel!");
+        logMessage("You found a visa card!");
         break;
       case "Blank":
         logMessage("This token was empty. Nothing here!");
@@ -267,10 +255,14 @@ public class GameControlPanel extends VBox {
         logMessage("Nothing special here.");
         break;
     }
+    if (statusPanel != null) {
+      statusPanel.updateScoreBoard();
+    }
   }
 
   /**
    * Updates the controls based on the current game state.
+   * Skip button removed - End Turn always available for same functionality.
    */
   private void updateControls() {
     // Hide all action buttons by default
@@ -281,7 +273,6 @@ public class GameControlPanel extends VBox {
 
     openTokenButton.setVisible(true);
     buyTokenFlipButton.setVisible(true);
-    skipTokenButton.setVisible(true);
 
     endTurnButton.setVisible(true);
 
@@ -290,7 +281,6 @@ public class GameControlPanel extends VBox {
 
     // Only disable (not hide) the roll button if the user has already rolled
     rollDieButton.setDisable(hasRolled);
-
 
     // Show token buttons only when at a tile with a token
     Player currentPlayer = gameController.getCurrentPlayer();
@@ -320,22 +310,11 @@ public class GameControlPanel extends VBox {
     }
   }
 
-  /**
-   * Checks if a tile is a red tile (special location) based on the map configuration.
-   */
-  private boolean isRedTileFromMapConfig(int tileId) {
-    return gameController.isRedTileFromConfig(tileId);
-  }
-
   public void logMessage(String message) {
     gameLog.appendText(message + "\n");
   }
 
   public void setRollButtonDisabled(boolean disabled) {
     rollDieButton.setDisable(disabled);
-  }
-
-  public TextArea getGameLog() {
-    return gameLog;
   }
 }

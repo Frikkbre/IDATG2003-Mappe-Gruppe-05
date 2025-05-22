@@ -3,8 +3,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.entity.player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,17 +21,17 @@ public class Player {
   private String color;
   private Tile currentTile;
   private boolean skipTurn = false;
-  private Set<String> inventory = new HashSet<>();
+  private final Set<String> inventory = new HashSet<>();
 
   // Observer pattern support
-  private List<PlayerObserver> observers = new ArrayList<>();
+  private final List<PlayerObserver> observers = new ArrayList<>();
 
   /**
    * Constructor for Player
    *
-   * @param name Player's name
-   * @param ID Player's ID
-   * @param color Player's color
+   * @param name      Player's name
+   * @param ID        Player's ID
+   * @param color     Player's color
    * @param startTile Starting tile for the player
    */
   public Player(String name, int ID, String color, Tile startTile) {
@@ -113,16 +113,6 @@ public class Player {
   }
 
   /**
-   * Removes an item from the player's inventory
-   *
-   * @param itemName The name of the item to remove
-   * @return True if the item was removed, false if it wasn't in the inventory
-   */
-  public boolean removeInventoryItem(String itemName) {
-    return inventory.remove(itemName);
-  }
-
-  /**
    * Checks if the player has an item in their inventory
    *
    * @param itemName The name of the item to check for
@@ -130,15 +120,6 @@ public class Player {
    */
   public boolean hasInventoryItem(String itemName) {
     return inventory.contains(itemName);
-  }
-
-  /**
-   * Gets the player's inventory
-   *
-   * @return A set of all items in the player's inventory
-   */
-  public Set<String> getInventory() {
-    return new HashSet<>(inventory);
   }
 
   public void setColor(String color) {
@@ -195,6 +176,7 @@ public class Player {
 
   /**
    * returns if the player should skip a turn or not
+   *
    * @return skipTurn
    */
   public boolean isSkipTurn() {
@@ -204,6 +186,7 @@ public class Player {
   /**
    * sets if the player should skip a turn or not
    * called when a player lands on a skip turn tile
+   *
    * @param skipTurn
    */
   public void setSkipTurn(boolean skipTurn) {

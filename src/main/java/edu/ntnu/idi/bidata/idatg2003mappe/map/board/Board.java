@@ -56,16 +56,6 @@ public class Board {
     return startTile;
   }
 
-  /**
-   * Gets the name of the board.
-   *
-   * @return The name of the board.
-   */
-
-  public String getBoardName() {
-    return boardName;
-  }
-
   public Tile getTileById(int tileId) {
     if (tiles == null) {
       return null;
@@ -78,7 +68,6 @@ public class Board {
     }
     return null;
   }
-
 
 
 }

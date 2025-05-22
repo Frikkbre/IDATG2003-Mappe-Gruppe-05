@@ -1,6 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelectorGUI;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelector;
 
 /**
  * Main class for the application.
@@ -20,6 +20,6 @@ public class Main {
 
   public static void main(String[] args) {
     //BoardGameSelector boardGameSelector = new BoardGameSelector();
-    BoardGameSelectorGUI.main(args);
+    BoardGameSelector.main(args);
   }
 }

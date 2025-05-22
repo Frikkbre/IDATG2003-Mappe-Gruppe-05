@@ -7,6 +7,7 @@ import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Manages connections between points for the map designer.
@@ -17,6 +18,8 @@ public class ConnectionManager {
   private final List<Line> connectionLines = new ArrayList<>();
   private final MapDesignerListener listener;
 
+  private static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
+
   /**
    * Creates a new ConnectionManager.
    */
@@ -24,15 +27,6 @@ public class ConnectionManager {
     this.overlayPane = overlayPane;
     this.pointManager = pointManager;
     this.listener = null;
-  }
-
-  /**
-   * Creates a new ConnectionManager with a listener.
-   */
-  public ConnectionManager(Pane overlayPane, PointManager pointManager, MapDesignerListener listener) {
-    this.overlayPane = overlayPane;
-    this.pointManager = pointManager;
-    this.listener = listener;
   }
 
   /**
@@ -102,7 +96,7 @@ public class ConnectionManager {
     connectionLines.add(line);
 
     // Debug
-    System.out.println("Connection line created at: (" +
+    logger.info("Connection line created at: (" +
         source.getCircle().getCenterX() + "," + source.getCircle().getCenterY() + ") to (" +
         target.getCircle().getCenterX() + "," + target.getCircle().getCenterY() + ")");
 

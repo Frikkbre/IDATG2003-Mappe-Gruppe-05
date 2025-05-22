@@ -4,13 +4,13 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.Board;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Factory class for creating Player objects.
@@ -23,11 +23,13 @@ public class PlayerFactory {
 
   private static final String DEFAULT_PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
+  private static final Logger logger = Logger.getLogger(PlayerFactory.class.getName());
+
   /**
    * Creates players from a CSV file.
    *
    * @param filePath The path to the CSV file.
-   * @param board The board where players will be placed.
+   * @param board    The board where players will be placed.
    * @return A list of players.
    */
   public static List<Player> createPlayersFromCSV(String filePath, Board board) {
@@ -57,11 +59,11 @@ public class PlayerFactory {
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             players.add(player);
-            System.out.println("Player " + playerName + " added to the game.");
+            logger.info("Player " + playerName + " added to the game.");
           }
         }
       } catch (IOException | CsvValidationException e) {
-        System.out.println("Error reading player data: " + e.getMessage());
+        logger.warning("Error reading player data: " + e.getMessage());
       }
     }
 
@@ -86,7 +88,7 @@ public class PlayerFactory {
   /**
    * Creates a specified number of default players.
    *
-   * @param count The number of players to create.
+   * @param count     The number of players to create.
    * @param startTile The starting tile for the players.
    * @return A list of players.
    */

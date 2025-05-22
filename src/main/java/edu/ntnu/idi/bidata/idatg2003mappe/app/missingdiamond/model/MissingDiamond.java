@@ -11,13 +11,16 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Represents the Missing Diamond game.
@@ -28,17 +31,17 @@ import java.util.*;
  * @since 23.05.2025
  */
 public class MissingDiamond {
-  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
-  // Token cost constant
-  private static final int TOKEN_PURCHASE_COST = 100;
+  // Logger for logging messages
+  private static final Logger logger = Logger.getLogger(MissingDiamond.class.getName());
+
+  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
   // Starting money
   private static final int STARTING_MONEY = 300;
 
   // Game components
   private final BoardBranching board;
-  private final BoardLinear boardLinear = new BoardLinear();
   private List<Player> players = new ArrayList<>();
   private final Die die;
   private final TokenSystem tokenSystem;
@@ -56,7 +59,7 @@ public class MissingDiamond {
   private final List<Tile> startingTiles = new ArrayList<>();
 
   // NEW: Set of IDs for special tiles where players can choose to stop
-  private Set<Integer> specialTileIdsSet;
+  private final Set<Integer> specialTileIdsSet;
 
   /**
    * Constructor for MissingDiamond with specified number of players.
@@ -71,10 +74,10 @@ public class MissingDiamond {
    * Constructor for MissingDiamond with specified number of players and map file.
    *
    * @param numberOfPlayers The number of players in the game
-   * @param mapFilePath The path to the map file
+   * @param mapFilePath     The path to the map file
    */
   public MissingDiamond(int numberOfPlayers, String mapFilePath) {
-    System.out.println("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
+    logger.info("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
 
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
@@ -100,13 +103,6 @@ public class MissingDiamond {
       } else {
         System.err.println("Error: Map configuration is null or could not be read. Falling back to default board.");
         boardInstance = createDefaultBoard();
-        // For default board, define default special tiles if any.
-        // Example: if default board has known special tiles.
-        // For now, if no mapConfig, specialTileIdsSet might remain empty or be populated by createDefaultBoard.
-        // Let's assume createDefaultBoard might also populate it or we define some defaults here.
-        // If createDefaultBoard defines them:
-        // this.specialTileIdsSet.addAll(getSpecialIdsForDefaultBoard());
-        // For this example, let's assume default board has no specific special tiles defined this way unless createDefaultBoard handles it.
       }
 
     } catch (FileHandlingException e) {
@@ -138,7 +134,6 @@ public class MissingDiamond {
    * Constructor for MissingDiamond that reads players from CSV file.
    */
   public MissingDiamond() {
-    System.out.println("Starting Missing Diamond Game with players from file.");
 
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
@@ -165,7 +160,6 @@ public class MissingDiamond {
         // Define default special tiles if any for default board
       }
     } catch (FileHandlingException e) {
-      System.err.println("Error loading map configuration: " + e.getMessage());
       boardInstance = createDefaultBoard();
       // Handle special tiles for default board after fallback
     }
@@ -202,8 +196,6 @@ public class MissingDiamond {
     // Create all tiles
     for (MapConfig.Location location : mapConfig.getLocations()) {
       Tile tile = new Tile(location.getId());
-      // Store the location name as a property of the tile
-      // (This would require adding a name field to the Tile class)
       board.addTileToBoard(tile);
     }
 
@@ -266,10 +258,10 @@ public class MissingDiamond {
 
     // If specialTileIdsSet is empty (meaning no map config defined them), add defaults for this board.
     if (this.specialTileIdsSet.isEmpty()) {
-        // Example: Make tiles 5, 10, 15 special for the default board
-        this.specialTileIdsSet.add(5);
-        this.specialTileIdsSet.add(10);
-        this.specialTileIdsSet.add(15);
+      // Example: Make tiles 5, 10, 15 special for the default board
+      this.specialTileIdsSet.add(5);
+      this.specialTileIdsSet.add(10);
+      this.specialTileIdsSet.add(15);
     }
 
     return board;
@@ -279,7 +271,7 @@ public class MissingDiamond {
    * Creates players for the game.
    *
    * @param numberOfPlayers The number of players to create
-   * @param board The game board
+   * @param board           The game board
    * @return A list of players
    */
   private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
@@ -336,11 +328,11 @@ public class MissingDiamond {
 
             Player player = new Player(playerName, playerID, playerColor, playerTile);
             localPlayers.add(player);
-            System.out.println("Player " + playerName + " added to the game.");
+            logger.info("Player " + playerName + " added to the game.");
           }
         }
       } catch (IOException | CsvValidationException e) {
-        System.out.println("Error reading player data: " + e.getMessage());
+        logger.warning("Error reading player data: " + e.getMessage());
       }
     }
 
@@ -359,7 +351,7 @@ public class MissingDiamond {
   private void identifyCityTiles() {
     // In a real implementation, this would be based on map data
     // For now, assuming tiles with IDs 1-20 are cities
-    for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 32; i++) {
       Tile tile = board.getTileById(i);
       if (tile != null) {
         cityTiles.add(tile);
@@ -396,51 +388,6 @@ public class MissingDiamond {
     return currentPlayer.getName() + " rolled a " + currentRoll + ".";
   }
 
-  /**
-   * Gets all tiles that are exactly N steps away from a starting tile.
-   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
-   * @param startTile The starting tile
-   * @param steps The number of steps to move
-   * @return Set of tiles that are exactly N steps away
-   */
-  public Set<Tile> getTilesExactlyNStepsAway(Tile startTile, int steps) {
-    Set<Tile> result = new HashSet<>();
-
-    // No valid moves if steps is invalid
-    if (steps <= 0) {
-      return result;
-    }
-
-    // Use a helper method to do a depth-first search of exactly N steps
-    findExactPathsOfLength(startTile, null, steps, result);
-
-    return result;
-  }
-
-  /**
-   * Helper method for finding all tiles exactly N steps away.
-   * This method is kept for potential other uses but is NOT used by getPossibleMovesForCurrentRoll anymore.
-   *
-   * @param currentTile The current tile in the search
-   * @param previousTile The previous tile in the search (to avoid backtracking)
-   * @param remainingSteps The remaining number of steps to take
-   * @param result The set of result tiles
-   */
-  private void findExactPathsOfLength(Tile currentTile, Tile previousTile, int remainingSteps, Set<Tile> result) {
-    // If we've used all our steps, add the current tile to our result
-    if (remainingSteps == 0) {
-      result.add(currentTile);
-      return;
-    }
-
-    // Otherwise, continue the search from each neighbor (except the one we just came from)
-    for (Tile neighbor : currentTile.getNextTiles()) {
-      if (neighbor != previousTile) {  // Prevent immediate backtracking
-        findExactPathsOfLength(neighbor, currentTile, remainingSteps - 1, result);
-      }
-    }
-  }
-
   // NEW helper method to check if a tile is special
   private boolean isSpecialTile(Tile tile) {
     if (tile == null || this.specialTileIdsSet == null) {
@@ -456,27 +403,27 @@ public class MissingDiamond {
 
     // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
     if (currentDepth > 0) { // Only consider tiles reached after at least one step
-        if (isSpecialTile(currentTile)) {
-            resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
-        } else { // Not a special tile
-            if (currentDepth == dieRoll) {
-                resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
-            }
+      if (isSpecialTile(currentTile)) {
+        resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
+      } else { // Not a special tile
+        if (currentDepth == dieRoll) {
+          resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
         }
+      }
     }
 
     // Stop condition for recursion: if current depth has reached die roll, no more steps can be taken from here.
     if (currentDepth >= dieRoll) {
-        return;
+      return;
     }
 
     // Recursive step: explore neighbors
     for (Tile neighbor : currentTile.getNextTiles()) {
-        if (!visitedInCall.contains(neighbor)) {
-            visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
-            recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
-            // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
-        }
+      if (!visitedInCall.contains(neighbor)) {
+        visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
+        recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
+        // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
+      }
     }
   }
 
@@ -586,17 +533,6 @@ public class MissingDiamond {
     }
   }
 
-  /**
-   * Skips the current player's turn.
-   */
-  public void skipTurn() {
-    // Reset current roll
-    currentRoll = 0;
-
-    // Move to next player
-    nextPlayer();
-  }
-
   // Getters and setters
 
   /**
@@ -642,15 +578,6 @@ public class MissingDiamond {
    */
   public boolean isGameFinished() {
     return gameFinished;
-  }
-
-  /**
-   * Sets whether the game is finished.
-   *
-   * @param gameFinished True if the game is finished, false otherwise
-   */
-  public void setGameFinished(boolean gameFinished) {
-    this.gameFinished = gameFinished;
   }
 
   /**
@@ -700,41 +627,5 @@ public class MissingDiamond {
    */
   public TokenSystem getTokenSystem() {
     return tokenSystem;
-  }
-
-  /**
-   * Gets the winning player.
-   *
-   * @return The winning player, or null if no winner yet
-   */
-  public Player getWinner() {
-    return winner;
-  }
-
-  /**
-   * Gets the cost of purchasing a token.
-   *
-   * @return The cost of purchasing a token
-   */
-  public int getTokenPurchaseCost() {
-    return TOKEN_PURCHASE_COST;
-  }
-
-  /**
-   * Gets all city tiles on the board.
-   *
-   * @return A list of all city tiles
-   */
-  public List<Tile> getCityTiles() {
-    return new ArrayList<>(cityTiles);
-  }
-
-  /**
-   * Gets all starting tiles (Cairo and Tangiers).
-   *
-   * @return A list of starting tiles
-   */
-  public List<Tile> getStartingTiles() {
-    return new ArrayList<>(startingTiles);
   }
 }

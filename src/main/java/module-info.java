@@ -12,6 +12,8 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires com.almasb.fxgl.all;
   requires com.google.gson;
   requires com.opencsv;
+  requires annotations;
+  requires java.logging;
   opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe;
   exports edu.ntnu.idi.bidata.idatg2003mappe.map;
@@ -50,6 +52,4 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   opens edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model;
   opens edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model to javafx.fxml;
-  exports edu.ntnu.idi.bidata.idatg2003mappe.app.common;
-  opens edu.ntnu.idi.bidata.idatg2003mappe.app.common to javafx.fxml;
 }

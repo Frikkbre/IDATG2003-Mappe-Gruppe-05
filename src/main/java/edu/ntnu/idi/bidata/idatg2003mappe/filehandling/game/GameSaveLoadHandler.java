@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GameSaveLoadHandler {
   private LadderGameController ladderGameController;
@@ -26,6 +27,8 @@ public class GameSaveLoadHandler {
   private static final String lastSaveDir = "src/main/resources/saves";
   private static final String lastSaveFile = "LastSave.csv";
   private static final String fullPath = lastSaveDir + "/" + lastSaveFile;
+
+  private static final Logger logger = Logger.getLogger(GameSaveLoadHandler.class.getName());
 
   private Object gameController;
 
@@ -78,6 +81,7 @@ public class GameSaveLoadHandler {
    * loads a saved ladder game
    * takes in ladderGameGUI
    * and randomLadders to determine if the game is random or not
+   *
    * @param ladderGameGUI
    * @param randomLadders
    */
@@ -96,10 +100,10 @@ public class GameSaveLoadHandler {
     try {
       // Read the CSV file
       CSVReader reader = new CSVReader(new FileReader(csvFile));
-      System.out.println("Loading game from: " + fullPath);
+      logger.info("Loading game from: " + fullPath);
 
       String[] header = reader.readNext(); // Skip header
-      System.out.println("Header: " + String.join(", ", header));
+      logger.info("Header: " + String.join(", ", header));
 
       // Create GameState
       GameState gameState = new GameState();
@@ -114,7 +118,6 @@ public class GameSaveLoadHandler {
           String playerName = record[0];
           int playerId = Integer.parseInt(record[1]);
           int position = Integer.parseInt(record[3]);
-          System.out.println(position + " " + playerId + " " + playerName);
 
           playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
         }
@@ -150,7 +153,7 @@ public class GameSaveLoadHandler {
    * Loads the last save for the Missing Diamond game.
    *
    * @param missingDiamondGUI The GUI to update after loading the game
-   * @param controller The controller to apply the game state to
+   * @param controller        The controller to apply the game state to
    */
   public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
     // Check if the CSV file exists
@@ -167,10 +170,8 @@ public class GameSaveLoadHandler {
     try {
       // Read the CSV file
       CSVReader reader = new CSVReader(new FileReader(csvFile));
-      System.out.println("Loading game from: " + fullPath);
 
       String[] header = reader.readNext(); // Skip header
-      System.out.println("Header: " + String.join(", ", header));
 
       // Create GameState
       GameState gameState = new GameState();
@@ -184,7 +185,6 @@ public class GameSaveLoadHandler {
           String playerName = record[0];
           int playerId = Integer.parseInt(record[1]);
           int position = Integer.parseInt(record[3]);
-          System.out.println(position + " " + playerId + " " + playerName);
 
           playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
         }
@@ -216,6 +216,7 @@ public class GameSaveLoadHandler {
 
   /**
    * Gets the players from the game controller.
+   *
    * @return
    */
   private List<Player> getPlayersFromController() {
@@ -230,6 +231,7 @@ public class GameSaveLoadHandler {
   /**
    * shows alert when saving and loading
    * positive and negative
+   *
    * @param type
    * @param title
    * @param header

@@ -16,25 +16,7 @@ public class Die {
   private int dieValue;
 
   // Observer pattern support
-  private List<DieObserver> observers = new ArrayList<>();
-
-  /**
-   * Adds an observer to the die.
-   *
-   * @param observer The observer to add.
-   */
-  public void addObserver(DieObserver observer) {
-    observers.add(observer);
-  }
-
-  /**
-   * Removes an observer from the die.
-   *
-   * @param observer The observer to remove.
-   */
-  public void removeObserver(DieObserver observer) {
-    observers.remove(observer);
-  }
+  private final List<DieObserver> observers = new ArrayList<>();
 
   /**
    * Notifies observers that the die has been rolled.

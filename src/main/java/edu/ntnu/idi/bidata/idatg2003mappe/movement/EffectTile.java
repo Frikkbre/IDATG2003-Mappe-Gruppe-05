@@ -36,21 +36,20 @@ public class EffectTile implements TileAction {
   @Override
   public void performAction(Player player) {
     if (effectType == null) {
-      System.out.println("No effect action on this tile.");
       return;
     }
 
     switch (effectType) {
       case "skipTurn":
         skipTurn(player);
-        System.out.println(player.getName() + " will skip their next turn!");
         break;
+
       case "backToStart":
         backToStart(player);
-        System.out.println(player.getName() + " Has to go back to start!");
         break;
+
       default:
-        System.out.println("Unknown effect type: " + effectType);
+
         break;
     }
   }
@@ -66,6 +65,7 @@ public class EffectTile implements TileAction {
 
   /**
    * Moves the player back to the start tile.
+   *
    * @param player
    */
   public void backToStart(Player player) {

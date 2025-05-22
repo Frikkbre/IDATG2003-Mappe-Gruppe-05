@@ -22,11 +22,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Component responsible for displaying the game board and handling interactions with it.
  */
 public class BoardView extends StackPane {
+
+  private static final Logger logger = Logger.getLogger(BoardView.class.getName());
+
   /**
    * Interface for board update notifications.
    */
@@ -47,15 +51,12 @@ public class BoardView extends StackPane {
   private MapDesignerManager mapDesignerManager;
 
   // Event listeners
-  private List<BoardUpdateListener> updateListeners = new ArrayList<>();
+  private final List<BoardUpdateListener> updateListeners = new ArrayList<>();
 
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
   private final Set<Integer> specialTileIds = new HashSet<>();
-
-  // Connection tracking
-  private int connectionSourceId = -1;
 
   public BoardView() {
     setPrefSize(900, 700);
@@ -72,12 +73,12 @@ public class BoardView extends StackPane {
   }
 
   private void loadMapImage() {
-    System.out.println("Loading map image...");
+    logger.info("Loading map image...");
     Image mapImage = new Image(getClass().getResourceAsStream("/images/afrikan_tahti_map.jpg"));
     if (mapImage.isError()) {
-      System.out.println("ERROR: Failed to load map image: " + mapImage.getException());
+      logger.severe("ERROR: Failed to load map image: " + mapImage.getException());
     } else {
-      System.out.println("Image loaded successfully: " + mapImage.getWidth() + "x" + mapImage.getHeight());
+      logger.info("Image loaded successfully: " + mapImage.getWidth() + "x" + mapImage.getHeight());
     }
 
     mapView = new ImageView(mapImage);
@@ -134,15 +135,11 @@ public class BoardView extends StackPane {
 
     // Ensure overlay is on top
     overlayPane.toFront();
-
-    // Add debug
-    System.out.println("DEBUG: Overlay pane created with dimensions: " +
-        overlayPane.getPrefWidth() + "x" + overlayPane.getPrefHeight());
   }
 
   private void handleGameClick(double x, double y) {
-    // Debug log
-    System.out.println("Game click at: " + x + ", " + y);
+    // INFO
+    logger.info("Game click at: " + x + ", " + y);
 
     // Get tile id from clicked point (if any)
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
@@ -153,8 +150,8 @@ public class BoardView extends StackPane {
       );
 
       if (distance <= circle.getRadius()) {
-        // Tile was clicked
-        System.out.println("Tile clicked: " + entry.getKey());
+        // INFO: Tile was clicked
+        logger.info("Tile clicked: " + entry.getKey());
         handleTileClick(entry.getKey());
         return;
       }
@@ -165,30 +162,27 @@ public class BoardView extends StackPane {
     if (gameController == null) return;
 
     // Add debugging statements
-    System.out.println("DEBUG: Tile clicked: " + tileId);
-    System.out.println("DEBUG: Connection mode active: " +
+    logger.info("DEBUG: Tile clicked: " + tileId);
+    logger.info("DEBUG: Connection mode active: " +
         (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
 
     // Add this block to handle connection mode
     if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {
       int connectionSourceId = mapDesignerManager.getConnectionSourceId();
-      System.out.println("DEBUG: Current connection source ID: " + connectionSourceId);
 
       if (connectionSourceId == -1) {
-        // First click - store source ID
+        // First click, set the source tile
         mapDesignerManager.setConnectionSourceId(tileId);
-        System.out.println("DEBUG: Set connection source to: " + tileId);
       } else {
-        // Second click - create connection
-        System.out.println("DEBUG: Creating connection from " + connectionSourceId + " to " + tileId);
+        // Second click, create a connection
         boolean success = mapDesignerManager.createDirectConnection(connectionSourceId, tileId);
 
         if (success) {
           // Draw the connection line
           createConnectionLine(connectionSourceId, tileId);
-          System.out.println("DEBUG: Connection created successfully");
+          logger.info("DEBUG: Connection created successfully");
         } else {
-          System.out.println("DEBUG: Connection creation failed");
+          logger.warning("DEBUG: Connection creation failed");
         }
 
         // Reset for next connection
@@ -274,24 +268,15 @@ public class BoardView extends StackPane {
     }
   }
 
-  /**
-   * Removes a board update listener.
-   *
-   * @param listener The listener to remove
-   */
-  public void removeBoardUpdateListener(BoardUpdateListener listener) {
-    updateListeners.remove(listener);
-  }
-
   public void createLocationsFromConfig(MapConfig mapConfig) {
-    System.out.println("Creating game locations from loaded configuration");
+    logger.info("Creating game locations from loaded configuration");
 
     // Get the actual rendered dimensions
     double mapWidth = mapView.getBoundsInParent().getWidth();
     double mapHeight = mapView.getBoundsInParent().getHeight();
 
     if (mapWidth <= 0 || mapHeight <= 0) {
-      System.out.println("ERROR: Invalid map dimensions: " + mapWidth + "x" + mapHeight);
+      logger.warning("ERROR: Invalid map dimensions: " + mapWidth + "x" + mapHeight);
       return;
     }
 
@@ -347,7 +332,9 @@ public class BoardView extends StackPane {
       // Important: Add to overlay pane at index 0 so it appears below circles
       overlayPane.getChildren().add(0, line);
 
-      System.out.println("Created visual connection line from " + fromId + " to " + toId);
+      // Log the connection creation
+      logger.info("Created visual connection line from " + fromId + " to " + toId);
+      logMessage("Created connection from " + fromId + " to " + toId);
     }
   }
 
@@ -377,11 +364,10 @@ public class BoardView extends StackPane {
   }
 
   public void createDefaultLocations() {
-    System.out.println("WARNING: Using fallback method to create default game locations");
+    logger.warning("WARNING: Using fallback method to create default game locations");
     logMessage("Warning: Using hardcoded map fallback. JSON loading failed.");
 
-    // A simple implementation would create some basic locations here
-    // For simplicity, we'll create a few example tiles
+    // Fallback to hardcoded locations
 
     double mapWidth = mapView.getBoundsInParent().getWidth();
     double mapHeight = mapView.getBoundsInParent().getHeight();
@@ -429,7 +415,7 @@ public class BoardView extends StackPane {
   }
 
   public void synchronizeTilesWithDesigner(MapDesignerManager manager) {
-    System.out.println("Synchronizing " + tileCircles.size() + " tiles with map designer...");
+    logger.info("Synchronizing " + tileCircles.size() + " tiles with map designer...");
 
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
       int tileId = entry.getKey();
@@ -461,14 +447,12 @@ public class BoardView extends StackPane {
   private void updateLocationPositions() {
     // Only update if tiles already exist
     if (tileCircles.isEmpty()) {
-      System.out.println("updateLocationPositions: No tiles to update");
       return;
     }
 
     double mapWidth = mapView.getBoundsInParent().getWidth();
     double mapHeight = mapView.getBoundsInParent().getHeight();
 
-    System.out.println("Updating location positions. Map size: " + mapWidth + "x" + mapHeight);
 
     // Update positions based on percentages
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
@@ -511,7 +495,7 @@ public class BoardView extends StackPane {
       MapConfig mapConfig = MapConfigService.loadMapConfig();
       createConnectionsFromConfig(mapConfig);
     } catch (Exception e) {
-      System.err.println("Error updating connections: " + e.getMessage());
+      logger.warning("Error updating connections: " + e.getMessage());
     }
   }
 
@@ -532,7 +516,9 @@ public class BoardView extends StackPane {
 
     // Add click event
     tile.setOnMouseClicked(e -> {
-      System.out.println("Circle clicked directly: " + tileId);
+
+      logger.info("Circle clicked directly: " + tileId);
+
       handleTileClick(tileId);
       e.consume(); // Prevent event bubbling
     });
@@ -581,40 +567,6 @@ public class BoardView extends StackPane {
     highlightPossibleMoves();
   }
 
-  /**
-   * Sets up board click handling.
-   * This should be called once after the board view is fully initialized.
-   */
-  public void setupBoardClickHandling() {
-    // We're inside BoardView, so use "this" instead of "boardView"
-    this.getOverlayPane().setOnMouseClicked(e -> {
-      // Handle clicks for map designer if in coordinate mode
-      if (mapDesignerManager != null && mapDesignerManager.isCoordinateMode()) {
-        mapDesignerManager.getMapDesignerTool().handleCoordinateClick(
-            e.getX(), e.getY(), this.getMapView());
-        return;
-      }
-
-      // Otherwise handle clicks for gameplay
-      for (Map.Entry<Integer, Circle> entry : this.getTileCircles().entrySet()) {
-        Circle circle = entry.getValue();
-        int tileId = entry.getKey();
-
-        // Calculate distance from click to circle center
-        double distance = Math.sqrt(
-            Math.pow(circle.getCenterX() - e.getX(), 2) +
-                Math.pow(circle.getCenterY() - e.getY(), 2)
-        );
-
-        // If click is within the circle
-        if (distance <= circle.getRadius()) {
-          handleGameplayTileClick(tileId);
-          break;
-        }
-      }
-    });
-  }
-
   public void highlightPossibleMoves() {
     if (tileHighlighter != null) {
       tileHighlighter.highlightPossibleMoves();
@@ -644,22 +596,18 @@ public class BoardView extends StackPane {
     // Register as an observer if implementing the observer interface
     if (this instanceof PlayerObserver) {
       for (Player player : controller.getPlayers()) {
-        player.addObserver((PlayerObserver)this);
+        player.addObserver((PlayerObserver) this);
       }
     }
 
     // Add controller as a board update listener if it implements the interface
     if (controller instanceof BoardUpdateListener) {
-      addBoardUpdateListener((BoardUpdateListener)controller);
+      addBoardUpdateListener((BoardUpdateListener) controller);
     }
 
     if (!tileCircles.isEmpty()) {
       this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, controller);
     }
-  }
-
-  public void setGameLog(TextArea gameLog) {
-    this.gameLog = gameLog;
   }
 
   public Pane getOverlayPane() {
@@ -670,40 +618,4 @@ public class BoardView extends StackPane {
     return mapView;
   }
 
-  /**
-   * Sets the connection source ID.
-   * This tracks the first tile selected when creating connections in the map designer.
-   *
-   * @param id The ID of the tile selected as the connection source
-   */
-  public void setConnectionSourceId(int id) {
-    this.connectionSourceId = id;
-    // If we have a map designer manager, also update its state
-    if (mapDesignerManager != null) {
-      mapDesignerManager.setConnectionSourceId(id);
-    }
-  }
-
-  /**
-   * Gets the connection source ID.
-   *
-   * @return The ID of the tile currently selected as the connection source, or -1 if none
-   */
-  public int getConnectionSourceId() {
-    // If we have a map designer manager, sync with its state first
-    if (mapDesignerManager != null) {
-      this.connectionSourceId = mapDesignerManager.getConnectionSourceId();
-    }
-    return connectionSourceId;
-  }
-
-  /**
-   * Gets an unmodifiable view of the tile circles map.
-   *
-   * @return Map of tile IDs to Circle objects
-   */
-  public Map<Integer, Circle> getTileCircles() {
-    // Return an unmodifiable view to prevent direct modification
-    return Collections.unmodifiableMap(tileCircles);
-  }
 }

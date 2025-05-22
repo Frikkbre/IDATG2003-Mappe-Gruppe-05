@@ -36,14 +36,9 @@ public class PlayerStatusPanel extends VBox {
 
     List<Player> players = gameController.getPlayers();
     for (Player player : players) {
-      scoreBoard.appendText(player.getName() + ": Tile " +
-          player.getCurrentTile().getTileId() + "\n");
-    }
+      scoreBoard.appendText(player.getName() + ": £" +
+          gameController.getBanker().getBalance(player) + "\n");
 
-    // Highlight current player
-    Player currentPlayer = gameController.getCurrentPlayer();
-    if (currentPlayer != null) {
-      scoreBoard.appendText("\nCurrent player: " + currentPlayer.getName());
     }
   }
 }

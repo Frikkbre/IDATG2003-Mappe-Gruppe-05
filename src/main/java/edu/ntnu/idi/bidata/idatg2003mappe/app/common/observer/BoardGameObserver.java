@@ -15,16 +15,16 @@ public interface BoardGameObserver {
   /**
    * Called when a player has moved.
    *
-   * @param player The player who moved.
+   * @param player   The player who moved.
    * @param fromTile The tile the player moved from.
-   * @param toTile The tile the player moved to.
+   * @param toTile   The tile the player moved to.
    */
   void onPlayerMoved(Player player, Tile fromTile, Tile toTile);
 
   /**
    * Called when a die has been rolled.
    *
-   * @param player The player who rolled.
+   * @param player    The player who rolled.
    * @param rollValue The value rolled.
    */
   void onDieRolled(Player player, int rollValue);

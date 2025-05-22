@@ -14,7 +14,7 @@ public interface PlayerObserver {
   /**
    * Called when a player has moved.
    *
-   * @param player The player who moved.
+   * @param player  The player who moved.
    * @param oldTile The tile the player moved from.
    * @param newTile The tile the player moved to.
    */

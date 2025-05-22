@@ -19,7 +19,7 @@ public abstract class Marker {
   /**
    * Constructor for the Marker class.
    *
-   * @param type The type of marker
+   * @param type  The type of marker
    * @param value The value of the marker
    */
   public Marker(String type, int value) {

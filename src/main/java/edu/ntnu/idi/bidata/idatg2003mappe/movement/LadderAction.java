@@ -3,6 +3,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.movement;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
+import java.util.logging.Logger;
+
 /**
  * Class for ladder action.
  * This class implements the TileAction interface.
@@ -15,6 +17,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 public class LadderAction implements TileAction {
 
   private final Tile currentTile;
+
+  private static final Logger logger = Logger.getLogger(LadderAction.class.getName());
 
   /**
    * Constructor for the LadderAction class.
@@ -37,12 +41,9 @@ public class LadderAction implements TileAction {
   public void performAction(Player player) {
     Tile destination = currentTile.getDestinationTile();
     if (destination != null) {
-      //System.out.println("Ladder action: moving player from tile "
-      //    + currentTile.getTileId() + " to tile "
-      //    + destination.getTileId());
       player.placePlayer(destination);
     } else {
-      System.out.println("No ladder action on this tile.");
+      logger.warning("No ladder action on this tile.");
     }
   }
 }

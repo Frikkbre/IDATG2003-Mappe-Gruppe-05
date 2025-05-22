@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Represents a tile on the board.
@@ -107,9 +106,9 @@ public class Tile {
 
   public Tile getTileAtDistance(int steps) {
     Tile current = this;
-    if(steps == -44){ // Back to start
+    if (steps == -44) {
       current = current.getNextTile();
-    }else if (steps < 0) {
+    } else if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
     }
 
@@ -162,21 +161,13 @@ public class Tile {
    *
    * @return The list of next tiles.
    */
-  public Stream<Tile> streamNextTiles() {
-    return nextTilesOnBoard.stream();
-  }
-
-  /**
-   * Gets the list of next tiles.
-   *
-   * @return The list of next tiles.
-   */
   public List<Tile> getNextTiles() {
     return nextTilesOnBoard;
   }
 
   /**
    * Gets the effect of the tile.
+   *
    * @return
    */
   public String getEffect() {
@@ -185,6 +176,7 @@ public class Tile {
 
   /**
    * Sets the effect of the tile.
+   *
    * @param effect
    */
   public void setEffect(String effect) {

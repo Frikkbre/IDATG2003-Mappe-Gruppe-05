@@ -1,53 +1,30 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.observer.BoardGameObserver;
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model.MissingDiamond;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
- * Now includes support for buying token flips for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.2.0
+ * @version 0.3.0
  * @since 23.05.2025
  */
 public class MissingDiamondController {
-  private List<BoardGameObserver> observers = new ArrayList<>();
+  private final List<BoardGameObserver> observers = new ArrayList<>();
   private final MissingDiamond game;
   private boolean hasRolled = false;
   private MapDesignerListener view;
-
-  public void addObserver(BoardGameObserver observer) {
-    if (!observers.contains(observer)) {
-      observers.add(observer);
-    }
-  }
-
-  public void removeObserver(BoardGameObserver observer) {
-    observers.remove(observer);
-  }
-
-  private void notifyPlayerMoved(Player player, Tile oldTile, Tile newTile) {
-    for (BoardGameObserver observer : observers) {
-      observer.onPlayerMoved(player, oldTile, newTile);
-    }
-  }
 
   // Action state tracking
   private enum ActionState {
@@ -58,7 +35,7 @@ public class MissingDiamondController {
 
   private ActionState currentState = ActionState.AWAITING_ROLL;
 
-  // Available actions for the current state
+  // Available actions for the current state (Skip action removed)
   private final Map<ActionState, List<String>> availableActions = new HashMap<>();
 
   /**
@@ -71,6 +48,7 @@ public class MissingDiamondController {
 
   /**
    * Initializes the available actions for each game state.
+   * Skip action removed from AWAITING_TOKEN_DECISION state.
    */
   private void initializeAvailableActions() {
     // Actions for each state
@@ -88,8 +66,7 @@ public class MissingDiamondController {
     availableActions.get(ActionState.AWAITING_MOVE).add("moveToTile");
 
     availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("openToken");
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");  // NEW: Add to available actions
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");
   }
 
   /**
@@ -124,7 +101,6 @@ public class MissingDiamondController {
    * @return A message describing the move result
    */
   public String movePlayer(int tileId) {
-
     // Check if player has rolled
     if (currentState != ActionState.AWAITING_MOVE) {
       return "You need to roll the die first.";
@@ -146,24 +122,36 @@ public class MissingDiamondController {
     // Move the player
     String moveResult = game.movePlayerToTile(destinationTile);
 
+    // Check if game is finished (win condition)
+    if (game.isGameFinished()) {
+      // Don't end turn - game is over
+      return moveResult;
+    }
+
     // Check if the destination is a special tile with a token
     if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
       currentState = ActionState.AWAITING_TOKEN_DECISION;
       return moveResult + "\nYou've reached a location with a token. You can:" +
           "\n• Try to get it free (roll 4-6 to succeed)" +
           "\n• Buy a guaranteed token flip for £300" +
-          "\n• Skip and continue your journey";
+          "\n• Use 'End Turn' to continue your journey";
     }
 
-    // End turn only if game is finished
-    if (game.isGameFinished()) {
-    }
-
-    return moveResult;
+    endTurn();
+    return moveResult + "\nTurn ended. Next player's turn.";
   }
 
   /**
-   * NEW: Buys a token flip for 300 coins (guaranteed success).
+   * Resets the roll state to allow the next player to roll.
+   * This should be called when ending turns to ensure the next player
+   * can roll the die in their turn.
+   */
+  public void resetRollState() {
+    this.hasRolled = false;
+  }
+
+  /**
+   * Buys a token flip for 300 coins (guaranteed success).
    *
    * @param tile The tile with the token
    * @return True if the purchase was successful, false otherwise
@@ -188,6 +176,12 @@ public class MissingDiamondController {
     return success;
   }
 
+  /**
+   * Checks if the specified tile is a special tile with a token.
+   *
+   * @param tileId The ID of the tile to check
+   * @return True if the tile is special, false otherwise
+   */
   public boolean isSpecialTile(int tileId) {
     Tile tile = getTileById(tileId);
     if (tile != null) {
@@ -196,6 +190,12 @@ public class MissingDiamondController {
     return false;
   }
 
+  /**
+   * Checks if a token is present at the specified tile.
+   *
+   * @param tile The tile to check
+   * @return True if a token is present, false otherwise
+   */
   public boolean hasTokenAtTile(Tile tile) {
     if (tile == null) {
       return false;
@@ -206,51 +206,24 @@ public class MissingDiamondController {
   }
 
   /**
-   * Skips the token action and ends the turn.
-   *
-   * @return A message indicating the action was skipped
-   */
-  public String skipTokenAction() {
-    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
-      return "No token action to skip.";
-    }
-
-    currentState = ActionState.AWAITING_ROLL;
-
-    endTurn();
-    return "You chose to ignore the token and continue your journey.";
-  }
-
-  /**
    * Ends the current player's turn and moves to the next player.
    */
   public void endTurn() {
-    // Switch to next player
+    // Store current player for notification
+    Player previousPlayer = game.getCurrentPlayer();
+
+    // Switch to next player (this updates the game state)
     game.nextPlayer();
 
-    // Reset roll state - explicitly set to false to ensure consistency
+    // Reset controller state completely
     hasRolled = false;
-
-    // Reset action state
     currentState = ActionState.AWAITING_ROLL;
 
-    // Clear any pending actions that might be related to the previous player's turn
-    // This helps ensure consistent state for the next player
-
     // Notify observers about turn change
+    Player newPlayer = game.getCurrentPlayer();
     for (BoardGameObserver observer : observers) {
-      observer.onTurnChanged(game.getCurrentPlayer());
+      observer.onTurnChanged(newPlayer);
     }
-  }
-
-  /**
-   * Explicitly reset the roll state to fix UI inconsistency.
-   * This ensures the UI always shows the roll button after end turn.
-   */
-  public void resetRollState() {
-    this.hasRolled = false;
-    // Make sure the action state is also consistent
-    this.currentState = ActionState.AWAITING_ROLL;
   }
 
   /**
@@ -287,43 +260,8 @@ public class MissingDiamondController {
     return this.game;
   }
 
-  public boolean isRedTileFromConfig(int tileId) {
-    try {
-      // Load the map configuration to check if this tile is marked as special
-      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      MapConfig mapConfig;
-
-      if (mapFileHandler.defaultMapExists()) {
-        mapConfig = mapFileHandler.loadFromDefaultLocation();
-      } else {
-        return false; // No config available
-      }
-
-      // Find the location with this ID and check if it's special
-      for (MapConfig.Location location : mapConfig.getLocations()) {
-        if (location.getId() == tileId) {
-          return location.isSpecial();
-        }
-      }
-
-      return false;
-
-    } catch (Exception e) {
-      throw new IllegalArgumentException("Error checking if tile is red: " + e.getMessage());
-    }
-  }
-
   public Marker removeTokenFromTile(Tile tile) {
     return game.getTokenSystem().removeTokenFromTile(tile);
-  }
-
-  /**
-   * Creates a game state from the current game.
-   *
-   * @return A game state object
-   */
-  public GameState createGameState() {
-    return new GameState(game.getCurrentPlayerIndex(), false, game.getPlayers());
   }
 
   /**
@@ -370,25 +308,6 @@ public class MissingDiamondController {
     return hasRolled;
   }
 
-  /**
-   * Gets the current action state.
-   *
-   * @return The current action state
-   */
-  public ActionState getCurrentState() {
-    return currentState;
-  }
-
-  /**
-   * Gets a list of available actions for the current state.
-   *
-   * @return A list of available actions
-   */
-  public List<String> getAvailableActions() {
-    return new ArrayList<>(availableActions.getOrDefault(currentState, new ArrayList<>()));
-  }
-
-  // Delegation methods to the game model
 
   /**
    * Gets the list of players.
@@ -406,24 +325,6 @@ public class MissingDiamondController {
    */
   public Player getCurrentPlayer() {
     return game.getCurrentPlayer();
-  }
-
-  /**
-   * Gets the current player index.
-   *
-   * @return The current player index
-   */
-  public int getCurrentPlayerIndex() {
-    return game.getCurrentPlayerIndex();
-  }
-
-  /**
-   * Gets the current roll value.
-   *
-   * @return The current roll value
-   */
-  public int getCurrentRoll() {
-    return game.getCurrentRoll();
   }
 
   /**
@@ -458,4 +359,3 @@ public class MissingDiamondController {
     return game.getDie();
   }
 }
-
