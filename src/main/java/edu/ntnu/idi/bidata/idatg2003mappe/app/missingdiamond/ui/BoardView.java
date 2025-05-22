@@ -58,6 +58,10 @@ public class BoardView extends StackPane {
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
   private final Set<Integer> specialTileIds = new HashSet<>();
 
+  // FIX: Store original percentages to prevent corruption during resize
+  private final Map<Integer, Double> tileXPercentages = new HashMap<>();
+  private final Map<Integer, Double> tileYPercentages = new HashMap<>();
+
   public BoardView() {
     setPrefSize(900, 700);
     setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -161,10 +165,10 @@ public class BoardView extends StackPane {
   private void handleTileClick(int tileId) {
     if (gameController == null) return;
 
-    // debugging statements
-    //logger.info("DEBUG: Tile clicked: " + tileId);
-    //logger.info("DEBUG: Connection mode active: " +
-    //    (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
+    // Add debugging statements
+    logger.info("DEBUG: Tile clicked: " + tileId);
+    logger.info("DEBUG: Connection mode active: " +
+        (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
 
     // Add this block to handle connection mode
     if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {
@@ -285,6 +289,9 @@ public class BoardView extends StackPane {
     tileCircles.clear();
     specialTileIds.clear();
 
+    tileXPercentages.clear();
+    tileYPercentages.clear();
+
     // Create and position the locations
     for (MapConfig.Location location : mapConfig.getLocations()) {
       int tileId = location.getId();
@@ -293,6 +300,11 @@ public class BoardView extends StackPane {
       // Calculate actual coordinates based on percentages
       double xPercent = location.getXPercent();
       double yPercent = location.getYPercent();
+
+      // FIX: STORE THE ORIGINAL PERCENTAGES - This is the key fix!
+      tileXPercentages.put(tileId, xPercent);
+      tileYPercentages.put(tileId, yPercent);
+
       double x = mapWidth * xPercent;
       double y = mapHeight * yPercent;
 
@@ -367,8 +379,6 @@ public class BoardView extends StackPane {
     logger.warning("WARNING: Using fallback method to create default game locations");
     logMessage("Warning: Using hardcoded map fallback. JSON loading failed.");
 
-    // Fallback to hardcoded locations
-
     double mapWidth = mapView.getBoundsInParent().getWidth();
     double mapHeight = mapView.getBoundsInParent().getHeight();
 
@@ -376,11 +386,20 @@ public class BoardView extends StackPane {
     overlayPane.getChildren().clear();
     tileCircles.clear();
     specialTileIds.clear();
+    // FIX: Clear percentage maps
+    tileXPercentages.clear();
+    tileYPercentages.clear();
 
     // Create some example tiles
     for (int i = 1; i <= 5; i++) {
-      double x = mapWidth * 0.1 * i;
-      double y = mapHeight * 0.5;
+      double xPercent = 0.1 * i;  // Store as percentage
+      double yPercent = 0.5;      // Store as percentage
+
+      tileXPercentages.put(i, xPercent);
+      tileYPercentages.put(i, yPercent);
+
+      double x = mapWidth * xPercent;
+      double y = mapHeight * yPercent;
 
       boolean isSpecial = (i % 2 == 0);
       Color color = isSpecial ? Color.RED : Color.BLACK;
@@ -444,6 +463,7 @@ public class BoardView extends StackPane {
     logMessage("Synchronized " + tileCircles.size() + " map locations with designer.");
   }
 
+  // FIX: Use stored percentages instead of recalculating from positions
   private void updateLocationPositions() {
     // Only update if tiles already exist
     if (tileCircles.isEmpty()) {
@@ -453,29 +473,30 @@ public class BoardView extends StackPane {
     double mapWidth = mapView.getBoundsInParent().getWidth();
     double mapHeight = mapView.getBoundsInParent().getHeight();
 
-
-    // Update positions based on percentages
+    // Update positions using STORED percentages, not recalculated ones
     for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
       int tileId = entry.getKey();
       Circle circle = entry.getValue();
 
       if (circle != null) {
-        double xPct = circle.getCenterX() / mapView.getFitWidth();
-        double yPct = circle.getCenterY() / mapView.getFitHeight();
+        Double xPct = tileXPercentages.get(tileId);
+        Double yPct = tileYPercentages.get(tileId);
 
-        double x = mapWidth * xPct;
-        double y = mapHeight * yPct;
+        if (xPct != null && yPct != null) {
+          double x = mapWidth * xPct;
+          double y = mapHeight * yPct;
 
-        // Update circle position
-        circle.setCenterX(x);
-        circle.setCenterY(y);
+          // Update circle position
+          circle.setCenterX(x);
+          circle.setCenterY(y);
 
-        // Update any labels associated with this tile
-        for (Node node : overlayPane.getChildren()) {
-          if (node instanceof Label label && node.getUserData() != null
-              && node.getUserData().equals(tileId)) {
-            label.setLayoutX(x + 5);
-            label.setLayoutY(y - 15);
+          // Update any labels associated with this tile
+          for (Node node : overlayPane.getChildren()) {
+            if (node instanceof Label label && node.getUserData() != null
+                && node.getUserData().equals(tileId)) {
+              label.setLayoutX(x + 5);
+              label.setLayoutY(y - 15);
+            }
           }
         }
       }
