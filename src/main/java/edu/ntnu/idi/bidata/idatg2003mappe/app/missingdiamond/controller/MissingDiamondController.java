@@ -21,9 +21,10 @@ import java.util.Set;
 /**
  * Controller class for the Missing Diamond game.
  * This class handles the game logic and player interactions.
+ * Now includes support for buying token flips for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.1.0
+ * @version 0.2.0
  * @since 23.05.2025
  */
 public class MissingDiamondController {
@@ -87,6 +88,7 @@ public class MissingDiamondController {
     availableActions.get(ActionState.AWAITING_MOVE).add("moveToTile");
 
     availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("openToken");
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyTokenFlip");  // NEW: Add to available actions
     availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
   }
 
@@ -147,8 +149,10 @@ public class MissingDiamondController {
     // Check if the destination is a special tile with a token
     if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
       currentState = ActionState.AWAITING_TOKEN_DECISION;
-      return moveResult + "\nYou've reached a location with a token. You can buy it for £" +
-          game.getTokenPurchaseCost() + ", try to win it with a dice roll, or skip.";
+      return moveResult + "\nYou've reached a location with a token. You can:" +
+          "\n• Try to get it free (roll 4-6 to succeed)" +
+          "\n• Buy a guaranteed token flip for £300" +
+          "\n• Skip and continue your journey";
     }
 
     // End turn only if game is finished
@@ -156,6 +160,32 @@ public class MissingDiamondController {
     }
 
     return moveResult;
+  }
+
+  /**
+   * NEW: Buys a token flip for 300 coins (guaranteed success).
+   *
+   * @param tile The tile with the token
+   * @return True if the purchase was successful, false otherwise
+   */
+  public boolean buyTokenFlip(Tile tile) {
+    if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
+      return false;
+    }
+
+    Player currentPlayer = game.getCurrentPlayer();
+    Banker banker = game.getBanker();
+
+    // Use the token system's buyTokenFlip method
+    boolean success = game.getTokenSystem().buyTokenFlip(currentPlayer, tile, banker);
+
+    if (success) {
+      // Reset state and end turn after successful token flip
+      currentState = ActionState.AWAITING_ROLL;
+      endTurn();
+    }
+
+    return success;
   }
 
   public boolean isSpecialTile(int tileId) {

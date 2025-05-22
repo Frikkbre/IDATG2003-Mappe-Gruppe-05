@@ -20,12 +20,14 @@ import java.util.List;
 
 /**
  * Panel containing game controls like dice rolling and game log.
+ * Now includes the new "Buy Token Flip" option for 300 coins.
  */
 public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;
   private final BoardView boardView;
   private final Button rollDieButton;
   private final Button openTokenButton;
+  private final Button buyTokenFlipButton;  // NEW: Buy token flip button
   private final Button skipTokenButton;
   private final Label selectMoveLabel;
   private final Button endTurnButton;
@@ -54,8 +56,8 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // Create combined token interaction button
-    openTokenButton = UIComponentFactory.createActionButton("Open Token", e -> {
+    // Create combined token interaction button (dice roll - free but risky)
+    openTokenButton = UIComponentFactory.createActionButton("Try Token (Free - Roll 4-6)", e -> {
       Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
       Marker token = gameController.getTokenAtTileId(currentTile.getTileId());
 
@@ -66,7 +68,7 @@ public class GameControlPanel extends VBox {
 
       // Roll die for token opening
       int roll = gameController.getDie().rollDie();
-      logMessage("You rolled a " + roll + " to open the token...");
+      logMessage("You rolled a " + roll + " to try to get the token...");
 
       // Check success (4-6 succeeds, 1-3 fails)
       if (roll >= 4) {
@@ -74,13 +76,51 @@ public class GameControlPanel extends VBox {
         gameController.removeTokenFromTile(currentTile);
 
         String tokenType = token.getType();
-        logMessage("Success! You opened the token and found: " + tokenType + "!");
+        logMessage("Success! You rolled " + roll + " and got the token: " + tokenType + "!");
 
         // Apply token effects
         applyTokenEffects(token, gameController.getCurrentPlayer());
 
       } else {
-        logMessage("You rolled a " + roll + " but couldn't open the token (need 4-6). Better luck next time!");
+        logMessage("You rolled " + roll + " but couldn't get the token (need 4-6). The token remains here.");
+      }
+
+      boardView.updateUI();
+      updateControls();
+      updatePlayerInfo();
+    });
+
+    // NEW: Create buy token flip button (guaranteed success for 300 coins)
+    buyTokenFlipButton = UIComponentFactory.createActionButton("Buy Token Flip (£300 - Guaranteed)", e -> {
+      Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
+      Marker token = gameController.getTokenAtTileId(currentTile.getTileId());
+
+      if (token == null) {
+        logMessage("There is no token at your current location.");
+        return;
+      }
+
+      Player currentPlayer = gameController.getCurrentPlayer();
+      Banker banker = gameController.getBanker();
+
+      // Check if player has enough money
+      if (banker.getBalance(currentPlayer) < 300) {
+        logMessage("You don't have enough money! You need £300 but only have £" +
+            banker.getBalance(currentPlayer) + ".");
+        return;
+      }
+
+      // Attempt to buy the token flip
+      boolean success = gameController.buyTokenFlip(currentTile);
+
+      if (success) {
+        String tokenType = token.getType();
+        logMessage("You paid £300 and successfully flipped the token: " + tokenType + "!");
+
+        // Apply token effects
+        applyTokenEffects(token, currentPlayer);
+      } else {
+        logMessage("Failed to buy token flip. Transaction error occurred.");
       }
 
       boardView.updateUI();
@@ -117,6 +157,11 @@ public class GameControlPanel extends VBox {
     Label actionsLabel = new Label("Actions");
     actionsLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
 
+    // Create token options section
+    Label tokenOptionsLabel = new Label("Token Options (when at a red tile):");
+    tokenOptionsLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
+    tokenOptionsLabel.setTextFill(Color.DARKRED);
+
     // Add components to panel
     getChildren().addAll(
         playerLabel,
@@ -124,7 +169,9 @@ public class GameControlPanel extends VBox {
         actionsLabel,
         rollDieButton,
         selectMoveLabel,
+        tokenOptionsLabel,
         openTokenButton,
+        buyTokenFlipButton,  // NEW: Add the buy token flip button
         skipTokenButton,
         endTurnButton,
         gameLog
@@ -157,6 +204,7 @@ public class GameControlPanel extends VBox {
     switch (token.getType()) {
       case "Diamond":
         player.addInventoryItem("diamond");
+        logMessage("You found the missing diamond! Head back to start to win!");
         break;
       case "RedGem":
         banker.deposit(player, token.getValue());
@@ -172,11 +220,23 @@ public class GameControlPanel extends VBox {
         break;
       case "Bandit":
         int currentBalance = banker.getBalance(player);
-        banker.withdraw(player, currentBalance);
+        if (currentBalance > 0) {
+          boolean success = banker.withdraw(player, currentBalance);
+          if (success) {
+            logMessage("OH NO! A bandit stole all your money (£" + currentBalance + ")!");
+          } else {
+            logMessage("A bandit appeared, but the transaction failed!");
+          }
+        } else {
+          logMessage("A bandit appeared, but you had no money to steal!");
+        }
         break;
       case "Visa":
         player.addInventoryItem("visa");
-        logMessage("You found a visa for free travel!");
+        logMessage("You found a visa card for free travel!");
+        break;
+      case "Blank":
+        logMessage("This token was empty. Nothing here!");
         break;
       default:
         logMessage("Nothing special here.");
@@ -196,9 +256,19 @@ public class GameControlPanel extends VBox {
     boolean hasRolled = gameController.hasRolled();
     rollDieButton.setVisible(!hasRolled);
 
-    // Always show token buttons
-    openTokenButton.setVisible(true);
-    skipTokenButton.setVisible(true);
+    // Show token buttons only when at a tile with a token
+    Player currentPlayer = gameController.getCurrentPlayer();
+    boolean hasToken = false;
+
+    if (currentPlayer != null) {
+      Tile currentTile = currentPlayer.getCurrentTile();
+      hasToken = gameController.isSpecialTile(currentTile.getTileId()) &&
+          gameController.hasTokenAtTile(currentTile);
+    }
+
+    openTokenButton.setVisible(hasToken);
+    buyTokenFlipButton.setVisible(hasToken);  // NEW: Show buy token flip button when there's a token
+    skipTokenButton.setVisible(hasToken);
 
     // Show the end turn button in all states as a failsafe
     endTurnButton.setVisible(true);
@@ -210,14 +280,28 @@ public class GameControlPanel extends VBox {
         selectMoveLabel.setVisible(true);
       }
     }
+
+    // Update button text to show current money status for the buy token flip button
+    if (buyTokenFlipButton.isVisible() && currentPlayer != null) {
+      Banker banker = gameController.getBanker();
+      int balance = banker.getBalance(currentPlayer);
+      String buttonText = "Buy Token Flip (£300 - Guaranteed)";
+
+      if (balance < 300) {
+        buttonText += " - Need £" + (300 - balance) + " more";
+        buyTokenFlipButton.setDisable(true);
+      } else {
+        buyTokenFlipButton.setDisable(false);
+      }
+
+      buyTokenFlipButton.setText(buttonText);
+    }
   }
 
   /**
    * Checks if a tile is a red tile (special location) based on the map configuration.
-   * You can implement this by checking against the special tile IDs from your map config.
    */
   private boolean isRedTileFromMapConfig(int tileId) {
-    // Simply use the controller's method to check if this is a red tile
     return gameController.isRedTileFromConfig(tileId);
   }
 

@@ -12,7 +12,7 @@ import java.util.*;
  * Handles token creation, distribution, and interactions.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.2
  * @since 23.05.2025
  */
 public class TokenSystem {
@@ -32,6 +32,10 @@ public class TokenSystem {
   private static final int NUM_GREEN_GEMS = 5;  // Emeralds
   private static final int NUM_YELLOW_GEMS = 5; // Topazes
   private static final int NUM_BANDITS = 7;     // Robbers
+
+  // Token interaction costs
+  private static final int TOKEN_FLIP_COST = 300;  // NEW: Cost to buy a token flip
+  private static final int TOKEN_PURCHASE_COST = 100; // Existing cost to buy token directly
 
   /**
    * Constructor for TokenSystem.
@@ -158,30 +162,32 @@ public class TokenSystem {
   }
 
   /**
-   * Opens a token with a random chance to get different outcomes.
-   * This combines the former buyToken and tryWinToken functionality.
+   * NEW: Buys a token flip for 300 coins and automatically reveals the token.
+   * This is a guaranteed way to get the token without rolling dice.
    *
-   * @param player The player attempting to open the token
+   * @param player The player buying the token flip
    * @param tile The tile with the token
-   * @param diceRoll The dice roll result
-   * @param banker The banker for financial transactions
-   * @return True if the token was successfully opened, false otherwise
+   * @param banker The banker handling the transaction
+   * @return True if the purchase was successful, false otherwise
    */
-  public boolean openToken(Player player, Tile tile, int diceRoll, Banker banker) {
+  public boolean buyTokenFlip(Player player, Tile tile, Banker banker) {
     // Check if tile has a token
     Marker token = getTokenAtTile(tile);
     if (token == null) {
       return false;
     }
 
-    // Determine success based on dice roll
-    // 1-2: Fail to open
-    // 3-6: Success with different outcomes
-    if (diceRoll < 3) {
-      return false;
+    // Check if player has enough money
+    if (banker.getBalance(player) < TOKEN_FLIP_COST) {
+      return false; // Not enough money
     }
 
-    // Process the token
+    // Attempt to pay for the token flip
+    if (!banker.withdraw(player, TOKEN_FLIP_COST)) {
+      return false; // Transaction failed
+    }
+
+    // Process the token (guaranteed success)
     processToken(token, player, banker);
 
     // Remove the token from the board
@@ -191,7 +197,8 @@ public class TokenSystem {
   }
 
   /**
-   * Processes buying a token and its effects.
+   * MODIFIED: Processes buying a token directly for 100 coins.
+   * This is the existing direct purchase option.
    *
    * @param player The player buying the token
    * @param tile The tile with the token
@@ -206,7 +213,7 @@ public class TokenSystem {
     }
 
     // Attempt to pay for the token
-    if (!banker.withdraw(player, 100)) {
+    if (!banker.withdraw(player, TOKEN_PURCHASE_COST)) {
       return false; // Not enough money
     }
 
@@ -220,7 +227,7 @@ public class TokenSystem {
   }
 
   /**
-   * Attempts to win a token with a dice roll.
+   * Attempts to win a token with a dice roll (free option).
    *
    * @param player The player attempting to win the token
    * @param tile The tile with the token
@@ -272,17 +279,19 @@ public class TokenSystem {
       banker.deposit(player, 1000);
     }
     else if (token instanceof GreenGem) {
-      // Emerald worth £600
+      // Emerald worth £4000
       banker.deposit(player, 4000);
     }
     else if (token instanceof YellowGem) {
-      // Topaz worth £300
+      // Topaz worth £2000
       banker.deposit(player, 2000);
     }
     else if (token instanceof Bandit) {
-      // Robber - lose all money
+      // Robber - lose all money (only if player has money)
       int currentBalance = banker.getBalance(player);
-      banker.withdraw(player, currentBalance);
+      if (currentBalance > 0) {
+        banker.withdraw(player, currentBalance);
+      }
     }
     else if (token instanceof Visa) {
       // Visa card
@@ -375,5 +384,25 @@ public class TokenSystem {
     // 2. AND either have the diamond OR have a visa card (if diamond found)
     return isStartingTile(currentTile) &&
         (playerHasDiamond(player) || (diamondFound && playerHasVisa(player)));
+  }
+
+  // NEW: Getter methods for costs
+
+  /**
+   * Gets the cost of buying a token flip.
+   *
+   * @return The cost of buying a token flip
+   */
+  public int getTokenFlipCost() {
+    return TOKEN_FLIP_COST;
+  }
+
+  /**
+   * Gets the cost of buying a token directly.
+   *
+   * @return The cost of buying a token directly
+   */
+  public int getTokenPurchaseCost() {
+    return TOKEN_PURCHASE_COST;
   }
 }

@@ -6,9 +6,10 @@ import java.util.Map;
 /**
  * This class is responsible for holding the prices for different services.
  * For example flipping a marker or using a plane route.
+ * Now includes the new token flip service for 300 coins.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.1
+ * @version 0.0.2
  * @since 07.02.2025
  */
 public class PriceList {
@@ -19,12 +20,19 @@ public class PriceList {
    * Initializes prices for different services.
    */
   public PriceList() {
+    // Gem values
     priceRegister.put("RedGem", 1000);
     priceRegister.put("GreenGem", 4000);
     priceRegister.put("YellowGem", 2000);
+
+    // Transportation costs
     priceRegister.put("PlaneTicket", 3000);
     priceRegister.put("ShipTicket", 1500);
     priceRegister.put("Visa", 1500);
+
+    // Token interaction costs
+    priceRegister.put("TokenPurchase", 100);      // Direct token purchase
+    priceRegister.put("TokenFlip", 300);          // NEW: Guaranteed token flip
   }
 
   /**
@@ -58,5 +66,23 @@ public class PriceList {
    */
   public boolean hasService(String service) {
     return priceRegister.containsKey(service);
+  }
+
+  /**
+   * Gets the cost of buying a token flip (guaranteed success).
+   *
+   * @return The cost of a token flip
+   */
+  public int getTokenFlipCost() {
+    return getPrice("TokenFlip");
+  }
+
+  /**
+   * Gets the cost of buying a token directly.
+   *
+   * @return The cost of direct token purchase
+   */
+  public int getTokenPurchaseCost() {
+    return getPrice("TokenPurchase");
   }
 }
