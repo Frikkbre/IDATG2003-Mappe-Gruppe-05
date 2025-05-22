@@ -105,14 +105,6 @@ public class LadderGameController {
     return currentPlayerIndex;
   }
 
-  /**
-   * Sets the current player index.
-   *
-   * @param index The new current player index.
-   */
-  public void setCurrentPlayerIndex(int index) {
-    this.currentPlayerIndex = index;
-  }
 
   /**
    * Returns whether the game uses random ladders.
@@ -154,9 +146,5 @@ public class LadderGameController {
         }
       }
     }
-  }
-
-  public void setRandomLadders(boolean b) {
-    this.randomLadders = b;
   }
 }
