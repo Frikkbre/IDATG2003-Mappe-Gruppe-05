@@ -7,8 +7,19 @@ import javafx.scene.control.TextArea;
 
 /**
  * Factory class for creating UI components.
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.1
+ * @since 21.05.2025
  */
 public class UIComponentFactory {
+
+  /**
+   * Private constructor to prevent instantiation.
+   */
+  public UIComponentFactory() {
+    // Private constructor to prevent instantiation
+  }
 
   /**
    * Creates an action button with standard styling.
@@ -37,15 +48,4 @@ public class UIComponentFactory {
     return log;
   }
 
-  /**
-   * Creates a standard scoreboard text area.
-   *
-   * @return The created text area
-   */
-  public static TextArea createScoreBoard() {
-    TextArea scoreBoard = new TextArea();
-    scoreBoard.setPrefHeight(200);
-    scoreBoard.setEditable(false);
-    return scoreBoard;
-  }
 }

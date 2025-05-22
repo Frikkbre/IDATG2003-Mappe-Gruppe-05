@@ -8,6 +8,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGU
 
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
+import java.util.Collections;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,17 +18,15 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class NavBar {
   BoardGameSelectorGUI boardGameSelectorGUI = new BoardGameSelectorGUI();
-  private LadderGameGUI ladderGameGUI = new LadderGameGUI();
+  private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
   private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
-
-  private static final String lastSaveDir = "src/main/resources/saves";
-  private static final String lastSaveFile = "LastSave.csv";
 
   private Stage stage;
   public Object gameController;
@@ -66,20 +65,7 @@ public class NavBar {
 
   public MenuBar createMenuBar() {
 
-    MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
-    quickSaveMenuItem.setOnAction(event -> {
-      List<Player> players = getPlayersFromController();
-      if (players != null && !players.isEmpty()) {
-        gameSaveLoadHandler.quickSaveGame(players).handle(event);
-      } else {
-        // Show error message
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Save Error");
-        alert.setContentText("No players found to save.");
-        alert.showAndWait();
-      }
-    });
+    MenuItem quickSaveMenuItem = getMenuItem();
 
     MenuItem loadLastSaveMenuItem = new MenuItem("Load Last Save");
     loadLastSaveMenuItem.setOnAction(determineGameTypeAndLoad());
@@ -98,9 +84,8 @@ public class NavBar {
     Menu modeMenu = new Menu("Mode");
     MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
     randomLadders.setOnAction(event -> {
-      if (gameController instanceof LadderGameController) {
-        LadderGameController ladderController = (LadderGameController) gameController;
-        boolean newRandomState = !ladderController.isRandomLadders();
+      if (gameController instanceof LadderGameController ladderGameController) {
+        boolean newRandomState = !ladderGameController.isRandomLadders();
 
         try {
           // Create new LadderGameGUI with toggled random state
@@ -144,6 +129,25 @@ public class NavBar {
     return menuBar;
   }
 
+  @NotNull
+  private MenuItem getMenuItem() {
+    MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
+    quickSaveMenuItem.setOnAction(event -> {
+      List<Player> players = getPlayersFromController();
+      if (players != null && !players.isEmpty()) {
+        gameSaveLoadHandler.quickSaveGame(players).handle(event);
+      } else {
+        // Show error message
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Save Error");
+        alert.setContentText("No players found to save.");
+        alert.showAndWait();
+      }
+    });
+    return quickSaveMenuItem;
+  }
+
   /**
    * Determines the game type and loads the last save accordingly
    * @return EventHandler for loading the last save
@@ -166,9 +170,7 @@ public class NavBar {
    * @return EventHandler for closing the application
    */
   private EventHandler<ActionEvent> closeFile() {
-    return event -> {
-      System.exit(0);
-    };
+    return event -> System.exit(0);
   }
 
   /**
@@ -176,44 +178,11 @@ public class NavBar {
    * @return List of players or null if no controller is set
    */
   private List<Player> getPlayersFromController() {
-    if (gameController instanceof LadderGameController) {
-      return ((LadderGameController) gameController).getPlayers();
-    } else if (gameController instanceof MissingDiamondController) {
-      return ((MissingDiamondController) gameController).getPlayers();
+    if (gameController instanceof LadderGameController ladderGameController) {
+      return ladderGameController.getPlayers();
+    } else if (gameController instanceof MissingDiamondController missingDiamondController) {
+      return missingDiamondController.getPlayers();
     }
-    return null;
-  }
-
-  /**
-   * Helper class to store player data from CSV
-   */
-  public static class PlayerData {
-    private final String name;
-    private final int id;
-    private final String color;
-    private final int position;
-
-    public PlayerData(String name, int id, String color, int position) {
-      this.name = name;
-      this.id = id;
-      this.color = color;
-      this.position = position;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public int getId() {
-      return id;
-    }
-
-    public String getColor() {
-      return color;
-    }
-
-    public int getPosition() {
-      return position;
-    }
+    return Collections.emptyList();
   }
 }

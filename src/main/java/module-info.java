@@ -12,6 +12,7 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires com.almasb.fxgl.all;
   requires com.google.gson;
   requires com.opencsv;
+  requires annotations;
   opens edu.ntnu.idi.bidata.idatg2003mappe to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe;
   exports edu.ntnu.idi.bidata.idatg2003mappe.map;
