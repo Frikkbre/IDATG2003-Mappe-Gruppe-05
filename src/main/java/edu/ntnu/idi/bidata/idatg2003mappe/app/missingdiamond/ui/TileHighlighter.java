@@ -13,8 +13,8 @@ import java.util.Set;
  * Enhanced class responsible for highlighting tiles on the game board.
  * Now supports highlighting special tiles (with tokens) differently from regular valid moves.
  *
- * @author Your Name
- * @version 1.0.0
+ * @author Simen Gudbrandsen
+ * @version 0.0.1
  * @since 22.05.2025
  */
 public class TileHighlighter {
@@ -83,10 +83,6 @@ public class TileHighlighter {
     }
   }
 
-  /**
-   * Highlights possible moves based on the current game state.
-   * Uses different colors for regular tiles and special tiles.
-   */
   /**
    * Highlights possible moves, with different colors for special tiles
    */
