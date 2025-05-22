@@ -98,13 +98,6 @@ public class LadderGameController {
     return game.getPlayers();
   }
 
-  /**
-   * Returns the current player index.
-   */
-  public int getCurrentPlayerIndex() {
-    return currentPlayerIndex;
-  }
-
 
   /**
    * Returns whether the game uses random ladders.
