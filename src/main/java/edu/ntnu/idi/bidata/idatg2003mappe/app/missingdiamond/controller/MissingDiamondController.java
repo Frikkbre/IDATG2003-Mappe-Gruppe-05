@@ -49,8 +49,7 @@ public class MissingDiamondController {
   private enum ActionState {
     AWAITING_ROLL,
     AWAITING_MOVE,
-    AWAITING_TOKEN_DECISION,
-    AWAITING_TRAVEL_METHOD
+    AWAITING_TOKEN_DECISION
   }
 
   private ActionState currentState = ActionState.AWAITING_ROLL;
@@ -70,12 +69,11 @@ public class MissingDiamondController {
    * Initializes the available actions for each game state.
    */
   private void initializeAvailableActions() {
-    // Actions for AWAITING_ROLL state
+    // Actions for each state
     List<ActionState> states = new ArrayList<>();
     states.add(ActionState.AWAITING_ROLL);
     states.add(ActionState.AWAITING_MOVE);
     states.add(ActionState.AWAITING_TOKEN_DECISION);
-    states.add(ActionState.AWAITING_TRAVEL_METHOD);
 
     for (ActionState state : states) {
       availableActions.put(state, new ArrayList<>());
@@ -84,15 +82,9 @@ public class MissingDiamondController {
     availableActions.get(ActionState.AWAITING_ROLL).add("rollDie");
 
     availableActions.get(ActionState.AWAITING_MOVE).add("moveToTile");
-    availableActions.get(ActionState.AWAITING_MOVE).add("travelByPlane");
-    availableActions.get(ActionState.AWAITING_MOVE).add("travelByShip");
 
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("buyToken");
-    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("tryWinToken");
+    availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("openToken");
     availableActions.get(ActionState.AWAITING_TOKEN_DECISION).add("skipTokenAction");
-
-    availableActions.get(ActionState.AWAITING_TRAVEL_METHOD).add("travelByPlane");
-    availableActions.get(ActionState.AWAITING_TRAVEL_METHOD).add("travelByShip");
   }
 
   /**
@@ -154,12 +146,6 @@ public class MissingDiamondController {
       currentState = ActionState.AWAITING_TOKEN_DECISION;
       return moveResult + "\nYou've reached a location with a token. You can buy it for £" +
           game.getTokenPurchaseCost() + ", try to win it with a dice roll, or skip.";
-    }
-
-    // If it's not a special tile, automatically end the turn
-    if (!isSpecialTile(destinationTile.getTileId())) {
-      endTurn();
-      return moveResult + "\nYou've moved to a regular location. Turn ended.";
     }
 
     // End turn only if game is finished
@@ -224,72 +210,6 @@ public class MissingDiamondController {
 
     endTurn();
     return "You chose to ignore the token and continue your journey.";
-  }
-
-  /**
-   * Initiates travel by plane.
-   *
-   * @return A message with available plane destinations
-   */
-  public String initiateAirTravel() {
-    if (currentState != ActionState.AWAITING_MOVE) {
-      return "You can't travel by plane right now.";
-    }
-
-    List<Integer> destinations = game.getPlaneDestinations();
-    if (destinations.isEmpty()) {
-      return "There are no plane routes from your current location.";
-    }
-
-    currentState = ActionState.AWAITING_TRAVEL_METHOD;
-
-    StringBuilder sb = new StringBuilder();
-    sb.append("Air travel costs £").append(game.getPlaneCost()).append(". Available destinations:\n");
-
-    for (Integer destId : destinations) {
-      sb.append("- Tile ").append(destId).append("\n");
-    }
-
-    return sb.toString();
-  }
-
-  /**
-   * Travels by plane to a destination.
-   *
-   * @param destinationTileId The ID of the destination tile
-   * @return A message describing the travel result
-   */
-  public String travelByPlane(int destinationTileId) {
-    Tile destinationTile = game.getBoard().getTileById(destinationTileId);
-    if (destinationTile == null) {
-      return "Invalid destination tile.";
-    }
-
-    String result = game.travelByPlane(destinationTile);
-
-    // Check if we landed on a tile with a token
-    if (game.hasTokenAtTile(destinationTile)) {
-      currentState = ActionState.AWAITING_TOKEN_DECISION;
-      return result + "\nYou've reached a location with a token. You can buy it, try to win it, or skip.";
-    }
-
-    // End turn if no token action is needed
-    endTurn();
-    return result;
-  }
-
-  /**
-   * Initiates travel by ship.
-   *
-   * @return A message describing the ship travel result
-   */
-  public String travelByShip() {
-    String result = game.travelByShip();
-
-    // After ship travel, player needs to select a destination
-    // For now, we'll just end the turn
-    endTurn();
-    return result;
   }
 
   /**

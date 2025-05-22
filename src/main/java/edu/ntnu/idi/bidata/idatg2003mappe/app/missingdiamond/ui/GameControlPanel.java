@@ -25,8 +25,6 @@ public class GameControlPanel extends VBox {
   private final Button rollDieButton;
   private final Button openTokenButton;
   private final Button skipTokenButton;
-  private final Button planeButton;
-  private final Button shipButton;
   private final Label selectMoveLabel;
   private final Button endTurnButton;
   private final TextArea gameLog;
@@ -71,22 +69,6 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // Create travel buttons
-    planeButton = UIComponentFactory.createActionButton("Travel by Plane", e -> {
-      String result = gameController.initiateAirTravel();
-      logMessage(result);
-      // In a real implementation, this would show a dialog to select the destination
-      updateControls();
-    });
-
-    shipButton = UIComponentFactory.createActionButton("Travel by Ship", e -> {
-      String result = gameController.travelByShip();
-      logMessage(result);
-      boardView.updateUI();
-      updateControls();
-      updatePlayerInfo();
-    });
-
     // Add a label for selecting a move
     selectMoveLabel = new Label("Select a highlighted tile to move");
     selectMoveLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
@@ -117,8 +99,6 @@ public class GameControlPanel extends VBox {
         selectMoveLabel,
         openTokenButton,
         skipTokenButton,
-        planeButton,
-        shipButton,
         endTurnButton,
         gameLog
     );
@@ -149,8 +129,6 @@ public class GameControlPanel extends VBox {
     // Hide all action buttons by default
     openTokenButton.setVisible(false);
     skipTokenButton.setVisible(false);
-    planeButton.setVisible(false);
-    shipButton.setVisible(false);
     selectMoveLabel.setVisible(false);
     endTurnButton.setVisible(false);
 
@@ -169,15 +147,11 @@ public class GameControlPanel extends VBox {
         selectMoveLabel.setVisible(true);
       }
 
-      // Only show travel options when on a special (red) tile
+      // Only show token buttons when at a location with a token
       Tile currentTile = gameController.getCurrentPlayer().getCurrentTile();
       boolean isOnSpecialTile = gameController.isSpecialTile(currentTile.getTileId());
 
       if (isOnSpecialTile) {
-        // Show travel options on special tiles
-        planeButton.setVisible(true);
-        shipButton.setVisible(true);
-
         // Show token buttons when at a location with a token
         boolean hasToken = gameController.getTokenAtTileId(currentTile.getTileId()) != null;
         if (hasToken) {

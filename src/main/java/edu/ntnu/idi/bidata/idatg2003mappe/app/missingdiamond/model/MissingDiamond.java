@@ -30,9 +30,7 @@ import java.util.*;
 public class MissingDiamond {
   private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
-  // Travel cost constants
-  private static final int PLANE_COST = 300;
-  private static final int SHIP_COST = 100;
+  // Token cost constant
   private static final int TOKEN_PURCHASE_COST = 100;
 
   // Starting money
@@ -52,10 +50,6 @@ public class MissingDiamond {
   private int currentPlayerIndex;
   private int currentRoll; // Store the last roll value
   private Player winner;
-
-  // Travel routes
-  private final Map<Integer, List<Integer>> planeRoutes = new HashMap<>();
-  private final Map<Integer, List<Integer>> shipRoutes = new HashMap<>();
 
   // City tiles
   private final List<Tile> cityTiles = new ArrayList<>();
@@ -117,9 +111,6 @@ public class MissingDiamond {
     this.currentPlayer = players.get(currentPlayerIndex);
     this.currentRoll = 0;
 
-    // Set up travel routes
-    setupTravelRoutes();
-
     // Identify city tiles and starting tiles
     identifyCityTiles();
     identifyStartingTiles();
@@ -174,9 +165,6 @@ public class MissingDiamond {
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
     this.currentRoll = 0;
-
-    // Set up travel routes
-    setupTravelRoutes();
 
     // Identify city tiles and starting tiles
     identifyCityTiles();
@@ -349,22 +337,6 @@ public class MissingDiamond {
   }
 
   /**
-   * Sets up travel routes (plane and ship) between cities.
-   */
-  private void setupTravelRoutes() {
-    // This would be populated from map data in a real implementation
-    // For now, creating some example routes
-
-    // Example plane routes (city ID -> list of destination city IDs)
-    planeRoutes.put(1, Arrays.asList(10, 15)); // Cairo -> cities 10 and 15
-    planeRoutes.put(2, Arrays.asList(12, 18)); // Tangiers -> cities 12 and 18
-
-    // Example ship routes
-    shipRoutes.put(5, Arrays.asList(9, 14));
-    shipRoutes.put(8, Arrays.asList(13, 17));
-  }
-
-  /**
    * Identifies all city tiles on the board.
    */
   private void identifyCityTiles() {
@@ -525,63 +497,6 @@ public class MissingDiamond {
       return "You opened the token and found: " + tokenType + "!";
     } else {
       return "You rolled a " + roll + " but couldn't open the token. Better luck next time!";
-    }
-  }
-
-  /**
-   * Travels by plane to a destination tile.
-   *
-   * @param destinationTile The destination tile
-   * @return A message describing the result
-   */
-  public String travelByPlane(Tile destinationTile) {
-    Tile currentTile = currentPlayer.getCurrentTile();
-
-    // Check if there's a plane route from current tile to destination
-    List<Integer> destinations = planeRoutes.getOrDefault(currentTile.getTileId(), Collections.emptyList());
-    if (!destinations.contains(destinationTile.getTileId())) {
-      return "There is no plane route to that destination.";
-    }
-
-    // Check if player can afford the ticket
-    if (banker.withdraw(currentPlayer, PLANE_COST)) {
-      currentPlayer.placePlayer(destinationTile);
-      return "You flew to tile " + destinationTile.getTileId() + " for £" + PLANE_COST + ".";
-    } else {
-      return "You don't have enough money for a plane ticket.";
-    }
-  }
-
-  /**
-   * Travels by ship from the current location.
-   *
-   * @return A message describing the result
-   */
-  public String travelByShip() {
-    Tile currentTile = currentPlayer.getCurrentTile();
-
-    // Check if there are ship routes from the current tile
-    List<Integer> destinations = shipRoutes.getOrDefault(currentTile.getTileId(), Collections.emptyList());
-    if (destinations.isEmpty()) {
-      return "There are no ship routes from this location.";
-    }
-
-    // Check if player can afford the ticket
-    if (banker.withdraw(currentPlayer, SHIP_COST)) {
-      int roll = die.rollDie();
-
-      // Find all tiles that can be reached with the roll
-      Set<Tile> possibleDestinations = new HashSet<>();
-      for (Integer destId : destinations) {
-        Tile destTile = board.getTileById(destId);
-        if (destTile != null) {
-          possibleDestinations.add(destTile);
-        }
-      }
-
-      return "You rolled a " + roll + " for ship travel. You can move to any of the sea routes for £" + SHIP_COST + ".";
-    } else {
-      return "You don't have enough money for a ship ticket.";
     }
   }
 
@@ -751,44 +666,6 @@ public class MissingDiamond {
    */
   public Player getWinner() {
     return winner;
-  }
-
-  /**
-   * Gets a list of destinations reachable by plane from the current location.
-   *
-   * @return A list of destination tile IDs
-   */
-  public List<Integer> getPlaneDestinations() {
-    Tile currentTile = currentPlayer.getCurrentTile();
-    return planeRoutes.getOrDefault(currentTile.getTileId(), Collections.emptyList());
-  }
-
-  /**
-   * Gets a list of destinations reachable by ship from the current location.
-   *
-   * @return A list of destination tile IDs
-   */
-  public List<Integer> getShipDestinations() {
-    Tile currentTile = currentPlayer.getCurrentTile();
-    return shipRoutes.getOrDefault(currentTile.getTileId(), Collections.emptyList());
-  }
-
-  /**
-   * Gets the cost of a plane ticket.
-   *
-   * @return The cost of a plane ticket
-   */
-  public int getPlaneCost() {
-    return PLANE_COST;
-  }
-
-  /**
-   * Gets the cost of a ship ticket.
-   *
-   * @return The cost of a ship ticket
-   */
-  public int getShipCost() {
-    return SHIP_COST;
   }
 
   /**
