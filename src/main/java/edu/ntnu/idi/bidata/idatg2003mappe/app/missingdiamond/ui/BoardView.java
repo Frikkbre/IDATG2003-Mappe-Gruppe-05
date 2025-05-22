@@ -54,9 +54,6 @@ public class BoardView extends StackPane {
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
   private final Set<Integer> specialTileIds = new HashSet<>();
 
-  // Connection tracking
-  private int connectionSourceId = -1;
-
   public BoardView() {
     setPrefSize(900, 700);
     setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
@@ -272,15 +269,6 @@ public class BoardView extends StackPane {
     if (listener != null && !updateListeners.contains(listener)) {
       updateListeners.add(listener);
     }
-  }
-
-  /**
-   * Removes a board update listener.
-   *
-   * @param listener The listener to remove
-   */
-  public void removeBoardUpdateListener(BoardUpdateListener listener) {
-    updateListeners.remove(listener);
   }
 
   public void createLocationsFromConfig(MapConfig mapConfig) {
@@ -624,43 +612,12 @@ public class BoardView extends StackPane {
     }
   }
 
-  public void setGameLog(TextArea gameLog) {
-    this.gameLog = gameLog;
-  }
-
   public Pane getOverlayPane() {
     return overlayPane;
   }
 
   public ImageView getMapView() {
     return mapView;
-  }
-
-  /**
-   * Sets the connection source ID.
-   * This tracks the first tile selected when creating connections in the map designer.
-   *
-   * @param id The ID of the tile selected as the connection source
-   */
-  public void setConnectionSourceId(int id) {
-    this.connectionSourceId = id;
-    // If we have a map designer manager, also update its state
-    if (mapDesignerManager != null) {
-      mapDesignerManager.setConnectionSourceId(id);
-    }
-  }
-
-  /**
-   * Gets the connection source ID.
-   *
-   * @return The ID of the tile currently selected as the connection source, or -1 if none
-   */
-  public int getConnectionSourceId() {
-    // If we have a map designer manager, sync with its state first
-    if (mapDesignerManager != null) {
-      this.connectionSourceId = mapDesignerManager.getConnectionSourceId();
-    }
-    return connectionSourceId;
   }
 
 }
