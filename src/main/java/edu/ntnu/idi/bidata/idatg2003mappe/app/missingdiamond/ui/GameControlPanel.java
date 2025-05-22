@@ -32,6 +32,7 @@ public class GameControlPanel extends VBox {
   private final Button endTurnButton;
   private final TextArea gameLog;
   private final Label playerMoneyLabel;
+  private PlayerStatusPanel statusPanel;
 
   public GameControlPanel(MissingDiamondController controller, BoardView boardView) {
     super(10); // 10px spacing
@@ -204,6 +205,10 @@ public class GameControlPanel extends VBox {
     }
   }
 
+  public void setStatusPanel(PlayerStatusPanel statusPanel) {
+    this.statusPanel = statusPanel;
+  }
+
   private void applyTokenEffects(Marker token, Player player) {
     Banker banker = gameController.getBanker();
 
@@ -249,6 +254,9 @@ public class GameControlPanel extends VBox {
       default:
         logMessage("Nothing special here.");
         break;
+    }
+    if (statusPanel != null) {
+      statusPanel.updateScoreBoard();
     }
   }
 
