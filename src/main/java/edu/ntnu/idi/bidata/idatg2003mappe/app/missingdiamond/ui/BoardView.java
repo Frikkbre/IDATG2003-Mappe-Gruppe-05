@@ -686,8 +686,8 @@ public class BoardView extends StackPane {
       Circle tileCircle = tileCircles.get(player.getCurrentTile().getTileId());
 
       if (tileCircle != null) {
-        double offsetX = (i % 2 == 0) ? -15 : 15;
-        double offsetY = (i < 2) ? -15 : 15;
+        double offsetX = ((i % 4) < 2) ? -15 : 15;
+        double offsetY = ((i % 4) == 0 || (i % 4) == 1) ? -15 : 15;
 
         Circle playerMarker = new Circle(
             tileCircle.getCenterX() + offsetX,
