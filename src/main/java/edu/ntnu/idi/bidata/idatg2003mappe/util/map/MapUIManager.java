@@ -36,8 +36,8 @@ public class MapUIManager {
    * including labels, selectors, and input fields. The components are configured
    * with appropriate default values and styles.</p>
    *
-   * @param overlayPane  The JavaFX pane where visual elements will be displayed
-   * @param listener     The listener that will receive UI events
+   * @param overlayPane The JavaFX pane where visual elements will be displayed
+   * @param listener    The listener that will receive UI events
    */
   public MapUIManager(Pane overlayPane, MapDesignerListener listener) {
     this.overlayPane = overlayPane;
@@ -65,7 +65,7 @@ public class MapUIManager {
    * for a coordinate point to the overlay pane. It handles the styling based
    * on whether the point is special or not.</p>
    *
-   * @param point  The coordinate point to visualize
+   * @param point The coordinate point to visualize
    */
   public void addPointVisuals(CoordinatePoint point) {
     // Create and add circle
@@ -90,7 +90,7 @@ public class MapUIManager {
    * users to place coordinate points on the map by clicking. It updates
    * the UI to provide visual feedback about the current mode.</p>
    *
-   * @param enabled  Whether coordinate mode should be enabled
+   * @param enabled Whether coordinate mode should be enabled
    */
   public void toggleCoordinateMode(boolean enabled) {
     this.coordinateMode = enabled;
@@ -130,7 +130,7 @@ public class MapUIManager {
    * <p>This method processes clicks on coordinate points when connection mode is active.
    * It alternates between selecting a source point and a target point to create a connection.</p>
    *
-   * @param tileId  The ID of the clicked tile
+   * @param tileId The ID of the clicked tile
    */
   public void handleConnectionModeClick(int tileId) {
     if (selectedSourceId == -1) {
@@ -154,8 +154,8 @@ public class MapUIManager {
    * <p>This method sends log messages to the registered {@link MapDesignerListener}
    * if one exists. It also optionally notifies about export events.</p>
    *
-   * @param message   The message to log
-   * @param isExport  Whether this message is related to an export operation
+   * @param message  The message to log
+   * @param isExport Whether this message is related to an export operation
    */
   public void logMessage(String message, boolean isExport) {
     if (listener != null) {

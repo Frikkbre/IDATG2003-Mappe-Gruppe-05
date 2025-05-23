@@ -7,7 +7,6 @@ import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -21,20 +20,19 @@ import java.util.logging.Logger;
  * @since 19.05.2025
  */
 public class ConnectionManager {
+  private static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
   private final Pane overlayPane;
   private final PointManager pointManager;
   private final Collection<Line> connectionLines = new ArrayList<>();
   private final MapDesignerListener listener;
-
-  private static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
 
   /**
    * <p>Creates a new ConnectionManager with the specified overlay pane and point manager.</p>
    * <p>This constructor initializes the connection manager with references to the overlay pane
    * where connection lines will be drawn and the point manager that provides access to coordinate points.</p>
    *
-   * @param overlayPane   The JavaFX pane where connection lines will be rendered
-   * @param pointManager  The point manager containing coordinate points to connect
+   * @param overlayPane  The JavaFX pane where connection lines will be rendered
+   * @param pointManager The point manager containing coordinate points to connect
    */
   public ConnectionManager(Pane overlayPane, PointManager pointManager) {
     this.overlayPane = overlayPane;
@@ -52,8 +50,8 @@ public class ConnectionManager {
    * </ul>
    * </p>
    *
-   * @param sourceId  The ID of the source point
-   * @param targetId  The ID of the target point
+   * @param sourceId The ID of the source point
+   * @param targetId The ID of the target point
    * @return {@code true} if the connection was created successfully, {@code false} otherwise
    */
   public boolean createConnection(int sourceId, int targetId) {
@@ -103,8 +101,8 @@ public class ConnectionManager {
    * to the overlay pane. The line is styled appropriately and added at index 0 to ensure
    * it appears beneath any circles representing points.</p>
    *
-   * @param source  The source coordinate point
-   * @param target  The target coordinate point
+   * @param source The source coordinate point
+   * @param target The target coordinate point
    */
 // In ConnectionManager.java - modify the drawConnection method
   public void drawConnection(CoordinatePoint source, CoordinatePoint target) {
@@ -154,7 +152,7 @@ public class ConnectionManager {
     // by filtering by userData
     overlayPane.getChildren().removeIf(node ->
         node.getUserData() != null &&
-        "connection".equals(node.getUserData()));
+            "connection".equals(node.getUserData()));
 
     // Clear our internal list
     connectionLines.clear();
@@ -165,7 +163,7 @@ public class ConnectionManager {
    * <p>This private helper method sends log messages to the registered {@link MapDesignerListener}
    * if one exists. Used to provide feedback about connection operations.</p>
    *
-   * @param message  The message to log
+   * @param message The message to log
    */
   private void logMessage(String message) {
     if (listener != null) {

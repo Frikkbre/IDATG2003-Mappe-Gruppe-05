@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.util.map;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
-import edu.ntnu.idi.bidata.idatg2003mappe.util.CoordinatePoint;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.PointManager;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -32,8 +31,8 @@ public class MapFileHandler {
    * <p>This constructor initializes the file handler with references to the components
    * needed to access coordinate data and report events.</p>
    *
-   * @param listener      The listener to receive events and log messages
-   * @param pointManager  The point manager containing coordinate data
+   * @param listener     The listener to receive events and log messages
+   * @param pointManager The point manager containing coordinate data
    */
   public MapFileHandler(MapDesignerListener listener, PointManager pointManager) {
     this.listener = listener;
@@ -283,8 +282,8 @@ public class MapFileHandler {
    * <p>This private helper method sends log messages to the registered {@link MapDesignerListener}
    * if one exists. It also optionally notifies about export events.</p>
    *
-   * @param message   The message to log
-   * @param isExport  Whether this message is related to an export operation
+   * @param message  The message to log
+   * @param isExport Whether this message is related to an export operation
    */
   private void logMessage(String message, boolean isExport) {
     if (listener != null) {

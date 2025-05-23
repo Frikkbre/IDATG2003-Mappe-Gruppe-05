@@ -18,10 +18,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Represents the Missing Diamond game.
- * This class manages the game state and rules for the Missing Diamond game.
+ * <p>Represents the core game model for the Missing Diamond adventure board game.</p>
  *
- * //TODO ADD Javadoc for the class
+ * <p>The Missing Diamond game is a strategic adventure where players navigate across a map
+ * of interconnected cities in search of a valuable diamond. Players can:</p>
+ *
+ * <ul>
+ *   <li>Roll dice to determine movement options</li>
+ *   <li>Collect tokens with various effects (gems, diamond, visa, bandit)</li>
+ *   <li>Navigate through special tiles and city locations</li>
+ *   <li>Manage their money resources through the banker system</li>
+ * </ul>
+ *
+ * <p>The game ends when a player finds the diamond token and reaches the victory condition.
+ * Players must strategically decide their movement paths and token interactions to maximize
+ * their chances of finding the diamond while maintaining sufficient resources.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.1.0
@@ -37,11 +48,15 @@ public class MissingDiamond {
 
   // Game components
   private final BoardBranching board;
-  private List<Player> players = new ArrayList<>();
   private final Die die;
   private final TokenSystem tokenSystem;
   private final Banker banker;
-
+  // City tiles
+  private final Collection<Tile> cityTiles = new ArrayList<>();
+  private final Collection<Tile> startingTiles = new ArrayList<>();
+  // NEW: Set of IDs for special tiles where players can choose to stop
+  private final Set<Integer> specialTileIdsSet;
+  private List<Player> players = new ArrayList<>();
   // Game state
   private boolean gameFinished;
   private Player currentPlayer;
@@ -49,15 +64,12 @@ public class MissingDiamond {
   private int currentRoll; // Store the last roll value
   private Player winner;
 
-  // City tiles
-  private final Collection<Tile> cityTiles = new ArrayList<>();
-  private final Collection<Tile> startingTiles = new ArrayList<>();
-
-  // NEW: Set of IDs for special tiles where players can choose to stop
-  private final Set<Integer> specialTileIdsSet;
-
   /**
-   * Constructor for MissingDiamond with specified number of players.
+   * <p>Constructs a new Missing Diamond game instance with a specified number of players
+   * using the default map.</p>
+   *
+   * <p>This constructor initializes the game with the default map configuration and
+   * creates the specified number of players with starting positions and funds.</p>
    *
    * @param numberOfPlayers The number of players in the game
    */
@@ -66,7 +78,12 @@ public class MissingDiamond {
   }
 
   /**
-   * Constructor for MissingDiamond with specified number of players and map file.
+   * <p>Constructs a new Missing Diamond game instance with a specified number of players
+   * and a custom map file path.</p>
+   *
+   * <p>This constructor initializes the game with the specified map configuration file and
+   * creates the specified number of players with starting positions and funds. If the map
+   * file cannot be loaded, it will fall back to using a default board configuration.</p>
    *
    * @param numberOfPlayers The number of players in the game
    * @param mapFilePath     The path to the map file
@@ -116,14 +133,22 @@ public class MissingDiamond {
     identifyCityTiles(); // This might be redundant if mapConfig is used for special tiles
     identifyStartingTiles();
 
-    tokenSystem.setStartingTiles((List<Tile>) startingTiles);
-    tokenSystem.initializeTokens((List<Tile>) cityTiles);
+    tokenSystem.setStartingTiles(startingTiles);
+    tokenSystem.initializeTokens(cityTiles);
 
-    players.forEach(player -> { banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
+    players.forEach(player -> {
+      banker.registerPlayer(player);
+      banker.deposit(player, STARTING_MONEY);
+    });
   }
 
   /**
-   * Constructor for MissingDiamond that reads players from CSV file.
+   * <p>Constructs a new Missing Diamond game instance by loading players from a CSV file
+   * and using the default map configuration.</p>
+   *
+   * <p>This constructor attempts to load the default map configuration and player information
+   * from a CSV file. If either file cannot be loaded, it will use appropriate fallback
+   * mechanisms to ensure the game can still start.</p>
    */
   public MissingDiamond() {
 
@@ -169,18 +194,23 @@ public class MissingDiamond {
     identifyCityTiles();
     identifyStartingTiles();
 
-    tokenSystem.setStartingTiles((List<Tile>) startingTiles);
-    tokenSystem.initializeTokens((List<Tile>) cityTiles);
+    tokenSystem.setStartingTiles(startingTiles);
+    tokenSystem.initializeTokens(cityTiles);
 
     players.forEach(player -> {
-      banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
+      banker.registerPlayer(player);
+      banker.deposit(player, STARTING_MONEY);
+    });
   }
 
   /**
-   * Creates a board from a map configuration.
+   * <p>Creates a game board from a map configuration.</p>
    *
-   * @param mapConfig The map configuration
-   * @return A board created from the map configuration
+   * <p>This method processes the map configuration to create tiles and connections between
+   * them according to the specified layout in the configuration.</p>
+   *
+   * @param mapConfig The map configuration containing location and connection information
+   * @return A fully initialized branching board with all tiles and connections
    */
   private BoardBranching createBoardFromConfig(MapConfig mapConfig) {
     BoardBranching board = new BoardBranching();
@@ -204,10 +234,14 @@ public class MissingDiamond {
 
 
   /**
-   * Creates a default board with a simple structure.
-   * Also populates specialTileIdsSet with default special tiles if not already populated by a map config.
+   * <p>Creates a default game board with a predefined structure when no map configuration
+   * is available.</p>
    *
-   * @return A default board
+   * <p>This method generates a simple network of connected tiles to serve as a fallback
+   * when the map configuration cannot be loaded. It also defines which tiles are considered
+   * special (allowing players to stop before reaching their exact die roll).</p>
+   *
+   * @return A default branching board with a basic network of connected tiles
    */
   private BoardBranching createDefaultBoard() {
     BoardBranching board = new BoardBranching();
@@ -259,11 +293,15 @@ public class MissingDiamond {
   }
 
   /**
-   * Creates players for the game.
+   * <p>Creates player objects for the game with appropriate starting positions and funds.</p>
+   *
+   * <p>This method initializes the specified number of players with unique colors, names,
+   * and IDs. All players start at one of the designated starting tiles and receive the
+   * standard starting money amount.</p>
    *
    * @param numberOfPlayers The number of players to create
-   * @param board           The game board
-   * @return A list of players
+   * @param board           The game board where players will be placed
+   * @return A list of initialized player objects
    */
   private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
     Tile startTile = startingTiles.stream().findFirst().orElse(board.getStartTile());
@@ -281,11 +319,11 @@ public class MissingDiamond {
         .collect(Collectors.toList());
   }
 
-
-  // Removed readPlayersFromCSV() method from here
-
   /**
-   * Identifies all city tiles on the board.
+   * <p>Identifies all city tiles on the board that can have tokens placed on them.</p>
+   *
+   * <p>This method populates the cityTiles collection with all valid tile locations
+   * where tokens can be placed during gameplay.</p>
    */
   private void identifyCityTiles() {
     // In a real implementation, this would be based on map data
@@ -298,7 +336,10 @@ public class MissingDiamond {
   }
 
   /**
-   * Identifies starting tiles (Cairo and Tangiers).
+   * <p>Identifies the valid starting tile locations for players.</p>
+   *
+   * <p>This method populates the startingTiles collection with tiles that are
+   * designated as starting positions (typically Cairo and Tangiers).</p>
    */
   private void identifyStartingTiles() {
     // In a real implementation, this would be based on map data
@@ -316,9 +357,12 @@ public class MissingDiamond {
   }
 
   /**
-   * Rolls the die and returns a message about the result.
+   * <p>Simulates the current player's turn by rolling the die.</p>
    *
-   * @return A message describing the die roll
+   * <p>This method rolls the die for the current player and returns a message
+   * describing the result. The roll value is stored in the currentRoll field.</p>
+   *
+   * @return A message describing the die roll result
    */
   public String playTurn() {
     // Roll the die
@@ -326,7 +370,15 @@ public class MissingDiamond {
     return currentPlayer.getName() + " rolled a " + currentRoll + ".";
   }
 
-  // NEW helper method to check if a tile is special
+  /**
+   * <p>Determines if a tile is a special tile where players can optionally stop.</p>
+   *
+   * <p>Special tiles allow players to stop before reaching their exact die roll,
+   * providing strategic options for movement.</p>
+   *
+   * @param tile The tile to check
+   * @return {@code true} if the tile is designated as special, {@code false} otherwise
+   */
   private boolean isSpecialTile(Tile tile) {
     if (tile == null || this.specialTileIdsSet == null) {
       return false;
@@ -334,6 +386,18 @@ public class MissingDiamond {
     return this.specialTileIdsSet.contains(tile.getTileId());
   }
 
+  /**
+   * <p>Recursive helper method to find all valid destination tiles for a player's move.</p>
+   *
+   * <p>This method explores the board recursively to identify all tiles that a player
+   * can legally move to based on their die roll and the special tile rules.</p>
+   *
+   * @param currentTile   The current tile being explored in the recursion
+   * @param dieRoll       The original die roll value
+   * @param visitedInCall Set of tiles already visited in this recursive call branch
+   * @param resultOutput  Set to be populated with valid destination tiles
+   * @param currentDepth  Current recursion depth (steps taken so far)
+   */
   private void recursiveMoveFinder(Tile currentTile, int dieRoll, Set<Tile> visitedInCall, Set<Tile> resultOutput, int currentDepth) {
 
     // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
@@ -361,10 +425,15 @@ public class MissingDiamond {
   }
 
   /**
-   * Gets all possible moves for the current player based on the last die roll.
-   * Allows stopping on special tiles if encountered within the die roll distance.
+   * <p>Gets all possible destination tiles for the current player based on their die roll.</p>
    *
-   * @return Set of tiles that the player can move to
+   * <p>This method calculates all valid tiles that the player can move to, considering:
+   * <ul>
+   *   <li>The player must move exactly their die roll value (for normal tiles)</li>
+   *   <li>The player may stop early on special tiles if encountered within the roll distance</li>
+   * </ul></p>
+   *
+   * @return A set of tiles that the player can legally move to
    */
   public Set<Tile> getPossibleMovesForCurrentRoll() {
     Set<Tile> possibleMoves = new HashSet<>();
@@ -386,10 +455,13 @@ public class MissingDiamond {
   }
 
   /**
-   * Moves the current player to the selected tile.
+   * <p>Moves the current player to the selected destination tile.</p>
    *
-   * @param destinationTile The tile to move to
-   * @return A message describing the move result
+   * <p>This method updates the player's position on the board if the move is valid.
+   * It also checks for victory conditions after the move is complete.</p>
+   *
+   * @param destinationTile The tile to move the player to
+   * @return A message describing the result of the move
    */
   public String movePlayerToTile(Tile destinationTile) {
     String result = "";
@@ -424,29 +496,32 @@ public class MissingDiamond {
   }
 
   /**
-   * Checks if there is a token at a specific tile.
+   * <p>Opens a token at the current player's location.</p>
+   * <p>Processes the result based on the token type.</p>
    *
-   * @param tile The tile to check
-   * @return True if there is a token at the tile, false otherwise
+   * @param tile The tile to check for token presence
+   * @return {@code true} if a token exists at the tile, {@code false} otherwise
    */
   public boolean hasTokenAtTile(Tile tile) {
     return tokenSystem.getTokenAtTile(tile) != null;
   }
 
   /**
-   * Gets the token at a specific tile.
+   * <p>Gets the token marker at a specific tile.</p>
    *
-   * @param tile The tile to check
-   * @return The marker at the tile, or null if no marker exists
+   * @param tile The tile to retrieve the token from
+   * @return The marker at the tile, or {@code null} if no marker exists
    */
   public Marker getTokenAtTile(Tile tile) {
     return tokenSystem.getTokenAtTile(tile);
   }
 
   /**
-   * Checks if the current player has met the win condition.
+   * <p>Checks if the current player has met the victory condition.</p>
    *
-   * @return True if the win condition is met, false otherwise
+   * <p>The victory condition is met when a player has found the diamond token.</p>
+   *
+   * @return {@code true} if the victory condition is met, {@code false} otherwise
    */
   public boolean checkWinCondition() {
     return tokenSystem.checkVictoryCondition(currentPlayer, currentPlayer.getCurrentTile());
@@ -466,37 +541,35 @@ public class MissingDiamond {
     }
   }
 
-  // Getters and setters
-
   /**
-   * Gets the list of players.
+   * <p>Gets the list of all players in the game.</p>
    *
-   * @return The list of players
+   * @return The list of all players
    */
   public List<Player> getPlayers() {
     return players;
   }
 
   /**
-   * Gets the game board.
+   * <p>Gets the game board.</p>
    *
-   * @return The game board
+   * @return The branching board representing the game map
    */
   public BoardBranching getBoard() {
     return board;
   }
 
   /**
-   * Gets the die.
+   * <p>Gets the die used for determining player movement.</p>
    *
-   * @return The die
+   * @return The die object
    */
   public Die getDie() {
     return die;
   }
 
   /**
-   * Gets the current roll value.
+   * <p>Gets the value of the current player's die roll.</p>
    *
    * @return The current roll value
    */
@@ -505,16 +578,16 @@ public class MissingDiamond {
   }
 
   /**
-   * Checks if the game is finished.
+   * <p>Checks if the game has finished.</p>
    *
-   * @return True if the game is finished, false otherwise
+   * @return {@code true} if the game is finished, {@code false} otherwise
    */
   public boolean isGameFinished() {
     return gameFinished;
   }
 
   /**
-   * Gets the current player.
+   * <p>Gets the current active player.</p>
    *
    * @return The current player
    */
@@ -523,9 +596,13 @@ public class MissingDiamond {
   }
 
   /**
-   * Sets the current player.
+   * <p>Sets the active player by index.</p>
    *
-   * @param playerIndex The new current player index
+   * <p>This method changes the current player to the player at the specified index
+   * in the players list.</p>
+   *
+   * @param playerIndex The index of the player to set as active
+   * @throws IllegalArgumentException if the index is out of bounds
    */
   public void setCurrentPlayerIndex(int playerIndex) {
     if (playerIndex < 0 || playerIndex >= players.size()) {
@@ -536,18 +613,18 @@ public class MissingDiamond {
   }
 
   /**
-   * Gets the banker.
+   * <p>Gets the banker that manages all financial transactions.</p>
    *
-   * @return The banker
+   * @return The banker object
    */
   public Banker getBanker() {
     return banker;
   }
 
   /**
-   * Gets the token system.
+   * <p>Gets the token system that manages all tokens and their effects.</p>
    *
-   * @return The token system
+   * @return The token system object
    */
   public TokenSystem getTokenSystem() {
     return tokenSystem;

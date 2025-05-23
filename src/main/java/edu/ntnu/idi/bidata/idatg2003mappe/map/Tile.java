@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -22,20 +21,17 @@ import java.util.stream.Stream;
  */
 public class Tile {
 
-  private String effect;
-
   /**
    * <p>This is a unique identifier for the tile.</p>
    * <p>Either position or order of the tile.</p>
    */
   private final int tileId;
-
   /**
    * <p>The next tiles on the board that are connected
    * to this tile. Useful for the missing diamond game.</p>
    */
   private final List<Tile> nextTilesOnBoard;
-
+  private String effect;
   /**
    * <p>The next immediate tile next to the main or current
    * tile. Showing which tile is next.</p>
@@ -76,39 +72,6 @@ public class Tile {
    */
   public void addTileToTileBranch(Tile tile) {
     nextTilesOnBoard.add(tile);
-  }
-
-  /**
-   * <p>Sets the next tile.</p>
-   * <p>Establishes a one-way connection from this tile to the next,
-   * creating a path for sequential movement.</p>
-   *
-   * @param nextTile The next tile.
-   */
-  public void setNextTile(Tile nextTile) {
-    this.nextTile = nextTile;
-  }
-
-  /**
-   * <p>Sets the previous tile.</p>
-   * <p>Establishes a reference to the tile that comes before this one
-   * in a sequential layout.</p>
-   *
-   * @param previousTile The previous tile.
-   */
-  public void setPreviousTile(Tile previousTile) {
-    this.previousTile = previousTile;
-  }
-
-  /**
-   * <p>Sets the destination tile.</p>
-   * <p>Establishes a special connection to another tile, used for
-   * implementing ladders, slides, or teleportation effects.</p>
-   *
-   * @param destinationTile The destination tile.
-   */
-  public void setDestinationTile(Tile destinationTile) {
-    this.destinationTile = destinationTile;
   }
 
   /**
@@ -157,6 +120,17 @@ public class Tile {
   }
 
   /**
+   * <p>Sets the next tile.</p>
+   * <p>Establishes a one-way connection from this tile to the next,
+   * creating a path for sequential movement.</p>
+   *
+   * @param nextTile The next tile.
+   */
+  public void setNextTile(Tile nextTile) {
+    this.nextTile = nextTile;
+  }
+
+  /**
    * <p>Gets the previous tile.</p>
    * <p>Returns the tile that comes before this one in a sequential layout.</p>
    *
@@ -164,6 +138,17 @@ public class Tile {
    */
   public Tile getPreviousTile() {
     return previousTile;
+  }
+
+  /**
+   * <p>Sets the previous tile.</p>
+   * <p>Establishes a reference to the tile that comes before this one
+   * in a sequential layout.</p>
+   *
+   * @param previousTile The previous tile.
+   */
+  public void setPreviousTile(Tile previousTile) {
+    this.previousTile = previousTile;
   }
 
   /**
@@ -175,6 +160,17 @@ public class Tile {
    */
   public Tile getDestinationTile() {
     return destinationTile;
+  }
+
+  /**
+   * <p>Sets the destination tile.</p>
+   * <p>Establishes a special connection to another tile, used for
+   * implementing ladders, slides, or teleportation effects.</p>
+   *
+   * @param destinationTile The destination tile.
+   */
+  public void setDestinationTile(Tile destinationTile) {
+    this.destinationTile = destinationTile;
   }
 
   /**

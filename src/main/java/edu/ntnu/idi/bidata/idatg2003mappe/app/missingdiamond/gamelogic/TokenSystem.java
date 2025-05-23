@@ -32,26 +32,22 @@ import java.util.stream.Stream;
  * @since 23.05.2025
  */
 public class TokenSystem {
-  // Map of tokens placed on tiles
-  private final Map<Tile, Marker> tokenMap = new HashMap<>();
-  private final Map<Integer, Marker> tokensByTileId = new HashMap<>();
-
-  // Token state tracking
-  private boolean diamondFound = false;
-  private Tile diamondLocation = null;
-
-  // Starting locations (Cairo and Tangiers)
-  private final Collection<Tile> startingTiles = new ArrayList<>();
-
   // Constants for token quantities
   private static final int NUM_RED_GEMS = 5;    // Rubies
   private static final int NUM_GREEN_GEMS = 5;  // Emeralds
   private static final int NUM_YELLOW_GEMS = 5; // Topazes
   private static final int NUM_BANDITS = 4;     // Robbers
   private static final int NUM_VISAS = 3;
-
   // Token interaction costs
   private static final int TOKEN_FLIP_COST = 300;  // NEW: Cost to buy a token flip
+  // Map of tokens placed on tiles
+  private final Map<Tile, Marker> tokenMap = new HashMap<>();
+  private final Map<Integer, Marker> tokensByTileId = new HashMap<>();
+  // Starting locations (Cairo and Tangiers)
+  private final Collection<Tile> startingTiles = new ArrayList<>();
+  // Token state tracking
+  private boolean diamondFound = false;
+  private Tile diamondLocation = null;
 
   /**
    * Constructor for TokenSystem.

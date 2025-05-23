@@ -18,9 +18,8 @@ import java.util.logging.Logger;
 
 public class LadderAction implements TileAction {
 
-  private final Tile currentTile;
-
   private static final Logger logger = Logger.getLogger(LadderAction.class.getName());
+  private final Tile currentTile;
 
   /**
    * <p>Constructor for the LadderAction class.</p>

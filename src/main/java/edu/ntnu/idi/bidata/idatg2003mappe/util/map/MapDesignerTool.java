@@ -32,10 +32,10 @@ public class MapDesignerTool {
    * where visual elements will be displayed, the dimensions of the map, and a listener
    * for map design events.</p>
    *
-   * @param overlayPane  The JavaFX pane where visual elements will be displayed
-   * @param mapWidth     The initial width of the map in pixels
-   * @param mapHeight    The initial height of the map in pixels
-   * @param listener     The listener that will receive map design events
+   * @param overlayPane The JavaFX pane where visual elements will be displayed
+   * @param mapWidth    The initial width of the map in pixels
+   * @param mapHeight   The initial height of the map in pixels
+   * @param listener    The listener that will receive map design events
    */
   public MapDesignerTool(Pane overlayPane, double mapWidth, double mapHeight, MapDesignerListener listener) {
     this.mapWidth = mapWidth;
@@ -103,8 +103,8 @@ public class MapDesignerTool {
    * and recalculate the positions of all coordinate points relative to the new size.
    * It also redraws all connections to maintain the correct visual representation.</p>
    *
-   * @param width   The new width of the map in pixels
-   * @param height  The new height of the map in pixels
+   * @param width  The new width of the map in pixels
+   * @param height The new height of the map in pixels
    */
   public void updateMapDimensions(double width, double height) {
     this.mapWidth = width;
@@ -119,9 +119,9 @@ public class MapDesignerTool {
    * creating new coordinate points at the clicked location and handling connection
    * mode if it's also active. It validates that the click is within map bounds.</p>
    *
-   * @param x         The x-coordinate of the click
-   * @param y         The y-coordinate of the click
-   * @param mapView   The ImageView representing the map
+   * @param x       The x-coordinate of the click
+   * @param y       The y-coordinate of the click
+   * @param mapView The ImageView representing the map
    */
   public void handleCoordinateClick(double x, double y, ImageView mapView) {
     if (!isCoordinateMode()) {
@@ -176,8 +176,8 @@ public class MapDesignerTool {
    * <p>This method creates a connection between two tiles identified by their IDs,
    * logs the result, and ensures the connection is visually drawn on the map.</p>
    *
-   * @param sourceId  The ID of the source tile
-   * @param targetId  The ID of the target tile
+   * @param sourceId The ID of the source tile
+   * @param targetId The ID of the target tile
    * @return {@code true} if the connection was created successfully, {@code false} otherwise
    */
 // In MapDesignerTool.java - ensure createDirectConnection does this
@@ -199,13 +199,13 @@ public class MapDesignerTool {
    * <p>This method is used to recreate coordinate points from saved data,
    * such as when loading a map configuration.</p>
    *
-   * @param id         The unique identifier for the point
-   * @param x          The absolute x-coordinate on the map
-   * @param y          The absolute y-coordinate on the map
-   * @param xPercent   The x-coordinate as a percentage of the map width (0.0 to 1.0)
-   * @param yPercent   The y-coordinate as a percentage of the map height (0.0 to 1.0)
-   * @param name       The name of the location
-   * @param isSpecial  Whether this is a special point (affects appearance and behavior)
+   * @param id        The unique identifier for the point
+   * @param x         The absolute x-coordinate on the map
+   * @param y         The absolute y-coordinate on the map
+   * @param xPercent  The x-coordinate as a percentage of the map width (0.0 to 1.0)
+   * @param yPercent  The y-coordinate as a percentage of the map height (0.0 to 1.0)
+   * @param name      The name of the location
+   * @param isSpecial Whether this is a special point (affects appearance and behavior)
    */
   public void registerExistingPoint(int id, double x, double y, double xPercent, double yPercent,
                                     String name, boolean isSpecial) {

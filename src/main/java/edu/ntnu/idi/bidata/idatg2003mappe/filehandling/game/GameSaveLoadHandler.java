@@ -2,7 +2,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller.MissingDiamondController;
@@ -118,7 +117,7 @@ public class GameSaveLoadHandler {
    * </ol>
    *
    * @param ladderGameGUI The {@link LadderGameGUI} instance to update
-   * @param controller The {@link LadderGameController} to apply the state to
+   * @param controller    The {@link LadderGameController} to apply the state to
    * @param randomLadders Whether the game uses random ladders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
@@ -203,7 +202,7 @@ public class GameSaveLoadHandler {
    * </ol>
    *
    * @param missingDiamondGUI The {@link MissingDiamondGUI} instance to update
-   * @param controller The {@link MissingDiamondController} to apply the state to
+   * @param controller        The {@link MissingDiamondController} to apply the state to
    */
   public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
     // Check if the CSV file exists
@@ -276,9 +275,9 @@ public class GameSaveLoadHandler {
    * the provided type, title, header, and content. It is used to inform
    * the user about the success or failure of save/load operations.</p>
    *
-   * @param type The {@link Alert.AlertType} to determine the alert style
-   * @param title The title of the alert dialog
-   * @param header The header text of the alert dialog
+   * @param type    The {@link Alert.AlertType} to determine the alert style
+   * @param title   The title of the alert dialog
+   * @param header  The header text of the alert dialog
    * @param content The main content text of the alert dialog
    */
   private void showAlert(Alert.AlertType type, String title, String header, String content) {

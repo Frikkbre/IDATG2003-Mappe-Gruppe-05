@@ -29,58 +29,6 @@ public class GameState {
   private String saveTime;
 
   /**
-   * <p>Inner class to represent a player's position on the board.</p>
-   * <p>This class stores the essential information about a player that needs to be saved,
-   * including their name, ID, and the ID of the tile they are currently on.</p>
-   */
-  public static class PlayerPosition {
-    private final String name;
-    private final int id;
-    private final int tileId;
-
-    /**
-     * <p>Constructs a new PlayerPosition instance.</p>
-     * <p>Initializes a player position record with the specified properties.</p>
-     *
-     * @param name The player's name
-     * @param id The player's unique identifier
-     * @param tileId The ID of the tile the player is currently on
-     */
-    public PlayerPosition(String name, int id, int tileId) {
-      this.name = name;
-      this.id = id;
-      this.tileId = tileId;
-    }
-
-    /**
-     * <p>Gets the player's name.</p>
-     *
-     * @return The player's name
-     */
-    public String getName() {
-      return name;
-    }
-
-    /**
-     * <p>Gets the player's ID.</p>
-     *
-     * @return The player's unique identifier
-     */
-    public int getId() {
-      return id;
-    }
-
-    /**
-     * <p>Gets the ID of the tile the player is on.</p>
-     *
-     * @return The tile ID
-     */
-    public int getTileId() {
-      return tileId;
-    }
-  }
-
-  /**
    * <p>Default constructor.</p>
    * <p>Initializes a new empty game state with no player positions.</p>
    */
@@ -95,8 +43,8 @@ public class GameState {
    * the necessary position information from each player object.</p>
    *
    * @param currentPlayerIndex The index of the current player
-   * @param randomLadders Whether the game uses random ladders
-   * @param players The list of {@link Player} objects
+   * @param randomLadders      Whether the game uses random ladders
+   * @param players            The list of {@link Player} objects
    */
   public GameState(int currentPlayerIndex, boolean randomLadders, List<Player> players) {
     this.currentPlayerIndex = currentPlayerIndex;
@@ -177,5 +125,57 @@ public class GameState {
    */
   public void setSaveTime(String saveTime) {
     this.saveTime = saveTime;
+  }
+
+  /**
+   * <p>Inner class to represent a player's position on the board.</p>
+   * <p>This class stores the essential information about a player that needs to be saved,
+   * including their name, ID, and the ID of the tile they are currently on.</p>
+   */
+  public static class PlayerPosition {
+    private final String name;
+    private final int id;
+    private final int tileId;
+
+    /**
+     * <p>Constructs a new PlayerPosition instance.</p>
+     * <p>Initializes a player position record with the specified properties.</p>
+     *
+     * @param name   The player's name
+     * @param id     The player's unique identifier
+     * @param tileId The ID of the tile the player is currently on
+     */
+    public PlayerPosition(String name, int id, int tileId) {
+      this.name = name;
+      this.id = id;
+      this.tileId = tileId;
+    }
+
+    /**
+     * <p>Gets the player's name.</p>
+     *
+     * @return The player's name
+     */
+    public String getName() {
+      return name;
+    }
+
+    /**
+     * <p>Gets the player's ID.</p>
+     *
+     * @return The player's unique identifier
+     */
+    public int getId() {
+      return id;
+    }
+
+    /**
+     * <p>Gets the ID of the tile the player is on.</p>
+     *
+     * @return The tile ID
+     */
+    public int getTileId() {
+      return tileId;
+    }
   }
 }

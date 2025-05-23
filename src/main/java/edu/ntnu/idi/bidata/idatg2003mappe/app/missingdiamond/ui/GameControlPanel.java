@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
  * @since 23.05.2025
  */
 public class GameControlPanel extends VBox {
+  private static final int MAX_LOG_LINES = 8;
   private final MissingDiamondController gameController;
   private final BoardView boardView;
   private final Button rollDieButton;
@@ -51,8 +52,14 @@ public class GameControlPanel extends VBox {
   private final Label playerMoneyLabel;
   private PlayerStatusPanel statusPanel;
 
-  private static final int MAX_LOG_LINES = 8;
-
+  /**
+   * <p>Constructs a new game control panel with all necessary UI components.</p>
+   * <p>The panel contains several action buttons and a game log that displays
+   * messages about game events.</p>
+   *
+   * @param controller the game controller that handles game logic
+   * @param boardView  the board view that displays the game board
+   */
   public GameControlPanel(MissingDiamondController controller, BoardView boardView) {
     super(10); // 10px spacing
     this.gameController = controller;
@@ -203,7 +210,11 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * Creates a game log that fits content without scrolling.
+   * <p>Creates a game log text area with fixed height and proper styling.</p>
+   * <p>The log area is configured to display a limited number of messages
+   * without scrolling.</p>
+   *
+   * @return a configured TextArea for displaying game messages
    */
   private TextArea createFixedGameLog() {
     TextArea log = new TextArea();
@@ -219,7 +230,12 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * Logs a message with automatic line management to prevent scrolling.
+   * <p>Logs a message to the game log.</p>
+   * <p>Long messages are automatically split into multiple lines to fit
+   * the display area. Old messages are removed when the log reaches its
+   * maximum capacity.</p>
+   *
+   * @param message the message to log
    */
   public void logMessage(String message) {
     // If message is short enough, just add it directly
@@ -240,7 +256,11 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * Adds a single line to the log, removing old lines if necessary.
+   * <p>Adds a single line to the game log.</p>
+   * <p>If the log exceeds the maximum number of lines, the oldest line
+   * is removed to make room for the new one.</p>
+   *
+   * @param line the line to add to the log
    */
   private void addLogLine(String line) {
     String[] lines = gameLog.getText().split("\n");
@@ -255,7 +275,8 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * Updates the player information display.
+   * <p>Updates the player information display.</p>
+   * <p>Shows the current player's name and money balance.</p>
    */
   private void updatePlayerInfo() {
     Player currentPlayer = gameController.getCurrentPlayer();
@@ -268,10 +289,30 @@ public class GameControlPanel extends VBox {
     }
   }
 
+  /**
+   * <p>Sets the status panel for this control panel.</p>
+   * <p>The status panel is updated when token effects are applied.</p>
+   *
+   * @param statusPanel the player status panel to set
+   */
   public void setStatusPanel(PlayerStatusPanel statusPanel) {
     this.statusPanel = statusPanel;
   }
 
+  /**
+   * <p>Applies the effects of a token to a player.</p>
+   * <p>Different token types have different effects:</p>
+   * <ul>
+   *   <li>Diamond: Adds a diamond to the player's inventory</li>
+   *   <li>Gems (Red/Green/Yellow): Deposits money into the player's account</li>
+   *   <li>Bandit: Steals all of the player's money</li>
+   *   <li>Visa: Adds a visa card to the player's inventory</li>
+   *   <li>Blank: No effect</li>
+   * </ul>
+   *
+   * @param token  the token to apply effects for
+   * @param player the player to apply effects to
+   */
   private void applyTokenEffects(Marker token, Player player) {
     Banker banker = gameController.getBanker();
 
@@ -325,8 +366,9 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * Updates the controls based on the current game state.
-   * Skip button removed - End Turn always available for same functionality.
+   * <p>Updates the visibility and state of control buttons based on the current game state.</p>
+   * <p>This method ensures that only appropriate actions are available to the player
+   * at each stage of the game.</p>
    */
   private void updateControls() {
     // Hide all action buttons by default
@@ -374,6 +416,11 @@ public class GameControlPanel extends VBox {
     }
   }
 
+  /**
+   * <p>Sets whether the roll button is disabled.</p>
+   *
+   * @param disabled true to disable the roll button, false to enable it
+   */
   public void setRollButtonDisabled(boolean disabled) {
     rollDieButton.setDisable(disabled);
   }

@@ -25,18 +25,16 @@ import java.util.Set;
  * @since 22.05.2025
  */
 public class TileHighlighter {
-  private final Map<Integer, Circle> tileCircles;
-  private final Set<Integer> specialTileIds;
-  private final MissingDiamondController gameController;
-
   private static final Color SPECIAL_TILE_COLOR = Color.RED;
   private static final Color NORMAL_TILE_COLOR = Color.BLACK;
   private static final Color VALID_MOVE_COLOR = Color.YELLOW;
   private static final Color SPECIAL_VALID_MOVE_COLOR = Color.ORANGE;
   private static final Color CURRENT_PLAYER_COLOR = Color.LIME;
-
   private static final double NORMAL_STROKE_WIDTH = 1.5;
   private static final double HIGHLIGHTED_STROKE_WIDTH = 3.0;
+  private final Map<Integer, Circle> tileCircles;
+  private final Set<Integer> specialTileIds;
+  private final MissingDiamondController gameController;
 
   /**
    * <p>Creates a new enhanced TileHighlighter.</p>

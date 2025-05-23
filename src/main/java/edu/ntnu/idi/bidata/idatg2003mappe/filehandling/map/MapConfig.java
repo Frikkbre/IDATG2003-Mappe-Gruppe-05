@@ -20,6 +20,64 @@ import java.util.List;
  * @since 20.05.2025
  */
 public class MapConfig {
+  private final List<Location> locations = new ArrayList<>();
+  private final List<Connection> connections = new ArrayList<>();
+  private String name;
+
+  /**
+   * <p>Gets the map name.</p>
+   *
+   * @return The name of the map
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * <p>Sets the map name.</p>
+   *
+   * @param name The name to set
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * <p>Gets the list of locations.</p>
+   *
+   * @return The list of {@link Location} objects
+   */
+  public List<Location> getLocations() {
+    return locations;
+  }
+
+  /**
+   * <p>Gets the list of connections.</p>
+   *
+   * @return The list of {@link Connection} objects
+   */
+  public List<Connection> getConnections() {
+    return connections;
+  }
+
+  /**
+   * <p>Adds a location to the map.</p>
+   *
+   * @param location The {@link Location} to add
+   */
+  public void addLocation(Location location) {
+    locations.add(location);
+  }
+
+  /**
+   * <p>Adds a connection to the map.</p>
+   *
+   * @param connection The {@link Connection} to add
+   */
+  public void addConnection(Connection connection) {
+    connections.add(connection);
+  }
+
   /**
    * <p>Represents a location on the map.</p>
    * <p>Each location has a unique ID, name, position (as percentage of map dimensions),
@@ -29,18 +87,18 @@ public class MapConfig {
   public static class Location {
     private int id;
     private String name;
-    private double xPercent;
-    private double yPercent;
+    private final double xPercent;
+    private final double yPercent;
     private boolean isSpecial;
 
     /**
      * <p>Constructs a new Location instance.</p>
      * <p>Initializes a location with the specified properties.</p>
      *
-     * @param id The unique identifier for the location
-     * @param name The name of the location (city name)
-     * @param xPercent The x-coordinate as a percentage of map width (0.0-1.0)
-     * @param yPercent The y-coordinate as a percentage of map height (0.0-1.0)
+     * @param id        The unique identifier for the location
+     * @param name      The name of the location (city name)
+     * @param xPercent  The x-coordinate as a percentage of map width (0.0-1.0)
+     * @param yPercent  The y-coordinate as a percentage of map height (0.0-1.0)
      * @param isSpecial <code>true</code> if this is a special location (red tile), <code>false</code> otherwise
      */
     public Location(int id, String name, double xPercent, double yPercent, boolean isSpecial) {
@@ -131,15 +189,15 @@ public class MapConfig {
    * allowing players to travel between them.</p>
    */
   public static class Connection {
-    private int fromId;
-    private int toId;
+    private final int fromId;
+    private final int toId;
 
     /**
      * <p>Constructs a new Connection instance.</p>
      * <p>Initializes a connection between the specified source and target locations.</p>
      *
      * @param fromId The ID of the source location
-     * @param toId The ID of the target location
+     * @param toId   The ID of the target location
      */
     public Connection(int fromId, int toId) {
       this.fromId = fromId;
@@ -163,63 +221,5 @@ public class MapConfig {
     public int getToId() {
       return toId;
     }
-  }
-
-  private String name;
-  private final List<Location> locations = new ArrayList<>();
-  private final List<Connection> connections = new ArrayList<>();
-
-  /**
-   * <p>Gets the map name.</p>
-   *
-   * @return The name of the map
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * <p>Sets the map name.</p>
-   *
-   * @param name The name to set
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * <p>Gets the list of locations.</p>
-   *
-   * @return The list of {@link Location} objects
-   */
-  public List<Location> getLocations() {
-    return locations;
-  }
-
-  /**
-   * <p>Gets the list of connections.</p>
-   *
-   * @return The list of {@link Connection} objects
-   */
-  public List<Connection> getConnections() {
-    return connections;
-  }
-
-  /**
-   * <p>Adds a location to the map.</p>
-   *
-   * @param location The {@link Location} to add
-   */
-  public void addLocation(Location location) {
-    locations.add(location);
-  }
-
-  /**
-   * <p>Adds a connection to the map.</p>
-   *
-   * @param connection The {@link Connection} to add
-   */
-  public void addConnection(Connection connection) {
-    connections.add(connection);
   }
 }

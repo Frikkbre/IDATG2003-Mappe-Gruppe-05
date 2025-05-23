@@ -28,12 +28,11 @@ import java.util.logging.Logger;
  */
 public class MapDesignerManager {
   private final MapDesignerTool mapDesigner;
-  private int connectionSourceId = -1;
-
   /**
    * <p>Logger for logging messages.</p>
    */
   private final Logger logger = Logger.getLogger(MapDesignerManager.class.getName());
+  private int connectionSourceId = -1;
 
   /**
    * <p>Creates a new map designer manager.</p>

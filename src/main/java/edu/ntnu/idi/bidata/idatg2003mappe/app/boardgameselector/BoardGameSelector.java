@@ -9,7 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -29,13 +31,8 @@ public class BoardGameSelector extends Application {
   private MissingDiamondGUI missingDiamondGUI;
   private Stage primaryStage;
 
-  /**
-   * <p>Method to set the stage of the application.</p>
-   *
-   * @param primaryStage the primary stage to set
-   */
-  public void setStage(Stage primaryStage) {
-    this.primaryStage = primaryStage;
+  public static void main(String[] args) {
+    launch(args);
   }
 
   /**
@@ -46,6 +43,15 @@ public class BoardGameSelector extends Application {
    */
   public Stage getStage() {
     return primaryStage;
+  }
+
+  /**
+   * <p>Method to set the stage of the application.</p>
+   *
+   * @param primaryStage the primary stage to set
+   */
+  public void setStage(Stage primaryStage) {
+    this.primaryStage = primaryStage;
   }
 
   /**
@@ -189,7 +195,7 @@ public class BoardGameSelector extends Application {
    * <p>Creates a styled game button with description.</p>
    * <p>Includes icon, title, and description for better user experience.</p>
    *
-   * @param title The title of the game
+   * @param title       The title of the game
    * @param description Brief description of the game
    * @return A styled {@link Button}
    */
@@ -331,9 +337,5 @@ public class BoardGameSelector extends Application {
     );
 
     alert.showAndWait();
-  }
-
-  public static void main(String[] args) {
-    launch(args);
   }
 }

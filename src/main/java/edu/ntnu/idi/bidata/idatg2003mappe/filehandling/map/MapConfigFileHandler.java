@@ -45,7 +45,7 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
    * @param filePath The path to the JSON file to read
    * @return A {@link MapConfig} object containing the deserialized map configuration
    * @throws FileHandlingException If an error occurs while reading the file
-   * @throws JsonParsingException If the JSON content cannot be parsed correctly
+   * @throws JsonParsingException  If the JSON content cannot be parsed correctly
    */
   @Override
   public MapConfig read(String filePath) throws FileHandlingException {
@@ -65,7 +65,7 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
    * to the specified file path. Creates any necessary parent directories.</p>
    *
    * @param mapConfig The {@link MapConfig} object to write
-   * @param filePath The path to the output file
+   * @param filePath  The path to the output file
    * @throws FileHandlingException If an error occurs while writing the file
    */
   @Override

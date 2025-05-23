@@ -35,20 +35,11 @@ import java.util.stream.IntStream;
 public class MissingDiamondController {
   private final List<BoardGameObserver> observers = new ArrayList<>();
   private final MissingDiamond game;
-  private boolean hasRolled = false;
-  private MapDesignerListener view;
-
-  // Action state tracking
-  private enum ActionState {
-    AWAITING_ROLL,
-    AWAITING_MOVE,
-    AWAITING_TOKEN_DECISION
-  }
-
-  private ActionState currentState = ActionState.AWAITING_ROLL;
-
   // Available actions for the current state (Skip action removed)
   private final Map<ActionState, List<String>> availableActions = new HashMap<>();
+  private boolean hasRolled = false;
+  private MapDesignerListener view;
+  private ActionState currentState = ActionState.AWAITING_ROLL;
 
   /**
    * <p>Constructor for MissingDiamondController.</p>
@@ -293,7 +284,6 @@ public class MissingDiamondController {
     currentState = ActionState.AWAITING_ROLL;
   }
 
-
   /**
    * <p>Gets the underlying game model.</p>
    *
@@ -412,5 +402,12 @@ public class MissingDiamondController {
    */
   public Die getDie() {
     return game.getDie();
+  }
+
+  // Action state tracking
+  private enum ActionState {
+    AWAITING_ROLL,
+    AWAITING_MOVE,
+    AWAITING_TOKEN_DECISION
   }
 }

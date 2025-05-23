@@ -13,16 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -32,32 +25,30 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
- * Enhanced Ladder Game GUI with improved color scheme and design.
- * Features a modern, visually appealing interface with better contrast and readability.
+ * <p>Enhanced Ladder Game GUI with improved color scheme and design.</p>
+ * <p>Features a modern, visually appealing interface with better contrast and readability.</p>
+ * <p>This class implements the user interface for the classic ladder game (also known as
+ * Snakes and Ladders). The interface includes:</p>
+ * <ul>
+ *   <li>A game board grid with numbered tiles from 1 to 100</li>
+ *   <li>Special visual indicators for ladders (up) and snakes (down)</li>
+ *   <li>Player tokens that move across the board</li>
+ *   <li>A roll button for dice simulation</li>
+ *   <li>A scoreboard to track player positions</li>
+ *   <li>A game log to record important events</li>
+ * </ul>
  *
- * @author Simen Gudbrandsen and Frikk Breadsroed
+ * <p>The GUI supports both classic mode with fixed ladder positions and random mode
+ * where ladder positions are generated randomly at the start of the game.</p>
+ *
  * @version 0.5
  * @since 20.02.2025
  */
 public class LadderGameGUI extends Application {
-  private LadderGameController gameController;
-  private GridPane boardGrid;
-  private TextArea gameLog;
-  public TextArea scoreBoard;
-  public boolean randomLadders = false;
-  public NavBar navBar;
-  private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
-
-  // Player circle management
-  private Pane playerOverlay;
-  private final Map<Player, Circle> playerCircles = new HashMap<>();
-  private final Map<Integer, TextField> tileFields = new HashMap<>();
-
   // Constants for circle appearance
   private static final double CIRCLE_RADIUS = 15.0;
   private static final double TILE_WIDTH = 80.0;
   private static final double TILE_HEIGHT = 80.0;
-
   // Color scheme constants
   private static final String BACKGROUND_COLOR = "#2C3E50"; // Dark blue-gray
   private static final String BOARD_BACKGROUND = "#34495E"; // Lighter blue-gray
@@ -68,11 +59,41 @@ public class LadderGameGUI extends Application {
   private static final String BUTTON_HOVER_COLOR = "#2980B9"; // Darker blue
   private static final String TEXT_COLOR = "#2C3E50"; // Dark text
   private static final String LOG_BACKGROUND = "#BDC3C7"; // Light gray for logs
+  private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+  private final Map<Player, Circle> playerCircles = new HashMap<>();
+  private final Map<Integer, TextField> tileFields = new HashMap<>();
+  public TextArea scoreBoard;
+  public boolean randomLadders = false;
+  public NavBar navBar;
+  private LadderGameController gameController;
+  private GridPane boardGrid;
+  private TextArea gameLog;
+  // Player circle management
+  private Pane playerOverlay;
 
   /**
-   * Start the game.
+   * <p>The main entry point for the application.</p>
+   * <p>This method launches the JavaFX application.</p>
    *
-   * @param primaryStage the primary stage
+   * @param args Command line arguments (not used)
+   */
+  public static void main(String[] args) {
+    launch(args);
+  }
+
+  /**
+   * <p>Initializes and starts the Ladder Game GUI.</p>
+   * <p>This method sets up the entire game interface including:</p>
+   * <ul>
+   *   <li>Creating the game controller</li>
+   *   <li>Setting up the board layout</li>
+   *   <li>Initializing the player tokens</li>
+   *   <li>Creating the control buttons and score display</li>
+   * </ul>
+   * <p>The method applies consistent styling to all UI elements according to
+   * the game's color scheme.</p>
+   *
+   * @param primaryStage the primary stage for this application
    */
   @Override
   public void start(Stage primaryStage) {
@@ -177,9 +198,16 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Creates the board with an overlay for player circles.
+   * <p>Creates a container for the game board with an overlay for player circles.</p>
+   * <p>The container uses a StackPane to layer the following elements:</p>
+   * <ol>
+   *   <li>A grid representing the game board with numbered tiles</li>
+   *   <li>A transparent pane overlay for drawing player tokens</li>
+   * </ol>
+   * <p>The container has styling for consistent appearance with the rest of the UI,
+   * including a drop shadow effect for visual depth.</p>
    *
-   * @return StackPane containing the board and player overlay
+   * @return StackPane containing the board grid and player overlay
    */
   private StackPane createBoardWithOverlay() {
     StackPane container = new StackPane();
@@ -211,9 +239,17 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Create the board grid with correct tile numbering (1 at bottom left).
+   * <p>Creates the game board grid with correctly numbered tiles.</p>
+   * <p>The board follows these rules:</p>
+   * <ul>
+   *   <li>Tile 1 is positioned at the bottom left</li>
+   *   <li>Tiles are arranged in a zig-zag pattern (left-to-right, then right-to-left)</li>
+   *   <li>The highest tile (100) is at the top left</li>
+   * </ul>
+   * <p>Each tile is represented as a TextField styled according to its function
+   * (regular, ladder up, ladder down, or special effect).</p>
    *
-   * @return the board grid
+   * @return GridPane containing all the game tiles
    */
   private GridPane createBoardGrid() {
     GridPane grid = new GridPane();
@@ -237,10 +273,18 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Create a tile for the board with improved styling.
+   * <p>Creates a styled tile for the game board.</p>
+   * <p>Tiles are visually distinguished by their function:</p>
+   * <ul>
+   *   <li>Regular tiles - Light background with dark text</li>
+   *   <li>Ladder up tiles - Green background with up arrow and destination</li>
+   *   <li>Ladder down tiles (snakes) - Red background with down arrow and destination</li>
+   *   <li>Special effect tiles - Unique colors based on effect type</li>
+   * </ul>
+   * <p>All tiles include hover effects for improved user interaction.</p>
    *
-   * @param tileNumber the number of the tile
-   * @return the tile
+   * @param tileNumber the number to display on the tile
+   * @return a styled TextField representing the tile
    */
   private TextField createTile(int tileNumber) {
     TextField tile = new TextField("" + tileNumber);
@@ -319,7 +363,10 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Initialize player circles for all players.
+   * <p>Initializes circular tokens for all players on the board.</p>
+   * <p>This method creates a visual circle representation for each player and adds
+   * it to the player overlay pane. Each circle is positioned according to the player's
+   * current tile position.</p>
    */
   private void initializePlayerCircles() {
     List<Player> players = gameController.getPlayers();
@@ -334,10 +381,17 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Creates a circle for a player with enhanced visual effects.
+   * <p>Creates a styled circle token to represent a player on the board.</p>
+   * <p>The circle has these visual characteristics:</p>
+   * <ul>
+   *   <li>Color matching the player's assigned color</li>
+   *   <li>White border stroke for definition</li>
+   *   <li>Drop shadow effect for visual depth</li>
+   *   <li>The player's name stored as user data for identification</li>
+   * </ul>
    *
-   * @param player The player to create a circle for
-   * @return Circle representing the player
+   * @param player The player to create a circle token for
+   * @return Circle object representing the player
    */
   private Circle createPlayerCircle(Player player) {
     Circle circle = new Circle(CIRCLE_RADIUS);
@@ -369,11 +423,18 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Calculate the screen position for a player circle based on tile position.
+   * <p>Calculates the screen position for placing a player token.</p>
+   * <p>This method determines the x,y coordinates for a player circle based on:</p>
+   * <ul>
+   *   <li>The position of the tile in the grid</li>
+   *   <li>The player's index (for offset when multiple players occupy the same tile)</li>
+   * </ul>
+   * <p>Players on the same tile are arranged in a small grid pattern around
+   * the center of the tile.</p>
    *
-   * @param tileId The ID of the tile
-   * @param playerIndex The index of the player (for offset calculation)
-   * @return array containing [x, y] coordinates
+   * @param tileId      The ID of the tile where the player is located
+   * @param playerIndex The index of the player (for calculating offset)
+   * @return double array containing [x, y] coordinates
    */
   private double[] calculatePlayerPosition(int tileId, int playerIndex) {
     TextField tileField = tileFields.get(tileId);
@@ -397,7 +458,14 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Update the board UI with current player positions using circles.
+   * <p>Updates the visual representation of all player positions on the board.</p>
+   * <p>This method:</p>
+   * <ul>
+   *   <li>Repositions all player circles according to their current tile positions</li>
+   *   <li>Updates the scoreboard to reflect current player rankings</li>
+   * </ul>
+   * <p>This method should be called after any change to player positions,
+   * such as after a die roll or special tile effect.</p>
    */
   public void updateBoardUI() {
     if (boardGrid == null || playerOverlay == null) {
@@ -421,9 +489,12 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Create the scoreboard with improved styling.
+   * <p>Creates a styled scoreboard to display player rankings.</p>
+   * <p>The scoreboard shows players in order of their progress on the board.
+   * It uses a text area with custom styling for readability and visual consistency
+   * with the rest of the game UI.</p>
    *
-   * @return the scoreboard
+   * @return TextArea containing the formatted scoreboard
    */
   private TextArea createScoreBoard() {
     TextArea scoreBoard = new TextArea("Scoreboard:");
@@ -444,9 +515,15 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * Update the scoreBoard with the current player positions.
+   * <p>Updates the scoreboard with current player positions.</p>
+   * <p>This method:</p>
+   * <ul>
+   *   <li>Sorts players by their position on the board (highest tile first)</li>
+   *   <li>Adds medal emojis for the top three players</li>
+   *   <li>Displays each player's name and current tile position</li>
+   * </ul>
    *
-   * @param scoreBoard takes in the TextArea scoreBoard to update
+   * @param scoreBoard The TextArea component to update with current rankings
    */
   public void updateScoreBoard(TextArea scoreBoard) {
     scoreBoard.clear();
@@ -471,11 +548,13 @@ public class LadderGameGUI extends Application {
     scoreBoard.setText(scoreBoardText.toString());
   }
 
+  /**
+   * <p>Restarts the game with a fresh board and player positions.</p>
+   * <p>This method resets the entire game state and recreates the UI.</p>
+   *
+   * @param primaryStage The primary stage to restart the game in
+   */
   private void restartGame(Stage primaryStage) {
     start(primaryStage);
-  }
-
-  public static void main(String[] args) {
-    launch(args);
   }
 }

@@ -16,7 +16,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHan
  * </ul>
  *
  * @param <T> The type of object to write
- *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 11.04.2025
@@ -28,10 +27,10 @@ public interface FileWriter<T> {
    * and write it to the specified file path. The method should handle serialization,
    * directory creation if needed, and file system access.</p>
    *
-   * @param object The object to write
+   * @param object   The object to write
    * @param filePath The path to the file
    * @throws FileHandlingException If an error occurs while writing the file, such as
-   *                              permission denied, disk full, or serialization failure
+   *                               permission denied, disk full, or serialization failure
    */
   void write(T object, String filePath) throws FileHandlingException;
 }

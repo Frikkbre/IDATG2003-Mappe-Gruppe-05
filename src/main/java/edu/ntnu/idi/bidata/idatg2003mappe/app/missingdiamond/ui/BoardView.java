@@ -7,7 +7,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -45,45 +44,23 @@ import java.util.stream.IntStream;
 public class BoardView extends StackPane {
 
   private static final Logger logger = Logger.getLogger(BoardView.class.getName());
-
-  /**
-   * <p>Interface for board update notifications.</p>
-   * <p>Implementers of this interface will be notified when the game board's state changes,
-   * allowing them to update dependent components accordingly.</p>
-   */
-  public interface BoardUpdateListener {
-    /**
-     * <p>Called when the board state has been updated.</p>
-     * <p>This method is triggered after any significant change to the board state,
-     * such as player movement or token interaction.</p>
-     */
-    void onBoardUpdated();
-  }
-
-  // Game controller
-  private MissingDiamondController gameController;
-
-  // UI components
-  private Pane overlayPane;
-  private ImageView mapView;
-  private TextArea gameLog;
-
-  private TileHighlighter tileHighlighter;
-
-  private MapDesignerManager mapDesignerManager;
-
   // Event listeners
   private final Collection<BoardUpdateListener> updateListeners = new ArrayList<>();
-
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
   private final Set<Integer> specialTileIds = new HashSet<>();
-
   // FIX: Store original percentages to prevent corruption during resize
   private final Map<Integer, Double> tileXPercentages = new HashMap<>();
   private final Map<Integer, Double> tileYPercentages = new HashMap<>();
-
+  // Game controller
+  private MissingDiamondController gameController;
+  // UI components
+  private Pane overlayPane;
+  private ImageView mapView;
+  private TextArea gameLog;
+  private TileHighlighter tileHighlighter;
+  private MapDesignerManager mapDesignerManager;
   /**
    * <p>Constructs a new BoardView instance.</p>
    * <p>Initializes the board with the default size and loads the map image.
@@ -319,7 +296,6 @@ public class BoardView extends StackPane {
     updateListeners.forEach(BoardUpdateListener::onBoardUpdated);
   }
 
-
   /**
    * <p>Adds a board update listener.</p>
    * <p>Registers a new listener to be notified of board state changes.
@@ -440,7 +416,7 @@ public class BoardView extends StackPane {
   private void createConnectionsFromConfig(MapConfig mapConfig) {
     // Create the paths between locations
     mapConfig.getConnections().stream()
-        .map(conn -> new Object[] {
+        .map(conn -> new Object[]{
             tileCircles.get(conn.getFromId()),
             tileCircles.get(conn.getToId())
         })
@@ -707,7 +683,6 @@ public class BoardView extends StackPane {
     highlightPossibleMoves();
   }
 
-
   /**
    * <p>Highlights possible moves for the current player.</p>
    * <p>Visually indicates which tiles the player can move to based on
@@ -793,6 +768,20 @@ public class BoardView extends StackPane {
    */
   public ImageView getMapView() {
     return mapView;
+  }
+
+  /**
+   * <p>Interface for board update notifications.</p>
+   * <p>Implementers of this interface will be notified when the game board's state changes,
+   * allowing them to update dependent components accordingly.</p>
+   */
+  public interface BoardUpdateListener {
+    /**
+     * <p>Called when the board state has been updated.</p>
+     * <p>This method is triggered after any significant change to the board state,
+     * such as player movement or token interaction.</p>
+     */
+    void onBoardUpdated();
   }
 
 }

@@ -3,7 +3,9 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 /**
@@ -102,9 +104,9 @@ public class LadderGameBoardFactory {
    * <p>Creates the specified number of connections of the given type (ladder or snake),
    * trying multiple times if necessary to ensure the desired count is reached.</p>
    *
-   * @param tiles The array of tiles representing the board
-   * @param random The random number generator to use
-   * @param count The number of connections to create
+   * @param tiles    The array of tiles representing the board
+   * @param random   The random number generator to use
+   * @param count    The number of connections to create
    * @param isLadder <code>true</code> to create ladders, <code>false</code> to create snakes
    */
   private static void generateRandomConnections(Tile[] tiles, Random random, int count, boolean isLadder) {
@@ -128,7 +130,7 @@ public class LadderGameBoardFactory {
    * <p>Places a ladder at a random position on the board,
    * connecting a lower tile to a higher tile.</p>
    *
-   * @param tiles The array of tiles representing the board
+   * @param tiles  The array of tiles representing the board
    * @param random The random number generator to use
    */
   private static void createRandomLadder(Tile[] tiles, Random random) {
@@ -145,7 +147,7 @@ public class LadderGameBoardFactory {
    * <p>Places a snake at a random position on the board,
    * connecting a higher tile to a lower tile.</p>
    *
-   * @param tiles The array of tiles representing the board
+   * @param tiles  The array of tiles representing the board
    * @param random The random number generator to use
    */
   private static void createRandomSnake(Tile[] tiles, Random random) {
@@ -179,7 +181,7 @@ public class LadderGameBoardFactory {
    * <p>Applies the specified effect to the tile with the given ID,
    * if the tile exists and the ID is valid.</p>
    *
-   * @param board The board containing the tile
+   * @param board  The board containing the tile
    * @param tileId The ID of the tile to set the effect on
    * @param effect The effect to apply
    */

@@ -32,76 +32,76 @@ import java.util.logging.Logger;
  */
 public class PlayerFileHandler {
 
-    private static final Logger logger = Logger.getLogger(PlayerFileHandler.class.getName());
-    private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  private static final Logger logger = Logger.getLogger(PlayerFileHandler.class.getName());
+  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
-    /**
-     * <p>Reads players from a CSV file.</p>
-     * <p>This method attempts to read player data from the standard CSV file location.
-     * If the file exists and contains valid data, it creates {@link Player} objects
-     * based on that data. If the file is missing or contains invalid data, it falls
-     * back to creating a default player.</p>
-     * <p>For each player, the method:</p>
-     * <ol>
-     *   <li>Reads name, ID, color, and position from the CSV</li>
-     *   <li>Attempts to find the corresponding tile on the board</li>
-     *   <li>Falls back to a default tile if the specified one isn't found</li>
-     *   <li>Creates a new {@link Player} with the parsed data</li>
-     * </ol>
-     *
-     * @param board The game board, used to get tiles by ID
-     * @param defaultStartTiles The list of default starting tiles for fallback
-     * @return A list of {@link Player} objects created from the file, or a default player if the file is empty/invalid
-     */
-    public List<Player> readPlayersFromCSV(BoardBranching board, List<Tile> defaultStartTiles) {
-        List<Player> localPlayers = new ArrayList<>();
-        Tile fallbackStartTile = !defaultStartTiles.isEmpty() ? defaultStartTiles.get(0) : (board != null ? board.getStartTile() : null);
+  /**
+   * <p>Reads players from a CSV file.</p>
+   * <p>This method attempts to read player data from the standard CSV file location.
+   * If the file exists and contains valid data, it creates {@link Player} objects
+   * based on that data. If the file is missing or contains invalid data, it falls
+   * back to creating a default player.</p>
+   * <p>For each player, the method:</p>
+   * <ol>
+   *   <li>Reads name, ID, color, and position from the CSV</li>
+   *   <li>Attempts to find the corresponding tile on the board</li>
+   *   <li>Falls back to a default tile if the specified one isn't found</li>
+   *   <li>Creates a new {@link Player} with the parsed data</li>
+   * </ol>
+   *
+   * @param board             The game board, used to get tiles by ID
+   * @param defaultStartTiles The list of default starting tiles for fallback
+   * @return A list of {@link Player} objects created from the file, or a default player if the file is empty/invalid
+   */
+  public List<Player> readPlayersFromCSV(BoardBranching board, List<Tile> defaultStartTiles) {
+    List<Player> localPlayers = new ArrayList<>();
+    Tile fallbackStartTile = !defaultStartTiles.isEmpty() ? defaultStartTiles.get(0) : (board != null ? board.getStartTile() : null);
 
-        File file = new File(PLAYER_DATA_FILE);
-        if (file.exists() && file.isFile()) {
-            try (CSVReader reader = new CSVReader(new FileReader(file))) {
-                String[] record;
-                reader.readNext(); // Skip header
+    File file = new File(PLAYER_DATA_FILE);
+    if (file.exists() && file.isFile()) {
+      try (CSVReader reader = new CSVReader(new FileReader(file))) {
+        String[] record;
+        reader.readNext(); // Skip header
 
-                while ((record = reader.readNext()) != null) {
-                    if (record.length >= 4) {
-                        String playerName = record[0];
-                        int playerID = Integer.parseInt(record[1]);
-                        String playerColor = record[2];
-                        int position = Integer.parseInt(record[3]);
+        while ((record = reader.readNext()) != null) {
+          if (record.length >= 4) {
+            String playerName = record[0];
+            int playerID = Integer.parseInt(record[1]);
+            String playerColor = record[2];
+            int position = Integer.parseInt(record[3]);
 
-                        Tile playerTile = (board != null) ? board.getTileById(position) : null;
-                        if (playerTile == null) {
-                            playerTile = fallbackStartTile;
-                            logger.warning("Player " + playerName + " had an invalid start position " + position + ". Placing on fallback tile.");
-                        }
-
-                        if (playerTile == null && board == null) {
-                            logger.severe("Cannot place player " + playerName + " as board and fallback tile are null.");
-                            continue; // Skip this player if no valid tile can be assigned
-                        }
-
-
-                        Player player = new Player(playerName, playerID, playerColor, playerTile);
-                        localPlayers.add(player);
-                        logger.info("Player " + playerName + " loaded from CSV.");
-                    }
-                }
-            } catch (IOException | CsvValidationException | NumberFormatException e) {
-                logger.warning("Error reading player data from CSV: " + e.getMessage());
+            Tile playerTile = (board != null) ? board.getTileById(position) : null;
+            if (playerTile == null) {
+              playerTile = fallbackStartTile;
+              logger.warning("Player " + playerName + " had an invalid start position " + position + ". Placing on fallback tile.");
             }
-        } else {
-            logger.info("Player data file not found: " + PLAYER_DATA_FILE);
-        }
 
-        if (localPlayers.isEmpty()) {
-            logger.info("No players read from CSV or file not found. Creating a default player.");
-            if (fallbackStartTile != null) {
-                localPlayers.add(new Player("Player 1", 0, "Blue", fallbackStartTile));
-            } else {
-                logger.severe("Cannot create default player as fallback start tile is null (board might be null too).");
+            if (playerTile == null && board == null) {
+              logger.severe("Cannot place player " + playerName + " as board and fallback tile are null.");
+              continue; // Skip this player if no valid tile can be assigned
             }
+
+
+            Player player = new Player(playerName, playerID, playerColor, playerTile);
+            localPlayers.add(player);
+            logger.info("Player " + playerName + " loaded from CSV.");
+          }
         }
-        return localPlayers;
+      } catch (IOException | CsvValidationException | NumberFormatException e) {
+        logger.warning("Error reading player data from CSV: " + e.getMessage());
+      }
+    } else {
+      logger.info("Player data file not found: " + PLAYER_DATA_FILE);
     }
+
+    if (localPlayers.isEmpty()) {
+      logger.info("No players read from CSV or file not found. Creating a default player.");
+      if (fallbackStartTile != null) {
+        localPlayers.add(new Player("Player 1", 0, "Blue", fallbackStartTile));
+      } else {
+        logger.severe("Cannot create default player as fallback start tile is null (board might be null too).");
+      }
+    }
+    return localPlayers;
+  }
 }

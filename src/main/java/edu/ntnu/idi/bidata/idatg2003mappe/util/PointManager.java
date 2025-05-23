@@ -18,12 +18,11 @@ import java.util.logging.Logger;
  * @since 25.04.2025
  */
 public class PointManager {
+  private static final Logger logger = Logger.getLogger(PointManager.class.getName());
   private final Collection<CoordinatePoint> capturedPoints = new ArrayList<>();
   private final Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
   private Pane overlayPane; // Reference to the overlay pane
-
-  private static final Logger logger = Logger.getLogger(PointManager.class.getName());
 
   /**
    * <p>Creates a new point with the given parameters.</p>
@@ -108,7 +107,7 @@ public class PointManager {
         // Remove labels (if they exist)
         overlayPane.getChildren().removeIf(node ->
             node.getUserData() != null &&
-            node.getUserData().equals("label_" + point.getId()));
+                node.getUserData().equals("label_" + point.getId()));
       });
 
       // Bulk remove circles
@@ -148,13 +147,13 @@ public class PointManager {
    * such as when loading a map configuration. It preserves the original IDs
    * and properties of the points.</p>
    *
-   * @param id         The unique identifier for the point
-   * @param x          The absolute x-coordinate on the map
-   * @param y          The absolute y-coordinate on the map
-   * @param xPercent   The x-coordinate as a percentage of the map width (0.0 to 1.0)
-   * @param yPercent   The y-coordinate as a percentage of the map height (0.0 to 1.0)
-   * @param name       The name of the location
-   * @param isSpecial  Whether this is a special point (affects appearance and behavior)
+   * @param id          The unique identifier for the point
+   * @param x           The absolute x-coordinate on the map
+   * @param y           The absolute y-coordinate on the map
+   * @param xPercent    The x-coordinate as a percentage of the map width (0.0 to 1.0)
+   * @param yPercent    The y-coordinate as a percentage of the map height (0.0 to 1.0)
+   * @param name        The name of the location
+   * @param isSpecial   Whether this is a special point (affects appearance and behavior)
    * @param overlayPane The JavaFX pane where visual elements are displayed
    */
   public void registerExistingPoint(int id, double x, double y, double xPercent, double yPercent,

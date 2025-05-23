@@ -3,10 +3,11 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.model;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerFactory;
-import edu.ntnu.idi.bidata.idatg2003mappe.map.board.LadderGameBoardFactory;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
+import edu.ntnu.idi.bidata.idatg2003mappe.map.board.LadderGameBoardFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Represents a Ladder Game (Snakes and Ladders) with configurable board setup.</p>

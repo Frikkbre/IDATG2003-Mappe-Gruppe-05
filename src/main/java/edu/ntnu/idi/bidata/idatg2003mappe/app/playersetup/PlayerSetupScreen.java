@@ -6,7 +6,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -29,77 +32,18 @@ import java.util.stream.IntStream;
  */
 public class PlayerSetupScreen extends Application {
 
-  private Stage primaryStage;
   private final List<PlayerRow> playerRows = new ArrayList<>();
   private final List<String> availableColors = List.of(
       "LightGreen", "LightPink", "Green", "HotPink", "Orange", "Blue"
   );
-
+  private Stage primaryStage;
   // UI Components
   private VBox playerContainer;
   private Button continueButton;
   private Spinner<Integer> playerCountSpinner;
 
-  /**
-   * <p>Inner class to represent a player setup row.</p>
-   * <p>Contains UI elements for configuring a single player's name and color.</p>
-   * <p>Now includes CSS styling for better visual presentation.</p>
-   */
-  private static class PlayerRow {
-    private final TextField nameField;
-    private final ComboBox<String> colorCombo;
-    private final HBox container;
-
-    public PlayerRow(int playerNumber, List<String> availableColors) {
-      // Create name field with CSS styling
-      nameField = new TextField("Player " + playerNumber);
-      nameField.setPrefWidth(150);
-      nameField.getStyleClass().add("game-text-field");
-
-      // Create color combo box with CSS styling
-      colorCombo = new ComboBox<>();
-      colorCombo.getItems().addAll(availableColors);
-      colorCombo.setValue(availableColors.get((playerNumber - 1) % availableColors.size()));
-      colorCombo.setPrefWidth(120);
-      colorCombo.getStyleClass().add("game-combo-box");
-
-      // Create container with CSS styling
-      container = new HBox(15);
-      container.setAlignment(Pos.CENTER);
-      container.getStyleClass().add("player-row");
-
-      Label playerLabel = new Label("Player " + playerNumber + ":");
-      playerLabel.setPrefWidth(80);
-      playerLabel.getStyleClass().add("info-label");
-
-      Label nameLabel = new Label("Name:");
-      nameLabel.setPrefWidth(50);
-      nameLabel.getStyleClass().add("info-label");
-
-      Label colorLabel = new Label("Color:");
-      colorLabel.setPrefWidth(50);
-      colorLabel.getStyleClass().add("info-label");
-
-      container.getChildren().addAll(
-          playerLabel, nameLabel, nameField, colorLabel, colorCombo
-      );
-    }
-
-    public String getName() {
-      return nameField.getText().trim();
-    }
-
-    public String getColor() {
-      return colorCombo.getValue();
-    }
-
-    public HBox getContainer() {
-      return container;
-    }
-
-    public boolean isValid() {
-      return !getName().isEmpty();
-    }
+  public static void main(String[] args) {
+    launch(args);
   }
 
   @Override
@@ -391,9 +335,9 @@ public class PlayerSetupScreen extends Application {
    * <p>Displays an alert dialog with the specified title, message, and type.
    * Used to communicate errors or important information to the user.</p>
    *
-   * @param title The title of the alert dialog
+   * @param title   The title of the alert dialog
    * @param message The message to display in the alert dialog
-   * @param type The type of alert (ERROR, WARNING, INFORMATION, etc.)
+   * @param type    The type of alert (ERROR, WARNING, INFORMATION, etc.)
    */
   private void showAlert(String title, String message, Alert.AlertType type) {
     Alert alert = new Alert(type);
@@ -409,8 +353,66 @@ public class PlayerSetupScreen extends Application {
     alert.showAndWait();
   }
 
-  public static void main(String[] args) {
-    launch(args);
+  /**
+   * <p>Inner class to represent a player setup row.</p>
+   * <p>Contains UI elements for configuring a single player's name and color.</p>
+   * <p>Now includes CSS styling for better visual presentation.</p>
+   */
+  private static class PlayerRow {
+    private final TextField nameField;
+    private final ComboBox<String> colorCombo;
+    private final HBox container;
+
+    public PlayerRow(int playerNumber, List<String> availableColors) {
+      // Create name field with CSS styling
+      nameField = new TextField("Player " + playerNumber);
+      nameField.setPrefWidth(150);
+      nameField.getStyleClass().add("game-text-field");
+
+      // Create color combo box with CSS styling
+      colorCombo = new ComboBox<>();
+      colorCombo.getItems().addAll(availableColors);
+      colorCombo.setValue(availableColors.get((playerNumber - 1) % availableColors.size()));
+      colorCombo.setPrefWidth(120);
+      colorCombo.getStyleClass().add("game-combo-box");
+
+      // Create container with CSS styling
+      container = new HBox(15);
+      container.setAlignment(Pos.CENTER);
+      container.getStyleClass().add("player-row");
+
+      Label playerLabel = new Label("Player " + playerNumber + ":");
+      playerLabel.setPrefWidth(80);
+      playerLabel.getStyleClass().add("info-label");
+
+      Label nameLabel = new Label("Name:");
+      nameLabel.setPrefWidth(50);
+      nameLabel.getStyleClass().add("info-label");
+
+      Label colorLabel = new Label("Color:");
+      colorLabel.setPrefWidth(50);
+      colorLabel.getStyleClass().add("info-label");
+
+      container.getChildren().addAll(
+          playerLabel, nameLabel, nameField, colorLabel, colorCombo
+      );
+    }
+
+    public String getName() {
+      return nameField.getText().trim();
+    }
+
+    public String getColor() {
+      return colorCombo.getValue();
+    }
+
+    public HBox getContainer() {
+      return container;
+    }
+
+    public boolean isValid() {
+      return !getName().isEmpty();
+    }
   }
 }
 

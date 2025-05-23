@@ -22,10 +22,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Die {
 
-  private int dieValue;
-
   // Observer pattern support
   private final List<DieObserver> observers = new ArrayList<>();
+  private int dieValue;
 
   /**
    * <p>Notifies observers that the die has been rolled.</p>
@@ -73,6 +72,16 @@ public class Die {
   }
 
   /**
+   * <p>Gets the current die value.</p>
+   * <p>Returns the last rolled or set value of the die.</p>
+   *
+   * @return The current die value
+   */
+  public int getDieValue() {
+    return dieValue;
+  }
+
+  /**
    * <p>Sets the die value directly.</p>
    * <p>Allows manual setting of the die value, primarily for testing
    * or for predetermined scenarios.</p>
@@ -85,15 +94,5 @@ public class Die {
       throw new IllegalArgumentException("Die value must be between 1 and 6.");
     }
     this.dieValue = dieValue;
-  }
-
-  /**
-   * <p>Gets the current die value.</p>
-   * <p>Returns the last rolled or set value of the die.</p>
-   *
-   * @return The current die value
-   */
-  public int getDieValue() {
-    return dieValue;
   }
 }

@@ -16,7 +16,6 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHan
  * </ul>
  *
  * @param <T> The type of object that will be returned after reading the file
- *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
  * @since 11.04.2025
@@ -31,7 +30,7 @@ public interface FileReader<T> {
    * @param filePath The path to the file to be read
    * @return An object of type T representing the content of the file
    * @throws FileHandlingException If an error occurs while reading the file, such as
-   *                              file not found, permission denied, or invalid format
+   *                               file not found, permission denied, or invalid format
    */
   T read(String filePath) throws FileHandlingException;
 }

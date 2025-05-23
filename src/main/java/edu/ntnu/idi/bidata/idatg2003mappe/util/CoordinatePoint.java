@@ -19,14 +19,14 @@ import java.util.List;
  */
 public class CoordinatePoint {
   private final int id;
-  private double x, y;
   private final double xPercent;
   private final double yPercent;
+  private final List<Integer> connections = new ArrayList<>();
+  private double x, y;
   private Circle circle;
   private Label label;
   private String name;
   private boolean isSpecial = false;
-  private final List<Integer> connections = new ArrayList<>();
 
   /**
    * <p>Creates a new coordinate point.</p>

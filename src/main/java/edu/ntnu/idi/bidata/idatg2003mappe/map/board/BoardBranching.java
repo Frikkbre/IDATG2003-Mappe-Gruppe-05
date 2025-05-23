@@ -39,6 +39,16 @@ public class BoardBranching extends Board {
   }
 
   /**
+   * <p>Gets the name of this board.</p>
+   * <p>Returns the display name assigned to this board.</p>
+   *
+   * @return The board name
+   */
+  public String getBoardName() {
+    return boardName;
+  }
+
+  /**
    * <p>Sets the name of this board.</p>
    * <p>Changes the display name of the board, which can be used
    * for identification in UI elements.</p>
@@ -47,16 +57,6 @@ public class BoardBranching extends Board {
    */
   public void setBoardName(String boardName) {
     this.boardName = boardName;
-  }
-
-  /**
-   * <p>Gets the name of this board.</p>
-   * <p>Returns the display name assigned to this board.</p>
-   *
-   * @return The board name
-   */
-  public String getBoardName() {
-    return boardName;
   }
 
   /**

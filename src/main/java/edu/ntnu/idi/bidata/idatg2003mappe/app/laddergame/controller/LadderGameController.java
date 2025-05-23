@@ -25,10 +25,9 @@ import java.util.stream.IntStream;
 public class LadderGameController {
   private final LadderGame game;
   private final boolean randomLadders;
-  private int currentPlayerIndex;
-
   // Observer pattern for UI updates
   private final List<BoardGameObserver> observers = new ArrayList<>();
+  private int currentPlayerIndex;
 
   /**
    * <p>Creates a new controller with the specified ladder configuration.</p>
@@ -106,7 +105,7 @@ public class LadderGameController {
    * <p>When a player lands on a tile with special effects, this method
    * processes the effect and applies it to the player.</p>
    *
-   * @param player The player affected by the tile effect
+   * @param player  The player affected by the tile effect
    * @param message StringBuilder to append effect messages to
    */
   private void handleTileEffects(Player player, StringBuilder message) {
@@ -130,7 +129,7 @@ public class LadderGameController {
    * <p>Moves the player to the destination of the ladder and updates
    * the message log with the resulting movement.</p>
    *
-   * @param player The player to move via ladder
+   * @param player  The player to move via ladder
    * @param message StringBuilder to append ladder movement messages to
    */
   private void handleLadders(Player player, StringBuilder message) {
@@ -249,8 +248,8 @@ public class LadderGameController {
    * <p>Notifies observers that a player has moved.</p>
    *
    * @param player The {@link Player} who moved
-   * @param from The starting {@link Tile}
-   * @param to The destination {@link Tile}
+   * @param from   The starting {@link Tile}
+   * @param to     The destination {@link Tile}
    */
   private void notifyPlayerMoved(Player player, Tile from, Tile to) {
     observers.forEach(observer -> observer.onPlayerMoved(player, from, to));

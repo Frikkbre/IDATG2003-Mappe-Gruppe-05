@@ -103,7 +103,7 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
    * @param filePath The path to the input file
    * @return A fully constructed {@link GameState} object
    * @throws FileHandlingException If an error occurs while reading the file
-   * @throws JsonParsingException If the JSON content is invalid or missing required fields
+   * @throws JsonParsingException  If the JSON content is invalid or missing required fields
    */
   @Override
   public GameState read(String filePath) throws FileHandlingException {

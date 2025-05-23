@@ -26,15 +26,14 @@ import java.util.Set;
  * @since 23.05.2025
  */
 public class Player {
+  private final Set<String> inventory = new HashSet<>();
+  // Observer pattern support
+  private final List<PlayerObserver> observers = new ArrayList<>();
   private String name;
   private int ID;
   private String color;
   private Tile currentTile;
   private boolean skipTurn = false;
-  private final Set<String> inventory = new HashSet<>();
-
-  // Observer pattern support
-  private final List<PlayerObserver> observers = new ArrayList<>();
 
   /**
    * <p>Constructor for Player.</p>
@@ -137,6 +136,16 @@ public class Player {
   }
 
   /**
+   * <p>Gets the player's color.</p>
+   * <p>Returns the color used for visual representation of this player.</p>
+   *
+   * @return The player's color as a string
+   */
+  public String getColor() {
+    return this.color;
+  }
+
+  /**
    * <p>Sets the player's color.</p>
    * <p>The color is used for visual representation of the player token
    * on the game board.</p>
@@ -152,6 +161,16 @@ public class Player {
   }
 
   /**
+   * <p>Gets the player's name.</p>
+   * <p>Returns the identifying name of this player.</p>
+   *
+   * @return The player's name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
    * <p>Sets the player's name.</p>
    * <p>The name is used to identify the player in the game interface
    * and result displays.</p>
@@ -164,40 +183,6 @@ public class Player {
       throw new IllegalArgumentException("Name cannot be blank");
     }
     this.name = name;
-  }
-
-  /**
-   * <p>Sets the player's ID.</p>
-   * <p>The ID is a unique identifier for the player within the game system.</p>
-   *
-   * @param id The ID to set
-   * @throws IllegalArgumentException If the ID is negative or greater than 6
-   */
-  public void setID(int id) {
-    if (id < 0 || id > 6) {
-      throw new IllegalArgumentException("ID cannot be negative or greater than 6");
-    }
-    this.ID = id;
-  }
-
-  /**
-   * <p>Gets the player's color.</p>
-   * <p>Returns the color used for visual representation of this player.</p>
-   *
-   * @return The player's color as a string
-   */
-  public String getColor() {
-    return this.color;
-  }
-
-  /**
-   * <p>Gets the player's name.</p>
-   * <p>Returns the identifying name of this player.</p>
-   *
-   * @return The player's name
-   */
-  public String getName() {
-    return name;
   }
 
   /**
@@ -218,6 +203,20 @@ public class Player {
    */
   public int getID() {
     return ID;
+  }
+
+  /**
+   * <p>Sets the player's ID.</p>
+   * <p>The ID is a unique identifier for the player within the game system.</p>
+   *
+   * @param id The ID to set
+   * @throws IllegalArgumentException If the ID is negative or greater than 6
+   */
+  public void setID(int id) {
+    if (id < 0 || id > 6) {
+      throw new IllegalArgumentException("ID cannot be negative or greater than 6");
+    }
+    this.ID = id;
   }
 
   /**

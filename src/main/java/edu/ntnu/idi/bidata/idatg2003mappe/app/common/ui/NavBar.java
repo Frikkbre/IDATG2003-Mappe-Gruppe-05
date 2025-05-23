@@ -27,13 +27,12 @@ import java.util.List;
  * @since 21.05.2025
  */
 public class NavBar {
-  BoardGameSelector boardGameSelector = new BoardGameSelector();
   private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
-  private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
-  GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
-
-  private Stage stage;
   public Object gameController;
+  BoardGameSelector boardGameSelector = new BoardGameSelector();
+  GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+  private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
+  private Stage stage;
   private MapDesignerTool mapDesignerTool;
 
   /**
