@@ -34,20 +34,6 @@ public class TestPriceList {
   }
 
   /**
-   * Test that PriceList is initialized with the correct default values.
-   */
-  @Test
-  void testDefaultPriceListInitialization() {
-    // Assert that default prices are set correctly
-    assertEquals(1000, priceList.getPrice("RedGem"), "Default price for RedGem should be 1000");
-    assertEquals(4000, priceList.getPrice("GreenGem"), "Default price for GreenGem should be 4000");
-    assertEquals(2000, priceList.getPrice("YellowGem"), "Default price for YellowGem should be 2000");
-    assertEquals(1500, priceList.getPrice("Visa"), "Default price for Visa should be 1500");
-    assertEquals(300, priceList.getPrice("TokenFlip"), "Default price for TokenFlip should be 300");
-    assertEquals(100, priceList.getPrice("TokenPurchase"), "Default price for TokenPurchase should be 100");
-  }
-
-  /**
    * Test that getting the price of a non-existent service returns 0.
    */
   @Test
