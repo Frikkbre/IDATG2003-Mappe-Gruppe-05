@@ -1,13 +1,18 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.playersetup;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelector;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -48,32 +53,28 @@ public class PlayerSetupScreen extends Application {
     private final HBox container;
 
     public PlayerRow(int playerNumber, List<String> availableColors) {
-      // Create name field
-      nameField = new TextField("Player " + playerNumber);
-      nameField.setPrefWidth(150);
+      // Create container with card style
+      container = new HBox(15);
+      container.getStyleClass().add("player-status");
+      container.setAlignment(Pos.CENTER);
 
-      // Create color combo box
+      Label playerLabel = new Label("Player " + playerNumber);
+      playerLabel.getStyleClass().add("heading");
+      playerLabel.setPrefWidth(100);
+
+      // Name field with modern styling
+      nameField = new TextField("Player " + playerNumber);
+      nameField.getStyleClass().add("text-field");
+      nameField.setPrefWidth(200);
+
+      // Color combo box with styling
       colorCombo = new ComboBox<>();
       colorCombo.getItems().addAll(availableColors);
       colorCombo.setValue(availableColors.get((playerNumber - 1) % availableColors.size()));
-      colorCombo.setPrefWidth(120);
+      colorCombo.getStyleClass().add("combo-box");
+      colorCombo.setPrefWidth(150);
 
-      // Create container
-      container = new HBox(10);
-      container.setAlignment(Pos.CENTER);
-
-      Label playerLabel = new Label("Player " + playerNumber + ":");
-      playerLabel.setPrefWidth(80);
-
-      Label nameLabel = new Label("Name:");
-      nameLabel.setPrefWidth(50);
-
-      Label colorLabel = new Label("Color:");
-      colorLabel.setPrefWidth(50);
-
-      container.getChildren().addAll(
-          playerLabel, nameLabel, nameField, colorLabel, colorCombo
-      );
+      container.getChildren().addAll(playerLabel, nameField, colorCombo);
     }
 
     public String getName() {
@@ -96,34 +97,37 @@ public class PlayerSetupScreen extends Application {
   @Override
   public void start(Stage primaryStage) {
     this.primaryStage = primaryStage;
-    primaryStage.setTitle("Game Setup - Choose Players");
+    primaryStage.setTitle("Board Games - Player Setup");
 
     // Create main layout
     BorderPane mainLayout = new BorderPane();
-    mainLayout.setMinHeight(840); //16:9 aspect ratio   (1920x1080)/2
-    mainLayout.setMaxHeight(840);
-    mainLayout.setMinWidth(1440);
-    mainLayout.setMaxWidth(1440);
-    mainLayout.setPrefHeight(840);
-    mainLayout.setPrefWidth(1440);
-    mainLayout.setStyle("-fx-background-color: lightblue;");
+    mainLayout.getStyleClass().add("main-container");
 
     // Create header
     VBox header = createHeader();
     mainLayout.setTop(header);
 
     // Create center content
+    ScrollPane scrollPane = new ScrollPane();
+    scrollPane.setFitToWidth(true);
     VBox centerContent = createCenterContent();
-    mainLayout.setCenter(centerContent);
+    scrollPane.setContent(centerContent);
+    scrollPane.getStyleClass().add("scroll-pane");
+    mainLayout.setCenter(scrollPane);
 
     // Create footer with continue button
     HBox footer = createFooter();
     mainLayout.setBottom(footer);
 
-    // Create scene and show
-    Scene scene = new Scene(mainLayout);
+    // Create scene and add CSS
+    Scene scene = new Scene(mainLayout, 1440, 840);
+    scene.getStylesheets().add(getClass().getResource("/game-style/game-styles.css").toExternalForm());
+
     primaryStage.setScene(scene);
     primaryStage.show();
+
+    // Apply entrance animation
+    applyEntranceAnimation(mainLayout);
 
     // Initialize with default number of players
     updatePlayerRows();
@@ -137,28 +141,33 @@ public class PlayerSetupScreen extends Application {
    * @return A {@link VBox} containing the header elements
    */
   private VBox createHeader() {
-    VBox header = new VBox(20);
-    header.setPadding(new Insets(20));
+    VBox header = new VBox(30);
+    header.setPadding(new Insets(40));
     header.setAlignment(Pos.CENTER);
+    header.getStyleClass().add("card");
 
-    // Title
+    // Animated title
     Label titleLabel = new Label("Welcome to Board Games!");
-    titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: darkblue;");
+    titleLabel.getStyleClass().add("title");
+
+    Label subtitleLabel = new Label("Set up your players to begin");
+    subtitleLabel.getStyleClass().add("subtitle");
 
     // Player count selection
-    HBox playerCountBox = new HBox(10);
+    HBox playerCountBox = new HBox(15);
     playerCountBox.setAlignment(Pos.CENTER);
 
     Label countLabel = new Label("Number of players:");
-    countLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+    countLabel.getStyleClass().add("heading");
 
     playerCountSpinner = new Spinner<>(2, 5, 2);
-    playerCountSpinner.setPrefWidth(80);
+    playerCountSpinner.getStyleClass().add("spinner");
+    playerCountSpinner.setPrefWidth(100);
     playerCountSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updatePlayerRows());
 
     playerCountBox.getChildren().addAll(countLabel, playerCountSpinner);
 
-    header.getChildren().addAll(titleLabel, playerCountBox);
+    header.getChildren().addAll(titleLabel, subtitleLabel, playerCountBox);
     return header;
   }
 
@@ -170,18 +179,18 @@ public class PlayerSetupScreen extends Application {
    * @return A {@link VBox} containing the center content elements
    */
   private VBox createCenterContent() {
-    VBox centerContent = new VBox(15);
+    VBox centerContent = new VBox(20);
     centerContent.setPadding(new Insets(20));
     centerContent.setAlignment(Pos.TOP_CENTER);
-
-    Label setupLabel = new Label("Set up your players:");
-    setupLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+    centerContent.getStyleClass().add("center-container");
 
     // Container for player rows
-    playerContainer = new VBox(10);
+    playerContainer = new VBox(15);
     playerContainer.setAlignment(Pos.CENTER);
+    playerContainer.getStyleClass().add("card");
+    playerContainer.setPadding(new Insets(20));
 
-    centerContent.getChildren().addAll(setupLabel, playerContainer);
+    centerContent.getChildren().add(playerContainer);
     return centerContent;
   }
 
@@ -194,13 +203,16 @@ public class PlayerSetupScreen extends Application {
    */
   private HBox createFooter() {
     HBox footer = new HBox();
-    footer.setPadding(new Insets(20));
+    footer.setPadding(new Insets(30));
     footer.setAlignment(Pos.CENTER);
 
     continueButton = new Button("Continue to Game Selection");
-    continueButton.setPrefSize(200, 40);
-    continueButton.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+    continueButton.getStyleClass().addAll("button", "animated-button");
+    continueButton.setPrefSize(300, 60);
     continueButton.setOnAction(e -> handleContinue());
+
+    // Add hover animation
+    addButtonAnimation(continueButton);
 
     footer.getChildren().add(continueButton);
     return footer;
@@ -218,11 +230,25 @@ public class PlayerSetupScreen extends Application {
     playerRows.clear();
     playerContainer.getChildren().clear();
 
-    // Create new rows
+    // Add header
+    Label setupLabel = new Label("Configure Your Players");
+    setupLabel.getStyleClass().add("subtitle");
+    playerContainer.getChildren().add(setupLabel);
+
+    // Create new rows with animation
     for (int i = 1; i <= playerCount; i++) {
       PlayerRow playerRow = new PlayerRow(i, availableColors);
       playerRows.add(playerRow);
-      playerContainer.getChildren().add(playerRow.getContainer());
+
+      HBox rowContainer = playerRow.getContainer();
+      playerContainer.getChildren().add(rowContainer);
+
+      // Add stagger animation
+      FadeTransition fadeIn = new FadeTransition(Duration.millis(300), rowContainer);
+      fadeIn.setFromValue(0);
+      fadeIn.setToValue(1);
+      fadeIn.setDelay(Duration.millis(i * 100));
+      fadeIn.play();
     }
   }
 
@@ -326,7 +352,7 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * <p>Shows an alert dialog.</p>
+   * <p>Shows a styled alert dialog.</p>
    * <p>Displays an alert dialog with the specified title, message, and type.
    * Used to communicate errors or important information to the user.</p>
    *
@@ -339,7 +365,48 @@ public class PlayerSetupScreen extends Application {
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(message);
+
+    // Apply CSS to alert
+    DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.getStylesheets().add(getClass().getResource("/game-style/game-styles.css").toExternalForm());
+    dialogPane.getStyleClass().add("dialog-pane");
+
     alert.showAndWait();
+  }
+
+  /**
+   * <p>Applies entrance animation to the main layout.</p>
+   * <p>Creates a smooth fade-in effect when the screen loads.</p>
+   *
+   * @param node The node to animate
+   */
+  private void applyEntranceAnimation(javafx.scene.Node node) {
+    FadeTransition fadeIn = new FadeTransition(Duration.millis(500), node);
+    fadeIn.setFromValue(0);
+    fadeIn.setToValue(1);
+    fadeIn.play();
+  }
+
+  /**
+   * <p>Adds hover animation to buttons.</p>
+   * <p>Creates a scale effect when hovering over buttons.</p>
+   *
+   * @param button The button to animate
+   */
+  private void addButtonAnimation(Button button) {
+    button.setOnMouseEntered(e -> {
+      ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), button);
+      scaleUp.setToX(1.05);
+      scaleUp.setToY(1.05);
+      scaleUp.play();
+    });
+
+    button.setOnMouseExited(e -> {
+      ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), button);
+      scaleDown.setToX(1.0);
+      scaleDown.setToY(1.0);
+      scaleDown.play();
+    });
   }
 
   public static void main(String[] args) {

@@ -14,7 +14,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.logging.Logger;
 
@@ -33,13 +35,22 @@ import java.util.logging.Logger;
  * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.6
+ * @version 0.0.7
  * @since 23.04.2025
  */
 public class MissingDiamondGUI extends Application implements MapDesignerListener {
 
   // Logger for logging messages
   private static final Logger logger = Logger.getLogger(MissingDiamondGUI.class.getName());
+
+  // Color scheme constants - matching LadderGameGUI
+  private static final String BACKGROUND_COLOR = "#2C3E50"; // Dark blue-gray
+  private static final String BOARD_BACKGROUND = "#34495E"; // Lighter blue-gray
+  private static final String BUTTON_COLOR = "#3498DB"; // Blue
+  private static final String BUTTON_HOVER_COLOR = "#2980B9"; // Darker blue
+  private static final String TEXT_COLOR = "#ECF0F1"; // Light text
+  private static final String PANEL_BACKGROUND = "#34495E"; // Panel background
+  private static final String BORDER_COLOR = "#95A5A6"; // Border color
 
   // Game components
   private MissingDiamondController gameController;
@@ -62,12 +73,12 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   @Override
   public void start(Stage primaryStage) {
     this.primaryStage = primaryStage;
-    primaryStage.setTitle("Missing Diamond");
+    primaryStage.setTitle("Missing Diamond - Enhanced Edition");
 
-    // Initialize main layout
+    // Initialize main layout with consistent styling
     mainLayout = new BorderPane();
     mainLayout.setPrefSize(1440, 840);
-    mainLayout.setStyle("-fx-background-color: white;");
+    mainLayout.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
 
     // Create and set up board view first (needed for other components)
     boardView = new BoardView();
@@ -120,9 +131,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     // Add mouse click handler for coordinate mode
     boardView.getOverlayPane().setOnMouseClicked(e -> {
-
       // Check if coordinate mode is enabled
-          mapDesignerManager.getMapDesignerTool().isCoordinateMode();
+      mapDesignerManager.getMapDesignerTool().isCoordinateMode();
 
       if (mapDesignerManager.getMapDesignerTool().isCoordinateMode()) {
         mapDesignerManager.getMapDesignerTool().handleCoordinateClick(e.getX(), e.getY(), boardView.getMapView());
@@ -135,7 +145,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         boardView.getOverlayPane(),
         boardView.getMapView().getFitWidth(),
         boardView.getMapView().getFitHeight(),
-
         this
     );
   }
@@ -143,8 +152,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private void setupLayout() {
     MenuBar menuBar = navBar.createMenuBar();
 
-    // Create developer controls
-    HBox devControls = createDevControls();
+    // Create developer controls with styling
+    HBox devControls = createStyledDevControls();
 
     // Set up the top container with all elements
     VBox topContainer = new VBox(
@@ -152,6 +161,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         mapDesignerManager.getStatusLabel(),
         devControls
     );
+    topContainer.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
     mainLayout.setTop(topContainer);
 
     // Set up center with board and control panel
@@ -171,11 +181,23 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     grid.setHgap(0);
 
     // Add sidebar and board to grid
-    VBox leftSidebar = createLeftSidebar();
+    VBox leftSidebar = createStyledLeftSidebar();
     grid.add(leftSidebar, 0, 0);
 
     StackPane mapContainer = new StackPane();
     mapContainer.setAlignment(javafx.geometry.Pos.CENTER);
+    mapContainer.setStyle("-fx-background-color: " + BOARD_BACKGROUND + ";" +
+        "-fx-background-radius: 15;" +
+        "-fx-padding: 10;");
+
+    // Add drop shadow to map container
+    DropShadow mapShadow = new DropShadow();
+    mapShadow.setRadius(15.0);
+    mapShadow.setOffsetX(5.0);
+    mapShadow.setOffsetY(5.0);
+    mapShadow.setColor(Color.color(0, 0, 0, 0.3));
+    mapContainer.setEffect(mapShadow);
+
     mapContainer.getChildren().add(boardView);
 
     grid.add(mapContainer, 1, 0);
@@ -187,16 +209,22 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     mainLayout.setCenter(grid);
   }
 
-  private HBox createDevControls() {
+  private HBox createStyledDevControls() {
     HBox devControls = new HBox(10);
-    devControls.setPadding(new Insets(5));
+    devControls.setPadding(new Insets(10));
     devControls.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    devControls.setStyle("-fx-background-color: " + PANEL_BACKGROUND + ";" +
+        "-fx-background-radius: 10;" +
+        "-fx-border-color: " + BORDER_COLOR + ";" +
+        "-fx-border-radius: 10;");
 
-    // Create labels and button as class fields so we can show/hide them
-    tileTypeLabel = new Label("Tile Type:");
-    sourceIdLabel = new Label("Source ID:");
-    targetIdLabel = new Label("Target ID:");
-    createConnectionButton = UIComponentFactory.createActionButton("Create Connection", e ->
+    // Create labels with consistent styling
+    tileTypeLabel = createStyledLabel("Tile Type:");
+    sourceIdLabel = createStyledLabel("Source ID:");
+    targetIdLabel = createStyledLabel("Target ID:");
+
+    // Create styled connection button
+    createConnectionButton = createStyledButton("Create Connection", e ->
         mapDesignerManager.createConnection());
 
     // Add map designer components
@@ -212,6 +240,52 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     return devControls;
   }
 
+  private Label createStyledLabel(String text) {
+    Label label = new Label(text);
+    label.setStyle("-fx-text-fill: " + TEXT_COLOR + ";" +
+        "-fx-font-size: 14px;" +
+        "-fx-font-weight: bold;");
+    return label;
+  }
+
+  private Button createStyledButton(String text, javafx.event.EventHandler<javafx.event.ActionEvent> action) {
+    Button button = new Button(text);
+    button.setPrefHeight(40);
+    button.setStyle(
+        "-fx-background-color: " + BUTTON_COLOR + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-font-size: 14px;" +
+            "-fx-font-weight: bold;" +
+            "-fx-background-radius: 10;" +
+            "-fx-cursor: hand;"
+    );
+
+    button.setOnMouseEntered(e ->
+        button.setStyle(
+            "-fx-background-color: " + BUTTON_HOVER_COLOR + ";" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;"
+        )
+    );
+
+    button.setOnMouseExited(e ->
+        button.setStyle(
+            "-fx-background-color: " + BUTTON_COLOR + ";" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;"
+        )
+    );
+
+    button.setOnAction(action);
+    return button;
+  }
+
   private void setDevControlsVisible(boolean visible) {
     tileTypeLabel.setVisible(visible);
     mapDesignerManager.getTileTypeSelector().setVisible(visible);
@@ -222,19 +296,26 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     createConnectionButton.setVisible(visible);
   }
 
-
-  private VBox createLeftSidebar() {
-    VBox sidebar = new VBox(10);
+  private VBox createStyledLeftSidebar() {
+    VBox sidebar = new VBox(15);
     sidebar.setPrefWidth(250);
     sidebar.setMinWidth(250);
     sidebar.setMaxWidth(250);
-    sidebar.setPadding(new Insets(10));
-    sidebar.setBorder(new Border(new BorderStroke(
-        javafx.scene.paint.Color.LIGHTGRAY,
-        BorderStrokeStyle.SOLID,
-        CornerRadii.EMPTY,
-        BorderWidths.DEFAULT
-    )));
+    sidebar.setPadding(new Insets(15));
+
+    // Enhanced sidebar styling with shadow
+    sidebar.setStyle("-fx-background-color: " + PANEL_BACKGROUND + ";" +
+        "-fx-background-radius: 15;" +
+        "-fx-border-color: " + BORDER_COLOR + ";" +
+        "-fx-border-radius: 15;");
+
+    // Add drop shadow effect
+    DropShadow sidebarShadow = new DropShadow();
+    sidebarShadow.setRadius(10.0);
+    sidebarShadow.setOffsetX(3.0);
+    sidebarShadow.setOffsetY(3.0);
+    sidebarShadow.setColor(Color.color(0, 0, 0, 0.2));
+    sidebar.setEffect(sidebarShadow);
 
     sidebar.getChildren().addAll(
         statusPanel,
