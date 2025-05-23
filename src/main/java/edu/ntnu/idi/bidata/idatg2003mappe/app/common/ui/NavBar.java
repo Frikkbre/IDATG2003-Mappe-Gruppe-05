@@ -81,32 +81,6 @@ public class NavBar {
         closeMenuItem
     );
 
-    Menu modeMenu = new Menu("Mode");
-    MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
-    randomLadders.setOnAction(event -> {
-      if (gameController instanceof LadderGameController ladderGameController) {
-        boolean newRandomState = !ladderGameController.isRandomLadders();
-
-        try {
-          // Create new LadderGameGUI with toggled random state
-          LadderGameGUI newLadderGUI = new LadderGameGUI();
-          newLadderGUI.randomLadders = newRandomState;
-          newLadderGUI.start(getStage());
-
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Mode Changed");
-          alert.setHeaderText("Random Ladders Mode");
-          alert.setContentText("Random ladders mode is now " + (newRandomState ? "enabled" : "disabled") +
-              ". Game has been restarted.");
-          alert.showAndWait();
-        } catch (Exception e) {
-          System.err.println("Error restarting ladder game: " + e.getMessage());
-        }
-      }
-    });
-
-    modeMenu.getItems().addAll(randomLadders);
-
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
@@ -124,11 +98,40 @@ public class NavBar {
 
     MenuBar menuBar = new MenuBar();
 
-    if (gameController instanceof MissingDiamondController && missingDiamondGUI != null) {
-      Menu developerMenu = missingDiamondGUI.getMapDesignerManager().getMapDesignerTool().createDesignerMenu();
-      menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu, developerMenu);
-    } else {
+    // Only add Mode menu for Ladder Game
+    if (gameController instanceof LadderGameController) {
+      Menu modeMenu = new Menu("Mode");
+      MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
+      randomLadders.setOnAction(event -> {
+        LadderGameController ladderGameController = (LadderGameController) gameController;
+        boolean newRandomState = !ladderGameController.isRandomLadders();
+
+        try {
+          // Create new LadderGameGUI with toggled random state
+          LadderGameGUI newLadderGUI = new LadderGameGUI();
+          newLadderGUI.randomLadders = newRandomState;
+          newLadderGUI.start(getStage());
+
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Mode Changed");
+          alert.setHeaderText("Random Ladders Mode");
+          alert.setContentText("Random ladders mode is now " + (newRandomState ? "enabled" : "disabled") +
+              ". Game has been restarted.");
+          alert.showAndWait();
+        } catch (Exception e) {
+          System.err.println("Error restarting ladder game: " + e.getMessage());
+        }
+      });
+
+      modeMenu.getItems().addAll(randomLadders);
       menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
+    } else if (gameController instanceof MissingDiamondController && missingDiamondGUI != null) {
+      // Missing Diamond - no Mode menu, but add Developer menu
+      Menu developerMenu = missingDiamondGUI.getMapDesignerManager().getMapDesignerTool().createDesignerMenu();
+      menuBar.getMenus().addAll(fileMenu, navigateMenu, developerMenu);
+    } else {
+      // Default case - no Mode menu
+      menuBar.getMenus().addAll(fileMenu, navigateMenu);
     }
 
     menuBar.setStyle("-fx-background-color: #57B9FF;");
@@ -167,7 +170,7 @@ public class NavBar {
         gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController,
             ((LadderGameController) gameController).isRandomLadders());
       } else if (gameController instanceof MissingDiamondController) {
-        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI; // Add this field to NavBar
+        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI;
         gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, (MissingDiamondController) gameController);
       }
     };

@@ -73,9 +73,6 @@ public class BoardGameSelector extends Application {
     borderPane.setPrefHeight(840);
     borderPane.setPrefWidth(1440);
     borderPane.setCenter(createCenterPane());
-
-    NavBar navBar = new NavBar();
-    borderPane.setTop(navBar.createMenuBar());
     borderPane.setStyle("-fx-background-color: lightblue;");
 
     Scene scene = new Scene(borderPane);

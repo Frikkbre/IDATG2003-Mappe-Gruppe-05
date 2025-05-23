@@ -129,16 +129,23 @@ public class MissingDiamondController {
     }
 
     // Check if the destination is a special tile with a token
-    if (isSpecialTile(destinationTile.getTileId()) && game.hasTokenAtTile(destinationTile)) {
-      currentState = ActionState.AWAITING_TOKEN_DECISION;
-      return moveResult + "\nYou've reached a location with a token. You can:" +
-          "\n• Try to get it free (roll 4-6 to succeed)" +
-          "\n• Buy a guaranteed token flip for £300" +
-          "\n• Use 'End Turn' to continue your journey";
+    if (isSpecialTile(destinationTile.getTileId())) {
+      // Special tile - check if it has a token
+      if (game.hasTokenAtTile(destinationTile)) {
+        currentState = ActionState.AWAITING_TOKEN_DECISION;
+        return moveResult + "\nYou've reached a location with a token. You can:" +
+            "\n• Try to get it free (roll 4-6 to succeed)" +
+            "\n• Buy a guaranteed token flip for £300" +
+            "\n• Use 'End Turn' to continue your journey";
+      } else {
+        // Special tile without token - player can choose to end turn
+        return moveResult + "\nYou've reached a special location (no token). Use 'End Turn' when ready.";
+      }
+    } else {
+      // Black tile (regular movement tile) - automatically end turn
+      endTurn();
+      return moveResult + "\nTurn ended automatically. Next player's turn.";
     }
-
-    endTurn();
-    return moveResult + "\nTurn ended. Next player's turn.";
   }
 
   /**
