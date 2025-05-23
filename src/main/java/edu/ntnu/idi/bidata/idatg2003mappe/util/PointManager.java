@@ -8,7 +8,14 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Manages coordinate points for the map designer.
+ * <p>Manages coordinate points for the map designer.</p>
+ * <p>This class is responsible for creating, tracking, and maintaining coordinate points
+ * that represent locations on a game board. It provides methods to create new points,
+ * retrieve points by ID, and update point positions when the map dimensions change.</p>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.4
+ * @since 25.04.2025
  */
 public class PointManager {
   private final List<CoordinatePoint> capturedPoints = new ArrayList<>();
@@ -19,7 +26,16 @@ public class PointManager {
   private static final Logger logger = Logger.getLogger(PointManager.class.getName());
 
   /**
-   * Creates a new point with the given parameters.
+   * <p>Creates a new point with the given parameters.</p>
+   * <p>This method creates a new {@link CoordinatePoint} with the specified coordinates and properties,
+   * assigns it a unique ID, and adds it to the internal collections for tracking.</p>
+   *
+   * @param x         The absolute x-coordinate on the map
+   * @param y         The absolute y-coordinate on the map
+   * @param xPercent  The x-coordinate as a percentage of the map width (0.0 to 1.0)
+   * @param yPercent  The y-coordinate as a percentage of the map height (0.0 to 1.0)
+   * @param isSpecial Whether this is a special point (affects appearance and behavior)
+   * @return The newly created coordinate point
    */
   public CoordinatePoint createPoint(double x, double y, double xPercent, double yPercent, boolean isSpecial) {
     // Create new coordinate point
@@ -38,28 +54,45 @@ public class PointManager {
   }
 
   /**
-   * Sets the overlay pane reference for visual element management.
+   * <p>Sets the overlay pane reference for visual element management.</p>
+   * <p>This method associates the point manager with a JavaFX pane where visual elements
+   * for coordinate points will be displayed. This reference is needed for operations
+   * that add or remove visual elements.</p>
+   *
+   * @param overlayPane The JavaFX pane where point visuals will be displayed
    */
   public void setOverlayPane(Pane overlayPane) {
     this.overlayPane = overlayPane;
   }
 
   /**
-   * Gets a point by its ID.
+   * <p>Gets a point by its ID.</p>
+   * <p>This method retrieves a coordinate point from the internal collection
+   * based on its unique identifier.</p>
+   *
+   * @param id The unique identifier of the point to retrieve
+   * @return The coordinate point with the specified ID, or null if not found
    */
   public CoordinatePoint getPointById(int id) {
     return pointsById.get(id);
   }
 
   /**
-   * Gets all captured points.
+   * <p>Gets all captured points.</p>
+   * <p>This method returns an unmodifiable view of all coordinate points
+   * that have been created and are being tracked by this manager.</p>
+   *
+   * @return An unmodifiable list of all coordinate points
    */
   public List<CoordinatePoint> getAllPoints() {
     return Collections.unmodifiableList(capturedPoints);
   }
 
   /**
-   * Clears all points.
+   * <p>Clears all points and their visual representations.</p>
+   * <p>This method removes all coordinate points from the internal collections
+   * and also removes their visual elements (circles and labels) from the overlay pane.
+   * It resets the ID counter to start fresh.</p>
    */
   public void clear() {
     if (overlayPane != null) {
@@ -91,7 +124,13 @@ public class PointManager {
   }
 
   /**
-   * Updates the positions of all points based on new dimensions.
+   * <p>Updates the positions of all points based on new dimensions.</p>
+   * <p>This method recalculates the absolute positions of all coordinate points
+   * when the map dimensions change, using their stored percentage values to maintain
+   * relative positions. It's typically called when the map is resized.</p>
+   *
+   * @param width  The new width of the map
+   * @param height The new height of the map
    */
   public void updateAllPointPositions(double width, double height) {
     for (CoordinatePoint point : capturedPoints) {
@@ -100,7 +139,19 @@ public class PointManager {
   }
 
   /**
-   * Registers an existing point with the map designer.
+   * <p>Registers an existing point with the map designer.</p>
+   * <p>This method is used to recreate coordinate points from saved data,
+   * such as when loading a map configuration. It preserves the original IDs
+   * and properties of the points.</p>
+   *
+   * @param id         The unique identifier for the point
+   * @param x          The absolute x-coordinate on the map
+   * @param y          The absolute y-coordinate on the map
+   * @param xPercent   The x-coordinate as a percentage of the map width (0.0 to 1.0)
+   * @param yPercent   The y-coordinate as a percentage of the map height (0.0 to 1.0)
+   * @param name       The name of the location
+   * @param isSpecial  Whether this is a special point (affects appearance and behavior)
+   * @param overlayPane The JavaFX pane where visual elements are displayed
    */
   public void registerExistingPoint(int id, double x, double y, double xPercent, double yPercent,
                                     String name, boolean isSpecial, Pane overlayPane) {

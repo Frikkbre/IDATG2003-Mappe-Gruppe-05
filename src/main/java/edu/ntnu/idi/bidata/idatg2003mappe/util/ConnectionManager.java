@@ -10,7 +10,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Manages connections between points for the map designer.
+ * <p>Manages connections between points for the map designer.</p>
+ * <p>This class is responsible for creating, drawing, and managing the visual representation
+ * of connections between coordinate points on the game map. It works closely with the
+ * {@link PointManager} to access point data and maintains a collection of connection lines.</p>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.3
+ * @since 19.05.2025
  */
 public class ConnectionManager {
   private final Pane overlayPane;
@@ -21,7 +28,12 @@ public class ConnectionManager {
   private static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
 
   /**
-   * Creates a new ConnectionManager.
+   * <p>Creates a new ConnectionManager with the specified overlay pane and point manager.</p>
+   * <p>This constructor initializes the connection manager with references to the overlay pane
+   * where connection lines will be drawn and the point manager that provides access to coordinate points.</p>
+   *
+   * @param overlayPane   The JavaFX pane where connection lines will be rendered
+   * @param pointManager  The point manager containing coordinate points to connect
    */
   public ConnectionManager(Pane overlayPane, PointManager pointManager) {
     this.overlayPane = overlayPane;
@@ -30,7 +42,18 @@ public class ConnectionManager {
   }
 
   /**
-   * Creates a connection between two points.
+   * <p>Creates a connection between two points identified by their IDs.</p>
+   * <p>This method establishes a connection between the source and target points by:
+   * <ul>
+   *   <li>Finding the points from their IDs</li>
+   *   <li>Adding connection data to the source point</li>
+   *   <li>Drawing a visual line between the points</li>
+   * </ul>
+   * </p>
+   *
+   * @param sourceId  The ID of the source point
+   * @param targetId  The ID of the target point
+   * @return {@code true} if the connection was created successfully, {@code false} otherwise
    */
   public boolean createConnection(int sourceId, int targetId) {
     // Find the points
@@ -52,7 +75,10 @@ public class ConnectionManager {
   }
 
   /**
-   * Redraws all connections between points.
+   * <p>Redraws all connections between points.</p>
+   * <p>This method clears all existing connection lines and redraws them based on
+   * the current state of connections stored in the coordinate points. It's useful
+   * when the map is resized or coordinate points are moved.</p>
    */
   public void redrawConnections() {
     // Remove all existing connection lines
@@ -70,7 +96,13 @@ public class ConnectionManager {
   }
 
   /**
-   * Draws a connection line between two points.
+   * <p>Draws a connection line between two points.</p>
+   * <p>This method creates and adds a visual line between the source and target points
+   * to the overlay pane. The line is styled appropriately and added at index 0 to ensure
+   * it appears beneath any circles representing points.</p>
+   *
+   * @param source  The source coordinate point
+   * @param target  The target coordinate point
    */
 // In ConnectionManager.java - modify the drawConnection method
   public void drawConnection(CoordinatePoint source, CoordinatePoint target) {
@@ -104,7 +136,14 @@ public class ConnectionManager {
   }
 
   /**
-   * Clears all connection lines.
+   * <p>Clears all connection lines from the overlay pane.</p>
+   * <p>This method removes all visual connection lines from the display and clears
+   * the internal list of connection lines. It uses two approaches to ensure complete removal:
+   * <ul>
+   *   <li>Removing all lines from the tracked list</li>
+   *   <li>Filtering the overlay pane to remove any lines with "connection" userData</li>
+   * </ul>
+   * </p>
    */
   public void clearConnections() {
     overlayPane.getChildren().removeAll(connectionLines);
@@ -120,7 +159,11 @@ public class ConnectionManager {
   }
 
   /**
-   * Logs a message if a listener is available.
+   * <p>Logs a message if a listener is available.</p>
+   * <p>This private helper method sends log messages to the registered {@link MapDesignerListener}
+   * if one exists. Used to provide feedback about connection operations.</p>
+   *
+   * @param message  The message to log
    */
   private void logMessage(String message) {
     if (listener != null) {

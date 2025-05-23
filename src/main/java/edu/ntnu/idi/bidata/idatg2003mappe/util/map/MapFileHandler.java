@@ -16,14 +16,27 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Handles file operations for the map designer.
+ * <p>Handles file operations for the map designer.</p>
+ * <p>This class is responsible for loading, saving, and exporting map data.
+ * It converts between the internal coordinate point representation and the
+ * {@link MapConfig} format used for file storage. It also provides functions
+ * to copy coordinate data to the clipboard for use in code.</p>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.3
+ * @since 25.04.2025
  */
 public class MapFileHandler {
   private final MapDesignerListener listener;
   private final PointManager pointManager;
 
   /**
-   * Creates a new MapFileHandler.
+   * <p>Creates a new MapFileHandler with the specified listener and point manager.</p>
+   * <p>This constructor initializes the file handler with references to the components
+   * needed to access coordinate data and report events.</p>
+   *
+   * @param listener      The listener to receive events and log messages
+   * @param pointManager  The point manager containing coordinate data
    */
   public MapFileHandler(MapDesignerListener listener, PointManager pointManager) {
     this.listener = listener;
@@ -31,7 +44,11 @@ public class MapFileHandler {
   }
 
   /**
-   * Saves the current map configuration as the default map.
+   * <p>Saves the current map configuration as the default map.</p>
+   * <p>This method converts the current coordinate points and connections to a
+   * {@link MapConfig} object and saves it to the default location. If an existing
+   * default map exists, it updates it while trying to preserve the positions of
+   * existing tiles.</p>
    */
   public void saveAsDefaultMap() {
     if (pointManager.getAllPoints().isEmpty()) {
@@ -54,7 +71,12 @@ public class MapFileHandler {
   }
 
   /**
-   * Loads or creates a map configuration.
+   * <p>Loads or creates a map configuration.</p>
+   * <p>This private helper method attempts to load the existing default map configuration.
+   * If it doesn't exist or can't be loaded, it creates a new one.</p>
+   *
+   * @return A {@link MapConfig} object, either loaded from the default location or newly created
+   * @throws Exception If an error occurs during loading or creation
    */
   private MapConfig loadOrCreateMapConfig() throws Exception {
     MapConfigFileHandler fileHandler = new MapConfigFileHandler();
@@ -77,7 +99,12 @@ public class MapFileHandler {
   }
 
   /**
-   * Updates locations in a map configuration.
+   * <p>Updates locations in a map configuration.</p>
+   * <p>This private helper method updates the locations in a map configuration based
+   * on the current coordinate points. It tries to preserve the positions of existing
+   * locations when possible.</p>
+   *
+   * @param mapConfig The map configuration to update
    */
   private void updateLocationsInConfig(MapConfig mapConfig) {
     // Create a map of existing locations by ID for quick lookup
@@ -121,7 +148,11 @@ public class MapFileHandler {
   }
 
   /**
-   * Updates connections in a map configuration.
+   * <p>Updates connections in a map configuration.</p>
+   * <p>This private helper method updates the connections in a map configuration
+   * based on the current connections between coordinate points.</p>
+   *
+   * @param mapConfig The map configuration to update
    */
   private void updateConnectionsInConfig(MapConfig mapConfig) {
     // Create a set to track unique connections we'll add
@@ -151,7 +182,12 @@ public class MapFileHandler {
   }
 
   /**
-   * Saves a map configuration to the default location.
+   * <p>Saves a map configuration to the default location.</p>
+   * <p>This private helper method saves a map configuration to the default
+   * location using the {@link MapConfigFileHandler}.</p>
+   *
+   * @param mapConfig The map configuration to save
+   * @throws Exception If an error occurs during saving
    */
   private void saveConfigToDefaultLocation(MapConfig mapConfig) throws Exception {
     MapConfigFileHandler fileHandler = new MapConfigFileHandler();
@@ -159,7 +195,14 @@ public class MapFileHandler {
   }
 
   /**
-   * Checks if a connection already exists in the list.
+   * <p>Checks if a connection already exists in the list.</p>
+   * <p>This private helper method checks if a connection between two points
+   * already exists in a list of connections.</p>
+   *
+   * @param connections The list of connections to check
+   * @param fromId      The ID of the source point
+   * @param toId        The ID of the target point
+   * @return {@code true} if the connection exists, {@code false} otherwise
    */
   private boolean connectionExists(java.util.List<MapConfig.Connection> connections, int fromId, int toId) {
     for (MapConfig.Connection conn : connections) {
@@ -171,7 +214,9 @@ public class MapFileHandler {
   }
 
   /**
-   * Copies coordinate data to the clipboard.
+   * <p>Copies coordinate data to the clipboard.</p>
+   * <p>This method formats the coordinate point data as Java code and copies
+   * it to the system clipboard, making it easy to use in code.</p>
    */
   public void copyCoordinatesToClipboard() {
     if (pointManager.getAllPoints().isEmpty()) {
@@ -201,7 +246,9 @@ public class MapFileHandler {
   }
 
   /**
-   * Exports map data.
+   * <p>Exports map data to a file.</p>
+   * <p>This method creates a {@link MapConfig} from the current coordinate points and
+   * connections, then prompts the user to select a file location and saves the data there.</p>
    */
   public void exportMapData() {
     if (pointManager.getAllPoints().isEmpty()) {
@@ -261,7 +308,12 @@ public class MapFileHandler {
   }
 
   /**
-   * Logs a message if a listener is available.
+   * <p>Logs a message if a listener is available.</p>
+   * <p>This private helper method sends log messages to the registered {@link MapDesignerListener}
+   * if one exists. It also optionally notifies about export events.</p>
+   *
+   * @param message   The message to log
+   * @param isExport  Whether this message is related to an export operation
    */
   private void logMessage(String message, boolean isExport) {
     if (listener != null) {

@@ -6,8 +6,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import java.util.logging.Logger;
 
 /**
- * Class for ladder action.
- * This class implements the TileAction interface.
+ * <p>Class for ladder action that implements the {@link TileAction} interface.</p>
+ * <p>This class handles the logic for "ladder" tile effects in board games, where
+ * landing on a specific tile triggers movement to another destination tile, similar
+ * to ladders in Snakes and Ladders.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -21,9 +23,11 @@ public class LadderAction implements TileAction {
   private static final Logger logger = Logger.getLogger(LadderAction.class.getName());
 
   /**
-   * Constructor for the LadderAction class.
+   * <p>Constructor for the LadderAction class.</p>
+   * <p>Initializes a new ladder action associated with the specified tile.</p>
    *
-   * @param currentTile The current tile.
+   * @param currentTile The current tile that triggers the ladder effect.
+   * @throws IllegalArgumentException if the currentTile parameter is null.
    */
 
   public LadderAction(Tile currentTile) {
@@ -34,10 +38,12 @@ public class LadderAction implements TileAction {
   }
 
   /**
-   * Method to perform the action of the ladder.
-   * Moves the player to the destination tile.
+   * <p>Method to perform the action of the ladder.</p>
+   * <p>Moves the player from the current tile to the destination tile
+   * defined in the tile's destination property. If no destination is set,
+   * a warning is logged and no movement occurs.</p>
    *
-   * @param player The player to move.
+   * @param player The player to move to the destination tile.
    */
 
   @Override
