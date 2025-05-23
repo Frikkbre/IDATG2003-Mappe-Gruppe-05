@@ -177,4 +177,29 @@ Navigate to the test package as shown in the [Project structure](#project-struct
 Make sure to have the test dependencies installed and run the tests. This includes maven surefire (VERSION) plugin and JUnit 5.
 Or run with ```mvn test``` in the terminal.
 
-## Refrences
+##  Game Rules
+
+### Ladder Game
+1. Players start at the first tile and agree on who rolls the die first. The player moves the number of steps shown on the die, then the next player takes their turn.
+2. The first row is followed to the far right, then players move up to the next row and continue to the left. This pattern repeats until reaching the top.
+3. **Snakes & Ladders**:
+    - Landing on a **snake head** means following the snake down to its tail.
+    - Landing on a **ladder** means climbing up to the top.
+4. The first player to reach the top **wins the game**.
+
+### The Missing Diamond (Simplified)
+1. The goal is to **find the missing diamond**, which is hidden on the board.
+2. Players start with **800 money units** to use in the game.
+3. Players roll a die and move **the same number of steps** as shown on the die.
+    - **Black tiles** are normal movement spaces.
+    - **Red tiles** have a token that can be flipped for a price or with a die roll.
+4. **Red Tiles – Choices:**
+    - Pay **300 money** to flip the tile.
+    - Roll the die (**4 or higher**) to flip it for free.
+5. Tiles may contain:
+    - **Gemstones** that grant players money (**300, 500, or 1000**).
+    - **Bandits** who steal all the money.
+    - **Visas**, useless until the diamond is found.
+    - **Blank tiles** with no effect.
+6. When a player **finds the diamond** and reaches **the starting tile**, they **win the game**.
+7. Opponents can still win if they find a **visa** and reach **the starting tile** before the diamond holder.
