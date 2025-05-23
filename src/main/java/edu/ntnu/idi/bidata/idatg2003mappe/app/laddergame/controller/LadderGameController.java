@@ -10,6 +10,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * <p>Controller for the Ladder Game.</p>
@@ -227,22 +229,19 @@ public class LadderGameController {
 
     this.currentPlayerIndex = gameState.getCurrentPlayerIndex();
 
-    // Restore player positions
-    if (gameState.getPlayerPositions() != null) {
-      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+    Optional.ofNullable(gameState.getPlayerPositions()).ifPresent(positions -> {
       List<Player> players = game.getPlayers();
 
-      for (int i = 0; i < Math.min(players.size(), positions.size()); i++) {
-        GameState.PlayerPosition pos = positions.get(i);
-        Player player = players.get(i);
-
-        Tile tile = game.getBoard().getTileByIdLinear(pos.getTileId());
-        if (tile != null) {
-          player.placePlayer(tile);
-        }
-      }
-    }
+      IntStream.range(0, Math.min(players.size(), positions.size()))
+          .forEach(i -> {
+            Tile tile = game.getBoard().getTileByIdLinear(positions.get(i).getTileId());
+            if (tile != null) {
+              players.get(i).placePlayer(tile);
+            }
+          });
+    });
   }
+
 
   // Observer notification methods
 

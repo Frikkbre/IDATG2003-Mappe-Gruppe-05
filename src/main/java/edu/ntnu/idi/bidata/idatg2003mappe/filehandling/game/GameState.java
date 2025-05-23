@@ -104,13 +104,14 @@ public class GameState {
     this.playerPositions = new ArrayList<>();
 
     if (players != null) {
-      for (Player player : players) {
+
+      players.forEach(player -> {
         this.playerPositions.add(new PlayerPosition(
             player.getName(),
             player.getID(),
             player.getCurrentTile().getTileId()
         ));
-      }
+      });
     }
   }
 

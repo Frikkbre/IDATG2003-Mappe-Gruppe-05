@@ -4,6 +4,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHan
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
 
+import java.util.stream.IntStream;
+
 /**
  * <p>Service class for handling map configuration operations.</p>
  * <p>This class provides methods for loading, creating, and managing map configurations
@@ -67,26 +69,22 @@ public class MapConfigService {
     MapConfig mapConfig = new MapConfig();
     mapConfig.setName("Default Missing Diamond Map");
 
-    // Create a simple path with 5 locations
-    for (int i = 1; i <= 5; i++) {
+    IntStream.rangeClosed(1, 5).forEach(i -> {
       boolean isSpecial = (i % 2 == 0);
+      mapConfig.addLocation(new MapConfig.Location(
+          i,
+          isSpecial ? "SpecialLoc" + i : "Location" + i,
+          0.1 * i,
+          0.5,
+          isSpecial
+      ));
 
-      mapConfig.addLocation(
-          new MapConfig.Location(
-              i,
-              isSpecial ? "SpecialLoc" + i : "Location" + i,
-              0.1 * i,
-              0.5,
-              isSpecial
-          )
-      );
-
-      // Add connections
       if (i > 1) {
         mapConfig.addConnection(new MapConfig.Connection(i - 1, i));
       }
-    }
+    });
 
     return mapConfig;
   }
+
 }

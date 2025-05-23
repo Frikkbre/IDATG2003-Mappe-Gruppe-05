@@ -65,13 +65,13 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
       JsonArray playersArray = new JsonArray();
       List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
       if (positions != null) {
-        for (GameState.PlayerPosition position : positions) {
+        positions.forEach(position -> {
           JsonObject playerObject = new JsonObject();
           playerObject.addProperty("name", position.getName());
           playerObject.addProperty("id", position.getId());
           playerObject.addProperty("currentTileId", position.getTileId());
           playersArray.add(playerObject);
-        }
+        });
       }
       jsonObject.add("players", playersArray);
 
@@ -130,14 +130,15 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
       JsonArray playersArray = jsonObject.getAsJsonArray("players");
       List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
 
-      for (int i = 0; i < playersArray.size(); i++) {
-        JsonObject playerObj = playersArray.get(i).getAsJsonObject();
+      playersArray.forEach(playerElement -> {
+        JsonObject playerObj = playerElement.getAsJsonObject();
         String name = playerObj.get("name").getAsString();
         int id = playerObj.get("id").getAsInt();
         int tileId = playerObj.get("currentTileId").getAsInt();
 
         playerPositions.add(new GameState.PlayerPosition(name, id, tileId));
-      }
+      });
+
 
       gameState.setPlayerPositions(playerPositions);
 

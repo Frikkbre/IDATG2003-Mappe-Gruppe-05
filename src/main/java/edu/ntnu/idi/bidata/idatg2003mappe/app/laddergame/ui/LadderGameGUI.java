@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * Enhanced Ladder Game GUI with improved color scheme and design.
@@ -221,24 +222,17 @@ public class LadderGameGUI extends Application {
     grid.setVgap(2);
 
     boolean leftToRight = true;
-    for (int row = 0; row <= 9; row++) {
-      if (leftToRight) {
-        for (int col = 0; col < 10; col++) {
-          int tileNumber = row * 10 + col + 1;
-          TextField tile = createTile(tileNumber);
-          grid.add(tile, col, 9 - row);
-          tileFields.put(tileNumber, tile);
-        }
-      } else {
-        for (int col = 9; col >= 0; col--) {
-          int tileNumber = row * 10 + (9 - col) + 1;
-          TextField tile = createTile(tileNumber);
-          grid.add(tile, col, 9 - row);
-          tileFields.put(tileNumber, tile);
-        }
-      }
-      leftToRight = !leftToRight;
-    }
+    IntStream.rangeClosed(0, 9).forEach(row -> {
+      IntStream.rangeClosed(0, 9)
+          .map(col -> leftToRight ? col : 9 - col)
+          .forEach(col -> {
+            int tileNumber = row * 10 + col + 1;
+            TextField tile = createTile(tileNumber);
+            grid.add(tile, col, 9 - row);
+            tileFields.put(tileNumber, tile);
+          });
+    });
+
     return grid;
   }
 
@@ -330,11 +324,13 @@ public class LadderGameGUI extends Application {
   private void initializePlayerCircles() {
     List<Player> players = gameController.getPlayers();
 
-    for (Player player : players) {
+
+    players.forEach(player -> {
       Circle playerCircle = createPlayerCircle(player);
       playerCircles.put(player, playerCircle);
       playerOverlay.getChildren().add(playerCircle);
-    }
+
+    });
   }
 
   /**
@@ -408,21 +404,17 @@ public class LadderGameGUI extends Application {
       return;
     }
 
-    List<Player> players = gameController.getPlayers();
-
-    // Update each player's circle position
-    for (int i = 0; i < players.size(); i++) {
-      Player player = players.get(i);
+    gameController.getPlayers().forEach(player -> {
       Circle playerCircle = playerCircles.get(player);
 
       if (playerCircle != null) {
         int tileId = player.getCurrentTile().getTileId();
-        double[] position = calculatePlayerPosition(tileId, i);
+        double[] position = calculatePlayerPosition(tileId, gameController.getPlayers().indexOf(player));
 
         playerCircle.setCenterX(position[0]);
         playerCircle.setCenterY(position[1]);
       }
-    }
+    });
 
     // Update scoreboard
     updateScoreBoard(scoreBoard);
@@ -466,15 +458,15 @@ public class LadderGameGUI extends Application {
     StringBuilder scoreBoardText = new StringBuilder("🏆 SCOREBOARD 🏆\n");
     scoreBoardText.append("─────────────────────\n");
 
-    int position = 1;
-    for (Player player : sortedPlayerPositionList) {
+    IntStream.range(0, sortedPlayerPositionList.size()).forEach(i -> {
+      Player player = sortedPlayerPositionList.get(i);
+      int position = i + 1;
       String medal = position == 1 ? "🥇" : position == 2 ? "🥈" : position == 3 ? "🥉" : "  ";
       scoreBoardText.append(String.format("%s %s: Tile %d\n",
           medal,
           player.getName(),
           player.getCurrentTile().getTileId()));
-      position++;
-    }
+    });
 
     scoreBoard.setText(scoreBoardText.toString());
   }

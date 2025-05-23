@@ -6,6 +6,8 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.*;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * <p>Manages the token system for the Missing Diamond game.</p>
@@ -85,18 +87,19 @@ public class TokenSystem {
     Collections.shuffle(tokens);
 
     // Place tokens on city tiles
-    for (int i = 0; i < cityTiles.size() && i < tokens.size(); i++) {
-      Tile cityTile = cityTiles.get(i);
-      Marker token = tokens.get(i);
-      token.setLocation(cityTile);
-      tokenMap.put(cityTile, token);
-      tokensByTileId.put(cityTile.getTileId(), token);
+    IntStream.range(0, Math.min(cityTiles.size(), tokens.size()))
+        .forEach(i -> {
+          Tile cityTile = cityTiles.get(i);
+          Marker token = tokens.get(i);
+          token.setLocation(cityTile);
+          tokenMap.put(cityTile, token);
+          tokensByTileId.put(cityTile.getTileId(), token);
 
-      // Keep track of diamond location
-      if (token instanceof Diamond) {
-        diamondLocation = cityTile;
-      }
-    }
+          // Keep track of diamond location
+          if (token instanceof Diamond) {
+            diamondLocation = cityTile;
+          }
+        });
   }
 
   /**
@@ -112,38 +115,23 @@ public class TokenSystem {
     tokens.add(new Diamond());
 
     // Add gems
-    for (int i = 0; i < NUM_RED_GEMS; i++) {
-      tokens.add(new RedGem());
-    }
-
-    for (int i = 0; i < NUM_GREEN_GEMS; i++) {
-      tokens.add(new GreenGem());
-    }
-
-    for (int i = 0; i < NUM_YELLOW_GEMS; i++) {
-      tokens.add(new YellowGem());
-    }
+    Stream.generate(RedGem::new).limit(NUM_RED_GEMS).forEach(tokens::add);
+    Stream.generate(GreenGem::new).limit(NUM_GREEN_GEMS).forEach(tokens::add);
+    Stream.generate(YellowGem::new).limit(NUM_YELLOW_GEMS).forEach(tokens::add);
 
     // Add bandits (robbers)
-    for (int i = 0; i < NUM_BANDITS; i++) {
-      tokens.add(new Bandit());
-    }
+    Stream.generate(Bandit::new).limit(NUM_BANDITS).forEach(tokens::add);
 
     // Add visas
-    for (int i = 0; i < NUM_VISAS; i++) {
-      tokens.add(new Visa());
-    }
+    Stream.generate(Visa::new).limit(NUM_VISAS).forEach(tokens::add);
 
-    // Calculate how many blank tokens we need
+    // Add blank tokens based on city count
     int blankTokensNeeded = Math.max(0, cityCount - tokens.size());
-
-    // Add blank tokens
-    for (int i = 0; i < blankTokensNeeded; i++) {
-      tokens.add(new BlankMarker());
-    }
+    Stream.generate(BlankMarker::new).limit(blankTokensNeeded).forEach(tokens::add);
 
     return tokens;
   }
+
 
   /**
    * Gets the token at a specific tile.

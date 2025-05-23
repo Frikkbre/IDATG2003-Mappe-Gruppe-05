@@ -99,7 +99,7 @@ public class PointManager {
       // Remove all visual elements associated with points
       List<Node> nodesToRemove = new ArrayList<>();
 
-      for (CoordinatePoint point : capturedPoints) {
+      capturedPoints.forEach(point -> {
         // Remove circles
         if (point.getCircle() != null) {
           nodesToRemove.add(point.getCircle());
@@ -109,7 +109,7 @@ public class PointManager {
         overlayPane.getChildren().removeIf(node ->
             node.getUserData() != null &&
             node.getUserData().equals("label_" + point.getId()));
-      }
+      });
 
       // Bulk remove circles
       overlayPane.getChildren().removeAll(nodesToRemove);
@@ -133,9 +133,13 @@ public class PointManager {
    * @param height The new height of the map
    */
   public void updateAllPointPositions(double width, double height) {
-    for (CoordinatePoint point : capturedPoints) {
+    capturedPoints.forEach(point -> {
       point.updatePosition(width, height);
-    }
+      if (point.getCircle() != null) {
+        point.getCircle().setCenterX(point.getX());
+        point.getCircle().setCenterY(point.getY());
+      }
+    });
   }
 
   /**
@@ -166,14 +170,12 @@ public class PointManager {
     point.setSpecial(isSpecial);
 
     // If the circle exists in the overlay, link it to the point
-    for (Node node : overlayPane.getChildren()) {
-      if (node instanceof Circle circle) {
-        if (circle.getUserData() != null && circle.getUserData().equals(id)) {
-          point.setCircle(circle);
-          break;
-        }
-      }
-    }
+    overlayPane.getChildren().stream()
+        .filter(node -> node instanceof Circle)
+        .map(node -> (Circle) node)
+        .filter(circle -> circle.getUserData() != null && circle.getUserData().equals(id))
+        .findFirst()
+        .ifPresent(point::setCircle);
 
     // Register the point
     pointsById.put(id, point);

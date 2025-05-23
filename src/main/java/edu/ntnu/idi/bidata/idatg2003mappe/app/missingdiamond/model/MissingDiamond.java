@@ -12,11 +12,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Represents the Missing Diamond game.
@@ -90,11 +89,11 @@ public class MissingDiamond {
         boardInstance = createBoardFromConfig(mapConfig);
         // Populate specialTileIdsSet from mapConfig
         if (mapConfig.getLocations() != null) {
-          for (MapConfig.Location location : mapConfig.getLocations()) {
-            if (location.isSpecial()) {
-              this.specialTileIdsSet.add(location.getId());
-            }
-          }
+          mapConfig.getLocations().stream()
+              .filter(MapConfig.Location::isSpecial)
+              .map(MapConfig.Location::getId)
+              .forEach(specialTileIdsSet::add);
+
         }
       } else {
         System.err.println("Error: Map configuration is null or could not be read. Falling back to default board.");
@@ -120,10 +119,7 @@ public class MissingDiamond {
     tokenSystem.setStartingTiles(startingTiles);
     tokenSystem.initializeTokens(cityTiles);
 
-    for (Player player : players) {
-      banker.registerPlayer(player);
-      banker.deposit(player, STARTING_MONEY);
-    }
+    players.forEach(player -> { banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
   }
 
   /**
@@ -145,11 +141,11 @@ public class MissingDiamond {
         boardInstance = createBoardFromConfig(mapConfig);
         // Populate specialTileIdsSet from mapConfig
         if (mapConfig != null && mapConfig.getLocations() != null) {
-          for (MapConfig.Location location : mapConfig.getLocations()) {
-            if (location.isSpecial()) {
-              this.specialTileIdsSet.add(location.getId());
-            }
-          }
+          mapConfig.getLocations().stream()
+              .filter(MapConfig.Location::isSpecial)
+              .map(MapConfig.Location::getId)
+              .forEach(specialTileIdsSet::add);
+
         }
       } else {
         boardInstance = createDefaultBoard();
@@ -176,10 +172,8 @@ public class MissingDiamond {
     tokenSystem.setStartingTiles(startingTiles);
     tokenSystem.initializeTokens(cityTiles);
 
-    for (Player player : players) {
-      banker.registerPlayer(player);
-      banker.deposit(player, STARTING_MONEY);
-    }
+    players.forEach(player -> {
+      banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
   }
 
   /**
@@ -193,23 +187,21 @@ public class MissingDiamond {
     board.setBoardName(mapConfig.getName());
 
     // Create all tiles
-    for (MapConfig.Location location : mapConfig.getLocations()) {
-      Tile tile = new Tile(location.getId());
-      board.addTileToBoard(tile);
-    }
+    mapConfig.getLocations().forEach(location -> board.addTileToBoard(new Tile(location.getId())));
 
     // Add all connections
-    for (MapConfig.Connection connection : mapConfig.getConnections()) {
+    mapConfig.getConnections().forEach(connection -> {
       Tile fromTile = board.getTileById(connection.getFromId());
       Tile toTile = board.getTileById(connection.getToId());
 
       if (fromTile != null && toTile != null) {
         board.connectTiles(fromTile, toTile);
       }
-    }
+    });
 
     return board;
   }
+
 
   /**
    * Creates a default board with a simple structure.
@@ -222,10 +214,10 @@ public class MissingDiamond {
     board.setBoardName("Default Missing Diamond Map");
 
     // Create basic city tiles
-    for (int i = 1; i <= 20; i++) {
-      Tile tile = new Tile(i);
-      board.addTileToBoard(tile);
-    }
+    IntStream.rangeClosed(1, 20)
+        .mapToObj(Tile::new)
+        .forEach(board::addTileToBoard);
+
 
     // Connect the tiles in a simple network
     // Starting tiles (Cairo and Tangiers)
@@ -239,21 +231,21 @@ public class MissingDiamond {
     board.connectTiles(tangiers, board.getTileById(6));
 
     // Add more connections to create a network
-    for (int i = 3; i <= 18; i++) {
+    IntStream.rangeClosed(3, 18).forEach(i -> {
       Tile current = board.getTileById(i);
       Tile next = board.getTileById(i + 1);
+
       if (current != null && next != null) {
         board.connectTiles(current, next);
       }
 
       // Add some cross-connections
       if (i % 3 == 0 && i + 4 <= 20) {
-        Tile crossTile = board.getTileById(i + 4);
-        if (crossTile != null) {
-          board.connectTiles(current, crossTile);
-        }
+        Optional.ofNullable(board.getTileById(i + 4))
+            .ifPresent(crossTile -> board.connectTiles(current, crossTile));
       }
-    }
+    });
+
 
     // If specialTileIdsSet is empty (meaning no map config defined them), add defaults for this board.
     if (this.specialTileIdsSet.isEmpty()) {
@@ -274,27 +266,20 @@ public class MissingDiamond {
    * @return A list of players
    */
   private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
-    List<Player> players = new ArrayList<>();
     Tile startTile = !startingTiles.isEmpty() ? startingTiles.get(0) : board.getStartTile();
-
-    // Define colors for players
     String[] playerColors = {"Orange", "Blue", "Green", "Yellow", "Purple", "Red"};
 
-    for (int i = 0; i < numberOfPlayers; i++) {
-      // Get color with wraparound if more players than colors
-      String color = playerColors[i % playerColors.length];
-
-      // Create player with correct parameter order: name, id, color, tile
-      Player player = new Player("Player " + (i + 1), i, color, startTile);
-      players.add(player);
-
-      // Register player with banker and give starting money
-      banker.registerPlayer(player);
-      banker.deposit(player, STARTING_MONEY);
-    }
-
-    return players;
+    return IntStream.range(0, numberOfPlayers)
+        .mapToObj(i -> {
+          String color = playerColors[i % playerColors.length]; // Wraparound for colors
+          Player player = new Player("Player " + (i + 1), i, color, startTile);
+          banker.registerPlayer(player);
+          banker.deposit(player, STARTING_MONEY);
+          return player;
+        })
+        .collect(Collectors.toList());
   }
+
 
   // Removed readPlayersFromCSV() method from here
 
@@ -304,12 +289,11 @@ public class MissingDiamond {
   private void identifyCityTiles() {
     // In a real implementation, this would be based on map data
     // For now, assuming tiles with IDs 1-20 are cities
-    for (int i = 1; i <= 32; i++) {
-      Tile tile = board.getTileById(i);
-      if (tile != null) {
-        cityTiles.add(tile);
-      }
-    }
+    IntStream.rangeClosed(1, 32)
+        .mapToObj(board::getTileById)
+        .filter(Objects::nonNull)
+        .forEach(cityTiles::add);
+
   }
 
   /**
@@ -368,13 +352,11 @@ public class MissingDiamond {
     }
 
     // Recursive step: explore neighbors
-    for (Tile neighbor : currentTile.getNextTiles()) {
-      if (!visitedInCall.contains(neighbor)) {
-        visitedInCall.add(neighbor); // Mark neighbor as visited for this entire call to prevent cycles and re-processing
-        recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1);
-        // No removal from visitedInCall, to prevent re-exploring already processed nodes in this call.
-      }
-    }
+    currentTile.getNextTiles().stream()
+        .filter(neighbor -> !visitedInCall.contains(neighbor))
+        .peek(visitedInCall::add) // Mark as visited
+        .forEach(neighbor -> recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1));
+
   }
 
   /**

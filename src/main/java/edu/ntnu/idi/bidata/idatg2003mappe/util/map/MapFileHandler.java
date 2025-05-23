@@ -10,10 +10,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>Handles file operations for the map designer.</p>
@@ -110,41 +107,32 @@ public class MapFileHandler {
     // Create a map of existing locations by ID for quick lookup
     Map<Integer, MapConfig.Location> existingLocations = new HashMap<>();
     if (mapConfig.getLocations() != null) {
-      for (MapConfig.Location loc : mapConfig.getLocations()) {
-        existingLocations.put(loc.getId(), loc);
-      }
+      mapConfig.getLocations().forEach(loc -> existingLocations.put(loc.getId(), loc));
     }
 
     // Clear existing locations
     mapConfig.getLocations().clear();
 
     // Add locations, preserving positions for existing tiles
-    for (CoordinatePoint point : pointManager.getAllPoints()) {
-      MapConfig.Location location;
+    pointManager.getAllPoints().forEach(point -> {
+      MapConfig.Location location = existingLocations.containsKey(point.getId())
+          ? new MapConfig.Location(
+          point.getId(),
+          point.getName(),
+          existingLocations.get(point.getId()).getXPercent(),  // Use existing X position
+          existingLocations.get(point.getId()).getYPercent(),  // Use existing Y position
+          point.isSpecial()
+      )
+          : new MapConfig.Location(
+          point.getId(),
+          point.getName(),
+          point.getXPercent(),
+          point.getYPercent(),
+          point.isSpecial()
+      );
 
-      // Check if this location already exists in the previous configuration
-      if (existingLocations.containsKey(point.getId())) {
-        // Use the existing location's position data
-        MapConfig.Location existingLoc = existingLocations.get(point.getId());
-        location = new MapConfig.Location(
-            point.getId(),
-            point.getName(),
-            existingLoc.getXPercent(),  // Use existing X position
-            existingLoc.getYPercent(),  // Use existing Y position
-            point.isSpecial()
-        );
-      } else {
-        // Create new location with current position
-        location = new MapConfig.Location(
-            point.getId(),
-            point.getName(),
-            point.getXPercent(),
-            point.getYPercent(),
-            point.isSpecial()
-        );
-      }
       mapConfig.addLocation(location);
-    }
+    });
   }
 
   /**
@@ -159,26 +147,17 @@ public class MapFileHandler {
     Set<String> connectionKeys = new HashSet<>();
 
     // Add connections from current UI state
-    for (CoordinatePoint point : pointManager.getAllPoints()) {
-      for (Integer targetId : point.getConnections()) {
-        // Create a unique key for this connection
-        String connectionKey = point.getId() + "-" + targetId;
+    pointManager.getAllPoints().forEach(point ->
+        point.getConnections().forEach(targetId -> {
+          String connectionKey = point.getId() + "-" + targetId;
 
-        // Only add if we haven't already added this connection
-        if (!connectionKeys.contains(connectionKey)) {
-          connectionKeys.add(connectionKey);
-
-          // Check if connection already exists
-          if (!connectionExists(mapConfig.getConnections(), point.getId(), targetId)) {
-            MapConfig.Connection connection = new MapConfig.Connection(
-                point.getId(),
-                targetId
-            );
-            mapConfig.addConnection(connection);
+          if (connectionKeys.add(connectionKey)) { // `Set.add()` returns true if the element was added
+            if (!connectionExists(mapConfig.getConnections(), point.getId(), targetId)) {
+              mapConfig.addConnection(new MapConfig.Connection(point.getId(), targetId));
+            }
           }
-        }
-      }
-    }
+        })
+    );
   }
 
   /**
@@ -204,13 +183,9 @@ public class MapFileHandler {
    * @param toId        The ID of the target point
    * @return {@code true} if the connection exists, {@code false} otherwise
    */
-  private boolean connectionExists(java.util.List<MapConfig.Connection> connections, int fromId, int toId) {
-    for (MapConfig.Connection conn : connections) {
-      if (conn.getFromId() == fromId && conn.getToId() == toId) {
-        return true;
-      }
-    }
-    return false;
+  private boolean connectionExists(List<MapConfig.Connection> connections, int fromId, int toId) {
+    return connections.stream()
+        .anyMatch(conn -> conn.getFromId() == fromId && conn.getToId() == toId);
   }
 
   /**
@@ -229,10 +204,11 @@ public class MapFileHandler {
     sb.append("private static final Object[][] LOCATION_DATA = {\n");
     sb.append("    // {id, name, x-percentage, y-percentage}\n");
 
-    for (CoordinatePoint point : pointManager.getAllPoints()) {
-      sb.append(String.format("    {%d, \"%s\", %.4f, %.4f},\n",
-          point.getId(), point.getName(), point.getXPercent(), point.getYPercent()));
-    }
+    pointManager.getAllPoints().stream()
+        .map(point -> String.format("    {%d, \"%s\", %.4f, %.4f},\n",
+            point.getId(), point.getName(), point.getXPercent(), point.getYPercent()))
+        .forEach(sb::append);
+
 
     sb.append("};\n");
 
@@ -261,27 +237,22 @@ public class MapFileHandler {
     mapConfig.setName("Missing Diamond Map");
 
     // Add locations
-    for (CoordinatePoint point : pointManager.getAllPoints()) {
-      MapConfig.Location location = new MapConfig.Location(
-          point.getId(),
-          point.getName(),
-          point.getXPercent(),
-          point.getYPercent(),
-          point.isSpecial()
-      );
-      mapConfig.addLocation(location);
-    }
+    pointManager.getAllPoints().stream()
+        .map(point -> new MapConfig.Location(
+            point.getId(),
+            point.getName(),
+            point.getXPercent(),
+            point.getYPercent(),
+            point.isSpecial()))
+        .forEach(mapConfig::addLocation);
+
 
     // Add connections
-    for (CoordinatePoint point : pointManager.getAllPoints()) {
-      for (Integer targetId : point.getConnections()) {
-        MapConfig.Connection connection = new MapConfig.Connection(
-            point.getId(),
-            targetId
-        );
-        mapConfig.addConnection(connection);
-      }
-    }
+    pointManager.getAllPoints().stream()
+        .flatMap(point -> point.getConnections().stream()
+            .map(targetId -> new MapConfig.Connection(point.getId(), targetId)))
+        .forEach(mapConfig::addConnection);
+
 
     try {
       // Create a file chooser dialog

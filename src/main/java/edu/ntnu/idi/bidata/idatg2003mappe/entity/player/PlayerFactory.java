@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * <p>Factory class for creating Player objects.</p>
@@ -119,14 +121,11 @@ public class PlayerFactory {
    * @return A list of {@link Player} objects
    */
   public static List<Player> createDefaultPlayers(int count, Tile startTile) {
-    List<Player> players = new ArrayList<>();
     String[] colors = {"LightGreen", "LightPink", "Green", "HotPink", "Orange"};
 
-    for (int i = 0; i < count; i++) {
-      String color = colors[i % colors.length];
-      players.add(new Player("Player " + (i + 1), i, color, startTile));
-    }
-
-    return players;
+    return IntStream.range(0, count)
+        .mapToObj(i -> new Player("Player " + (i + 1), i, colors[i % colors.length], startTile))
+        .collect(Collectors.toList());
   }
+
 }

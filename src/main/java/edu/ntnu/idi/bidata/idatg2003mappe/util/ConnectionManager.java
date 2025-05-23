@@ -85,14 +85,15 @@ public class ConnectionManager {
     clearConnections();
 
     // Redraw all connections
-    for (CoordinatePoint source : pointManager.getAllPoints()) {
-      for (Integer targetId : source.getConnections()) {
-        CoordinatePoint target = pointManager.getPointById(targetId);
-        if (target != null) {
-          drawConnection(source, target);
-        }
-      }
-    }
+    pointManager.getAllPoints().forEach(source ->
+        source.getConnections().forEach(targetId -> {
+          CoordinatePoint target = pointManager.getPointById(targetId);
+          if (target != null) {
+            drawConnection(source, target);
+          }
+        })
+    );
+
   }
 
   /**

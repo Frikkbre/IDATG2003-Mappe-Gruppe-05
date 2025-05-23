@@ -35,9 +35,7 @@ public class Die {
    * @param value The value rolled.
    */
   private void notifyDieRolled(int value) {
-    for (DieObserver observer : observers) {
-      observer.onDieRolled(value);
-    }
+    observers.forEach(observer -> observer.onDieRolled(value));
   }
 
   /**

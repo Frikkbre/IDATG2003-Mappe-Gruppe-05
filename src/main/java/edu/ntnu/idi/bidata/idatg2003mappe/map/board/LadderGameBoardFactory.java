@@ -4,6 +4,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * <p>Factory class for creating different types of ladder game boards.</p>
@@ -32,42 +33,26 @@ public class LadderGameBoardFactory {
    */
   public static BoardLinear createClassicLadderBoard() {
     BoardLinear board = new BoardLinear();
-    Tile[] tiles = new Tile[100];
+    Tile[] tiles = IntStream.rangeClosed(1, 100)
+        .mapToObj(Tile::new)
+        .toArray(Tile[]::new);
 
-    // Create and connect all tiles
-    for (int i = 0; i < 100; i++) {
-      tiles[i] = new Tile(i + 1);
-      board.addTileToBoard(tiles[i]);
-    }
-    for (int i = 0; i < 99; i++) {
-      tiles[i].setNextTile(tiles[i + 1]);
-    }
+    Arrays.stream(tiles).forEach(board::addTileToBoard);
+    IntStream.range(0, 99).forEach(i -> tiles[i].setNextTile(tiles[i + 1]));
 
     // Add classic ladders (up)
-    tiles[1].setDestinationTile(tiles[37]); // 2 -> 38
-    tiles[4].setDestinationTile(tiles[14]); // 5 -> 15
-    tiles[9].setDestinationTile(tiles[31]); // 10 -> 32
-    tiles[21].setDestinationTile(tiles[42]); // 22 -> 43
-    tiles[28].setDestinationTile(tiles[84]); // 29 -> 85
-    tiles[52].setDestinationTile(tiles[67]); // 53 -> 68
-    tiles[73].setDestinationTile(tiles[92]); // 74 -> 93
-    tiles[80].setDestinationTile(tiles[99]); // 81 -> 100
+    Map.of(2, 38, 5, 15, 10, 32, 22, 43, 29, 85, 53, 68, 74, 93, 81, 100)
+        .forEach((start, end) -> tiles[start - 1].setDestinationTile(tiles[end - 1]));
 
     // Add snakes (down)
-    tiles[17].setDestinationTile(tiles[7]); // 18 -> 8
-    tiles[61].setDestinationTile(tiles[11]); // 62 -> 12
-    tiles[87].setDestinationTile(tiles[36]); // 88 -> 37
-    tiles[55].setDestinationTile(tiles[35]); // 56 -> 36
-    tiles[65].setDestinationTile(tiles[61]); // 66 -> 62
-    tiles[88].setDestinationTile(tiles[37]); // 89 -> 38
-    tiles[94].setDestinationTile(tiles[74]); // 95 -> 75
-    tiles[98].setDestinationTile(tiles[80]); // 99 -> 81
+    Map.of(18, 8, 62, 12, 88, 37, 56, 36, 66, 62, 89, 38, 95, 75, 99, 81)
+        .forEach((start, end) -> tiles[start - 1].setDestinationTile(tiles[end - 1]));
 
-    // Set up tile effects
     setupTileEffects(board);
 
     return board;
   }
+
 
   /**
    * <p>Creates a ladder game board with randomly placed ladders and snakes.</p>
@@ -78,16 +63,12 @@ public class LadderGameBoardFactory {
    */
   public static BoardLinear createRandomLadderBoard() {
     BoardLinear board = new BoardLinear();
-    Tile[] tiles = new Tile[BOARD_SIZE];
+    Tile[] tiles = IntStream.rangeClosed(1, BOARD_SIZE)
+        .mapToObj(Tile::new)
+        .toArray(Tile[]::new);
 
-    // Create and connect all tiles
-    for (int i = 0; i < BOARD_SIZE; i++) {
-      tiles[i] = new Tile(i + 1);
-      board.addTileToBoard(tiles[i]);
-    }
-    for (int i = 0; i < BOARD_SIZE - 1; i++) {
-      tiles[i].setNextTile(tiles[i + 1]);
-    }
+    Arrays.stream(tiles).forEach(board::addTileToBoard);
+    IntStream.range(0, BOARD_SIZE - 1).forEach(i -> tiles[i].setNextTile(tiles[i + 1]));
 
     // Generate random ladders and snakes
     generateRandomLadders(tiles);
@@ -97,6 +78,7 @@ public class LadderGameBoardFactory {
 
     return board;
   }
+
 
   /**
    * <p>Generates random ladders and snakes on the board.</p>
@@ -184,14 +166,13 @@ public class LadderGameBoardFactory {
    */
   public static void setupTileEffects(BoardLinear board) {
     // Configure skip turn tiles
-    int[] skipTurnTiles = {13, 25, 57, 70, 96};
-    for (int tileId : skipTurnTiles) {
-      setTileEffect(board, tileId, "skipTurn");
-    }
+    Arrays.stream(new int[]{13, 25, 57, 70, 96})
+        .forEach(tileId -> setTileEffect(board, tileId, "skipTurn"));
 
-    // Configure back to start tiles
+    // Configure back to start tile
     setTileEffect(board, 45, "backToStart");
   }
+
 
   /**
    * <p>Helper method to set an effect on a specific tile.</p>
