@@ -1,26 +1,16 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui.LadderGameGUI;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.ui.MissingDiamondGUI;
-import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.effect.Glow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.File;
 
@@ -28,9 +18,10 @@ import java.io.File;
  * <p>Class for the board game selector GUI.</p>
  * <p>Now simplified to only handle game selection since player setup
  * is handled in the dedicated PlayerSetupScreen.</p>
+ * <p>Enhanced with modern CSS styling for professional appearance.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.2
+ * @version 0.1.0
  * @since 21.05.2025
  */
 public class BoardGameSelector extends Application {
@@ -59,7 +50,7 @@ public class BoardGameSelector extends Application {
 
   /**
    * <p>Start method for the JavaFX application.</p>
-   * <p>This method is used to start the JavaFX application.</p>
+   * <p>This method is used to start the JavaFX application with enhanced CSS styling.</p>
    *
    * @param primaryStage The primary stage for this application.
    * @throws Exception If an error occurs during startup.
@@ -74,160 +65,215 @@ public class BoardGameSelector extends Application {
       return;
     }
 
-    setStage(primaryStage);
-    primaryStage.setTitle("Select Your Adventure");
-
     // Create main layout
-    BorderPane mainLayout = new BorderPane();
-    mainLayout.getStyleClass().add("main-container");
+    BorderPane borderPane = new BorderPane();
+    borderPane.setMinHeight(840);
+    borderPane.setMaxHeight(840);
+    borderPane.setMinWidth(1440);
+    borderPane.setMaxWidth(1440);
+    borderPane.setPrefHeight(840);
+    borderPane.setPrefWidth(1440);
 
-    // Create content
-    VBox centerContent = createCenterContent();
-    mainLayout.setCenter(centerContent);
+    // Apply CSS background
+    borderPane.getStyleClass().add("main-container-solid");
 
-    // Create scene and add CSS
-    Scene scene = new Scene(mainLayout, 1440, 840);
-    scene.getStylesheets().add(getClass().getResource("/game-style/game-styles.css").toExternalForm());
+    // Create center content with glass effect
+    VBox centerContent = createCenterPane();
+    centerContent.getStyleClass().add("center-content");
 
+    // Wrap center content for better positioning
+    StackPane centerWrapper = new StackPane(centerContent);
+    centerWrapper.setPadding(new Insets(50));
+
+    borderPane.setCenter(centerWrapper);
+
+    // Create scene and load CSS
+    Scene scene = new Scene(borderPane);
+    loadCSS(scene);
+
+    setStage(primaryStage);
     primaryStage.setScene(scene);
+    primaryStage.setTitle("Select a board game");
     primaryStage.show();
 
-    // Initialize game GUIs
+    // Initialize game instances
     this.ladderGameGUI = new LadderGameGUI();
     this.missingDiamondGUI = new MissingDiamondGUI();
-
-    // Apply entrance animation
-    applyEntranceAnimation(centerContent);
   }
 
   /**
-   * <p>Method to create the center content of the GUI.</p>
-   * <p>Creates a visually appealing game selection interface with animated elements.</p>
+   * <p>Loads the CSS stylesheet for the application.</p>
+   * <p>Provides enhanced styling and professional appearance.</p>
+   *
+   * @param scene The scene to apply CSS styling to
+   */
+  private void loadCSS(Scene scene) {
+    try {
+      String cssFile = getClass().getResource("/game-style/game-styles.css").toExternalForm();
+      scene.getStylesheets().add(cssFile);
+    } catch (Exception e) {
+      System.err.println("Warning: Could not load CSS file. Using default styling.");
+    }
+  }
+
+  /**
+   * <p>Method to create the center pane of the GUI.</p>
+   * <p>Enhanced with CSS styling and modern visual design.</p>
    *
    * @return centerPane A VBox containing the game selection UI elements
    */
-  private VBox createCenterContent() {
-    VBox centerPane = new VBox(50);
+  private VBox createCenterPane() {
+    VBox centerPane = new VBox(40);
     centerPane.setAlignment(Pos.CENTER);
-    centerPane.setPadding(new Insets(40));
+    centerPane.setPrefWidth(500);
+    centerPane.setMaxWidth(500);
+    centerPane.getStyleClass().add("spaced-container");
 
-    // Title with animation
-    Label titleLabel = new Label("Choose Your Adventure");
-    titleLabel.getStyleClass().add("title");
+    // Welcome section
+    VBox welcomeSection = createWelcomeSection();
 
-    Label subtitleLabel = new Label("Select a game to begin your journey");
-    subtitleLabel.getStyleClass().add("subtitle");
+    // Game selection section
+    VBox gameSection = createGameSelectionSection();
 
-    // Game cards container
-    HBox gameCards = new HBox(40);
-    gameCards.setAlignment(Pos.CENTER);
+    // Player info section
+    VBox playerInfoSection = createPlayerInfoSection();
 
-    // Create game cards
-    VBox ladderCard = createGameCard(
-        "Ladder Game",
-        "Classic snakes and ladders adventure",
-        "🎲 Roll the dice\n🪜 Climb ladders\n🐍 Avoid snakes\n🏆 Reach the top!",
-        "ladder-card"
-    );
-
-    VBox missingDiamondCard = createGameCard(
-        "Missing Diamond",
-        "Find the legendary African Star",
-        "💎 Search for treasure\n🗺️ Explore Africa\n💰 Collect gems\n⭐ Find the diamond!",
-        "diamond-card"
-    );
-
-    // Add click handlers
-    ladderCard.setOnMouseClicked(e -> startLadderGame());
-    missingDiamondCard.setOnMouseClicked(e -> startMissingDiamond());
-
-    gameCards.getChildren().addAll(ladderCard, missingDiamondCard);
-
-    centerPane.getChildren().addAll(titleLabel, subtitleLabel, gameCards);
+    centerPane.getChildren().addAll(welcomeSection, gameSection, playerInfoSection);
     return centerPane;
   }
 
   /**
-   * <p>Creates a game card with modern design.</p>
-   * <p>Each card represents a game option with title, description, and features.</p>
+   * <p>Creates the welcome section with title and subtitle.</p>
+   * <p>Uses CSS styling for professional appearance.</p>
    *
-   * @param title The game title
-   * @param subtitle The game subtitle
-   * @param features The game features
-   * @param styleClass Additional style class for the card
-   * @return A styled VBox representing the game card
+   * @return A {@link VBox} containing welcome elements
    */
-  private VBox createGameCard(String title, String subtitle, String features, String styleClass) {
-    VBox card = new VBox(20);
-    card.getStyleClass().addAll("card", "glass-effect");
-    card.setPrefSize(400, 300);
-    card.setAlignment(Pos.CENTER);
-    card.setPadding(new Insets(30));
-    card.setCursor(javafx.scene.Cursor.HAND);
+  private VBox createWelcomeSection() {
+    VBox welcomeSection = new VBox(15);
+    welcomeSection.setAlignment(Pos.CENTER);
 
-    // Title
-    Label titleLabel = new Label(title);
-    titleLabel.getStyleClass().add("heading");
+    Label titleLabel = new Label("Choose Your Game");
+    titleLabel.getStyleClass().add("title-label");
 
-    // Subtitle
-    Label subtitleLabel = new Label(subtitle);
-    subtitleLabel.getStyleClass().add("body-text");
+    Label subtitleLabel = new Label("Select a board game to begin your adventure");
+    subtitleLabel.getStyleClass().add("info-label");
 
-    // Features
-    Label featuresLabel = new Label(features);
-    featuresLabel.getStyleClass().add("body-text");
-    featuresLabel.setStyle("-fx-text-alignment: left;");
-
-    // Play button
-    Button playButton = new Button("PLAY NOW");
-    playButton.getStyleClass().addAll("button", "game-button");
-    playButton.setPrefWidth(200);
-
-    card.getChildren().addAll(titleLabel, subtitleLabel, featuresLabel, playButton);
-
-    // Add hover effects
-    addCardHoverEffects(card);
-
-    return card;
+    welcomeSection.getChildren().addAll(titleLabel, subtitleLabel);
+    return welcomeSection;
   }
 
   /**
-   * <p>Adds hover effects to game cards.</p>
-   * <p>Creates smooth transitions and glow effects when hovering.</p>
+   * <p>Creates the game selection section with game buttons.</p>
+   * <p>Features enhanced button styling and layout.</p>
    *
-   * @param card The card to add effects to
+   * @return A {@link VBox} containing game selection elements
    */
-  private void addCardHoverEffects(VBox card) {
-    Glow glow = new Glow(0);
-    card.setEffect(glow);
+  private VBox createGameSelectionSection() {
+    VBox gameSection = new VBox(20);
+    gameSection.setAlignment(Pos.CENTER);
 
-    card.setOnMouseEntered(e -> {
-      ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), card);
-      scaleUp.setToX(1.05);
-      scaleUp.setToY(1.05);
+    // Game selection buttons with enhanced styling
+    Button ladderGameButton = createGameButton("🪜 Ladder Game",
+        "Classic snakes and ladders with modern twists");
+    ladderGameButton.setOnAction(event -> startLadderGame());
 
-      TranslateTransition moveUp = new TranslateTransition(Duration.millis(200), card);
-      moveUp.setToY(-10);
+    Button missingDiamondButton = createGameButton("💎 Missing Diamond",
+        "Adventure across Africa to find the lost diamond");
+    missingDiamondButton.setOnAction(event -> startMissingDiamond());
 
-      ParallelTransition hoverAnimation = new ParallelTransition(scaleUp, moveUp);
-      hoverAnimation.play();
+    gameSection.getChildren().addAll(ladderGameButton, missingDiamondButton);
+    return gameSection;
+  }
 
-      glow.setLevel(0.3);
-    });
+  /**
+   * <p>Creates a styled game button with description.</p>
+   * <p>Includes icon, title, and description for better user experience.</p>
+   *
+   * @param title The title of the game
+   * @param description Brief description of the game
+   * @return A styled {@link Button}
+   */
+  private Button createGameButton(String title, String description) {
+    Button button = new Button();
 
-    card.setOnMouseExited(e -> {
-      ScaleTransition scaleDown = new ScaleTransition(Duration.millis(200), card);
-      scaleDown.setToX(1.0);
-      scaleDown.setToY(1.0);
+    // Create button content
+    VBox buttonContent = new VBox(5);
+    buttonContent.setAlignment(Pos.CENTER);
 
-      TranslateTransition moveDown = new TranslateTransition(Duration.millis(200), card);
-      moveDown.setToY(0);
+    Label titleLabel = new Label(title);
+    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
 
-      ParallelTransition exitAnimation = new ParallelTransition(scaleDown, moveDown);
-      exitAnimation.play();
+    Label descLabel = new Label(description);
+    descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.9);");
+    descLabel.setWrapText(true);
+    descLabel.setMaxWidth(200);
 
-      glow.setLevel(0);
-    });
+    buttonContent.getChildren().addAll(titleLabel, descLabel);
+    button.setGraphic(buttonContent);
+
+    button.setPrefSize(250, 80);
+    button.getStyleClass().add("game-button");
+
+    return button;
+  }
+
+  /**
+   * <p>Creates a section showing player information.</p>
+   * <p>Displays how many players are configured.</p>
+   *
+   * @return A {@link VBox} containing player info elements
+   */
+  private VBox createPlayerInfoSection() {
+    VBox playerInfoSection = new VBox(10);
+    playerInfoSection.setAlignment(Pos.CENTER);
+    playerInfoSection.getStyleClass().add("glass-container");
+    playerInfoSection.setPadding(new Insets(15));
+
+    Label infoTitle = new Label("✓ Players Configured");
+    infoTitle.getStyleClass().addAll("subtitle-label", "success-label");
+
+    // Count players from file
+    int playerCount = countPlayersFromFile();
+    Label playerCountLabel = new Label(String.format("%d players ready to play", playerCount));
+    playerCountLabel.getStyleClass().add("info-label");
+
+    playerInfoSection.getChildren().addAll(infoTitle, playerCountLabel);
+    return playerInfoSection;
+  }
+
+  /**
+   * <p>Counts the number of players from the saved file.</p>
+   * <p>Reads the player data file to determine how many players are configured.</p>
+   *
+   * @return The number of configured players
+   */
+  private int countPlayersFromFile() {
+    File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
+    if (!playerFile.exists()) {
+      return 0;
+    }
+
+    try {
+      java.util.Scanner scanner = new java.util.Scanner(playerFile);
+      int count = 0;
+
+      // Skip header
+      if (scanner.hasNextLine()) {
+        scanner.nextLine();
+      }
+
+      // Count data lines
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine().trim();
+        if (!line.isEmpty()) {
+          count++;
+        }
+      }
+      scanner.close();
+      return count;
+    } catch (Exception e) {
+      return 0;
+    }
   }
 
   /**
@@ -236,18 +282,7 @@ public class BoardGameSelector extends Application {
    */
   private void startLadderGame() {
     try {
-      // Add exit animation before switching
-      FadeTransition fadeOut = new FadeTransition(Duration.millis(300), primaryStage.getScene().getRoot());
-      fadeOut.setFromValue(1);
-      fadeOut.setToValue(0);
-      fadeOut.setOnFinished(e -> {
-        try {
-          ladderGameGUI.start(getStage());
-        } catch (Exception ex) {
-          showAlert("Error", "Failed to start Ladder Game: " + ex.getMessage(), Alert.AlertType.ERROR);
-        }
-      });
-      fadeOut.play();
+      ladderGameGUI.start(getStage());
     } catch (Exception e) {
       showAlert("Error", "Failed to start Ladder Game: " + e.getMessage(), Alert.AlertType.ERROR);
     }
@@ -259,18 +294,7 @@ public class BoardGameSelector extends Application {
    */
   private void startMissingDiamond() {
     try {
-      // Add exit animation before switching
-      FadeTransition fadeOut = new FadeTransition(Duration.millis(300), primaryStage.getScene().getRoot());
-      fadeOut.setFromValue(1);
-      fadeOut.setToValue(0);
-      fadeOut.setOnFinished(e -> {
-        try {
-          missingDiamondGUI.start(getStage());
-        } catch (Exception ex) {
-          showAlert("Error", "Failed to start Missing Diamond: " + ex.getMessage(), Alert.AlertType.ERROR);
-        }
-      });
-      fadeOut.play();
+      missingDiamondGUI.start(getStage());
     } catch (Exception e) {
       showAlert("Error", "Failed to start Missing Diamond: " + e.getMessage(), Alert.AlertType.ERROR);
     }
@@ -288,7 +312,7 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * <p>Shows a styled alert dialog.</p>
+   * <p>Shows an alert dialog with enhanced styling.</p>
    * <p>Displays information to the user through a JavaFX Alert dialog.</p>
    *
    * @param title   the title of the alert
@@ -301,37 +325,12 @@ public class BoardGameSelector extends Application {
     alert.setHeaderText(null);
     alert.setContentText(message);
 
-    // Apply CSS to alert
-    DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.getStylesheets().add(getClass().getResource("/game-style/game-styles.css").toExternalForm());
-    dialogPane.getStyleClass().add("dialog-pane");
+    // Apply CSS styling to alert if possible
+    alert.getDialogPane().getStylesheets().addAll(
+        primaryStage.getScene().getStylesheets()
+    );
 
     alert.showAndWait();
-  }
-
-  /**
-   * <p>Applies entrance animation to the content.</p>
-   * <p>Creates a smooth fade-in and scale effect when the screen loads.</p>
-   *
-   * @param node The node to animate
-   */
-  private void applyEntranceAnimation(javafx.scene.Node node) {
-    node.setOpacity(0);
-    node.setScaleX(0.8);
-    node.setScaleY(0.8);
-
-    FadeTransition fadeIn = new FadeTransition(Duration.millis(500), node);
-    fadeIn.setFromValue(0);
-    fadeIn.setToValue(1);
-
-    ScaleTransition scaleIn = new ScaleTransition(Duration.millis(500), node);
-    scaleIn.setFromX(0.8);
-    scaleIn.setFromY(0.8);
-    scaleIn.setToX(1);
-    scaleIn.setToY(1);
-
-    ParallelTransition entrance = new ParallelTransition(fadeIn, scaleIn);
-    entrance.play();
   }
 
   public static void main(String[] args) {
