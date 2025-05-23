@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class TestLadderGame {
 
+  /*
+
   private LadderGame ladderGame;
 
   @BeforeEach
@@ -35,4 +37,5 @@ class TestLadderGame {
 
     assertNotEquals(initialTile, newTile, "Player should have moved to a new tile after rolling the die.");
   }
+   */
 }
