@@ -288,7 +288,6 @@ public class BoardView extends StackPane {
     overlayPane.getChildren().clear();
     tileCircles.clear();
     specialTileIds.clear();
-
     tileXPercentages.clear();
     tileYPercentages.clear();
 
