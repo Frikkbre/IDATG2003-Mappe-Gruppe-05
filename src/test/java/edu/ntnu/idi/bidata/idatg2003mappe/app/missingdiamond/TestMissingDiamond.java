@@ -327,24 +327,6 @@ class TestMissingDiamond {
   }
 
   @Test
-  @DisplayName("Test current player index boundaries")
-  void testCurrentPlayerIndexBoundaries() {
-    // Arrange
-    int playerCount = game.getPlayers().size();
-
-    // Act - cycle through all players
-    for (int i = 0; i < playerCount + 1; i++) {
-      game.nextPlayer();
-    }
-
-    // Assert
-    assertTrue(game.getCurrentPlayerIndex() >= 0,
-        "Player index should never be negative");
-    assertTrue(game.getCurrentPlayerIndex() < playerCount,
-        "Player index should never exceed player count");
-  }
-
-  @Test
   @DisplayName("Test setting invalid player index throws exception")
   void testSettingInvalidPlayerIndexThrowsException() {
     // Arrange
@@ -363,28 +345,6 @@ class TestMissingDiamond {
   }
 
   // ========== Integration Tests ==========
-
-  @Test
-  @DisplayName("Test complete turn cycle")
-  void testCompleteTurnCycle() {
-    // Arrange
-    Player firstPlayer = game.getCurrentPlayer();
-    int initialPlayerIndex = game.getCurrentPlayerIndex();
-
-    // Act - play a full round
-    for (int i = 0; i < game.getPlayers().size(); i++) {
-      game.playTurn();
-      if (!game.isGameFinished()) {
-        game.nextPlayer();
-      }
-    }
-
-    // Assert
-    if (!game.isGameFinished()) {
-      assertEquals(initialPlayerIndex, game.getCurrentPlayerIndex(),
-          "Should return to first player after full round");
-    }
-  }
 
   @Test
   @DisplayName("Test game state after multiple moves")

@@ -25,9 +25,9 @@ public class PriceList {
    * <p>Constructor for the PriceList class.</p>
    * <p>Initializes prices for different services with default values:</p>
    * <ul>
-   *   <li>RedGem: 1000</li>
-   *   <li>GreenGem: 4000</li>
-   *   <li>YellowGem: 2000</li>
+   *   <li>RedGem: 100</li>
+   *   <li>GreenGem: 300</li>
+   *   <li>YellowGem: 500</li>
    *   <li>Visa: 1500</li>
    *   <li>TokenPurchase: 100</li>
    *   <li>TokenFlip: 300</li>

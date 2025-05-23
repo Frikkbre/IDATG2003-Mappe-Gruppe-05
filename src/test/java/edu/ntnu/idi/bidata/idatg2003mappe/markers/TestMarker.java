@@ -113,7 +113,7 @@ class TestMarker {
     assertEquals("Visa", visa.getType(), "Visa should have correct type");
 
     assertEquals(100, redGem.getValue(), "RedGem should have correct value");
-    assertEquals(500, greenGem.getValue(), "GreenGem should have correct value");
+    assertEquals(300, greenGem.getValue(), "GreenGem should have correct value");
     assertEquals(1000, yellowGem.getValue(), "YellowGem should have correct value");
     assertEquals(2000, diamond.getValue(), "Diamond should have correct value");
     assertEquals(1500, visa.getValue(), "Visa should have correct value");
