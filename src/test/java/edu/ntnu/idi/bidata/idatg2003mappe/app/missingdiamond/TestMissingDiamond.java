@@ -20,8 +20,6 @@ import java.util.Set;
 /**
  * Test class for the Missing Diamond game following AAA pattern.
  * Tests core game mechanics, player movement, token interactions, and win conditions.
- *
- * @author Test Suite
  * @version 1.0.0
  */
 class TestMissingDiamond {
