@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.0.2
+ * @version 0.0.3
  * @since 21.05.2025
  */
 public class GameSaveLoadHandler {
@@ -67,25 +67,38 @@ public class GameSaveLoadHandler {
 
         // Save to CSV
         File csvFile = new File(fullPath);
-        FileWriter outputFile = new FileWriter(csvFile);
-        CSVWriter writer = new CSVWriter(outputFile);
+        try (FileWriter outputFile = new FileWriter(csvFile);
+             CSVWriter writer = new CSVWriter(outputFile)) {
 
-        // Write header
-        String[] header = {"Player Name", "ID", "Color", "Position"};
-        writer.writeNext(header);
+          // Write header
+          String[] header = {"Player Name", "ID", "Color", "Position"};
+          writer.writeNext(header);
 
-        playersFromController.forEach(player -> {
-          logger.info("Saving player: " + player.getName() + ", ID: " + player.getID() +
-              ", Color: " + player.getColor() + ", Position: " + player.getCurrentTile().getTileId());
-        });
+          // FIX: Actually write the player data to the CSV file
+          for (Player player : playersFromController) {
+            String[] playerData = {
+                player.getName(),
+                String.valueOf(player.getID()),
+                player.getColor(),
+                String.valueOf(player.getCurrentTile().getTileId())
+            };
+            writer.writeNext(playerData);
 
-        writer.close();
+            logger.info("Saving player: " + player.getName() + ", ID: " + player.getID() +
+                ", Color: " + player.getColor() + ", Position: " + player.getCurrentTile().getTileId());
+          }
+
+          // CSVWriter will be automatically closed by try-with-resources
+        }
 
         showAlert(Alert.AlertType.INFORMATION, "Game Saved", "Game Saved Successfully",
-            "Your game has been saved to LastSave.csv");
+            "Your game has been saved to LastSave.csv with " + playersFromController.size() + " players.");
+
       } catch (Exception ex) {
         showAlert(Alert.AlertType.ERROR, "Error", "Save Error",
             "Could not save the game: " + ex.getMessage());
+        logger.severe("Error saving game: " + ex.getMessage());
+        ex.printStackTrace();
       }
     };
   }
@@ -122,53 +135,56 @@ public class GameSaveLoadHandler {
 
     try {
       // Read the CSV file
-      CSVReader reader = new CSVReader(new FileReader(csvFile));
-      logger.info("Loading game from: " + fullPath);
+      try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
+        logger.info("Loading game from: " + fullPath);
 
-      String[] header = reader.readNext(); // Skip header
-      logger.info("Header: " + String.join(", ", header));
-
-      // Create GameState
-      GameState gameState = new GameState();
-      gameState.setRandomLadders(randomLadders);
-      gameState.setCurrentPlayerIndex(0); // Default to first player's turn
-
-      // Read player data
-      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
-      String[] record;
-      while ((record = reader.readNext()) != null) {
-        if (record.length >= 4) {
-          String playerName = record[0];
-          int playerId = Integer.parseInt(record[1]);
-          int position = Integer.parseInt(record[3]);
-
-          playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+        String[] header = reader.readNext(); // Skip header
+        if (header != null) {
+          logger.info("Header: " + String.join(", ", header));
         }
+
+        // Create GameState
+        GameState gameState = new GameState();
+        gameState.setRandomLadders(randomLadders);
+        gameState.setCurrentPlayerIndex(0); // Default to first player's turn
+
+        // Read player data
+        List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
+        String[] record;
+        while ((record = reader.readNext()) != null) {
+          if (record.length >= 4) {
+            String playerName = record[0];
+            int playerId = Integer.parseInt(record[1]);
+            int position = Integer.parseInt(record[3]);
+
+            playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+            logger.info("Loaded player: " + playerName + " at position " + position);
+          }
+        }
+
+        gameState.setPlayerPositions(playerPositions);
+
+        // Apply the game state to the existing controller
+        controller.applyGameState(gameState);
+
+        // Show success alert
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Loaded");
+        alert.setHeaderText("Game Loaded Successfully");
+        alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv with " +
+            playerPositions.size() + " players.");
+        alert.showAndWait();
+
+        ladderGameGUI.updateBoardUI();
       }
-      reader.close();
-
-      gameState.setPlayerPositions(playerPositions);
-
-      // Get the controller from NavBar instead of creating a new one
-      NavBar navBar = ladderGameGUI.navBar; // Assuming navBar is accessible
-
-      // Apply the game state to the existing controller
-      controller.applyGameState(gameState);
-
-      // Show success alert
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Loaded");
-      alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv");
-      alert.showAndWait();
-
-      ladderGameGUI.updateBoardUI();
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
       alert.setHeaderText("Load Error");
       alert.setContentText("Could not load the game: " + ex.getMessage());
       alert.showAndWait();
+      logger.severe("Error loading ladder game: " + ex.getMessage());
+      ex.printStackTrace();
     }
   }
 
@@ -203,48 +219,54 @@ public class GameSaveLoadHandler {
 
     try {
       // Read the CSV file
-      CSVReader reader = new CSVReader(new FileReader(csvFile));
-
-      String[] header = reader.readNext(); // Skip header
-
-      // Create GameState
-      GameState gameState = new GameState();
-      gameState.setCurrentPlayerIndex(0); // Default to first player's turn
-
-      // Read player data
-      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
-      String[] record;
-      while ((record = reader.readNext()) != null) {
-        if (record.length >= 4) {
-          String playerName = record[0];
-          int playerId = Integer.parseInt(record[1]);
-          int position = Integer.parseInt(record[3]);
-
-          playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+      try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
+        String[] header = reader.readNext(); // Skip header
+        if (header != null) {
+          logger.info("Header: " + String.join(", ", header));
         }
+
+        // Create GameState
+        GameState gameState = new GameState();
+        gameState.setCurrentPlayerIndex(0); // Default to first player's turn
+
+        // Read player data
+        List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
+        String[] record;
+        while ((record = reader.readNext()) != null) {
+          if (record.length >= 4) {
+            String playerName = record[0];
+            int playerId = Integer.parseInt(record[1]);
+            int position = Integer.parseInt(record[3]);
+
+            playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+            logger.info("Loaded player: " + playerName + " at position " + position);
+          }
+        }
+
+        gameState.setPlayerPositions(playerPositions);
+
+        // Apply the game state to the existing controller
+        controller.applyGameState(gameState);
+
+        // Show success alert
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Loaded");
+        alert.setHeaderText("Game Loaded Successfully");
+        alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv with " +
+            playerPositions.size() + " players.");
+        alert.showAndWait();
+
+        // Update the UI
+        missingDiamondGUI.updateBoardUI();
       }
-      reader.close();
-
-      gameState.setPlayerPositions(playerPositions);
-
-      // Apply the game state to the existing controller
-      controller.applyGameState(gameState);
-
-      // Show success alert
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Loaded");
-      alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv");
-      alert.showAndWait();
-
-      // Update the UI
-      missingDiamondGUI.updateBoardUI();
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
       alert.setHeaderText("Load Error");
       alert.setContentText("Could not load the game: " + ex.getMessage());
       alert.showAndWait();
+      logger.severe("Error loading missing diamond game: " + ex.getMessage());
+      ex.printStackTrace();
     }
   }
 
