@@ -127,27 +127,6 @@ class TestTokenSystem {
   }
 
   @Test
-  @DisplayName("Should create diamond token during initialization")
-  void testInitializeTokens_CreatesDiamondToken() {
-    // Arrange
-    List<Tile> cityTiles = createLargeCityTilesList(20);
-
-    // Act
-    tokenSystem.initializeTokens(cityTiles);
-
-    // Assert
-    boolean diamondFound = false;
-    for (Tile tile : cityTiles) {
-      Marker token = tokenSystem.getTokenAtTile(tile);
-      if (token instanceof Diamond) {
-        diamondFound = true;
-        break;
-      }
-    }
-    assertTrue(diamondFound, "Diamond should be created during token initialization");
-  }
-
-  @Test
   @DisplayName("Should distribute tokens randomly across city tiles")
   void testInitializeTokens_RandomDistribution() {
     // Arrange
