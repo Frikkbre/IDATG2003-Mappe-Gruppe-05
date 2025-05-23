@@ -29,17 +29,35 @@ public class BoardBranching extends Board {
     this.boardName = boardName;
   }
 
+  /**
+   * Gets the name of this board.
+   *
+   * @return the board name
+   */
+  public String getBoardName() {
+    return boardName;
+  }
+
   @Override
   public void addTileToBoard(Tile tile) {
+    if (tile == null) {
+      throw new IllegalArgumentException("Tile cannot be null");
+    }
     super.addTileToBoard(tile);
     tilesById.put(tile.getTileId(), tile);
   }
 
   public Tile getTileById(int tileId) {
+    if (!tilesById.containsKey(tileId)) {
+      throw new IllegalArgumentException("Tile with ID " + tileId + " does not exist");
+    }
     return tilesById.get(tileId);
   }
 
   public void connectTiles(Tile tile1, Tile tile2) {
+    if (tile1 == null || tile2 == null) {
+      throw new IllegalArgumentException("Tiles cannot be null");
+    }
     tile1.addTileToTileBranch(tile2);
     tile2.addTileToTileBranch(tile1);
   }
