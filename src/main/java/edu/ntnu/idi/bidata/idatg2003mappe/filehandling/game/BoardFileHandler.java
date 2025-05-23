@@ -4,10 +4,8 @@ import com.google.gson.*;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.JsonParsingException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,8 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class is responsible for saving and loading game states to/from JSON files.
- * It implements the FileReader and FileWriter interfaces.
+ * <p>This class is responsible for saving and loading game states to/from JSON files.</p>
+ * <p>It implements the FileReader and FileWriter interfaces to provide standardized
+ * file handling capabilities for game states.</p>
+ * <p>The class provides functionality for:</p>
+ * <ul>
+ *   <li>Serializing game state objects to JSON format</li>
+ *   <li>Deserializing JSON data back into game state objects</li>
+ *   <li>Saving game states to default or custom locations</li>
+ *   <li>Loading game states from default or custom locations</li>
+ * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -25,15 +31,20 @@ import java.util.List;
 public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileReader<GameState>,
     edu.ntnu.idi.bidata.idatg2003mappe.filehandling.FileWriter<GameState> {
 
-  private static final String DEFAULT_SAVE_DIR = "src/main/resources/saves";
-  private static final String DEFAULT_SAVE_FILE = "last_save.json";
-
   /**
-   * Writes a game state to a file in JSON format.
+   * <p>Writes a game state to a file in JSON format.</p>
+   * <p>The method serializes the game state object into a JSON structure and
+   * writes it to the specified file path. It includes:</p>
+   * <ul>
+   *   <li>Current player index</li>
+   *   <li>Board configuration details</li>
+   *   <li>Player positions and states</li>
+   *   <li>Timestamp of when the save was created</li>
+   * </ul>
    *
-   * @param gameState The game state to write.
-   * @param filePath  The path to the file.
-   * @throws FileHandlingException If an error occurs while writing the file.
+   * @param gameState The {@link GameState} object to write
+   * @param filePath  The path to the output file
+   * @throws FileHandlingException If an error occurs while writing the file
    */
   @Override
   public void write(GameState gameState, String filePath) throws FileHandlingException {
@@ -78,11 +89,21 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
   }
 
   /**
-   * Reads a game state from a JSON file.
+   * <p>Reads a game state from a JSON file.</p>
+   * <p>The method parses a JSON file and constructs a GameState object from its contents.
+   * It performs validation to ensure all required fields are present in the JSON data.</p>
+   * <p>The following data is extracted:</p>
+   * <ul>
+   *   <li>Current player index</li>
+   *   <li>Board configuration details (random ladders flag)</li>
+   *   <li>Player positions and states</li>
+   *   <li>Save timestamp if available</li>
+   * </ul>
    *
-   * @param filePath The path to the file.
-   * @return The game state read from the file.
-   * @throws FileHandlingException If an error occurs while reading the file.
+   * @param filePath The path to the input file
+   * @return A fully constructed {@link GameState} object
+   * @throws FileHandlingException If an error occurs while reading the file
+   * @throws JsonParsingException If the JSON content is invalid or missing required fields
    */
   @Override
   public GameState read(String filePath) throws FileHandlingException {
@@ -134,30 +155,4 @@ public class BoardFileHandler implements edu.ntnu.idi.bidata.idatg2003mappe.file
     }
   }
 
-  /**
-   * Saves a game state to the default location (src/main/resources/saves/last_save.json)
-   *
-   * @param gameState The game state to save.
-   * @throws FileHandlingException If an error occurs while saving the file.
-   */
-  public void saveToDefaultLocation(GameState gameState) throws FileHandlingException {
-    Path saveDir = Paths.get(DEFAULT_SAVE_DIR);
-    if (!Files.exists(saveDir)) {
-      try {
-        Files.createDirectories(saveDir);
-      } catch (IOException e) {
-        throw new FileHandlingException("Failed to create save directory", e);
-      }
-    }
-    write(gameState, DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
-  }
-
-  public GameState loadFromDefaultLocation() throws FileHandlingException {
-    return read(DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
-  }
-
-  public boolean defaultSaveExists() {
-    File file = new File(DEFAULT_SAVE_DIR + "/" + DEFAULT_SAVE_FILE);
-    return file.exists() && file.isFile();
-  }
 }
