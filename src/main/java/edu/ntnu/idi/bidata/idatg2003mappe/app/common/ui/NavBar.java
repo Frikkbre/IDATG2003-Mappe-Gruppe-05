@@ -17,6 +17,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * <p>Navigation bar component for the board game application.</p>
+ * <p>Provides menu options for saving/loading games, navigation between screens,
+ * and game-specific functionality.</p>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.2
+ * @since 21.05.2025
+ */
 public class NavBar {
   BoardGameSelector boardGameSelector = new BoardGameSelector();
   private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
@@ -28,25 +37,30 @@ public class NavBar {
   private MapDesignerTool mapDesignerTool;
 
   /**
-   * returns the stage of the NavBar
+   * <p>Returns the stage associated with this NavBar.</p>
+   * <p>The stage is used for navigation between different scenes.</p>
    *
-   * @return stage
+   * @return The JavaFX Stage object
    */
   public Stage getStage() {
     return stage;
   }
 
   /**
-   * Set the stage for this NavBar
+   * <p>Sets the stage for this NavBar.</p>
+   * <p>This method associates a JavaFX Stage with this navigation bar
+   * to enable scene transitions.</p>
    *
-   * @param stage The stage to set
+   * @param stage The JavaFX Stage to associate with this NavBar
    */
   public void setStage(Stage stage) {
     this.stage = stage;
   }
 
   /**
-   * Set the game controller for this NavBar
+   * <p>Sets the game controller for this NavBar.</p>
+   * <p>This method associates either a LadderGameController or
+   * MissingDiamondController with this NavBar to enable game-specific actions.</p>
    *
    * @param controller The game controller (LadderGameController or MissingDiamondController)
    */
@@ -55,14 +69,22 @@ public class NavBar {
   }
 
   /**
-   * Set the missing diamond GUI instance
+   * <p>Sets the MissingDiamondGUI instance.</p>
+   * <p>This method associates a MissingDiamondGUI instance with this NavBar
+   * to access game-specific UI elements.</p>
    *
-   * @param gui The MissingDiamondGUI instance
+   * @param gui The MissingDiamondGUI instance to associate with this NavBar
    */
   public void setMissingDiamondGUI(MissingDiamondGUI gui) {
     this.missingDiamondGUI = gui;
   }
 
+  /**
+   * <p>Creates the menu bar with all navigation options.</p>
+   * <p>Builds a JavaFX MenuBar with File menu and game-specific menus based on the current controller.</p>
+   *
+   * @return The configured JavaFX MenuBar
+   */
   public MenuBar createMenuBar() {
 
     MenuItem quickSaveMenuItem = getMenuItem();
@@ -81,32 +103,6 @@ public class NavBar {
         closeMenuItem
     );
 
-    Menu modeMenu = new Menu("Mode");
-    MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
-    randomLadders.setOnAction(event -> {
-      if (gameController instanceof LadderGameController ladderGameController) {
-        boolean newRandomState = !ladderGameController.isRandomLadders();
-
-        try {
-          // Create new LadderGameGUI with toggled random state
-          LadderGameGUI newLadderGUI = new LadderGameGUI();
-          newLadderGUI.randomLadders = newRandomState;
-          newLadderGUI.start(getStage());
-
-          Alert alert = new Alert(Alert.AlertType.INFORMATION);
-          alert.setTitle("Mode Changed");
-          alert.setHeaderText("Random Ladders Mode");
-          alert.setContentText("Random ladders mode is now " + (newRandomState ? "enabled" : "disabled") +
-              ". Game has been restarted.");
-          alert.showAndWait();
-        } catch (Exception e) {
-          System.err.println("Error restarting ladder game: " + e.getMessage());
-        }
-      }
-    });
-
-    modeMenu.getItems().addAll(randomLadders);
-
     Menu navigateMenu = new Menu("Navigate");
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
@@ -124,11 +120,40 @@ public class NavBar {
 
     MenuBar menuBar = new MenuBar();
 
-    if (gameController instanceof MissingDiamondController && missingDiamondGUI != null) {
-      Menu developerMenu = missingDiamondGUI.getMapDesignerManager().getMapDesignerTool().createDesignerMenu();
-      menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu, developerMenu);
-    } else {
+    // Only add Mode menu for Ladder Game
+    if (gameController instanceof LadderGameController) {
+      Menu modeMenu = new Menu("Mode");
+      MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
+      randomLadders.setOnAction(event -> {
+        LadderGameController ladderGameController = (LadderGameController) gameController;
+        boolean newRandomState = !ladderGameController.isRandomLadders();
+
+        try {
+          // Create new LadderGameGUI with toggled random state
+          LadderGameGUI newLadderGUI = new LadderGameGUI();
+          newLadderGUI.randomLadders = newRandomState;
+          newLadderGUI.start(getStage());
+
+          Alert alert = new Alert(Alert.AlertType.INFORMATION);
+          alert.setTitle("Mode Changed");
+          alert.setHeaderText("Random Ladders Mode");
+          alert.setContentText("Random ladders mode is now " + (newRandomState ? "enabled" : "disabled") +
+              ". Game has been restarted.");
+          alert.showAndWait();
+        } catch (Exception e) {
+          System.err.println("Error restarting ladder game: " + e.getMessage());
+        }
+      });
+
+      modeMenu.getItems().addAll(randomLadders);
       menuBar.getMenus().addAll(fileMenu, modeMenu, navigateMenu);
+    } else if (gameController instanceof MissingDiamondController && missingDiamondGUI != null) {
+      // Missing Diamond - no Mode menu, but add Developer menu
+      Menu developerMenu = missingDiamondGUI.getMapDesignerManager().getMapDesignerTool().createDesignerMenu();
+      menuBar.getMenus().addAll(fileMenu, navigateMenu, developerMenu);
+    } else {
+      // Default case - no Mode menu
+      menuBar.getMenus().addAll(fileMenu, navigateMenu);
     }
 
     menuBar.setStyle("-fx-background-color: #57B9FF;");
@@ -136,6 +161,12 @@ public class NavBar {
     return menuBar;
   }
 
+  /**
+   * <p>Creates a menu item for the quick save functionality.</p>
+   * <p>The created menu item triggers the game save process when clicked.</p>
+   *
+   * @return A MenuItem configured for quick save functionality
+   */
   @NotNull
   private MenuItem getMenuItem() {
     MenuItem quickSaveMenuItem = new MenuItem("Quick Save");
@@ -156,9 +187,10 @@ public class NavBar {
   }
 
   /**
-   * Determines the game type and loads the last save accordingly
+   * <p>Creates an event handler that loads the appropriate saved game.</p>
+   * <p>Determines the game type from the current controller and loads the last save accordingly.</p>
    *
-   * @return EventHandler for loading the last save
+   * @return EventHandler for loading the last saved game
    */
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
     return event -> {
@@ -167,14 +199,15 @@ public class NavBar {
         gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController,
             ((LadderGameController) gameController).isRandomLadders());
       } else if (gameController instanceof MissingDiamondController) {
-        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI; // Add this field to NavBar
+        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI;
         gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, (MissingDiamondController) gameController);
       }
     };
   }
 
   /**
-   * Closes the application
+   * <p>Creates an event handler that closes the application.</p>
+   * <p>When triggered, this handler will terminate the application completely.</p>
    *
    * @return EventHandler for closing the application
    */
@@ -183,9 +216,10 @@ public class NavBar {
   }
 
   /**
-   * Gets the list of players from the current game controller
+   * <p>Retrieves the list of players from the current game controller.</p>
+   * <p>This method determines the controller type and extracts the player list accordingly.</p>
    *
-   * @return List of players or null if no controller is set
+   * @return List of Player objects from the current game, or an empty list if no controller is set
    */
   private List<Player> getPlayersFromController() {
     if (gameController instanceof LadderGameController ladderGameController) {

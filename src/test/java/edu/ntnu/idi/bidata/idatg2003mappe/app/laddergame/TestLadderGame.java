@@ -21,12 +21,15 @@ import java.util.List;
 
 class TestLadderGame {
 
+  private LadderGame ladderGame;
+
   private LadderGame classicLadderGame;
   private LadderGame randomLadderGame;
   private File tempPlayerFile;
 
   @TempDir
   Path tempDir;
+
 
   @BeforeEach
   void setUp() throws IOException {
@@ -311,4 +314,9 @@ class TestLadderGame {
     assertNull(board.getTileByIdLinear(101), "Tile 101 should not exist");
     assertNull(board.getTileByIdLinear(-1), "Negative tile ID should return null");
   }
+
+
 }
+
+}
+

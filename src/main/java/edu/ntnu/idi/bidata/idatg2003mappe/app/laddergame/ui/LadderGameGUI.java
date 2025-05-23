@@ -3,59 +3,68 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.ui;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.common.ui.NavBar;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.laddergame.controller.LadderGameController;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.BoardFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameSaveLoadHandler;
-import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.game.GameState;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Class for the LadderGameGUI.
- * This class presents the game in a graphical user interface.
- * Also handles game logic.
+ * Enhanced Ladder Game GUI with player circles overlay.
+ * This class presents the game in a graphical user interface using circles
+ * to represent players similar to the Missing Diamond game.
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.3
+ * @version 0.4
  * @since 20.02.2025
  */
 public class LadderGameGUI extends Application {
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
-  private TextArea scoreBoard; // Declare scoreBoard as a class-level variable
+  private TextArea scoreBoard;
   public boolean randomLadders = false;
   public NavBar navBar;
   private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+
+  // Player circle management
+  private Pane playerOverlay;
+  private final Map<Player, Circle> playerCircles = new HashMap<>();
+  private final Map<Integer, TextField> tileFields = new HashMap<>();
+
+  // Constants for circle appearance
+  private static final double CIRCLE_RADIUS = 15.0;
+  private static final double TILE_WIDTH = 80.0;
+  private static final double TILE_HEIGHT = 80.0;
 
   /**
    * Start the game.
    *
    * @param primaryStage the primary stage
    */
-
   @Override
   public void start(Stage primaryStage) {
     gameController = new LadderGameController(randomLadders);
 
     BorderPane borderPane = new BorderPane();
-    borderPane.setPrefSize(1440, 840); // cubed window
+    borderPane.setPrefSize(1440, 840);
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
@@ -66,7 +75,10 @@ public class LadderGameGUI extends Application {
 
     HBox centerBox = new HBox(10);
     centerBox.setAlignment(Pos.CENTER);
-    boardGrid = createBoardGrid();
+
+    // Create the board with overlay for player circles
+    StackPane boardContainer = createBoardWithOverlay();
+
     Button rollDieButton = new Button("Roll die");
     rollDieButton.setOnAction(e -> {
       String message = gameController.playTurn();
@@ -82,13 +94,13 @@ public class LadderGameGUI extends Application {
     gameLog.setEditable(false);
     gameLog.setPrefHeight(100);
 
-    scoreBoard = createScoreBoard(); // Initialize scoreBoard
+    scoreBoard = createScoreBoard();
 
     VBox leftBox = new VBox(10);
     leftBox.setAlignment(Pos.CENTER_LEFT);
     leftBox.getChildren().addAll(scoreBoard, rollDieButton, gameLog);
 
-    centerBox.getChildren().addAll(leftBox, boardGrid);
+    centerBox.getChildren().addAll(leftBox, boardContainer);
     borderPane.setCenter(centerBox);
 
     Scene scene = new Scene(borderPane);
@@ -96,11 +108,34 @@ public class LadderGameGUI extends Application {
     primaryStage.setTitle("Ladder game");
     primaryStage.show();
 
+    // Initialize player circles and update the board
+    initializePlayerCircles();
     updateBoardUI();
   }
 
   /**
-   * Create the board grid.
+   * Creates the board with an overlay for player circles.
+   *
+   * @return StackPane containing the board and player overlay
+   */
+  private StackPane createBoardWithOverlay() {
+    StackPane container = new StackPane();
+
+    // Create the game board
+    boardGrid = createBoardGrid();
+
+    // Create overlay for player circles
+    playerOverlay = new Pane();
+    playerOverlay.setPickOnBounds(false); // Allow clicks to pass through to tiles
+
+    // Add both to container
+    container.getChildren().addAll(boardGrid, playerOverlay);
+
+    return container;
+  }
+
+  /**
+   * Create the board grid with correct tile numbering (1 at bottom left).
    *
    * @return the board grid
    */
@@ -112,15 +147,25 @@ public class LadderGameGUI extends Application {
     for (int row = 0; row <= 9; row++) {
       if (leftToRight) {
         for (int col = 0; col < 10; col++) {
-          int tileNumber = (9 - row) * 10 + col + 1;
+          // Fixed: Use row instead of (9 - row) for tile numbering
+          int tileNumber = row * 10 + col + 1;
           TextField tile = createTile(tileNumber);
+          // Keep (9 - row) for grid placement to flip visual representation
           grid.add(tile, col, 9 - row);
+
+          // Store tile reference for position calculations
+          tileFields.put(tileNumber, tile);
         }
       } else {
         for (int col = 9; col >= 0; col--) {
-          int tileNumber = (9 - row) * 10 + (9 - col) + 1;
+          // Fixed: Use row instead of (9 - row) for tile numbering
+          int tileNumber = row * 10 + (9 - col) + 1;
           TextField tile = createTile(tileNumber);
+          // Keep (9 - row) for grid placement to flip visual representation
           grid.add(tile, col, 9 - row);
+
+          // Store tile reference for position calculations
+          tileFields.put(tileNumber, tile);
         }
       }
       leftToRight = !leftToRight;
@@ -134,181 +179,129 @@ public class LadderGameGUI extends Application {
    * @param tileNumber the number of the tile
    * @return the tile
    */
-
   private TextField createTile(int tileNumber) {
     TextField tile = new TextField("" + tileNumber);
-    tile.setPrefWidth(80);
-    tile.setPrefHeight(80);
+    tile.setPrefWidth(TILE_WIDTH);
+    tile.setPrefHeight(TILE_HEIGHT);
     tile.setEditable(false);
     tile.setAlignment(Pos.CENTER);
 
-    // Check if the tile has a ladder
+    // Check if the tile has a ladder and style accordingly
     Tile currentTile = gameController.getTileByIdLinear(tileNumber);
     if (currentTile != null && currentTile.getDestinationTile() != null) {
       int destinationTileId = currentTile.getDestinationTile().getTileId();
 
-      //Positive ladder //TODO: This part is redundant. Can be removed after testing.
       if (destinationTileId > tileNumber) {
-        tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold;");
+        // Positive ladder (going up)
+        tile.setStyle("-fx-background-color: lightgreen; -fx-font-weight: bold;");
       } else {
-        //Negative ladder
-        tile.setStyle("-fx-background-color: red; -fx-font-weight: bold;");
+        // Negative ladder (going down - snake)
+        tile.setStyle("-fx-background-color: lightcoral; -fx-font-weight: bold;");
       }
 
       tile.setText(tileNumber + " → " + destinationTileId);
+    } else {
+      // Regular tile styling
+      tile.setStyle("-fx-background-color: white; -fx-border-color: black;");
     }
+
     return tile;
   }
 
   /**
-   * Quick save the game to the default location.
+   * Initialize player circles for all players.
    */
-  private void quickSaveGame() {
-    try {
-      BoardFileHandler fileHandler = new BoardFileHandler();
-      GameState gameState = gameController.createGameState();
-      fileHandler.saveToDefaultLocation(gameState);
+  private void initializePlayerCircles() {
+    List<Player> players = gameController.getPlayers();
 
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Saved");
-      alert.setHeaderText("Game Saved Successfully");
-      alert.setContentText("Your game has been saved to the default location.");
-      alert.showAndWait();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Save Error");
-      alert.setContentText("Could not save the game: " + ex.getMessage());
-      alert.showAndWait();
+    for (Player player : players) {
+      Circle playerCircle = createPlayerCircle(player);
+      playerCircles.put(player, playerCircle);
+      playerOverlay.getChildren().add(playerCircle);
     }
   }
 
   /**
-   * Load the last saved game from the default location.
+   * Creates a circle for a player.
+   *
+   * @param player The player to create a circle for
+   * @return Circle representing the player
    */
-  private void loadLastSave() {
-    BoardFileHandler fileHandler = new BoardFileHandler();
+  private Circle createPlayerCircle(Player player) {
+    Circle circle = new Circle(CIRCLE_RADIUS);
 
-    if (!fileHandler.defaultSaveExists()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("No Save Found");
-      alert.setHeaderText("No Save File Found");
-      alert.setContentText("There is no saved game to load.");
-      alert.showAndWait();
+    // Set circle color based on player color
+    try {
+      Color color = Color.valueOf(player.getColor().toUpperCase());
+      circle.setFill(color);
+    } catch (IllegalArgumentException e) {
+      // Fallback to a default color if player color is invalid
+      circle.setFill(Color.BLUE);
+    }
+
+    circle.setStroke(Color.BLACK);
+    circle.setStrokeWidth(2.0);
+
+    // Add player name as tooltip or userData
+    circle.setUserData(player.getName());
+
+    return circle;
+  }
+
+  /**
+   * Calculate the screen position for a player circle based on tile position.
+   *
+   * @param tileId The ID of the tile
+   * @param playerIndex The index of the player (for offset calculation)
+   * @return array containing [x, y] coordinates
+   */
+  private double[] calculatePlayerPosition(int tileId, int playerIndex) {
+    TextField tileField = tileFields.get(tileId);
+    if (tileField == null) {
+      return new double[]{0, 0};
+    }
+
+    // Get tile position in the scene
+    double tileX = tileField.getBoundsInParent().getMinX();
+    double tileY = tileField.getBoundsInParent().getMinY();
+
+    // Calculate center of tile
+    double centerX = tileX + TILE_WIDTH / 2;
+    double centerY = tileY + TILE_HEIGHT / 2;
+
+    // Add small offset for multiple players on same tile
+    double offsetX = (playerIndex % 2) * 20 - 10; // Alternate left/right
+    double offsetY = (playerIndex / 2) * 20 - 10; // Stack vertically for more players
+
+    return new double[]{centerX + offsetX, centerY + offsetY};
+  }
+
+  /**
+   * Update the board UI with current player positions using circles.
+   */
+  public void updateBoardUI() {
+    if (boardGrid == null || playerOverlay == null) {
       return;
     }
 
-    try {
-      GameState gameState = fileHandler.loadFromDefaultLocation();
+    List<Player> players = gameController.getPlayers();
 
-      // Create a new game with the loaded state
-      this.randomLadders = gameState.isRandomLadders();
-      gameController = new LadderGameController(randomLadders);
-      gameController.applyGameState(gameState);
+    // Update each player's circle position
+    for (int i = 0; i < players.size(); i++) {
+      Player player = players.get(i);
+      Circle playerCircle = playerCircles.get(player);
 
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Game Loaded");
-      alert.setHeaderText("Game Loaded Successfully");
-      alert.setContentText("Your last saved game has been loaded.");
-      alert.showAndWait();
+      if (playerCircle != null) {
+        int tileId = player.getCurrentTile().getTileId();
+        double[] position = calculatePlayerPosition(tileId, i);
 
-      updateBoardUI();
-    } catch (FileHandlingException ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Load Error");
-      alert.setContentText("Could not load the game: " + ex.getMessage());
-      alert.showAndWait();
-    }
-  }
-
-  /**
-   * Save the current game state to a file.
-   *
-   * @param primaryStage the primary stage
-   */
-  private void saveGame(Stage primaryStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Game");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-
-    // Set initial directory to the saves folder
-    File saveDir = new File("src/main/resources/saves");
-    if (saveDir.exists() && saveDir.isDirectory()) {
-      fileChooser.setInitialDirectory(saveDir);
-    }
-
-    // Set default filename
-    fileChooser.setInitialFileName("game_save.json");
-
-    File file = fileChooser.showSaveDialog(primaryStage);
-
-    if (file != null) {
-      try {
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        GameState gameState = gameController.createGameState();
-        fileHandler.write(gameState, file.getAbsolutePath());
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Saved");
-        alert.setHeaderText("Game Saved Successfully");
-        alert.setContentText("Your game has been saved to " + file.getName());
-        alert.showAndWait();
-      } catch (FileHandlingException ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Save Error");
-        alert.setContentText("Could not save the game: " + ex.getMessage());
-        alert.showAndWait();
+        playerCircle.setCenterX(position[0]);
+        playerCircle.setCenterY(position[1]);
       }
     }
-  }
 
-  /**
-   * Load a game state from a file.
-   *
-   * @param primaryStage the primary stage
-   */
-  private void loadGame(Stage primaryStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Load Game");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-
-    // Set initial directory to the saves folder
-    File saveDir = new File("src/main/resources/saves");
-    if (saveDir.exists() && saveDir.isDirectory()) {
-      fileChooser.setInitialDirectory(saveDir);
-    }
-
-    File file = fileChooser.showOpenDialog(primaryStage);
-
-    if (file != null) {
-      try {
-        BoardFileHandler fileHandler = new BoardFileHandler();
-        GameState gameState = fileHandler.read(file.getAbsolutePath());
-
-        // Create a new game with the loaded state
-        this.randomLadders = gameState.isRandomLadders();
-        gameController = new LadderGameController(randomLadders);
-        gameController.applyGameState(gameState);
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Loaded");
-        alert.setHeaderText("Game Loaded Successfully");
-        alert.setContentText("Your game has been loaded from " + file.getName());
-        alert.showAndWait();
-
-        updateBoardUI();
-      } catch (FileHandlingException ex) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Load Error");
-        alert.setContentText("Could not load the game: " + ex.getMessage());
-        alert.showAndWait();
-      }
-    }
+    // Update scoreboard
+    updateScoreBoard(scoreBoard);
   }
 
   /**
@@ -317,95 +310,38 @@ public class LadderGameGUI extends Application {
    * @return the scoreboard
    */
   private TextArea createScoreBoard() {
-    TextArea scoreBoard = new TextArea();
-
-    String s = "Scoreboard:";
-
-    return new TextArea(s);
+    TextArea scoreBoard = new TextArea("Scoreboard:");
+    scoreBoard.setPrefWidth(200);
+    scoreBoard.setPrefHeight(130);
+    scoreBoard.setEditable(false);
+    return scoreBoard;
   }
 
   /**
    * Update the scoreBoard with the current player positions.
-   * ranks player base on position in sortedPlayerPositionList and displays this in TextArea scoreBoard.
    *
    * @param scoreBoard takes in the TextArea scoreBoard to update
    */
   private void updateScoreBoard(TextArea scoreBoard) {
-    scoreBoard.clear(); // Clear the scoreBoard
+    scoreBoard.clear();
 
-    scoreBoard.setPrefWidth(80);
-    scoreBoard.setPrefHeight(130); //TODO - Make dynamic basied on number of players
-    scoreBoard.setEditable(false);
-    //scoreBoard.setAlignment(Pos.CENTER_LEFT);
+    ArrayList<Player> sortedPlayerPositionList = new ArrayList<>(gameController.getPlayers());
+    sortedPlayerPositionList.sort((p1, p2) ->
+        p2.getCurrentTile().getTileId() - p1.getCurrentTile().getTileId());
 
-    ArrayList<Player> sortedPlayerPositionList = new ArrayList<>(gameController.getPlayers()); // adds all players to the list
-    sortedPlayerPositionList.sort((p1, p2) -> p2.getCurrentTile().getTileId() - p1.getCurrentTile().getTileId()); // sorts the list based on the players current tile
-
-
+    StringBuilder scoreBoardText = new StringBuilder("Scoreboard:\n");
     for (Player player : sortedPlayerPositionList) {
-      scoreBoard.appendText(player.getName() + ": " + player.getCurrentTile().getTileId() + "\n");
-    }
-    String s = "Scoreboard:" + "\n" + scoreBoard.getText();
-    scoreBoard.setText(s); // Update the scoreBoard
-  }
-
-  /**
-   * Update the board UI with the current player positions, changes color of tiles and calls to update the scoreboard.
-   */
-  public void updateBoardUI() {
-
-    if ((boardGrid) == null) {
-      return; // Avoid NullPointerException
+      scoreBoardText.append(player.getName())
+          .append(": Tile ")
+          .append(player.getCurrentTile().getTileId())
+          .append("\n");
     }
 
-    for (int row = 0; row < 10; row++) {
-      for (int col = 0; col < 10; col++) {
-        int tileNumber = row * 10 + col + 1;
-        TextField tile = (TextField) boardGrid.getChildren().get(row * 10 + col);
-        tile.setText("" + tileNumber);
-        tile.setStyle("-fx-background-color: white; -fx-background-insets: 0, 1 ;");
-
-        // Keep ladder indicators
-        Tile currentTile = gameController.getTileByIdLinear(tileNumber);
-        if (currentTile != null && currentTile.getDestinationTile() != null) {
-          int destinationTileId = currentTile.getDestinationTile().getTileId();
-
-          //Positive ladder
-          if (destinationTileId > tileNumber) {
-            tile.setStyle("-fx-background-color: blue; -fx-font-weight: bold; -fx-text-fill: white;");
-          } else {
-            //Negative ladder
-            tile.setStyle("-fx-background-color: red; -fx-font-weight: bold; -fx-text-fill: white;");
-          }
-
-          tile.setText(tileNumber + " → " + destinationTileId);
-        }
-      }
-    }
-
-    List<Player> players = gameController.getPlayers();
-    for (int i = 0; i < players.size(); i++) {
-      Player player = players.get(i);
-
-      String playerColor = player.getColor();
-      int tileId = player.getCurrentTile().getTileId();
-      int index = tileId - 1;
-      int row = index / 10;
-      int col = index % 10;
-      TextField tileField = (TextField) boardGrid.getChildren().get(row * 10 + col);
-      if (tileField.getText().contains("Player")) {
-        tileField.setText(tileField.getText() + ", " + (player.getID() + 1)); //+1 to account for indexation, player 1 has ID 0 and so on.
-      } else {
-        tileField.setText(player.getName());
-        tileField.setStyle("-fx-background-color: " + playerColor + ";");
-      }
-    }
-
-    updateScoreBoard(scoreBoard); // Use the class-level scoreBoard
+    scoreBoard.setText(scoreBoardText.toString());
   }
 
   private void restartGame(Stage primaryStage) {
-    start(primaryStage); // Restart the game with new mode
+    start(primaryStage);
   }
 
   public static void main(String[] args) {

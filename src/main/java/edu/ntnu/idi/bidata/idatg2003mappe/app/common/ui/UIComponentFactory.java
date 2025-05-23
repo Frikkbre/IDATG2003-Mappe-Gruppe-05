@@ -6,7 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
 /**
- * Factory class for creating UI components.
+ * <p>Factory class for creating standardized UI components.</p>
+ * <p>This utility class provides methods for creating consistently styled
+ * UI components used throughout the application.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -15,18 +17,20 @@ import javafx.scene.control.TextArea;
 public class UIComponentFactory {
 
   /**
-   * Private constructor to prevent instantiation.
+   * <p>Constructs a new UIComponentFactory instance.</p>
+   * <p>Typically, this class would be used via its static methods rather than being instantiated.</p>
    */
   public UIComponentFactory() {
-    // Private constructor to prevent instantiation
+    // Constructor is public for flexibility
   }
 
   /**
-   * Creates an action button with standard styling.
+   * <p>Creates an action button with standardized styling.</p>
+   * <p>The button will have maximum width, fixed height, and the specified action handler.</p>
    *
-   * @param text   The button text
-   * @param action The action to perform when clicked
-   * @return The created button
+   * @param text   The text to display on the button
+   * @param action The EventHandler to execute when the button is clicked
+   * @return A styled Button instance ready for use
    */
   public static Button createActionButton(String text, EventHandler<ActionEvent> action) {
     Button button = new Button(text);
@@ -37,9 +41,10 @@ public class UIComponentFactory {
   }
 
   /**
-   * Creates a standard game log text area.
+   * <p>Creates a standardized game log text area.</p>
+   * <p>The text area will have fixed height and will be read-only to display game events.</p>
    *
-   * @return The created text area
+   * @return A configured TextArea instance for game logging
    */
   public static TextArea createGameLog() {
     TextArea log = new TextArea();
@@ -47,5 +52,4 @@ public class UIComponentFactory {
     log.setEditable(false);
     return log;
   }
-
 }

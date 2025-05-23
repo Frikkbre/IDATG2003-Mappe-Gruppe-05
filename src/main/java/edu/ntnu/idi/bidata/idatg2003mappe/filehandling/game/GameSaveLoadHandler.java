@@ -30,8 +30,6 @@ public class GameSaveLoadHandler {
 
   private static final Logger logger = Logger.getLogger(GameSaveLoadHandler.class.getName());
 
-  private Object gameController;
-
   public EventHandler<ActionEvent> quickSaveGame(List<Player> playersFromController) {
     return event -> {
       try {
@@ -212,20 +210,6 @@ public class GameSaveLoadHandler {
       alert.setContentText("Could not load the game: " + ex.getMessage());
       alert.showAndWait();
     }
-  }
-
-  /**
-   * Gets the players from the game controller.
-   *
-   * @return
-   */
-  private List<Player> getPlayersFromController() {
-    if (gameController instanceof LadderGameController) {
-      return ((LadderGameController) gameController).getPlayers();
-    } else if (gameController instanceof MissingDiamondController) {
-      return ((MissingDiamondController) gameController).getPlayers();
-    }
-    return null;
   }
 
   /**

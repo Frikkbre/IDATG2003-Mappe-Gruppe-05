@@ -18,9 +18,24 @@ import javafx.scene.text.FontWeight;
 import java.util.List;
 
 /**
- * Panel containing game controls like dice rolling and game log.
- * Includes token interaction options for 300 coins guaranteed flip.
- * Skip functionality removed - End Turn serves the same purpose.
+ * <p>Panel containing game controls and game log for the Missing Diamond game.</p>
+ * <p>This panel provides players with action buttons for gameplay, including:</p>
+ * <ul>
+ *   <li>Die rolling for movement</li>
+ *   <li>Token interaction options at special locations</li>
+ *   <li>Turn management controls</li>
+ * </ul>
+ * <p>It also displays a game log that shows recent game events and player information
+ * including current player and their financial status.</p>
+ * <p>Token interaction features two options:</p>
+ * <ol>
+ *   <li>A free but risky option that requires rolling 4-6 to succeed</li>
+ *   <li>A guaranteed option that costs 300 coins</li>
+ * </ol>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.2.0
+ * @since 23.05.2025
  */
 public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;
@@ -33,6 +48,8 @@ public class GameControlPanel extends VBox {
   private final TextArea gameLog;
   private final Label playerMoneyLabel;
   private PlayerStatusPanel statusPanel;
+
+  private static final int MAX_LOG_LINES = 8;
 
   public GameControlPanel(MissingDiamondController controller, BoardView boardView) {
     super(10); // 10px spacing
@@ -126,13 +143,8 @@ public class GameControlPanel extends VBox {
         // Apply token effects
         applyTokenEffects(token, currentPlayer);
       } else {
-        logMessage("Failed to buy token flip. Transaction error occurred.");
+        logMessage("Failed to buy token flip.  Transaction error occurred.");
       }
-
-      // End the turn automatically after token interaction
-      //gameController.endTurn();
-      // Reset roll state to ensure the next player can roll
-      //gameController.resetRollState();
 
       logMessage("Turn ended.");
       boardView.updateUI();
@@ -147,21 +159,18 @@ public class GameControlPanel extends VBox {
 
     // Add an emergency end turn button
     endTurnButton = UIComponentFactory.createActionButton("End Turn", e -> {
-      gameController.endTurn();
 
-      // Force reset roll state to make sure the roll button appears for next player
+      gameController.endTurn();
       gameController.resetRollState();
 
       logMessage("Turn ended.");
-
-      // Update the UI elements in a specific order to ensure consistency
-      updateControls();  // First update controls based on new game state
-      updatePlayerInfo(); // Then update player info
-      boardView.updateUI(); // Finally update the board view
+      updateControls();
+      updatePlayerInfo();
+      boardView.updateUI();
     });
 
-    // Create game log
-    gameLog = UIComponentFactory.createGameLog();
+    // Create game log with proper settings to prevent scrolling
+    gameLog = createFixedGameLog();
 
     // Create actions section
     Label actionsLabel = new Label("Actions");
@@ -192,6 +201,70 @@ public class GameControlPanel extends VBox {
   }
 
   /**
+   * Creates a game log that fits content without scrolling.
+   */
+  private TextArea createFixedGameLog() {
+    TextArea log = new TextArea();
+    log.setPrefHeight(200); // Smaller fixed height
+    log.setMaxHeight(200);  // Prevent growing
+    log.setEditable(false);
+    log.setWrapText(true);  // Enable word wrap
+
+    // Disable scrollbars
+    log.setStyle("-fx-control-inner-background: #f4f4f4; -fx-font-family: monospace; -fx-font-size: 11px;");
+
+    return log;
+  }
+
+  /**
+   * Logs a message with automatic line management to prevent scrolling.
+   */
+  public void logMessage(String message) {
+    // If message is short enough, just add it directly
+    if (message.length() <= 45) {
+      addLogLine(message);
+      return;
+    }
+
+    // For longer messages, split at logical points (periods, exclamation marks)
+    String[] sentences = message.split("[.!]");
+    for (String sentence : sentences) {
+      sentence = sentence.trim();
+      if (sentence.length() > 0) {
+        // Add punctuation back if it was a complete sentence
+        if (!sentence.equals(sentences[sentences.length - 1]) || message.endsWith(".") || message.endsWith("!")) {
+          sentence += message.contains("!") ? "!" : ".";
+        }
+        addLogLine(sentence);
+      }
+    }
+  }
+
+  /**
+   * Adds a single line to the log, removing old lines if necessary.
+   */
+  private void addLogLine(String line) {
+    String currentText = gameLog.getText();
+    String[] lines = currentText.split("\n");
+
+    // If we have too many lines, remove the oldest ones
+    if (lines.length >= MAX_LOG_LINES) {
+      StringBuilder newText = new StringBuilder();
+      // Keep only the most recent lines (skip the oldest)
+      for (int i = 1; i < lines.length; i++) {
+        newText.append(lines[i]).append("\n");
+      }
+      newText.append(line);
+      gameLog.setText(newText.toString());
+    } else {
+      // Just append the new line
+      gameLog.appendText(line + "\n");
+    }
+
+    gameLog.setScrollTop(Double.MAX_VALUE);
+  }
+
+  /**
    * Updates the player information display.
    */
   private void updatePlayerInfo() {
@@ -212,24 +285,25 @@ public class GameControlPanel extends VBox {
   private void applyTokenEffects(Marker token, Player player) {
     Banker banker = gameController.getBanker();
 
-    logMessage("DEBUG: Token type is: '" + token.getType() + "'");
+    //logMessage("DEBUG: Token type is: '" + token.getType() + "'");
 
     switch (token.getType()) {
       case "Diamond":
         player.addInventoryItem("diamond");
-        logMessage("You found the missing diamond! Head back to start to win!");
+        logMessage("MISSING DIAMOND FOUND!");
+        logMessage("Return to start to win!");
         break;
       case "RedGem":
         banker.deposit(player, token.getValue());
-        logMessage("You found a ruby worth " + token.getValue() + "!");
+        logMessage("Ruby found: +£" + token.getValue());
         break;
       case "GreenGem":
         banker.deposit(player, token.getValue());
-        logMessage("You found an emerald worth " + token.getValue() + "!");
+        logMessage("Emerald found: +£" + token.getValue());
         break;
       case "YellowGem":
         banker.deposit(player, token.getValue());
-        logMessage("You found a topaz worth " + token.getValue() + "!");
+        logMessage("Topaz found: +£" + token.getValue());
         break;
       case "Bandit":
         int currentBalance = banker.getBalance(player);
@@ -238,10 +312,10 @@ public class GameControlPanel extends VBox {
           if (success) {
             logMessage("OH NO! A bandit stole all your money (£" + currentBalance + ")!");
           } else {
-            logMessage("A bandit appeared, but the transaction failed!");
+            logMessage("A bandit appeared, but you have no money!");
           }
         } else {
-          logMessage("A bandit appeared, but you had no money to steal!");
+          logMessage("Bandit found nothing to steal");
         }
         break;
       case "Visa":
@@ -249,10 +323,10 @@ public class GameControlPanel extends VBox {
         logMessage("You found a visa card!");
         break;
       case "Blank":
-        logMessage("This token was empty. Nothing here!");
+        logMessage("Empty token - nothing here");
         break;
       default:
-        logMessage("Nothing special here.");
+        logMessage("Nothing found");
         break;
     }
     if (statusPanel != null) {
@@ -308,10 +382,6 @@ public class GameControlPanel extends VBox {
 
       buyTokenFlipButton.setText(buttonText);
     }
-  }
-
-  public void logMessage(String message) {
-    gameLog.appendText(message + "\n");
   }
 
   public void setRollButtonDisabled(boolean disabled) {

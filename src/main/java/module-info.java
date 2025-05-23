@@ -34,6 +34,8 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   opens edu.ntnu.idi.bidata.idatg2003mappe.entity.player to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector;
   opens edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector to javafx.fxml;
+  exports edu.ntnu.idi.bidata.idatg2003mappe.app.playersetup;
+  opens edu.ntnu.idi.bidata.idatg2003mappe.app.playersetup to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model;
   opens edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model to javafx.fxml;
   exports edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.controller;

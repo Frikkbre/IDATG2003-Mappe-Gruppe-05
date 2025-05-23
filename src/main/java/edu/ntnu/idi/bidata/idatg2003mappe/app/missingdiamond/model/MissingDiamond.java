@@ -1,7 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.gamelogic.TokenSystem;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
@@ -9,13 +7,11 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.exceptionhandling.FileHandlingException;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfigFileHandler;
+import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.player.PlayerFileHandler;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardBranching;
 import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +22,8 @@ import java.util.logging.Logger;
  * Represents the Missing Diamond game.
  * This class manages the game state and rules for the Missing Diamond game.
  *
+ * //TODO ADD Javadoc for the class
+ *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.1.0
  * @since 23.05.2025
@@ -34,8 +32,6 @@ public class MissingDiamond {
 
   // Logger for logging messages
   private static final Logger logger = Logger.getLogger(MissingDiamond.class.getName());
-
-  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
   // Starting money
   private static final int STARTING_MONEY = 300;
@@ -165,7 +161,10 @@ public class MissingDiamond {
     }
 
     this.board = boardInstance;
-    this.players = readPlayersFromCSV();
+    // Identify starting tiles before reading players, as it might be needed for fallback
+    identifyStartingTiles();
+    PlayerFileHandler playerFileHandler = new PlayerFileHandler();
+    this.players = playerFileHandler.readPlayersFromCSV(this.board, this.startingTiles);
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
@@ -297,53 +296,7 @@ public class MissingDiamond {
     return players;
   }
 
-  /**
-   * Reads players from a CSV file.
-   *
-   * @return A list of players read from the file
-   */
-  protected List<Player> readPlayersFromCSV() {
-    List<Player> localPlayers = new ArrayList<>();
-
-    // Try to read from CSV file
-    File file = new File(PLAYER_DATA_FILE);
-    if (file.exists() && file.isFile()) {
-      try (CSVReader reader = new CSVReader(new FileReader(file))) {
-        String[] record;
-        reader.readNext(); // Skip header
-
-        while ((record = reader.readNext()) != null) {
-          // Expected format: Player Name, Player ID, Color, Position
-          if (record.length >= 4) {
-            String playerName = record[0];
-            int playerID = Integer.parseInt(record[1]);
-            String playerColor = record[2];
-            int position = Integer.parseInt(record[3]);
-
-            Tile playerTile = board.getTileById(position);
-            if (playerTile == null) {
-              // Fallback to start tile if position is invalid
-              playerTile = !startingTiles.isEmpty() ? startingTiles.get(0) : board.getStartTile();
-            }
-
-            Player player = new Player(playerName, playerID, playerColor, playerTile);
-            localPlayers.add(player);
-            logger.info("Player " + playerName + " added to the game.");
-          }
-        }
-      } catch (IOException | CsvValidationException e) {
-        logger.warning("Error reading player data: " + e.getMessage());
-      }
-    }
-
-    // If no players were read from file, create a default player
-    if (localPlayers.isEmpty()) {
-      Tile startTile = !startingTiles.isEmpty() ? startingTiles.get(0) : board.getStartTile();
-      localPlayers.add(new Player("Player 1", 0, "Blue", startTile));
-    }
-
-    return localPlayers;
-  }
+  // Removed readPlayersFromCSV() method from here
 
   /**
    * Identifies all city tiles on the board.
@@ -396,10 +349,7 @@ public class MissingDiamond {
     return this.specialTileIdsSet.contains(tile.getTileId());
   }
 
-  // NEW recursive helper for finding valid moves (including special tile stops)
   private void recursiveMoveFinder(Tile currentTile, int dieRoll, Set<Tile> visitedInCall, Set<Tile> resultOutput, int currentDepth) {
-    // currentDepth is the number of steps from the original startTile.
-    // original startTile is at depth 0.
 
     // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
     if (currentDepth > 0) { // Only consider tiles reached after at least one step
@@ -600,15 +550,6 @@ public class MissingDiamond {
     }
     this.currentPlayerIndex = playerIndex;
     this.currentPlayer = players.get(playerIndex);
-  }
-
-  /**
-   * Gets the index of the current player.
-   *
-   * @return The index of the current player
-   */
-  public int getCurrentPlayerIndex() {
-    return currentPlayerIndex;
   }
 
   /**
