@@ -10,6 +10,7 @@ The project is a part of the course IDATG2003 at NTNU Gjøvik Spring 2025.
 
 ## Project structure
 ```
+.
 ├── README.md
 ├── mvnw
 ├── mvnw.cmd
@@ -24,49 +25,108 @@ The project is a part of the course IDATG2003 at NTNU Gjøvik Spring 2025.
 │   │   │   │               └── idatg2003mappe
 │   │   │   │                   ├── Main.java
 │   │   │   │                   ├── app
-│   │   │   │                   │   ├── BoardGameSelector.java
-│   │   │   │                   │   ├── BoardGameSelectorController.java
-│   │   │   │                   │   ├── BoardGameSelectorGUI.java
-│   │   │   │                   │   ├── NavBar.java
+│   │   │   │                   │   ├── boardgameselector
+│   │   │   │                   │   │   └── BoardGameSelector.java
+│   │   │   │                   │   ├── common
+│   │   │   │                   │   │   ├── observer
+│   │   │   │                   │   │   │   └── BoardGameObserver.java
+│   │   │   │                   │   │   └── ui
+│   │   │   │                   │   │       ├── NavBar.java
+│   │   │   │                   │   │       ├── PlayerData.java
+│   │   │   │                   │   │       └── UIComponentFactory.java
 │   │   │   │                   │   ├── laddergame
-│   │   │   │                   │   │   ├── LadderGame.java
-│   │   │   │                   │   │   ├── LadderGameController.java
-│   │   │   │                   │   │   └── LadderGameGUI.java
+│   │   │   │                   │   │   ├── controller
+│   │   │   │                   │   │   │   └── LadderGameController.java
+│   │   │   │                   │   │   ├── model
+│   │   │   │                   │   │   │   └── LadderGame.java
+│   │   │   │                   │   │   └── ui
+│   │   │   │                   │   │       └── LadderGameGUI.java
 │   │   │   │                   │   └── missingdiamond
-│   │   │   │                   │       ├── MissingDiamond.java
-│   │   │   │                   │       └── MissingDiamondGUI.java
+│   │   │   │                   │       ├── controller
+│   │   │   │                   │       │   └── MissingDiamondController.java
+│   │   │   │                   │       ├── gamelogic
+│   │   │   │                   │       │   ├── MissingDiamondMovement.java
+│   │   │   │                   │       │   └── TokenSystem.java
+│   │   │   │                   │       ├── model
+│   │   │   │                   │       │   └── MissingDiamond.java
+│   │   │   │                   │       ├── service
+│   │   │   │                   │       │   └── MapConfigService.java
+│   │   │   │                   │       └── ui
+│   │   │   │                   │           ├── BoardView.java
+│   │   │   │                   │           ├── BoardViewUpdates.java
+│   │   │   │                   │           ├── GameControlPanel.java
+│   │   │   │                   │           ├── MapDesignerManager.java
+│   │   │   │                   │           ├── MissingDiamondGUI.java
+│   │   │   │                   │           ├── PlayerStatusPanel.java
+│   │   │   │                   │           └── TileHighlighter.java
 │   │   │   │                   ├── banker
 │   │   │   │                   │   ├── Banker.java
 │   │   │   │                   │   └── PriceList.java
 │   │   │   │                   ├── entity
-│   │   │   │                   │   ├── Action.java
-│   │   │   │                   │   ├── Die.java
-│   │   │   │                   │   └── Player.java
+│   │   │   │                   │   ├── die
+│   │   │   │                   │   │   ├── Die.java
+│   │   │   │                   │   │   └── DieObserver.java
+│   │   │   │                   │   └── player
+│   │   │   │                   │       ├── Player.java
+│   │   │   │                   │       ├── PlayerFactory.java
+│   │   │   │                   │       └── PlayerObserver.java
+│   │   │   │                   ├── filehandling
+│   │   │   │                   │   ├── FileReader.java
+│   │   │   │                   │   ├── FileWriter.java
+│   │   │   │                   │   ├── exceptionhandling
+│   │   │   │                   │   │   ├── FileHandlingException.java
+│   │   │   │                   │   │   └── JsonParsingException.java
+│   │   │   │                   │   ├── game
+│   │   │   │                   │   │   ├── BoardFileHandler.java
+│   │   │   │                   │   │   ├── GameRegistry.java
+│   │   │   │                   │   │   ├── GameSaveLoadHandler.java
+│   │   │   │                   │   │   └── GameState.java
+│   │   │   │                   │   └── map
+│   │   │   │                   │       ├── MapConfig.java
+│   │   │   │                   │       └── MapConfigFileHandler.java
 │   │   │   │                   ├── map
-│   │   │   │                   │   ├── Board.java
-│   │   │   │                   │   ├── BoardBranching.java
-│   │   │   │                   │   ├── BoardLinear.java
-│   │   │   │                   │   ├── BoardSquare.java
-│   │   │   │                   │   └── Tile.java
+│   │   │   │                   │   ├── Tile.java
+│   │   │   │                   │   └── board
+│   │   │   │                   │       ├── Board.java
+│   │   │   │                   │       ├── BoardBranching.java
+│   │   │   │                   │       ├── BoardLinear.java
+│   │   │   │                   │       └── LadderGameBoardFactory.java
 │   │   │   │                   ├── markers
 │   │   │   │                   │   ├── Bandit.java
+│   │   │   │                   │   ├── BlankMarker.java
 │   │   │   │                   │   ├── Diamond.java
 │   │   │   │                   │   ├── GreenGem.java
 │   │   │   │                   │   ├── Marker.java
 │   │   │   │                   │   ├── RedGem.java
 │   │   │   │                   │   ├── Visa.java
 │   │   │   │                   │   └── YellowGem.java
-│   │   │   │                   └── movement
-│   │   │   │                       ├── LadderAction.java
-│   │   │   │                       └── TileAction.java
+│   │   │   │                   ├── movement
+│   │   │   │                   │   ├── EffectTile.java
+│   │   │   │                   │   ├── LadderAction.java
+│   │   │   │                   │   ├── TileAction.java
+│   │   │   │                   │   └── TileActionFactory.java
+│   │   │   │                   └── util
+│   │   │   │                       ├── ConnectionManager.java
+│   │   │   │                       ├── CoordinatePoint.java
+│   │   │   │                       ├── PointManager.java
+│   │   │   │                       └── map
+│   │   │   │                           ├── MapDesignerListener.java
+│   │   │   │                           ├── MapDesignerTool.java
+│   │   │   │                           ├── MapFileHandler.java
+│   │   │   │                           └── MapUIManager.java
 │   │   │   └── module-info.java
 │   │   └── resources
-│   │       └── edu
-│   │           └── ntnu
-│   │               └── idi
-│   │                   └── bidata
-│   │                       └── idatg2003mappe
-│   │                           └── hello-view.fxml
+│   │       ├── game-style
+│   │       │   └── game-styles.css
+│   │       ├── images
+│   │       │   └── afrikan_tahti_map.jpg
+│   │       ├── maps
+│   │       │   └── missing_diamond_default.json
+│   │       └── saves
+│   │           ├── LastSave.csv
+│   │           ├── last_save.json
+│   │           └── playerData
+│   │               └── Players.csv
 │   └── test
 │       └── java
 │           └── edu
@@ -79,21 +139,30 @@ The project is a part of the course IDATG2003 at NTNU Gjøvik Spring 2025.
 │                               │   ├── laddergame
 │                               │   │   └── TestLadderGame.java
 │                               │   └── missingdiamond
-│                               │       └── TestMissingDiamond.java
+│                               │       ├── TestMissingDiamond.java
+│                               │       └── gamelogic
+│                               │           └── TestTokenSystem.java
 │                               ├── banker
 │                               │   ├── TestBanker.java
 │                               │   └── TestPriceList.java
 │                               ├── entity
 │                               │   ├── TestDie.java
-│                               │   └── TestPlayer.java
+│                               │   ├── TestPlayer.java
+│                               │   └── TestPlayerFactory.java
 │                               ├── map
-│                               │   ├── TestBoard.java
-│                               │   ├── TestBoardLinear.java
-│                               │   └── TestTile.java
+│                               │   ├── TestTile.java
+│                               │   └── board
+│                               │       ├── TestBoard.java
+│                               │       ├── TestBoardBranching.java
+│                               │       ├── TestBoardLinear.java
+│                               │       └── TestLadderGameBoardFactory.java
 │                               ├── markers
+│                               │   ├── TestDiamond.java
 │                               │   └── TestMarker.java
 │                               └── movement
-│                                   └── TestLadderAction.java
+│                                   ├── TestEffectTile.java
+│                                   ├── TestLadderAction.java
+│                                   └── TestTileActionFactory.java
 ```
 
 ## How to run the project
