@@ -57,7 +57,7 @@ public class PlayerSetupScreen extends Application {
 
       // Create container
       container = new HBox(10);
-      container.setAlignment(Pos.CENTER_LEFT);
+      container.setAlignment(Pos.CENTER);
 
       Label playerLabel = new Label("Player " + playerNumber + ":");
       playerLabel.setPrefWidth(80);
@@ -97,7 +97,12 @@ public class PlayerSetupScreen extends Application {
 
     // Create main layout
     BorderPane mainLayout = new BorderPane();
-    mainLayout.setPrefSize(600, 500);
+    mainLayout.setMinHeight(840); //16:9 aspect ratio   (1920x1080)/2
+    mainLayout.setMaxHeight(840);
+    mainLayout.setMinWidth(1440);
+    mainLayout.setMaxWidth(1440);
+    mainLayout.setPrefHeight(840);
+    mainLayout.setPrefWidth(1440);
     mainLayout.setStyle("-fx-background-color: lightblue;");
 
     // Create header
