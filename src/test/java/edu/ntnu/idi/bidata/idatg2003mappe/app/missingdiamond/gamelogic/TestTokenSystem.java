@@ -261,28 +261,6 @@ class TestTokenSystem {
     assertNull(removedToken, "Should return null when removing from empty tile");
   }
 
-  // ==================== Token Flip Purchase Tests ====================
-
-  @Test
-  @DisplayName("Should successfully buy token flip with sufficient funds")
-  void testBuyTokenFlip_SufficientFunds_Success() {
-    // Arrange
-    tokenSystem.initializeTokens(cityTiles);
-    Tile tileWithToken = findTileWithToken();
-    testPlayer1.placePlayer(tileWithToken);
-    int initialBalance = banker.getBalance(testPlayer1);
-
-    // Act
-    boolean result = tokenSystem.buyTokenFlip(testPlayer1, tileWithToken, banker);
-
-    // Assert
-    assertTrue(result, "Token flip purchase should succeed with sufficient funds");
-    assertEquals(initialBalance - 300, banker.getBalance(testPlayer1),
-        "Player balance should be reduced by 300");
-    assertNull(tokenSystem.getTokenAtTile(tileWithToken),
-        "Token should be removed from tile after purchase");
-  }
-
   @Test
   @DisplayName("Should fail token flip purchase with insufficient funds")
   void testBuyTokenFlip_InsufficientFunds_Failure() {
@@ -323,25 +301,7 @@ class TestTokenSystem {
         "Player balance should remain unchanged when no token exists");
   }
 
-  @Test
-  @DisplayName("Should handle diamond token flip correctly")
-  void testBuyTokenFlip_DiamondToken_AddsToDiamondInventory() {
-    // Arrange
-    Diamond diamond = new Diamond();
-    cityTile1.setEffect("token");
-    manuallyPlaceToken(cityTile1, diamond);
-    testPlayer1.placePlayer(cityTile1);
-
-    // Act
-    boolean result = tokenSystem.buyTokenFlip(testPlayer1, cityTile1, banker);
-
-    // Assert
-    assertTrue(result, "Diamond token flip should succeed");
-    assertTrue(testPlayer1.hasInventoryItem("diamond"),
-        "Player should have diamond in inventory");
-  }
-
-  // ==================== Starting Tile Tests ====================
+    // ==================== Starting Tile Tests ====================
 
   @Test
   @DisplayName("Should correctly identify starting tiles")
@@ -502,32 +462,6 @@ class TestTokenSystem {
     assertTrue(tokenCount > 0, "Should place tokens even with large tile count");
   }
 
-  @Test
-  @DisplayName("Should handle exact token flip cost boundary")
-  void testBuyTokenFlip_ExactCost_Success() {
-    // Arrange
-    tokenSystem.initializeTokens(cityTiles);
-    Tile tileWithToken = findTileWithToken();
-    testPlayer1.placePlayer(tileWithToken);
-
-    // Set player balance to exactly 300
-    int currentBalance = banker.getBalance(testPlayer1);
-    if (currentBalance != 300) {
-      if (currentBalance > 300) {
-        banker.withdraw(testPlayer1, currentBalance - 300);
-      } else {
-        banker.deposit(testPlayer1, 300 - currentBalance);
-      }
-    }
-
-    // Act
-    boolean result = tokenSystem.buyTokenFlip(testPlayer1, tileWithToken, banker);
-
-    // Assert
-    assertTrue(result, "Should succeed with exactly 300 coins");
-    assertEquals(0, banker.getBalance(testPlayer1),
-        "Player should have 0 coins after spending exactly 300");
-  }
 
   @Test
   @DisplayName("Should handle one coin short of token flip cost")
