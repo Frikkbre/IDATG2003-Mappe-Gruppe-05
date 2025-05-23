@@ -14,7 +14,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Handles reading and writing map configurations to/from JSON files.
+ * <p>Handles reading and writing map configurations to/from JSON files.</p>
+ * <p>This class implements the {@link FileReader} and {@link FileWriter} interfaces
+ * to provide functionality for serializing and deserializing {@link MapConfig} objects
+ * to and from JSON files.</p>
+ * <p>Key features include:</p>
+ * <ul>
+ *   <li>Reading map configurations from JSON files</li>
+ *   <li>Writing map configurations to JSON files</li>
+ *   <li>Support for default map locations</li>
+ *   <li>Pretty-printed JSON output for readability</li>
+ * </ul>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.1
+ * @since 20.05.2025
  */
 public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<MapConfig> {
 
@@ -23,6 +37,16 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
 
   private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+  /**
+   * <p>Reads a map configuration from a JSON file.</p>
+   * <p>Parses the JSON content of the specified file and deserializes it into
+   * a {@link MapConfig} object.</p>
+   *
+   * @param filePath The path to the JSON file to read
+   * @return A {@link MapConfig} object containing the deserialized map configuration
+   * @throws FileHandlingException If an error occurs while reading the file
+   * @throws JsonParsingException If the JSON content cannot be parsed correctly
+   */
   @Override
   public MapConfig read(String filePath) throws FileHandlingException {
     try {
@@ -35,6 +59,15 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
     }
   }
 
+  /**
+   * <p>Writes a map configuration to a JSON file.</p>
+   * <p>Serializes the {@link MapConfig} object to JSON format and writes it
+   * to the specified file path. Creates any necessary parent directories.</p>
+   *
+   * @param mapConfig The {@link MapConfig} object to write
+   * @param filePath The path to the output file
+   * @throws FileHandlingException If an error occurs while writing the file
+   */
   @Override
   public void write(MapConfig mapConfig, String filePath) throws FileHandlingException {
     try {
@@ -51,7 +84,13 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
   }
 
   /**
-   * Saves a map configuration to the default location.
+   * <p>Saves a map configuration to the default location.</p>
+   * <p>Writes the {@link MapConfig} object to the standard location
+   * (<code>src/main/resources/maps/missing_diamond_default.json</code>).
+   * Creates the maps directory if it doesn't exist.</p>
+   *
+   * @param mapConfig The {@link MapConfig} object to save
+   * @throws FileHandlingException If an error occurs while writing the file
    */
   public void saveToDefaultLocation(MapConfig mapConfig) throws FileHandlingException {
     Path mapsDir = Paths.get(DEFAULT_MAPS_DIR);
@@ -66,14 +105,24 @@ public class MapConfigFileHandler implements FileReader<MapConfig>, FileWriter<M
   }
 
   /**
-   * Loads the default map configuration.
+   * <p>Loads the default map configuration.</p>
+   * <p>Reads the map configuration from the standard location
+   * (<code>src/main/resources/maps/missing_diamond_default.json</code>).</p>
+   *
+   * @return A {@link MapConfig} object containing the default map configuration
+   * @throws FileHandlingException If an error occurs while reading the file
    */
   public MapConfig loadFromDefaultLocation() throws FileHandlingException {
     return read(DEFAULT_MAPS_DIR + "/" + DEFAULT_MAP_FILE);
   }
 
   /**
-   * Checks if the default map file exists.
+   * <p>Checks if the default map file exists.</p>
+   * <p>Verifies that the standard map configuration file
+   * (<code>src/main/resources/maps/missing_diamond_default.json</code>)
+   * exists and is a regular file.</p>
+   *
+   * @return <code>true</code> if the default map file exists, <code>false</code> otherwise
    */
   public boolean defaultMapExists() {
     File file = new File(DEFAULT_MAPS_DIR + "/" + DEFAULT_MAP_FILE);

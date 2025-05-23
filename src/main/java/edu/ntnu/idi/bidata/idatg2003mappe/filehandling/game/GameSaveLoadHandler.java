@@ -19,10 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * <p>Handles saving and loading game states for different board games.</p>
+ * <p>This class provides methods for saving the current game state to a CSV file
+ * and loading saved games for the Ladder Game and Missing Diamond game.</p>
+ * <p>Features include:</p>
+ * <ul>
+ *   <li>Quick save functionality to store player positions</li>
+ *   <li>Game-specific loading for different game types</li>
+ *   <li>Error handling with user-friendly alerts</li>
+ * </ul>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.2
+ * @since 21.05.2025
+ */
 public class GameSaveLoadHandler {
-  private LadderGameController ladderGameController;
-  private MissingDiamondController missingDiamondController;
-  private Player player;
 
   private static final String lastSaveDir = "src/main/resources/saves";
   private static final String lastSaveFile = "LastSave.csv";
@@ -30,6 +42,15 @@ public class GameSaveLoadHandler {
 
   private static final Logger logger = Logger.getLogger(GameSaveLoadHandler.class.getName());
 
+  /**
+   * <p>Creates an event handler for quick-saving the current game state.</p>
+   * <p>This method returns an event handler that, when triggered, saves the current
+   * game state to a CSV file. The save includes information about all players,
+   * such as their names, IDs, colors, and current positions on the board.</p>
+   *
+   * @param playersFromController The list of {@link Player} objects to save
+   * @return An {@link EventHandler} that saves the game when triggered
+   */
   public EventHandler<ActionEvent> quickSaveGame(List<Player> playersFromController) {
     return event -> {
       try {
@@ -76,12 +97,22 @@ public class GameSaveLoadHandler {
   }
 
   /**
-   * loads a saved ladder game
-   * takes in ladderGameGUI
-   * and randomLadders to determine if the game is random or not
+   * <p>Loads a saved Ladder Game.</p>
+   * <p>This method reads player data from the saved CSV file and applies it to
+   * the provided Ladder Game controller. It updates player positions and other
+   * game state information based on the saved data.</p>
+   * <p>The method performs these steps:</p>
+   * <ol>
+   *   <li>Check if the save file exists</li>
+   *   <li>Read player data from the CSV file</li>
+   *   <li>Create a {@link GameState} object with the loaded data</li>
+   *   <li>Apply the game state to the controller</li>
+   *   <li>Update the UI to reflect the loaded state</li>
+   * </ol>
    *
-   * @param ladderGameGUI
-   * @param randomLadders
+   * @param ladderGameGUI The {@link LadderGameGUI} instance to update
+   * @param controller The {@link LadderGameController} to apply the state to
+   * @param randomLadders Whether the game uses random ladders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
     // Check if the CSV file exists
@@ -148,10 +179,21 @@ public class GameSaveLoadHandler {
   }
 
   /**
-   * Loads the last save for the Missing Diamond game.
+   * <p>Loads a saved Missing Diamond game.</p>
+   * <p>This method reads player data from the saved CSV file and applies it to
+   * the provided Missing Diamond controller. It updates player positions and other
+   * game state information based on the saved data.</p>
+   * <p>The method performs these steps:</p>
+   * <ol>
+   *   <li>Check if the save file exists</li>
+   *   <li>Read player data from the CSV file</li>
+   *   <li>Create a {@link GameState} object with the loaded data</li>
+   *   <li>Apply the game state to the controller</li>
+   *   <li>Update the UI to reflect the loaded state</li>
+   * </ol>
    *
-   * @param missingDiamondGUI The GUI to update after loading the game
-   * @param controller        The controller to apply the game state to
+   * @param missingDiamondGUI The {@link MissingDiamondGUI} instance to update
+   * @param controller The {@link MissingDiamondController} to apply the state to
    */
   public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
     // Check if the CSV file exists
@@ -213,13 +255,15 @@ public class GameSaveLoadHandler {
   }
 
   /**
-   * shows alert when saving and loading
-   * positive and negative
+   * <p>Shows an alert dialog with the specified properties.</p>
+   * <p>This helper method creates and displays a JavaFX Alert dialog with
+   * the provided type, title, header, and content. It is used to inform
+   * the user about the success or failure of save/load operations.</p>
    *
-   * @param type
-   * @param title
-   * @param header
-   * @param content
+   * @param type The {@link Alert.AlertType} to determine the alert style
+   * @param title The title of the alert dialog
+   * @param header The header text of the alert dialog
+   * @param content The main content text of the alert dialog
    */
   private void showAlert(Alert.AlertType type, String title, String header, String content) {
     Alert alert = new Alert(type);
