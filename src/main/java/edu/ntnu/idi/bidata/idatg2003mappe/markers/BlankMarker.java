@@ -1,8 +1,12 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.markers;
 
 /**
- * Represents a blank marker in the Missing Diamond game.
- * Blank markers have no special effect.
+ * <p>Represents a blank marker in the Missing Diamond game.</p>
+ * <p>Blank markers serve as "decoys" that have no special effect when discovered.
+ * They are distributed among the valuable markers to create uncertainty and risk
+ * when players decide whether to investigate a location.</p>
+ * <p>Finding a blank marker typically ends the player's turn without providing
+ * any benefit, making marker investigation a risk-reward decision.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -13,7 +17,9 @@ public class BlankMarker extends Marker {
   private static final int VALUE = 0;
 
   /**
-   * Constructor for the BlankMarker class.
+   * <p>Constructor for the BlankMarker class.</p>
+   * <p>Initializes a new BlankMarker with predefined type and zero value.
+   * Blank markers provide no monetary reward when discovered.</p>
    */
   public BlankMarker() {
     super(TYPE, VALUE);
