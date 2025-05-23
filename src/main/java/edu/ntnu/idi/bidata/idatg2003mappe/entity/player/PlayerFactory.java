@@ -13,7 +13,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Factory class for creating Player objects.
+ * <p>Factory class for creating Player objects.</p>
+ * <p>This factory provides methods for creating players from various sources,
+ * primarily from CSV files or with default values. It follows the Factory design pattern
+ * to encapsulate player creation logic.</p>
+ * <p>The factory provides these capabilities:</p>
+ * <ul>
+ *   <li>Creating players from CSV data files</li>
+ *   <li>Generating default players when no data exists</li>
+ *   <li>Placing players on appropriate starting tiles</li>
+ * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -26,11 +35,21 @@ public class PlayerFactory {
   private static final Logger logger = Logger.getLogger(PlayerFactory.class.getName());
 
   /**
-   * Creates players from a CSV file.
+   * <p>Creates players from a CSV file.</p>
+   * <p>Reads player data from the specified CSV file and creates Player objects.
+   * Each CSV record should contain:</p>
+   * <ol>
+   *   <li>Player name</li>
+   *   <li>Player ID (integer)</li>
+   *   <li>Player color (as a string)</li>
+   *   <li>Starting position (tile ID as integer)</li>
+   * </ol>
+   * <p>If the file cannot be read or contains invalid data, the method
+   * falls back to creating default players.</p>
    *
-   * @param filePath The path to the CSV file.
-   * @param board    The board where players will be placed.
-   * @return A list of players.
+   * @param filePath The path to the CSV file
+   * @param board    The {@link Board} where players will be placed
+   * @return A list of {@link Player} objects
    */
   public static List<Player> createPlayersFromCSV(String filePath, Board board) {
     List<Player> players = new ArrayList<>();
@@ -76,21 +95,28 @@ public class PlayerFactory {
   }
 
   /**
-   * Creates players from the default CSV file.
+   * <p>Creates players from the default CSV file.</p>
+   * <p>Uses the standard location (<code>src/main/resources/saves/playerData/Players.csv</code>)
+   * to load player data. If the file doesn't exist or can't be read,
+   * falls back to creating default players.</p>
    *
-   * @param board The board where players will be placed.
-   * @return A list of players.
+   * @param board The {@link Board} where players will be placed
+   * @return A list of {@link Player} objects
    */
   public static List<Player> createPlayersFromDefaultCSV(Board board) {
     return createPlayersFromCSV(DEFAULT_PLAYER_DATA_FILE, board);
   }
 
   /**
-   * Creates a specified number of default players.
+   * <p>Creates a specified number of default players.</p>
+   * <p>Generates players with standard names ("Player 1", "Player 2", etc.)
+   * and a rotating set of colors. All players are placed at the same starting tile.</p>
+   * <p>This method is typically used as a fallback when player data cannot be
+   * loaded from external sources.</p>
    *
-   * @param count     The number of players to create.
-   * @param startTile The starting tile for the players.
-   * @return A list of players.
+   * @param count     The number of players to create
+   * @param startTile The starting {@link Tile} for the players
+   * @return A list of {@link Player} objects
    */
   public static List<Player> createDefaultPlayers(int count, Tile startTile) {
     List<Player> players = new ArrayList<>();

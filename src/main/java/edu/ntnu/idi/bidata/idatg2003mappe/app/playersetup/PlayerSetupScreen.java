@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Welcome screen for setting up players before starting the game.
- * Allows users to choose number of players, their names and colors.
+ * <p>Welcome screen for setting up players before starting the game.</p>
+ * <p>Allows users to choose number of players, their names and colors.</p>
+ * <p>This screen serves as the entry point to the game, where player configuration
+ * is handled before proceeding to the game selection screen.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 1.0.0
@@ -37,7 +39,8 @@ public class PlayerSetupScreen extends Application {
   private Spinner<Integer> playerCountSpinner;
 
   /**
-   * Inner class to represent a player setup row.
+   * <p>Inner class to represent a player setup row.</p>
+   * <p>Contains UI elements for configuring a single player's name and color.</p>
    */
   private static class PlayerRow {
     private final TextField nameField;
@@ -127,7 +130,11 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Creates the header section with title and player count selector.
+   * <p>Creates the header section with title and player count selector.</p>
+   * <p>The header contains the main title of the application and a spinner
+   * that allows users to select the number of players (2-5).</p>
+   *
+   * @return A {@link VBox} containing the header elements
    */
   private VBox createHeader() {
     VBox header = new VBox(20);
@@ -156,7 +163,11 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Creates the center content with player setup rows.
+   * <p>Creates the center content with player setup rows.</p>
+   * <p>This section contains a container for all player configuration rows,
+   * which will be dynamically updated based on the selected player count.</p>
+   *
+   * @return A {@link VBox} containing the center content elements
    */
   private VBox createCenterContent() {
     VBox centerContent = new VBox(15);
@@ -175,7 +186,11 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Creates the footer with the continue button.
+   * <p>Creates the footer with the continue button.</p>
+   * <p>The footer contains a button that allows users to proceed to the game
+   * selection screen after completing player setup.</p>
+   *
+   * @return A {@link HBox} containing the footer elements
    */
   private HBox createFooter() {
     HBox footer = new HBox();
@@ -192,7 +207,9 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Updates the player rows based on the selected number of players.
+   * <p>Updates the player rows based on the selected number of players.</p>
+   * <p>This method is called whenever the player count spinner value changes.
+   * It creates or removes player configuration rows to match the selected count.</p>
    */
   private void updatePlayerRows() {
     int playerCount = playerCountSpinner.getValue();
@@ -210,8 +227,14 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Handles the continue button click.
-   * Validates input and saves player data before proceeding.
+   * <p>Handles the continue button click.</p>
+   * <p>Validates input and saves player data before proceeding to the game selection screen.
+   * Validation includes checking for:</p>
+   * <ul>
+   *   <li>Empty player names</li>
+   *   <li>Duplicate player names</li>
+   *   <li>Duplicate player colors</li>
+   * </ul>
    */
   private void handleContinue() {
     // Validate all players have names
@@ -251,7 +274,12 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Saves player data to CSV file.
+   * <p>Saves player data to CSV file.</p>
+   * <p>Creates a CSV file containing all player information, including:
+   * name, ID, color, and starting position. The file is saved to the default
+   * location where the game expects to find player data.</p>
+   *
+   * @return {@code true} if the data was successfully saved, {@code false} otherwise
    */
   private boolean savePlayerData() {
     try {
@@ -284,7 +312,9 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Proceeds to the game selection screen.
+   * <p>Proceeds to the game selection screen.</p>
+   * <p>Initializes and displays the {@link BoardGameSelector} screen,
+   * where users can choose which game to play.</p>
    */
   private void proceedToGameSelection() {
     try {
@@ -296,7 +326,13 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * Shows an alert dialog.
+   * <p>Shows an alert dialog.</p>
+   * <p>Displays an alert dialog with the specified title, message, and type.
+   * Used to communicate errors or important information to the user.</p>
+   *
+   * @param title The title of the alert dialog
+   * @param message The message to display in the alert dialog
+   * @param type The type of alert (ERROR, WARNING, INFORMATION, etc.)
    */
   private void showAlert(String title, String message, Alert.AlertType type) {
     Alert alert = new Alert(type);

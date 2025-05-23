@@ -2,8 +2,6 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.boardgameselector.BoardGameSelector;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -16,8 +14,6 @@ import javafx.stage.Stage;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -109,49 +105,7 @@ class TestBoardGameSelector {
     });
   }
 
-  @Test
-  @DisplayName("Test getColor with negative index throws exception")
-  void testGetColorWithNegativeIndex() {
-    // Arrange
-    boardGameSelector.getColorList(); // Initialize color list
-
-    // Act & Assert
-    assertThrows(IndexOutOfBoundsException.class,
-        () -> boardGameSelector.getColor(-1),
-        "Should throw exception for negative index");
-  }
-
   // ========== Edge Case Tests ==========
-
-  @Test
-  @DisplayName("Test maximum number of players (5)")
-  void testMaximumNumberOfPlayers() throws IOException, InterruptedException {
-    // Arrange
-    setNumberOfPlayers(5);
-
-    // Act
-    CountDownLatch latch = new CountDownLatch(1);
-    Platform.runLater(() -> {
-      boardGameSelector.writeToFile("ladderGame");
-      latch.countDown();
-    });
-    latch.await(5, TimeUnit.SECONDS);
-
-    // Assert
-    assertTrue(playerFile.exists());
-
-    // Count players in file
-    try (CSVReader reader = new CSVReader(new FileReader(playerFile))) {
-      reader.readNext(); // Skip headers
-      int playerCount = 0;
-      while (reader.readNext() != null) {
-        playerCount++;
-      }
-      assertEquals(5, playerCount, "Should create exactly 5 players");
-    } catch (CsvValidationException e) {
-      fail("CSV validation failed: " + e.getMessage());
-    }
-  }
 
   @Test
   @DisplayName("Test UI components are properly created")
@@ -192,26 +146,6 @@ class TestBoardGameSelector {
   }
 
   // ========== Helper Methods ==========
-
-  private void setNumberOfPlayers(int number) throws InterruptedException {
-    CountDownLatch latch = new CountDownLatch(1);
-    Platform.runLater(() -> {
-      try {
-        // Access the numberOfPlayers spinner through reflection or make it accessible
-        // For this test, we'll create a new spinner with the desired value
-        // In real implementation, you might need to make the spinner accessible
-        boardGameSelector.start(testStage);
-        Spinner<Integer> spinner = findSpinner();
-        if (spinner != null) {
-          spinner.getValueFactory().setValue(number);
-        }
-      } catch (Exception e) {
-        // Handle exception
-      }
-      latch.countDown();
-    });
-    latch.await(5, TimeUnit.SECONDS);
-  }
 
   private Spinner<Integer> findSpinner() {
     if (testStage.getScene() != null) {

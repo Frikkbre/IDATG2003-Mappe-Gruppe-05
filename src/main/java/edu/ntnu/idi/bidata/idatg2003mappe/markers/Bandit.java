@@ -1,8 +1,12 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.markers;
 
 /**
- * Represents a Bandit marker in the Missing Diamond game.
- * Bandits can interact with players, potentially causing negative effects.
+ * <p>Represents a Bandit marker in the Missing Diamond game.</p>
+ * <p>Bandits are negative markers that cause players to lose all their money
+ * when discovered. They are one of the risks players face when investigating
+ * markers at special locations.</p>
+ * <p>Unlike other markers, Bandits have a configurable penalty that determines
+ * how harmful they are when encountered.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.2
@@ -10,24 +14,27 @@ package edu.ntnu.idi.bidata.idatg2003mappe.markers;
  */
 public class Bandit extends Marker {
   /**
-   * The default penalty when a player encounters a bandit.
+   * <p>The default penalty when a player encounters a bandit.</p>
    */
   private static final int DEFAULT_PENALTY = 2;
 
   /**
-   * The amount of steps the player will be moved back.
+   * <p>The amount of steps the player will be moved back.</p>
    */
   private final int penaltySteps;
 
   /**
-   * Constructs a Bandit marker with default penalty.
+   * <p>Constructs a Bandit marker with default penalty.</p>
+   * <p>Creates a Bandit with the standard penalty of 2 steps back.</p>
    */
   public Bandit() {
     this(DEFAULT_PENALTY);
   }
 
   /**
-   * Constructs a Bandit marker with a specific penalty.
+   * <p>Constructs a Bandit marker with a specific penalty.</p>
+   * <p>Creates a Bandit that will cause the specified number of
+   * penalty steps when encountered by a player.</p>
    *
    * @param penaltySteps The number of steps the player will be moved back
    * @throws IllegalArgumentException if penalty steps is negative
@@ -40,6 +47,13 @@ public class Bandit extends Marker {
     this.penaltySteps = penaltySteps;
   }
 
+  /**
+   * <p>Returns a string representation of the Bandit.</p>
+   * <p>Includes the penalty steps in the description to provide
+   * more detailed information about this Bandit instance.</p>
+   *
+   * @return A string describing the Bandit and its penalty
+   */
   @Override
   public String toString() {
     return String.format("Bandit (Penalty: %d steps)", penaltySteps);

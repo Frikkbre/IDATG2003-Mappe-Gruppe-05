@@ -13,17 +13,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * <p>Handles reading player data from CSV files.</p>
+ * <p>This class provides functionality for loading player information from CSV files
+ * and creating {@link Player} objects from that data. It supports fallback to default
+ * players if the file is missing or contains invalid data.</p>
+ * <p>The CSV file should contain:</p>
+ * <ul>
+ *   <li>Player name</li>
+ *   <li>Player ID</li>
+ *   <li>Player color</li>
+ *   <li>Starting position (tile ID)</li>
+ * </ul>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.0.1
+ * @since 21.05.2025
+ */
 public class PlayerFileHandler {
 
     private static final Logger logger = Logger.getLogger(PlayerFileHandler.class.getName());
     private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
 
     /**
-     * Reads players from a CSV file.
+     * <p>Reads players from a CSV file.</p>
+     * <p>This method attempts to read player data from the standard CSV file location.
+     * If the file exists and contains valid data, it creates {@link Player} objects
+     * based on that data. If the file is missing or contains invalid data, it falls
+     * back to creating a default player.</p>
+     * <p>For each player, the method:</p>
+     * <ol>
+     *   <li>Reads name, ID, color, and position from the CSV</li>
+     *   <li>Attempts to find the corresponding tile on the board</li>
+     *   <li>Falls back to a default tile if the specified one isn't found</li>
+     *   <li>Creates a new {@link Player} with the parsed data</li>
+     * </ol>
      *
-     * @param board The game board, used to get tile by ID.
-     * @param defaultStartTiles The list of default starting tiles for fallback.
-     * @return A list of players read from the file, or a default player if the file is empty/invalid.
+     * @param board The game board, used to get tiles by ID
+     * @param defaultStartTiles The list of default starting tiles for fallback
+     * @return A list of {@link Player} objects created from the file, or a default player if the file is empty/invalid
      */
     public List<Player> readPlayersFromCSV(BoardBranching board, List<Tile> defaultStartTiles) {
         List<Player> localPlayers = new ArrayList<>();
@@ -72,7 +100,6 @@ public class PlayerFileHandler {
                 localPlayers.add(new Player("Player 1", 0, "Blue", fallbackStartTile));
             } else {
                 logger.severe("Cannot create default player as fallback start tile is null (board might be null too).");
-                // Optionally, throw an exception or handle this case as per game requirements
             }
         }
         return localPlayers;
