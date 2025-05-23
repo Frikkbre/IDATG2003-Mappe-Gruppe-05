@@ -27,6 +27,9 @@ public class LadderAction implements TileAction {
    */
 
   public LadderAction(Tile currentTile) {
+    if (currentTile == null) {
+      throw new IllegalArgumentException("Tile cannot be null");
+    }
     this.currentTile = currentTile;
   }
 
