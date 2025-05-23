@@ -14,6 +14,7 @@ public class PointManager {
   private final List<CoordinatePoint> capturedPoints = new ArrayList<>();
   private final Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
+  private Pane overlayPane; // Reference to the overlay pane
 
   private static final Logger logger = Logger.getLogger(PointManager.class.getName());
 
@@ -37,6 +38,13 @@ public class PointManager {
   }
 
   /**
+   * Sets the overlay pane reference for visual element management.
+   */
+  public void setOverlayPane(Pane overlayPane) {
+    this.overlayPane = overlayPane;
+  }
+
+  /**
    * Gets a point by its ID.
    */
   public CoordinatePoint getPointById(int id) {
@@ -54,9 +62,32 @@ public class PointManager {
    * Clears all points.
    */
   public void clear() {
+    if (overlayPane != null) {
+      // Remove all visual elements associated with points
+      List<Node> nodesToRemove = new ArrayList<>();
+
+      for (CoordinatePoint point : capturedPoints) {
+        // Remove circles
+        if (point.getCircle() != null) {
+          nodesToRemove.add(point.getCircle());
+        }
+
+        // Remove labels (if they exist)
+        overlayPane.getChildren().removeIf(node ->
+            node.getUserData() != null &&
+            node.getUserData().equals("label_" + point.getId()));
+      }
+
+      // Bulk remove circles
+      overlayPane.getChildren().removeAll(nodesToRemove);
+    }
+
+    // Clear data structures
     capturedPoints.clear();
     pointsById.clear();
     nextPointId = 1;
+
+    logger.info("All points and visual elements cleared");
   }
 
   /**
@@ -103,21 +134,4 @@ public class PointManager {
     }
   }
 
-  /**
-   * Dumps the contents of the pointsById map for debugging.
-   */
-  public void dumpPointsMap() {
-    StringBuilder sb = new StringBuilder("========= POINTS MAP DUMP =========\n");
-    sb.append("Total points: ").append(pointsById.size()).append("\n");
-
-    for (Map.Entry<Integer, CoordinatePoint> entry : pointsById.entrySet()) {
-      CoordinatePoint point = entry.getValue();
-      sb.append("ID ").append(entry.getKey()).append(": ")
-          .append(point.getName()).append(" at (")
-          .append(point.getX()).append(",").append(point.getY()).append(")\n");
-    }
-
-    sb.append("==================================");
-    logger.info(String.valueOf(sb));
-  }
 }

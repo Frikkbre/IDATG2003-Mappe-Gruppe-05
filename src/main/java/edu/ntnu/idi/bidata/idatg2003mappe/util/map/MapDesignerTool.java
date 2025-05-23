@@ -27,6 +27,7 @@ public class MapDesignerTool {
     this.mapWidth = mapWidth;
     this.mapHeight = mapHeight;
     this.pointManager = new PointManager();
+    this.pointManager.setOverlayPane(overlayPane); // Set overlay pane reference
     this.uiManager = new MapUIManager(overlayPane, listener);
     this.connectionManager = new ConnectionManager(overlayPane, pointManager);
     this.fileHandler = new MapFileHandler(listener, pointManager);
@@ -51,6 +52,7 @@ public class MapDesignerTool {
     clearItem.setOnAction(e -> {
       pointManager.clear();
       connectionManager.clearConnections();
+      uiManager.logMessage("All coordinate points and connections cleared.", true);
     });
 
     // Connection mode
@@ -63,10 +65,6 @@ public class MapDesignerTool {
 
     MenuItem saveAsDefaultItem = new MenuItem("Save as Default Map");
     saveAsDefaultItem.setOnAction(e -> fileHandler.saveAsDefaultMap());
-
-    // Debug
-    //MenuItem dumpPointsMapItem = new MenuItem("Debug: Dump Points Map");
-    //dumpPointsMapItem.setOnAction(e -> pointManager.dumpPointsMap());
 
     // Add all items to menu
     devMenu.getItems().addAll(

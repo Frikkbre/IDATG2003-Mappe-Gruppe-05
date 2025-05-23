@@ -108,6 +108,14 @@ public class ConnectionManager {
    */
   public void clearConnections() {
     overlayPane.getChildren().removeAll(connectionLines);
+
+    // Also use a more aggressive approach to ensure ALL connection lines are removed
+    // by filtering by userData
+    overlayPane.getChildren().removeIf(node ->
+        node.getUserData() != null &&
+        "connection".equals(node.getUserData()));
+
+    // Clear our internal list
     connectionLines.clear();
   }
 

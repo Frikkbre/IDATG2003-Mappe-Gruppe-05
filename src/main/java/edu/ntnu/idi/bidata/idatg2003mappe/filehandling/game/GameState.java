@@ -126,15 +126,6 @@ public class GameState {
   }
 
   /**
-   * Gets the save time of the game state.
-   *
-   * @return The save time.
-   */
-  public String getSaveTime() {
-    return saveTime;
-  }
-
-  /**
    * Sets the save time of the game state.
    *
    * @param saveTime The save time.
