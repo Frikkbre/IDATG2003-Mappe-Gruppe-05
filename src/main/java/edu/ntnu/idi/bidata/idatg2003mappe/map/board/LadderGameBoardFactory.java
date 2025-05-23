@@ -6,7 +6,13 @@ import edu.ntnu.idi.bidata.idatg2003mappe.movement.TileActionFactory;
 import java.util.*;
 
 /**
- * Factory class for creating different types of game boards.
+ * <p>Factory class for creating different types of ladder game boards.</p>
+ * <p>This class provides methods for creating boards with various configurations:</p>
+ * <ul>
+ *   <li>Classic ladder game board with predefined ladder and snake positions</li>
+ *   <li>Random ladder game board with randomized ladder and snake positions</li>
+ * </ul>
+ * <p>The factory also handles setting up special tile effects like "skip turn" and "back to start".</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.1
@@ -18,7 +24,11 @@ public class LadderGameBoardFactory {
   private static final int NUM_SNAKES = 8;
 
   /**
-   * Creates a classic ladder game board with predefined ladders.
+   * <p>Creates a classic ladder game board with predefined ladders.</p>
+   * <p>This method builds a 100-tile board with fixed ladder and snake positions
+   * based on the traditional Snakes and Ladders game layout.</p>
+   *
+   * @return A {@link BoardLinear} instance with classic ladder and snake configuration
    */
   public static BoardLinear createClassicLadderBoard() {
     BoardLinear board = new BoardLinear();
@@ -60,7 +70,11 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Creates a ladder game board with randomly placed ladders and snakes.
+   * <p>Creates a ladder game board with randomly placed ladders and snakes.</p>
+   * <p>This method builds a 100-tile board where ladders and snakes are
+   * placed in random positions, creating a unique gameplay experience each time.</p>
+   *
+   * @return A {@link BoardLinear} instance with randomized ladder and snake configuration
    */
   public static BoardLinear createRandomLadderBoard() {
     BoardLinear board = new BoardLinear();
@@ -85,7 +99,11 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Generates random ladders and snakes on the board.
+   * <p>Generates random ladders and snakes on the board.</p>
+   * <p>Places the specified number of ladders and snakes at random positions
+   * on the board, ensuring they don't overlap or cause invalid movements.</p>
+   *
+   * @param tiles The array of tiles representing the board
    */
   private static void generateRandomLadders(Tile[] tiles) {
     Random random = new Random();
@@ -98,7 +116,14 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Generates random connections (ladders or snakes).
+   * <p>Generates random connections (ladders or snakes).</p>
+   * <p>Creates the specified number of connections of the given type (ladder or snake),
+   * trying multiple times if necessary to ensure the desired count is reached.</p>
+   *
+   * @param tiles The array of tiles representing the board
+   * @param random The random number generator to use
+   * @param count The number of connections to create
+   * @param isLadder <code>true</code> to create ladders, <code>false</code> to create snakes
    */
   private static void generateRandomConnections(Tile[] tiles, Random random, int count, boolean isLadder) {
     int attempts = 0;
@@ -117,7 +142,12 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Creates a single random ladder.
+   * <p>Creates a single random ladder.</p>
+   * <p>Places a ladder at a random position on the board,
+   * connecting a lower tile to a higher tile.</p>
+   *
+   * @param tiles The array of tiles representing the board
+   * @param random The random number generator to use
    */
   private static void createRandomLadder(Tile[] tiles, Random random) {
     int start = random.nextInt(BOARD_SIZE - 20) + 1; // Avoid tiles too close to end
@@ -129,7 +159,12 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Creates a single random snake.
+   * <p>Creates a single random snake.</p>
+   * <p>Places a snake at a random position on the board,
+   * connecting a higher tile to a lower tile.</p>
+   *
+   * @param tiles The array of tiles representing the board
+   * @param random The random number generator to use
    */
   private static void createRandomSnake(Tile[] tiles, Random random) {
     int start = random.nextInt(BOARD_SIZE - 20) + 20; // Start from middle-to-end
@@ -141,7 +176,11 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Sets up special tile effects throughout the board.
+   * <p>Sets up special tile effects throughout the board.</p>
+   * <p>Configures specific tiles to have special effects when landed on,
+   * such as skipping a turn or going back to the start.</p>
+   *
+   * @param board The board to set up effects on
    */
   public static void setupTileEffects(BoardLinear board) {
     // Configure skip turn tiles
@@ -155,7 +194,13 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Helper method to set an effect on a specific tile.
+   * <p>Helper method to set an effect on a specific tile.</p>
+   * <p>Applies the specified effect to the tile with the given ID,
+   * if the tile exists and the ID is valid.</p>
+   *
+   * @param board The board containing the tile
+   * @param tileId The ID of the tile to set the effect on
+   * @param effect The effect to apply
    */
   private static void setTileEffect(BoardLinear board, int tileId, String effect) {
     if (isValidTileRange(tileId)) {
@@ -167,7 +212,11 @@ public class LadderGameBoardFactory {
   }
 
   /**
-   * Validates if a tile number is within the valid range.
+   * <p>Validates if a tile number is within the valid range.</p>
+   * <p>Checks if the specified tile ID is between 1 and the board size (inclusive).</p>
+   *
+   * @param tileNumber The tile ID to validate
+   * @return <code>true</code> if the tile ID is valid, <code>false</code> otherwise
    */
   private static boolean isValidTileRange(int tileNumber) {
     return tileNumber >= 1 && tileNumber <= BOARD_SIZE;
