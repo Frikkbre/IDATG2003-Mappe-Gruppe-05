@@ -137,12 +137,7 @@ public class GameSaveLoadHandler {
       alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv");
       alert.showAndWait();
 
-      // Force immediate UI update
-      javafx.application.Platform.runLater(() -> {
-        ladderGameGUI.updateBoardUI();
-        // Also update the scoreboard
-        ladderGameGUI.updateScoreBoard(ladderGameGUI.scoreBoard);
-      });
+      ladderGameGUI.updateBoardUI();
     } catch (Exception ex) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
       alert.setTitle("Error");
