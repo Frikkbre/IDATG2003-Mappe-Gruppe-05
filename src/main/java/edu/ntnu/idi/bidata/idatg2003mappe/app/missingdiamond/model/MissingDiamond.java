@@ -50,8 +50,8 @@ public class MissingDiamond {
   private Player winner;
 
   // City tiles
-  private final List<Tile> cityTiles = new ArrayList<>();
-  private final List<Tile> startingTiles = new ArrayList<>();
+  private final Collection<Tile> cityTiles = new ArrayList<>();
+  private final Collection<Tile> startingTiles = new ArrayList<>();
 
   // NEW: Set of IDs for special tiles where players can choose to stop
   private final Set<Integer> specialTileIdsSet;
@@ -116,8 +116,8 @@ public class MissingDiamond {
     identifyCityTiles(); // This might be redundant if mapConfig is used for special tiles
     identifyStartingTiles();
 
-    tokenSystem.setStartingTiles(startingTiles);
-    tokenSystem.initializeTokens(cityTiles);
+    tokenSystem.setStartingTiles((List<Tile>) startingTiles);
+    tokenSystem.initializeTokens((List<Tile>) cityTiles);
 
     players.forEach(player -> { banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
   }
@@ -160,7 +160,7 @@ public class MissingDiamond {
     // Identify starting tiles before reading players, as it might be needed for fallback
     identifyStartingTiles();
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
-    this.players = playerFileHandler.readPlayersFromCSV(this.board, this.startingTiles);
+    this.players = playerFileHandler.readPlayersFromCSV(this.board, (List<Tile>) this.startingTiles);
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
@@ -169,8 +169,8 @@ public class MissingDiamond {
     identifyCityTiles();
     identifyStartingTiles();
 
-    tokenSystem.setStartingTiles(startingTiles);
-    tokenSystem.initializeTokens(cityTiles);
+    tokenSystem.setStartingTiles((List<Tile>) startingTiles);
+    tokenSystem.initializeTokens((List<Tile>) cityTiles);
 
     players.forEach(player -> {
       banker.registerPlayer(player); banker.deposit(player, STARTING_MONEY); });
@@ -266,7 +266,8 @@ public class MissingDiamond {
    * @return A list of players
    */
   private List<Player> createPlayers(int numberOfPlayers, BoardBranching board) {
-    Tile startTile = !startingTiles.isEmpty() ? startingTiles.get(0) : board.getStartTile();
+    Tile startTile = startingTiles.stream().findFirst().orElse(board.getStartTile());
+
     String[] playerColors = {"Orange", "Blue", "Green", "Yellow", "Purple", "Red"};
 
     return IntStream.range(0, numberOfPlayers)

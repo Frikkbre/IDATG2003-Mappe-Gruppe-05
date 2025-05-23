@@ -41,7 +41,7 @@ public class TokenSystem {
   private Tile diamondLocation = null;
 
   // Starting locations (Cairo and Tangiers)
-  private final List<Tile> startingTiles = new ArrayList<>();
+  private final Collection<Tile> startingTiles = new ArrayList<>();
 
   // Constants for token quantities
   private static final int NUM_RED_GEMS = 5;    // Rubies
@@ -65,7 +65,7 @@ public class TokenSystem {
    *
    * @param tiles The tiles to set as starting locations
    */
-  public void setStartingTiles(List<Tile> tiles) {
+  public void setStartingTiles(Collection<Tile> tiles) {
     this.startingTiles.clear();
     this.startingTiles.addAll(tiles);
   }
@@ -75,7 +75,7 @@ public class TokenSystem {
    *
    * @param cityTiles List of city tiles to place tokens on
    */
-  public void initializeTokens(List<Tile> cityTiles) {
+  public void initializeTokens(Collection<Tile> cityTiles) {
     // Clear existing token mappings
     tokenMap.clear();
     tokensByTileId.clear();
@@ -89,7 +89,8 @@ public class TokenSystem {
     // Place tokens on city tiles
     IntStream.range(0, Math.min(cityTiles.size(), tokens.size()))
         .forEach(i -> {
-          Tile cityTile = cityTiles.get(i);
+          List<Tile> cityTileList = new ArrayList<>(cityTiles);
+          Tile cityTile = cityTileList.get(i);
           Marker token = tokens.get(i);
           token.setLocation(cityTile);
           tokenMap.put(cityTile, token);

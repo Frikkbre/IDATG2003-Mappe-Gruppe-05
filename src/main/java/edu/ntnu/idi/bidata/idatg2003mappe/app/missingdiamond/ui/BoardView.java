@@ -73,7 +73,7 @@ public class BoardView extends StackPane {
   private MapDesignerManager mapDesignerManager;
 
   // Event listeners
-  private final List<BoardUpdateListener> updateListeners = new ArrayList<>();
+  private final Collection<BoardUpdateListener> updateListeners = new ArrayList<>();
 
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();

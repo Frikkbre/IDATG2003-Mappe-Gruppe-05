@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @since 25.04.2025
  */
 public class PointManager {
-  private final List<CoordinatePoint> capturedPoints = new ArrayList<>();
+  private final Collection<CoordinatePoint> capturedPoints = new ArrayList<>();
   private final Map<Integer, CoordinatePoint> pointsById = new HashMap<>();
   private int nextPointId = 1;
   private Pane overlayPane; // Reference to the overlay pane
@@ -84,8 +84,8 @@ public class PointManager {
    *
    * @return An unmodifiable list of all coordinate points
    */
-  public List<CoordinatePoint> getAllPoints() {
-    return Collections.unmodifiableList(capturedPoints);
+  public Collection<CoordinatePoint> getAllPoints() {
+    return Collections.unmodifiableCollection(capturedPoints);
   }
 
   /**
