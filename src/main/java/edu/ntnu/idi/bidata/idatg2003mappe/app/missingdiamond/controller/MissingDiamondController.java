@@ -11,6 +11,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * <p>Controller class for the Missing Diamond game.</p>
@@ -71,9 +72,7 @@ public class MissingDiamondController {
     states.add(ActionState.AWAITING_MOVE);
     states.add(ActionState.AWAITING_TOKEN_DECISION);
 
-    for (ActionState state : states) {
-      availableActions.put(state, new ArrayList<>());
-    }
+    states.forEach(state -> availableActions.put(state, new ArrayList<>()));
 
     availableActions.get(ActionState.AWAITING_ROLL).add("rollDie");
 
@@ -265,9 +264,7 @@ public class MissingDiamondController {
 
     // Notify observers about turn change
     Player newPlayer = game.getCurrentPlayer();
-    for (BoardGameObserver observer : observers) {
-      observer.onTurnChanged(newPlayer);
-    }
+    observers.forEach(observer -> observer.onTurnChanged(newPlayer));
   }
 
   /**
@@ -279,27 +276,23 @@ public class MissingDiamondController {
   public void applyGameState(GameState gameState) {
     game.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex());
 
-    // Restore player positions
-    if (gameState.getPlayerPositions() != null) {
-      List<GameState.PlayerPosition> positions = gameState.getPlayerPositions();
+    Optional.ofNullable(gameState.getPlayerPositions()).ifPresent(positions -> {
       List<Player> players = game.getPlayers();
 
-      for (int i = 0; i < players.size() && i < positions.size(); i++) {
-        GameState.PlayerPosition pos = positions.get(i);
-        Player player = players.get(i);
-
-        // Find the tile with the saved ID and place player there
-        Tile tile = game.getBoard().getTileById(pos.getTileId());
-        if (tile != null) {
-          player.placePlayer(tile);
-        }
-      }
-    }
+      IntStream.range(0, Math.min(players.size(), positions.size()))
+          .forEach(i -> {
+            Tile tile = game.getBoard().getTileById(positions.get(i).getTileId());
+            if (tile != null) {
+              players.get(i).placePlayer(tile);
+            }
+          });
+    });
 
     // Reset controller state
     hasRolled = false;
     currentState = ActionState.AWAITING_ROLL;
   }
+
 
   /**
    * <p>Gets the underlying game model.</p>

@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.IntStream;
 
 /**
  * <p>Component responsible for displaying the game board and handling interactions with it.</p>
@@ -72,7 +73,7 @@ public class BoardView extends StackPane {
   private MapDesignerManager mapDesignerManager;
 
   // Event listeners
-  private final List<BoardUpdateListener> updateListeners = new ArrayList<>();
+  private final Collection<BoardUpdateListener> updateListeners = new ArrayList<>();
 
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
@@ -196,8 +197,7 @@ public class BoardView extends StackPane {
     logger.info("Game click at: " + x + ", " + y);
 
     // Get tile id from clicked point (if any)
-    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      Circle circle = entry.getValue();
+    tileCircles.forEach((key, circle) -> {
       double distance = Math.sqrt(
           Math.pow(circle.getCenterX() - x, 2) +
               Math.pow(circle.getCenterY() - y, 2)
@@ -205,11 +205,10 @@ public class BoardView extends StackPane {
 
       if (distance <= circle.getRadius()) {
         // INFO: Tile was clicked
-        logger.info("Tile clicked: " + entry.getKey());
-        handleTileClick(entry.getKey());
-        return;
+        logger.info("Tile clicked: " + key);
+        handleTileClick(key);
       }
-    }
+    });
   }
 
   /**
@@ -317,10 +316,9 @@ public class BoardView extends StackPane {
    * <p>Calls the {@code onBoardUpdated()} method on all registered BoardUpdateListener instances.</p>
    */
   private void notifyBoardUpdated() {
-    for (BoardUpdateListener listener : updateListeners) {
-      listener.onBoardUpdated();
-    }
+    updateListeners.forEach(BoardUpdateListener::onBoardUpdated);
   }
+
 
   /**
    * <p>Adds a board update listener.</p>
@@ -370,20 +368,16 @@ public class BoardView extends StackPane {
     tileYPercentages.clear();
 
     // Create and position the locations
-    for (MapConfig.Location location : mapConfig.getLocations()) {
+    mapConfig.getLocations().forEach(location -> {
       int tileId = location.getId();
       String name = location.getName();
 
-      // Calculate actual coordinates based on percentages
-      double xPercent = location.getXPercent();
-      double yPercent = location.getYPercent();
+      // Store the original percentages
+      tileXPercentages.put(tileId, location.getXPercent());
+      tileYPercentages.put(tileId, location.getYPercent());
 
-      // FIX: STORE THE ORIGINAL PERCENTAGES - This is the key fix!
-      tileXPercentages.put(tileId, xPercent);
-      tileYPercentages.put(tileId, yPercent);
-
-      double x = mapWidth * xPercent;
-      double y = mapHeight * yPercent;
+      double x = mapWidth * location.getXPercent();
+      double y = mapHeight * location.getYPercent();
 
       // Create the tile circle
       boolean isSpecial = location.isSpecial();
@@ -396,7 +390,8 @@ public class BoardView extends StackPane {
       if (isSpecial) {
         specialTileIds.add(tileId);
       }
-    }
+    });
+
     if (gameController != null) {
       this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, gameController);
     }
@@ -444,27 +439,24 @@ public class BoardView extends StackPane {
    */
   private void createConnectionsFromConfig(MapConfig mapConfig) {
     // Create the paths between locations
-    for (MapConfig.Connection connection : mapConfig.getConnections()) {
-      int fromId = connection.getFromId();
-      int toId = connection.getToId();
+    mapConfig.getConnections().stream()
+        .map(conn -> new Object[] {
+            tileCircles.get(conn.getFromId()),
+            tileCircles.get(conn.getToId())
+        })
+        .filter(arr -> arr[0] != null && arr[1] != null)
+        .map(arr -> {
+          Line line = new Line(
+              ((Circle) arr[0]).getCenterX(), ((Circle) arr[0]).getCenterY(),
+              ((Circle) arr[1]).getCenterX(), ((Circle) arr[1]).getCenterY()
+          );
+          line.setStroke(Color.BLACK);
+          line.setStrokeWidth(1.5);
+          line.setUserData("connection"); // For identification
+          return line;
+        })
+        .forEach(line -> overlayPane.getChildren().add(0, line));
 
-      // Find the circles for these IDs
-      Circle fromCircle = tileCircles.get(fromId);
-      Circle toCircle = tileCircles.get(toId);
-
-      if (fromCircle != null && toCircle != null) {
-        Line line = new Line(
-            fromCircle.getCenterX(), fromCircle.getCenterY(),
-            toCircle.getCenterX(), toCircle.getCenterY()
-        );
-        line.setStroke(Color.BLACK);
-        line.setStrokeWidth(1.5);
-        line.setUserData("connection"); // For identification
-
-        // Put lines under the circles
-        overlayPane.getChildren().add(0, line);
-      }
-    }
   }
 
   /**
@@ -488,43 +480,46 @@ public class BoardView extends StackPane {
     tileYPercentages.clear();
 
     // Create some example tiles
-    for (int i = 1; i <= 5; i++) {
-      double xPercent = 0.1 * i;  // Store as percentage
-      double yPercent = 0.5;      // Store as percentage
+    IntStream.rangeClosed(1, 5)
+        .forEach(i -> {
+          double xPercent = 0.1 * i;  // Store as percentage
+          double yPercent = 0.5;      // Store as percentage
 
-      tileXPercentages.put(i, xPercent);
-      tileYPercentages.put(i, yPercent);
+          tileXPercentages.put(i, xPercent);
+          tileYPercentages.put(i, yPercent);
 
-      double x = mapWidth * xPercent;
-      double y = mapHeight * yPercent;
+          double x = mapWidth * xPercent;
+          double y = mapHeight * yPercent;
 
-      boolean isSpecial = (i % 2 == 0);
-      Color color = isSpecial ? Color.RED : Color.BLACK;
+          boolean isSpecial = (i % 2 == 0);
+          Color color = isSpecial ? Color.RED : Color.BLACK;
 
-      Circle tile = createTileCircle(x, y, i, color);
-      overlayPane.getChildren().add(tile);
-      tileCircles.put(i, tile);
+          Circle tile = createTileCircle(x, y, i, color);
+          overlayPane.getChildren().add(tile);
+          tileCircles.put(i, tile);
 
-      if (isSpecial) {
-        specialTileIds.add(i);
-      }
-    }
+          if (isSpecial) {
+            specialTileIds.add(i);
+          }
+        });
+
 
     // Create connections
-    for (int i = 1; i < 5; i++) {
-      Circle fromCircle = tileCircles.get(i);
-      Circle toCircle = tileCircles.get(i + 1);
+    IntStream.range(1, 5)
+        .mapToObj(i -> {
+          Circle fromCircle = tileCircles.get(i);
+          Circle toCircle = tileCircles.get(i + 1);
+          Line line = new Line(
+              fromCircle.getCenterX(), fromCircle.getCenterY(),
+              toCircle.getCenterX(), toCircle.getCenterY()
+          );
+          line.setStroke(Color.BLACK);
+          line.setStrokeWidth(1.5);
+          line.setUserData("connection");
+          return line;
+        })
+        .forEach(line -> overlayPane.getChildren().add(0, line));
 
-      Line line = new Line(
-          fromCircle.getCenterX(), fromCircle.getCenterY(),
-          toCircle.getCenterX(), toCircle.getCenterY()
-      );
-      line.setStroke(Color.BLACK);
-      line.setStrokeWidth(1.5);
-      line.setUserData("connection");
-
-      overlayPane.getChildren().add(0, line);
-    }
     if (gameController != null) {
       this.tileHighlighter = new TileHighlighter(tileCircles, specialTileIds, gameController);
     }
@@ -540,19 +535,13 @@ public class BoardView extends StackPane {
   public void synchronizeTilesWithDesigner(MapDesignerManager manager) {
     logger.info("Synchronizing " + tileCircles.size() + " tiles with map designer...");
 
-    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      int tileId = entry.getKey();
-      Circle circle = entry.getValue();
-
-      // Calculate percentages
+    tileCircles.forEach((tileId, circle) -> {
       double xPercent = circle.getCenterX() / mapView.getFitWidth();
       double yPercent = circle.getCenterY() / mapView.getFitHeight();
 
-      // Determine if special based on circle color
       boolean isSpecial = specialTileIds.contains(tileId);
       String pointName = isSpecial ? "SpecialLoc" + tileId : "Location" + tileId;
 
-      // Register with designer
       manager.registerExistingPoint(
           tileId,
           circle.getCenterX(),
@@ -562,7 +551,7 @@ public class BoardView extends StackPane {
           pointName,
           isSpecial
       );
-    }
+    });
 
     logMessage("Synchronized " + tileCircles.size() + " map locations with designer.");
   }
@@ -583,10 +572,7 @@ public class BoardView extends StackPane {
     double mapHeight = mapView.getBoundsInParent().getHeight();
 
     // Update positions using STORED percentages, not recalculated ones
-    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      int tileId = entry.getKey();
-      Circle circle = entry.getValue();
-
+    tileCircles.forEach((tileId, circle) -> {
       if (circle != null) {
         Double xPct = tileXPercentages.get(tileId);
         Double yPct = tileYPercentages.get(tileId);
@@ -600,16 +586,18 @@ public class BoardView extends StackPane {
           circle.setCenterY(y);
 
           // Update any labels associated with this tile
-          for (Node node : overlayPane.getChildren()) {
-            if (node instanceof Label label && node.getUserData() != null
-                && node.getUserData().equals(tileId)) {
-              label.setLayoutX(x + 5);
-              label.setLayoutY(y - 15);
-            }
-          }
+          overlayPane.getChildren().stream()
+              .filter(node -> node instanceof Label label && node.getUserData() != null
+                  && node.getUserData().equals(tileId))
+              .forEach(node -> {
+                Label label = (Label) node;
+                label.setLayoutX(x + 5);
+                label.setLayoutY(y - 15);
+              });
         }
       }
-    }
+    });
+
 
     // Update connections
     updateConnections();
@@ -686,25 +674,21 @@ public class BoardView extends StackPane {
   public void updateUI() {
     if (gameController == null) return;
 
-    // First clear existing player markers from the board
-    for (Circle marker : playerMarkers.values()) {
-      overlayPane.getChildren().remove(marker);
-    }
+    // Clear existing player markers
+    playerMarkers.values().forEach(overlayPane.getChildren()::remove);
     playerMarkers.clear();
 
-    // Add player markers at their current positions
+    // Add player markers at current positions
     List<Player> players = gameController.getPlayers();
-    for (int i = 0; i < players.size(); i++) {
+
+    IntStream.range(0, players.size()).forEach(i -> {
       Player player = players.get(i);
-      int tileId = player.getCurrentTile().getTileId();
-      Circle tileCircle = tileCircles.get(tileId);
+      Circle tileCircle = tileCircles.get(player.getCurrentTile().getTileId());
 
       if (tileCircle != null) {
-        // Create offset for player marker based on player index
         double offsetX = (i % 2 == 0) ? -15 : 15;
         double offsetY = (i < 2) ? -15 : 15;
 
-        // Create player marker
         Circle playerMarker = new Circle(
             tileCircle.getCenterX() + offsetX,
             tileCircle.getCenterY() + offsetY,
@@ -714,15 +698,15 @@ public class BoardView extends StackPane {
         playerMarker.setStroke(Color.BLACK);
         playerMarker.setStrokeWidth(1.5);
 
-        // Add to overlay pane
         overlayPane.getChildren().add(playerMarker);
         playerMarkers.put(player, playerMarker);
       }
-    }
+    });
 
     // Highlight possible moves
     highlightPossibleMoves();
   }
+
 
   /**
    * <p>Highlights possible moves for the current player.</p>
@@ -777,10 +761,8 @@ public class BoardView extends StackPane {
     this.gameController = controller;
 
     // Register as an observer if implementing the observer interface
-    if (this instanceof PlayerObserver) {
-      for (Player player : controller.getPlayers()) {
-        player.addObserver((PlayerObserver) this);
-      }
+    if (this instanceof PlayerObserver observer) {
+      controller.getPlayers().forEach(player -> player.addObserver(observer));
     }
 
     // Add controller as a board update listener if it implements the interface

@@ -2,6 +2,8 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * <p>Represents a tile on the board.</p>
@@ -121,17 +123,17 @@ public class Tile {
    * @throws IllegalArgumentException if steps is negative (except special case -44)
    */
   public Tile getTileAtDistance(int steps) {
-    Tile current = this;
     if (steps == -44) {
-      current = current.getNextTile();
+      return this.getNextTile();
     } else if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
     }
 
-    for (int i = 0; i < steps && current.getNextTile() != null; i++) {
-      current = current.getNextTile();
-    }
-    return current;
+    Tile current = this;
+    return Stream.iterate(current, tile -> tile.getNextTile() != null, Tile::getNextTile)
+        .limit(steps)
+        .reduce((first, second) -> second)
+        .orElse(current);
   }
 
   /**

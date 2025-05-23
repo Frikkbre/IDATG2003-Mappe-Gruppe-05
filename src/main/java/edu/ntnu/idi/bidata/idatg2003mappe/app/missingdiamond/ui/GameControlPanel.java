@@ -15,7 +15,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Panel containing game controls and game log for the Missing Diamond game.</p>
@@ -226,41 +228,29 @@ public class GameControlPanel extends VBox {
       return;
     }
 
-    // For longer messages, split at logical points (periods, exclamation marks)
+    // Split at logical points (periods, exclamation marks)
     String[] sentences = message.split("[.!]");
-    for (String sentence : sentences) {
-      sentence = sentence.trim();
-      if (sentence.length() > 0) {
-        // Add punctuation back if it was a complete sentence
-        if (!sentence.equals(sentences[sentences.length - 1]) || message.endsWith(".") || message.endsWith("!")) {
-          sentence += message.contains("!") ? "!" : ".";
-        }
-        addLogLine(sentence);
+
+    Arrays.stream(sentences).map(String::trim).filter(sentence -> !sentence.isEmpty()).forEach(sentence -> {
+      if (!sentence.equals(sentences[sentences.length - 1]) || message.endsWith(".") || message.endsWith("!")) {
+        sentence += message.contains("!") ? "!" : ".";
       }
-    }
+      addLogLine(sentence);
+    });
   }
 
   /**
    * Adds a single line to the log, removing old lines if necessary.
    */
   private void addLogLine(String line) {
-    String currentText = gameLog.getText();
-    String[] lines = currentText.split("\n");
+    String[] lines = gameLog.getText().split("\n");
 
-    // If we have too many lines, remove the oldest ones
-    if (lines.length >= MAX_LOG_LINES) {
-      StringBuilder newText = new StringBuilder();
-      // Keep only the most recent lines (skip the oldest)
-      for (int i = 1; i < lines.length; i++) {
-        newText.append(lines[i]).append("\n");
-      }
-      newText.append(line);
-      gameLog.setText(newText.toString());
-    } else {
-      // Just append the new line
-      gameLog.appendText(line + "\n");
-    }
+    // If we have too many lines, keep only the latest ones
+    String newText = (lines.length >= MAX_LOG_LINES)
+        ? Arrays.stream(lines).skip(1).collect(Collectors.joining("\n")) + "\n" + line
+        : gameLog.getText() + line + "\n";
 
+    gameLog.setText(newText);
     gameLog.setScrollTop(Double.MAX_VALUE);
   }
 

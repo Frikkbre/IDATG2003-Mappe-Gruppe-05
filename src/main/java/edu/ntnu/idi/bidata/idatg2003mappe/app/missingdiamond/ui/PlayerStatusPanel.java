@@ -57,9 +57,11 @@ public class PlayerStatusPanel extends VBox {
     scoreBoard.appendText("Scoreboard:\n");
 
     List<Player> players = gameController.getPlayers();
-    for (Player player : players) {
+
+
+    players.forEach(player -> {
       scoreBoard.appendText(player.getName() + ": £" +
           gameController.getBanker().getBalance(player) + "\n");
-    }
+    });
   }
 }

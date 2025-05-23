@@ -73,9 +73,7 @@ public class Player {
    * @param newTile The {@link Tile} the player moved to
    */
   private void notifyPlayerMoved(Tile oldTile, Tile newTile) {
-    for (PlayerObserver observer : observers) {
-      observer.onPlayerMoved(this, oldTile, newTile);
-    }
+    observers.forEach(observer -> observer.onPlayerMoved(this, oldTile, newTile));
   }
 
   /**

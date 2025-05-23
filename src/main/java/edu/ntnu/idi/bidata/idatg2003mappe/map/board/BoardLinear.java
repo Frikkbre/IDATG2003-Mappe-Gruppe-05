@@ -31,20 +31,17 @@ public class BoardLinear extends Board {
   }
 
   /**
-   * <p>Gets the tile by id using linear search.</p>
-   * <p>Searches through all tiles sequentially to find the one with the specified ID.
-   * This method may be less efficient than indexed lookups for large boards.</p>
+   * <p>Gets the starting tile of the board.</p>
+   * <p>Returns the first tile that was added to the board,
+   * which serves as the starting point for players.</p>
    *
-   * @param tileId The tile id.
-   * @return The tile with the specified id, or <code>null</code> if not found.
+   * @return The starting tile of the board.
    */
   public Tile getTileByIdLinear(int tileId) {
-    for (Tile tile : tiles) {
-      if (tile.getTileId() == tileId) {
-        return tile;
-      }
-    }
-    return null;
+    return tiles.stream()
+        .filter(tile -> tile.getTileId() == tileId)
+        .findFirst()
+        .orElse(null);
   }
 
   /**

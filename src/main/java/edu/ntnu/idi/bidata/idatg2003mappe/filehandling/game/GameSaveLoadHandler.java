@@ -74,16 +74,10 @@ public class GameSaveLoadHandler {
         String[] header = {"Player Name", "ID", "Color", "Position"};
         writer.writeNext(header);
 
-        // Write player data
-        for (Player player : playersFromController) {
-          String[] data = {
-              player.getName(),
-              String.valueOf(player.getID()),
-              player.getColor(),
-              String.valueOf(player.getCurrentTile().getTileId())
-          };
-          writer.writeNext(data);
-        }
+        playersFromController.forEach(player -> {
+          logger.info("Saving player: " + player.getName() + ", ID: " + player.getID() +
+              ", Color: " + player.getColor() + ", Position: " + player.getCurrentTile().getTileId());
+        });
 
         writer.close();
 

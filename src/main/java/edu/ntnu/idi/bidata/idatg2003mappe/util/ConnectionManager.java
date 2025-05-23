@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 public class ConnectionManager {
   private final Pane overlayPane;
   private final PointManager pointManager;
-  private final List<Line> connectionLines = new ArrayList<>();
+  private final Collection<Line> connectionLines = new ArrayList<>();
   private final MapDesignerListener listener;
 
   private static final Logger logger = Logger.getLogger(ConnectionManager.class.getName());
@@ -85,14 +86,15 @@ public class ConnectionManager {
     clearConnections();
 
     // Redraw all connections
-    for (CoordinatePoint source : pointManager.getAllPoints()) {
-      for (Integer targetId : source.getConnections()) {
-        CoordinatePoint target = pointManager.getPointById(targetId);
-        if (target != null) {
-          drawConnection(source, target);
-        }
-      }
-    }
+    pointManager.getAllPoints().forEach(source ->
+        source.getConnections().forEach(targetId -> {
+          CoordinatePoint target = pointManager.getPointById(targetId);
+          if (target != null) {
+            drawConnection(source, target);
+          }
+        })
+    );
+
   }
 
   /**

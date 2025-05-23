@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * <p>Welcome screen for setting up players before starting the game.</p>
@@ -265,11 +266,12 @@ public class PlayerSetupScreen extends Application {
     playerContainer.getChildren().clear();
 
     // Create new rows
-    for (int i = 1; i <= playerCount; i++) {
-      PlayerRow playerRow = new PlayerRow(i, availableColors);
-      playerRows.add(playerRow);
-      playerContainer.getChildren().add(playerRow.getContainer());
-    }
+    IntStream.rangeClosed(1, playerCount)
+        .mapToObj(i -> new PlayerRow(i, availableColors))
+        .peek(playerRows::add)
+        .map(PlayerRow::getContainer)
+        .forEach(playerContainer.getChildren()::add);
+
   }
 
   /**
@@ -283,34 +285,40 @@ public class PlayerSetupScreen extends Application {
    * </ul>
    */
   private void handleContinue() {
+    playerRows.forEach(row -> row.getContainer().setStyle("-fx-border-color: transparent;"));
+
     // Validate all players have names
-    for (PlayerRow row : playerRows) {
-      if (!row.isValid()) {
-        showAlert("Error", "All players must have names!", Alert.AlertType.ERROR);
-        return;
-      }
+    if (playerRows.stream().anyMatch(row -> !row.isValid())) {
+      showAlert("Error", "All players must have names!", Alert.AlertType.ERROR);
+      return;
     }
 
     // Check for duplicate names
     List<String> names = new ArrayList<>();
-    for (PlayerRow row : playerRows) {
+    if (playerRows.stream().anyMatch(row -> {
       String name = row.getName();
       if (names.contains(name)) {
-        showAlert("Error", "Player names must be unique!", Alert.AlertType.ERROR);
-        return;
+        return true;
       }
       names.add(name);
+      return false;
+    })) {
+      showAlert("Error", "Player names must be unique!", Alert.AlertType.ERROR);
+      return;
     }
 
     // Check for duplicate colors
     List<String> colors = new ArrayList<>();
-    for (PlayerRow row : playerRows) {
+    if (playerRows.stream().anyMatch(row -> {
       String color = row.getColor();
       if (colors.contains(color)) {
-        showAlert("Error", "Each player must have a different color!", Alert.AlertType.ERROR);
-        return;
+        return true;
       }
       colors.add(color);
+      return false;
+    })) {
+      showAlert("Error", "Each player must have a different color!", Alert.AlertType.ERROR);
+      return;
     }
 
     // Save player data and proceed
@@ -318,6 +326,7 @@ public class PlayerSetupScreen extends Application {
       proceedToGameSelection();
     }
   }
+
 
   /**
    * <p>Saves player data to CSV file.</p>
@@ -342,11 +351,16 @@ public class PlayerSetupScreen extends Application {
         writer.write("\"Player name\",\"ID\",\"Color\",\"Position\"\n");
 
         // Write player data
-        for (int i = 0; i < playerRows.size(); i++) {
-          PlayerRow row = playerRows.get(i);
-          writer.write(String.format("\"%s\",\"%d\",\"%s\",\"1\"\n",
-              row.getName(), i, row.getColor()));
-        }
+        IntStream.range(0, playerRows.size())
+            .mapToObj(i -> String.format("\"%s\",\"%d\",\"%s\",\"1\"\n",
+                playerRows.get(i).getName(), i, playerRows.get(i).getColor()))
+            .forEach(row -> {
+              try {
+                writer.write(row);
+              } catch (IOException e) {
+                throw new RuntimeException("Error writing player data", e);
+              }
+            });
       }
 
       return true;
@@ -356,6 +370,7 @@ public class PlayerSetupScreen extends Application {
       return false;
     }
   }
+
 
   /**
    * <p>Proceeds to the game selection screen.</p>

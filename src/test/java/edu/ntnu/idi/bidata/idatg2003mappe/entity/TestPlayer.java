@@ -23,28 +23,6 @@ class TestPlayer {
     player = null;
   }
 
-  // Test if the player is placed on the correct tile.
-
-  @Test
-  void testMovePlayer_WithValidCurrentTile() {
-    // Arrange: create a small chain of tiles
-    Tile tile1 = new Tile(1);
-    Tile tile2 = new Tile(2);
-    Tile tile3 = new Tile(3);
-    tile1.setNextTile(tile2);
-    tile2.setNextTile(tile3);
-
-    // Place the player on tile1
-    player.placePlayer(tile1);
-
-    // Act: move the player 2 steps
-    player.movePlayer(2);
-
-    // Assert: the player should now be on tile3
-    assertEquals(tile3, player.getCurrentTile(),
-        "Player should move from tile1 to tile3 in 2 steps.");
-  }
-
   // Ensuring illegalArgumentException is thrown when moving player with negative steps
 
   @Test

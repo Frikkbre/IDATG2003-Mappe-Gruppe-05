@@ -61,10 +61,8 @@ public class TileHighlighter {
    * a clean visual state.</p>
    */
   public void resetTileColors() {
-    for (Map.Entry<Integer, Circle> entry : tileCircles.entrySet()) {
-      int tileId = entry.getKey();
-      Circle tile = entry.getValue();
 
+    tileCircles.forEach((tileId, tile) -> {
       // Reset to original color based on tile type
       if (specialTileIds.contains(tileId)) {
         tile.setFill(SPECIAL_TILE_COLOR);
@@ -75,7 +73,7 @@ public class TileHighlighter {
       // Reset stroke
       tile.setStroke(Color.WHITE);
       tile.setStrokeWidth(NORMAL_STROKE_WIDTH);
-    }
+    });
   }
 
   /**
@@ -109,9 +107,7 @@ public class TileHighlighter {
     List<Tile> possibleMoves = gameController.getPossibleMoves();
 
     // Highlight each possible move
-    for (Tile tile : possibleMoves) {
-      highlightTile(tile);
-    }
+    possibleMoves.forEach(this::highlightTile);
   }
 
   /**

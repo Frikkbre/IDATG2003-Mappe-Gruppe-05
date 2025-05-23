@@ -3,6 +3,7 @@ package edu.ntnu.idi.bidata.idatg2003mappe.map.board;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,9 +52,7 @@ public class Board {
    * @param tiles The tiles to add.
    */
   public void addMultipleTilesToBoard(Tile... tiles) {
-    for (Tile tile : tiles) {
-      addTileToBoard(tile);
-    }
+    Arrays.stream(tiles).forEach(this::addTileToBoard);
   }
 
   /**
@@ -81,11 +80,10 @@ public class Board {
       return null;
     }
 
-    for (Tile tile : tiles) {
-      if (tile.getTileId() == tileId) {
-        return tile;
-      }
-    }
-    return null;
+    return tiles.stream()
+        .filter(tile -> tile.getTileId() == tileId)
+        .findFirst()
+        .orElse(null);
+
   }
 }
