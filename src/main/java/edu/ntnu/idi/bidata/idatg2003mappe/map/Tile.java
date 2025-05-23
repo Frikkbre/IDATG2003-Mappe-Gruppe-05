@@ -131,7 +131,7 @@ public class Tile {
 
     Tile current = this;
     return Stream.iterate(current, tile -> tile.getNextTile() != null, Tile::getNextTile)
-        .limit(steps)
+        .limit(steps + 1)
         .reduce((first, second) -> second)
         .orElse(current);
   }
