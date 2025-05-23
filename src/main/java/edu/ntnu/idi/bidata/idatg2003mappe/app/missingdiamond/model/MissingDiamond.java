@@ -22,6 +22,8 @@ import java.util.logging.Logger;
  * Represents the Missing Diamond game.
  * This class manages the game state and rules for the Missing Diamond game.
  *
+ * //TODO ADD Javadoc for the class
+ *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.1.0
  * @since 23.05.2025

@@ -18,9 +18,24 @@ import javafx.scene.text.FontWeight;
 import java.util.List;
 
 /**
- * Panel containing game controls like dice rolling and game log.
- * Includes token interaction options for 300 coins guaranteed flip.
- * Skip functionality removed - End Turn serves the same purpose.
+ * <p>Panel containing game controls and game log for the Missing Diamond game.</p>
+ * <p>This panel provides players with action buttons for gameplay, including:</p>
+ * <ul>
+ *   <li>Die rolling for movement</li>
+ *   <li>Token interaction options at special locations</li>
+ *   <li>Turn management controls</li>
+ * </ul>
+ * <p>It also displays a game log that shows recent game events and player information
+ * including current player and their financial status.</p>
+ * <p>Token interaction features two options:</p>
+ * <ol>
+ *   <li>A free but risky option that requires rolling 4-6 to succeed</li>
+ *   <li>A guaranteed option that costs 300 coins</li>
+ * </ol>
+ *
+ * @author Simen Gudbrandsen and Frikk Breadsroed
+ * @version 0.2.0
+ * @since 23.05.2025
  */
 public class GameControlPanel extends VBox {
   private final MissingDiamondController gameController;

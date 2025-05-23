@@ -9,11 +9,22 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.board.BoardLinear;
 import java.util.*;
 
 /**
- * Represents a Ladder Game (Snakes and Ladders) with configurable board setup.
- * This class handles the core game logic including board creation, player management,
- * and turn-based gameplay mechanics.
+ * <p>Represents a Ladder Game (Snakes and Ladders) with configurable board setup.</p>
+ * <p>This class handles the core game logic including board creation, player management,
+ * and turn-based gameplay mechanics. It supports both classic and random ladder
+ * configurations.</p>
+ * <p>The game consists of a 100-tile board where players roll dice to advance.
+ * Special ladder tiles move players forward or backward, while effect tiles
+ * trigger special actions like skipping turns or returning to start.</p>
  *
- * @author Simen Gudbrandsen and Frikk Breadsroed
+ * <p>Represents a Ladder Game (Snakes and Ladders) with configurable board setup.</p>
+ * <p>This class handles the core game logic including board creation, player management,
+ * and turn-based gameplay mechanics. It supports both classic and random ladder
+ * configurations.</p>
+ * <p>The game consists of a 100-tile board where players roll dice to advance.
+ * Special ladder tiles move players forward or backward, while effect tiles
+ * trigger special actions like skipping turns or returning to start.</p>
+ *
  * @version 1.0.0
  * @since 21.05.2025
  */
@@ -29,10 +40,12 @@ public class LadderGame {
   private final Die die;
 
   /**
-   * Creates a new Ladder Game with the specified configuration.
+   * <p>Creates a new Ladder Game with the specified configuration.</p>
+   * <p>Initializes the board, loads players, and sets up the game based on
+   * whether a random or classic ladder layout is desired.</p>
    *
-   * @param randomLadders true for random placement, false for classic setup
-   * @throws IllegalStateException if game initialization fails
+   * @param randomLadders <code>true</code> for random ladder placement, <code>false</code> for classic setup
+   * @throws IllegalStateException If no players could be loaded for the game
    */
   public LadderGame(boolean randomLadders) {
     this.die = new Die();
@@ -47,9 +60,11 @@ public class LadderGame {
   }
 
   /**
-   * Creates and configures the game board with tiles, ladders, and effects.
+   * <p>Creates and configures the game board with tiles, ladders, and effects.</p>
+   * <p>Uses the {@link LadderGameBoardFactory} to create either a random or classic board layout.</p>
    *
-   * @return configured BoardLinear instance
+   * @param randomLadders Whether to use random ladder placement
+   * @return Fully configured {@link BoardLinear} instance
    */
   private BoardLinear createBoard(boolean randomLadders) {
     if (randomLadders) {
@@ -60,9 +75,10 @@ public class LadderGame {
   }
 
   /**
-   * Loads players from CSV file using PlayerFactory.
+   * <p>Loads players from CSV file using PlayerFactory.</p>
+   * <p>Players are initialized with their starting positions on the board.</p>
    *
-   * @return list of players for the game
+   * @return List of {@link Player} objects for the game
    */
   private List<Player> loadPlayers() {
     return PlayerFactory.createPlayersFromCSV(PLAYER_DATA_FILE, board);
@@ -71,36 +87,38 @@ public class LadderGame {
   // Public getters
 
   /**
-   * Gets all players in the game.
+   * <p>Gets all players in the game.</p>
+   * <p>Returns a defensive copy to prevent external modification of the player list.</p>
    *
-   * @return unmodifiable list of players
+   * @return A new ArrayList containing all players
    */
   public List<Player> getPlayers() {
     return new ArrayList<>(players);
   }
 
   /**
-   * Gets the game board.
+   * <p>Gets the game board.</p>
    *
-   * @return the board instance
+   * @return The {@link BoardLinear} instance used by this game
    */
   public BoardLinear getBoard() {
     return board;
   }
 
   /**
-   * Gets the game die.
+   * <p>Gets the game die.</p>
+   * <p>This die is used for determining player movement distances.</p>
    *
-   * @return the die instance
+   * @return The {@link Die} instance used for this game
    */
   public Die getDie() {
     return die;
   }
 
   /**
-   * Gets the total number of tiles on the board.
+   * <p>Gets the total number of tiles on the board.</p>
    *
-   * @return number of tiles
+   * @return The number of tiles (100 for standard game)
    */
   public int getNumberOfTiles() {
     return BOARD_SIZE;

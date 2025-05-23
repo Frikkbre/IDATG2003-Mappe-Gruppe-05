@@ -13,11 +13,22 @@ import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 import java.util.*;
 
 /**
- * Controller class for the Missing Diamond game.
- * This class handles the game logic and player interactions.
+ * <p>Controller class for the Missing Diamond game.</p>
+ * <p>This class handles the game logic and player interactions, serving as
+ * the intermediary between the game model and the user interface. It manages
+ * the game state machine, processes player actions, and updates observers
+ * when significant game events occur.</p>
+ * <p>Key responsibilities include:</p>
+ * <ul>
+ *   <li>Managing turn sequence and player actions</li>
+ *   <li>Handling dice rolling and movement validation</li>
+ *   <li>Processing token interactions</li>
+ *   <li>Maintaining game state through defined action states</li>
+ *   <li>Notifying observers of game events</li>
+ * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
- * @version 0.3.0
+ * @version 0.0.3
  * @since 23.05.2025
  */
 public class MissingDiamondController {
@@ -39,7 +50,9 @@ public class MissingDiamondController {
   private final Map<ActionState, List<String>> availableActions = new HashMap<>();
 
   /**
-   * Constructor for MissingDiamondController.
+   * <p>Constructor for MissingDiamondController.</p>
+   * <p>Initializes a new game instance and sets up the available actions
+   * for each game state.</p>
    */
   public MissingDiamondController() {
     this.game = new MissingDiamond();
@@ -47,8 +60,9 @@ public class MissingDiamondController {
   }
 
   /**
-   * Initializes the available actions for each game state.
-   * Skip action removed from AWAITING_TOKEN_DECISION state.
+   * <p>Initializes the available actions for each game state.</p>
+   * <p>This method defines which actions are valid during each phase of a turn,
+   * creating a state machine to manage the game flow.</p>
    */
   private void initializeAvailableActions() {
     // Actions for each state
@@ -70,9 +84,16 @@ public class MissingDiamondController {
   }
 
   /**
-   * Rolls the die and updates the game state.
+   * <p>Rolls the die and updates the game state.</p>
+   * <p>When a player rolls the die, this method:</p>
+   * <ul>
+   *   <li>Validates that the roll action is allowed in the current state</li>
+   *   <li>Delegates to the game model to execute the roll</li>
+   *   <li>Updates the controller state to await movement</li>
+   *   <li>Checks if there are valid moves available</li>
+   * </ul>
    *
-   * @return A message describing the roll result
+   * @return A message describing the roll result and any additional information
    */
   public String playTurn() {
     if (currentState != ActionState.AWAITING_ROLL) {
@@ -95,10 +116,18 @@ public class MissingDiamondController {
   }
 
   /**
-   * Moves the player to the selected tile.
+   * <p>Moves the player to the selected tile.</p>
+   * <p>This method:</p>
+   * <ul>
+   *   <li>Validates that the move is allowed in the current state</li>
+   *   <li>Checks if the destination tile is a valid move based on the dice roll</li>
+   *   <li>Moves the player to the destination tile</li>
+   *   <li>Updates the game state based on the destination tile type</li>
+   *   <li>Checks for game-ending conditions</li>
+   * </ul>
    *
    * @param tileId The ID of the tile to move to
-   * @return A message describing the move result
+   * @return A message describing the move result and any subsequent options
    */
   public String movePlayer(int tileId) {
     // Check if player has rolled
@@ -148,19 +177,21 @@ public class MissingDiamondController {
   }
 
   /**
-   * Resets the roll state to allow the next player to roll.
-   * This should be called when ending turns to ensure the next player
-   * can roll the die in their turn.
+   * <p>Resets the roll state to allow the next player to roll.</p>
+   * <p>This should be called when ending turns to ensure the next player
+   * can roll the die in their turn.</p>
    */
   public void resetRollState() {
     this.hasRolled = false;
   }
 
   /**
-   * Buys a token flip for 300 coins (guaranteed success).
+   * <p>Buys a token flip for 300 coins (guaranteed success).</p>
+   * <p>This method lets a player pay coins to automatically flip a token
+   * without needing to roll the die.</p>
    *
-   * @param tile The tile with the token
-   * @return True if the purchase was successful, false otherwise
+   * @param tile The tile with the token to flip
+   * @return <code>true</code> if the purchase was successful, <code>false</code> otherwise
    */
   public boolean buyTokenFlip(Tile tile) {
     if (currentState != ActionState.AWAITING_TOKEN_DECISION) {
@@ -183,10 +214,11 @@ public class MissingDiamondController {
   }
 
   /**
-   * Checks if the specified tile is a special tile with a token.
+   * <p>Checks if the specified tile is a special tile with a token.</p>
+   * <p>Special tiles are locations where tokens can be placed and interacted with.</p>
    *
    * @param tileId The ID of the tile to check
-   * @return True if the tile is special, false otherwise
+   * @return <code>true</code> if the tile is special, <code>false</code> otherwise
    */
   public boolean isSpecialTile(int tileId) {
     Tile tile = getTileById(tileId);
@@ -197,10 +229,10 @@ public class MissingDiamondController {
   }
 
   /**
-   * Checks if a token is present at the specified tile.
+   * <p>Checks if a token is present at the specified tile.</p>
    *
    * @param tile The tile to check
-   * @return True if a token is present, false otherwise
+   * @return <code>true</code> if a token is present, <code>false</code> otherwise
    */
   public boolean hasTokenAtTile(Tile tile) {
     if (tile == null) {
@@ -212,7 +244,13 @@ public class MissingDiamondController {
   }
 
   /**
-   * Ends the current player's turn and moves to the next player.
+   * <p>Ends the current player's turn and moves to the next player.</p>
+   * <p>This method:</p>
+   * <ul>
+   *   <li>Advances to the next player in sequence</li>
+   *   <li>Resets the controller state to await a new roll</li>
+   *   <li>Notifies observers about the turn change</li>
+   * </ul>
    */
   public void endTurn() {
     // Store current player for notification
@@ -233,9 +271,10 @@ public class MissingDiamondController {
   }
 
   /**
-   * Applies a game state to this controller.
+   * <p>Applies a game state to this controller.</p>
+   * <p>Restores a saved game by updating player positions and controller state.</p>
    *
-   * @param gameState The game state to apply
+   * @param gameState The {@link GameState} to apply
    */
   public void applyGameState(GameState gameState) {
     game.setCurrentPlayerIndex(gameState.getCurrentPlayerIndex());
@@ -262,16 +301,28 @@ public class MissingDiamondController {
     currentState = ActionState.AWAITING_ROLL;
   }
 
+  /**
+   * <p>Gets the underlying game model.</p>
+   *
+   * @return The {@link MissingDiamond} game model
+   */
   public MissingDiamond getGame() {
     return this.game;
   }
 
+  /**
+   * <p>Removes a token from the specified tile.</p>
+   *
+   * @param tile The tile to remove the token from
+   * @return The removed {@link Marker}, or <code>null</code> if no token was present
+   */
   public Marker removeTokenFromTile(Tile tile) {
     return game.getTokenSystem().removeTokenFromTile(tile);
   }
 
   /**
-   * Gets a list of possible moves based on the current roll.
+   * <p>Gets a list of possible moves based on the current roll.</p>
+   * <p>These are the tiles that are exactly the rolled number of steps away.</p>
    *
    * @return A list of tiles that the player can move to
    */
@@ -283,10 +334,10 @@ public class MissingDiamondController {
   }
 
   /**
-   * Gets the token at a specific tile ID.
+   * <p>Gets the token at a specific tile ID.</p>
    *
    * @param tileId The ID of the tile to check
-   * @return The marker at the tile, or null if no marker exists
+   * @return The {@link Marker} at the tile, or <code>null</code> if no marker exists
    */
   public Marker getTokenAtTileId(int tileId) {
     Tile tile = game.getBoard().getTileById(tileId);
@@ -297,70 +348,75 @@ public class MissingDiamondController {
   }
 
   /**
-   * Registers a view to receive notifications about game events.
+   * <p>Registers a view to receive notifications about game events.</p>
    *
-   * @param view The view to register
+   * @param view The {@link MapDesignerListener} to register
    */
   public void registerView(MapDesignerListener view) {
     this.view = view;
   }
 
   /**
-   * Checks if the player has rolled the die.
+   * <p>Checks if the player has rolled the die.</p>
    *
-   * @return True if the player has rolled, false otherwise
+   * @return <code>true</code> if the player has rolled, <code>false</code> otherwise
    */
   public boolean hasRolled() {
     return hasRolled;
   }
 
-
   /**
-   * Gets the list of players.
+   * <p>Gets the list of players.</p>
    *
-   * @return The list of players
+   * @return The list of {@link Player} objects in the game
    */
   public List<Player> getPlayers() {
     return game.getPlayers();
   }
 
   /**
-   * Gets the current player.
+   * <p>Gets the current player.</p>
    *
-   * @return The current player
+   * @return The {@link Player} whose turn it currently is
    */
   public Player getCurrentPlayer() {
     return game.getCurrentPlayer();
   }
 
   /**
-   * Checks if the game is finished.
+   * <p>Checks if the game is finished.</p>
    *
-   * @return True if the game is finished, false otherwise
+   * @return <code>true</code> if the game is finished, <code>false</code> otherwise
    */
   public boolean isGameFinished() {
     return game.isGameFinished();
   }
 
   /**
-   * Gets a tile by its ID.
+   * <p>Gets a tile by its ID.</p>
    *
    * @param tileId The ID of the tile to get
-   * @return The tile with the specified ID, or null if not found
+   * @return The {@link Tile} with the specified ID, or <code>null</code> if not found
    */
   public Tile getTileById(int tileId) {
     return game.getBoard().getTileById(tileId);
   }
 
   /**
-   * Gets the banker.
+   * <p>Gets the banker.</p>
+   * <p>The banker manages all financial transactions in the game.</p>
    *
-   * @return The banker
+   * @return The {@link Banker} instance
    */
   public Banker getBanker() {
     return game.getBanker();
   }
 
+  /**
+   * <p>Gets the die used for movement rolls.</p>
+   *
+   * @return The {@link Die} instance
+   */
   public Die getDie() {
     return game.getDie();
   }

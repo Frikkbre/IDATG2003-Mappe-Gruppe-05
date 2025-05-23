@@ -8,8 +8,22 @@ import edu.ntnu.idi.bidata.idatg2003mappe.markers.*;
 import java.util.*;
 
 /**
- * Manages the token system for the Missing Diamond game.
- * Handles token creation, distribution, and interactions.
+ * <p>Manages the token system for the Missing Diamond game.</p>
+ * <p>This class handles all aspects of tokens (markers) in the game, including:</p>
+ * <ul>
+ *   <li>Token creation and random distribution on the board</li>
+ *   <li>Token interactions and effects when revealed</li>
+ *   <li>Managing victory conditions related to tokens</li>
+ *   <li>Special token actions like purchasing guaranteed token flips</li>
+ * </ul>
+ * <p>The token system includes various types of markers:</p>
+ * <ul>
+ *   <li>The Diamond (Star of Africa) - the main prize</li>
+ *   <li>Gems (Rubies, Emeralds, Topazes) - provide money</li>
+ *   <li>Bandits - cause players to lose all money</li>
+ *   <li>Visas - alternative way to win if another player finds the diamond</li>
+ *   <li>Blank markers - no effect</li>
+ * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.2

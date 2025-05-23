@@ -19,7 +19,18 @@ import javafx.stage.Stage;
 import java.util.logging.Logger;
 
 /**
- * GUI class for the Missing Diamond game.
+ * <p>GUI class for the Missing Diamond game.</p>
+ * <p>This class provides the main graphical user interface for the Missing Diamond game,
+ * including the game board, control panels, and player statistics. It handles user interactions,
+ * initializes the game components, and manages the display of game elements.</p>
+ * <p>Key features:</p>
+ * <ul>
+ *   <li>Interactive game board with clickable locations</li>
+ *   <li>Player status display showing current funds</li>
+ *   <li>Game control panel with action buttons</li>
+ *   <li>Game log for displaying event messages</li>
+ *   <li>Support for map configuration loading and visualization</li>
+ * </ul>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.6
