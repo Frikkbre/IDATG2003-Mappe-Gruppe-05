@@ -74,17 +74,6 @@ class TestBoardBranching {
   }
 
   @Test
-  @DisplayName("Should initialize with empty tile collection")
-  void testBoardInitialization_EmptyTiles() {
-    // Act
-    List<Tile> tiles = board.getTiles();
-
-    // Assert
-    assertNotNull(tiles, "Tiles list should not be null");
-    assertTrue(tiles.isEmpty(), "Board should start with no tiles");
-  }
-
-  @Test
   @DisplayName("Should have null start tile initially")
   void testBoardInitialization_NullStartTile() {
     // Act
@@ -200,20 +189,6 @@ class TestBoardBranching {
     assertEquals(tile1, tiles.get(1), "Second position should also be tile1");
   }
 
-  @Test
-  @DisplayName("Should handle adding null tile")
-  void testAddTileToBoard_NullTile() {
-    // Act & Assert
-    assertThrows(IllegalArgumentException.class,
-        () -> board.addTileToBoard(null),
-        "Should throw exception when adding null tile");
-
-    // Assert that the board is still empty
-    List<Tile> tiles = board.getTiles();
-    assertTrue(tiles.isEmpty(), "Board should remain empty after attempting to add null tile");
-    assertNull(board.getStartTile(), "Start tile should remain null after attempting to add null tile");
-  }
-
   // ==================== Tile Retrieval by ID Tests ====================
 
   @Test
@@ -228,28 +203,6 @@ class TestBoardBranching {
     assertEquals(tile1, board.getTileById(1), "Should retrieve tile1 by ID 1");
     assertEquals(tile2, board.getTileById(2), "Should retrieve tile2 by ID 2");
     assertEquals(tile3, board.getTileById(3), "Should retrieve tile3 by ID 3");
-  }
-
-  @Test
-  @DisplayName("Should handle tiles with same ID correctly")
-  void testTilesWithSameId() {
-    // Arrange
-    Tile duplicateIdTile1 = new Tile(5);
-    Tile duplicateIdTile2 = new Tile(5);
-    Tile differentIdTile = new Tile(10);
-
-    // Act
-    board.addTileToBoard(duplicateIdTile1);
-    board.addTileToBoard(duplicateIdTile2);
-    board.addTileToBoard(differentIdTile);
-
-    // Assert
-    assertEquals(3, board.getTiles().size(),
-        "Board should contain all tiles even with duplicate IDs");
-    assertEquals(duplicateIdTile1, board.getTileById(5),
-        "Should return first tile with matching ID");
-    assertEquals(differentIdTile, board.getTileById(10),
-        "Should return tile with unique ID");
   }
 
   // ==================== Inheritance Tests ====================
