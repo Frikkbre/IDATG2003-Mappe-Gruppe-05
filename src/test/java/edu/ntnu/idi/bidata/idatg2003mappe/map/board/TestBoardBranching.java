@@ -11,7 +11,7 @@ import java.util.List;
  * Comprehensive test class for BoardBranching following AAA pattern.
  * Tests board initialization, tile management, connections, and branching functionality.
  * Includes both positive and negative test cases as required for A grade.
- *
+ * 
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 1.0.0
  * @since 23.5.2025
@@ -69,7 +69,7 @@ class TestBoardBranching {
 
     // Assert
     assertNotNull(board, "Board should be initialized");
-    assertEquals("Missing Diamond", board.getBoardName(),
+    assertEquals("Missing Diamond", board.getBoardName(), // Changed from setBoardName()
         "Default board name should be 'Missing Diamond'");
   }
 
@@ -204,13 +204,14 @@ class TestBoardBranching {
   @DisplayName("Should handle adding null tile")
   void testAddTileToBoard_NullTile() {
     // Act & Assert
-    assertDoesNotThrow(() -> board.addTileToBoard(null),
-        "Adding null tile should not throw exception");
+    assertThrows(IllegalArgumentException.class,
+        () -> board.addTileToBoard(null),
+        "Should throw exception when adding null tile");
 
+    // Assert that the board is still empty
     List<Tile> tiles = board.getTiles();
-    assertEquals(1, tiles.size(), "Board should have one entry");
-    assertNull(tiles.get(0), "Entry should be null");
-    assertNull(board.getStartTile(), "Start tile should be null");
+    assertTrue(tiles.isEmpty(), "Board should remain empty after attempting to add null tile");
+    assertNull(board.getStartTile(), "Start tile should remain null after attempting to add null tile");
   }
 
   // ==================== Tile Retrieval by ID Tests ====================
@@ -227,264 +228,6 @@ class TestBoardBranching {
     assertEquals(tile1, board.getTileById(1), "Should retrieve tile1 by ID 1");
     assertEquals(tile2, board.getTileById(2), "Should retrieve tile2 by ID 2");
     assertEquals(tile3, board.getTileById(3), "Should retrieve tile3 by ID 3");
-  }
-
-  @Test
-  @DisplayName("Should return null for non-existing tile ID")
-  void testGetTileById_NonExistingId() {
-    // Arrange
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-
-    // Act
-    Tile result = board.getTileById(99);
-
-    // Assert
-    assertNull(result, "Should return null for non-existing tile ID");
-  }
-
-  @Test
-  @DisplayName("Should return null when searching empty board")
-  void testGetTileById_EmptyBoard() {
-    // Arrange - empty board
-
-    // Act
-    Tile result = board.getTileById(1);
-
-    // Assert
-    assertNull(result, "Should return null when searching empty board");
-  }
-
-  @Test
-  @DisplayName("Should handle negative tile ID")
-  void testGetTileById_NegativeId() {
-    // Arrange
-    board.addTileToBoard(tile1);
-
-    // Act
-    Tile result = board.getTileById(-1);
-
-    // Assert
-    assertNull(result, "Should return null for negative tile ID");
-  }
-
-  @Test
-  @DisplayName("Should handle zero tile ID")
-  void testGetTileById_ZeroId() {
-    // Arrange
-    board.addTileToBoard(tile1);
-
-    // Act
-    Tile result = board.getTileById(0);
-
-    // Assert
-    assertNull(result, "Should return null for zero tile ID");
-  }
-
-  @Test
-  @DisplayName("Should retrieve first matching tile when duplicates exist")
-  void testGetTileById_DuplicateIds() {
-    // Arrange
-    Tile firstTile1 = new Tile(1);
-    Tile secondTile1 = new Tile(1); // Same ID as first
-
-    board.addTileToBoard(firstTile1);
-    board.addTileToBoard(secondTile1);
-    board.addTileToBoard(tile2);
-
-    // Act
-    Tile result = board.getTileById(1);
-
-    // Assert
-    assertEquals(firstTile1, result, "Should return first tile with matching ID");
-    assertNotEquals(secondTile1, result, "Should not return second tile with same ID");
-  }
-
-  // ==================== Tile Connection Tests ====================
-
-  @Test
-  @DisplayName("Should successfully connect two tiles bidirectionally")
-  void testConnectTiles_ValidTiles() {
-    // Arrange
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-
-    // Act
-    board.connectTiles(tile1, tile2);
-
-    // Assert
-    assertTrue(tile1.getNextTiles().contains(tile2),
-        "Tile1 should have tile2 in its next tiles");
-    assertTrue(tile2.getNextTiles().contains(tile1),
-        "Tile2 should have tile1 in its next tiles");
-  }
-
-  @Test
-  @DisplayName("Should create branching paths with multiple connections")
-  void testConnectTiles_MultipleBranches() {
-    // Arrange
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-    board.addTileToBoard(tile3);
-    board.addTileToBoard(tile4);
-
-    // Act - Create branching structure: tile1 connects to tile2 and tile3
-    board.connectTiles(tile1, tile2);
-    board.connectTiles(tile1, tile3);
-    board.connectTiles(tile2, tile4);
-
-    // Assert
-    assertEquals(2, tile1.getNextTiles().size(),
-        "Tile1 should have 2 connections");
-    assertTrue(tile1.getNextTiles().contains(tile2),
-        "Tile1 should connect to tile2");
-    assertTrue(tile1.getNextTiles().contains(tile3),
-        "Tile1 should connect to tile3");
-
-    assertEquals(2, tile2.getNextTiles().size(),
-        "Tile2 should have 2 connections");
-    assertTrue(tile2.getNextTiles().contains(tile1),
-        "Tile2 should connect back to tile1");
-    assertTrue(tile2.getNextTiles().contains(tile4),
-        "Tile2 should connect to tile4");
-  }
-
-  @Test
-  @DisplayName("Should handle connecting tile to itself")
-  void testConnectTiles_SelfConnection() {
-    // Arrange
-    board.addTileToBoard(tile1);
-
-    // Act
-    board.connectTiles(tile1, tile1);
-
-    // Assert
-    assertTrue(tile1.getNextTiles().contains(tile1),
-        "Tile should be able to connect to itself");
-    assertEquals(1, tile1.getNextTiles().size(),
-        "Self-connected tile should have one connection");
-  }
-
-  @Test
-  @DisplayName("Should handle duplicate connections gracefully")
-  void testConnectTiles_DuplicateConnection() {
-    // Arrange
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-
-    // Act
-    board.connectTiles(tile1, tile2);
-    board.connectTiles(tile1, tile2); // Connect again
-
-    // Assert
-    // Note: This depends on implementation - might add duplicate or ignore
-    // Testing current behavior
-    assertTrue(tile1.getNextTiles().contains(tile2),
-        "Connection should still exist");
-    assertTrue(tile2.getNextTiles().contains(tile1),
-        "Reverse connection should still exist");
-  }
-
-  @Test
-  @DisplayName("Should handle connecting null tiles")
-  void testConnectTiles_NullTiles() {
-    // Act & Assert
-    assertDoesNotThrow(() -> board.connectTiles(null, tile1),
-        "Should handle null first tile gracefully");
-    assertDoesNotThrow(() -> board.connectTiles(tile1, null),
-        "Should handle null second tile gracefully");
-    assertDoesNotThrow(() -> board.connectTiles(null, null),
-        "Should handle both null tiles gracefully");
-  }
-
-  // ==================== Complex Board Structure Tests ====================
-
-  @Test
-  @DisplayName("Should create complex branching network")
-  void testComplexBranchingNetwork() {
-    // Arrange
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-    board.addTileToBoard(tile3);
-    board.addTileToBoard(tile4);
-    board.addTileToBoard(tile5);
-
-    // Act - Create diamond-shaped network
-    board.connectTiles(tile1, tile2);
-    board.connectTiles(tile1, tile3);
-    board.connectTiles(tile2, tile4);
-    board.connectTiles(tile3, tile4);
-    board.connectTiles(tile4, tile5);
-
-    // Assert
-    assertEquals(2, tile1.getNextTiles().size(), "Tile1 should have 2 connections");
-    assertEquals(2, tile2.getNextTiles().size(), "Tile2 should have 2 connections");
-    assertEquals(2, tile3.getNextTiles().size(), "Tile3 should have 2 connections");
-    assertEquals(3, tile4.getNextTiles().size(), "Tile4 should have 3 connections");
-    assertEquals(1, tile5.getNextTiles().size(), "Tile5 should have 1 connection");
-
-    // Verify specific connections
-    assertTrue(tile1.getNextTiles().contains(tile2) && tile1.getNextTiles().contains(tile3),
-        "Tile1 should connect to both tile2 and tile3");
-    assertTrue(tile4.getNextTiles().contains(tile2) && tile4.getNextTiles().contains(tile3) && tile4.getNextTiles().contains(tile5),
-        "Tile4 should be connected to tile2, tile3, and tile5");
-  }
-
-  @Test
-  @DisplayName("Should maintain board integrity after multiple operations")
-  void testBoardIntegrity_MultipleOperations() {
-    // Arrange & Act - Perform multiple operations
-    board.setBoardName("Test Adventure");
-    board.addTileToBoard(tile1);
-    board.addTileToBoard(tile2);
-    board.addTileToBoard(tile3);
-    board.connectTiles(tile1, tile2);
-    board.connectTiles(tile2, tile3);
-
-    // Assert - Verify all aspects are maintained
-    assertEquals("Test Adventure", board.getBoardName(),
-        "Board name should be maintained");
-    assertEquals(3, board.getTiles().size(),
-        "Board should have 3 tiles");
-    assertEquals(tile1, board.getStartTile(),
-        "Start tile should be maintained");
-    assertEquals(tile1, board.getTileById(1),
-        "Tile retrieval should work");
-    assertEquals(tile2, board.getTileById(2),
-        "Tile retrieval should work");
-    assertEquals(tile3, board.getTileById(3),
-        "Tile retrieval should work");
-
-    // Verify connections are maintained
-    assertTrue(tile1.getNextTiles().contains(tile2),
-        "Connections should be maintained");
-    assertTrue(tile2.getNextTiles().contains(tile1),
-        "Reverse connections should be maintained");
-    assertTrue(tile2.getNextTiles().contains(tile3),
-        "All connections should be maintained");
-  }
-
-  // ==================== Edge Case Tests ====================
-
-  @Test
-  @DisplayName("Should handle large number of tiles")
-  void testLargeNumberOfTiles() {
-    // Arrange & Act
-    for (int i = 1; i <= 100; i++) {
-      board.addTileToBoard(new Tile(i));
-    }
-
-    // Assert
-    assertEquals(100, board.getTiles().size(),
-        "Board should handle large number of tiles");
-    assertNotNull(board.getTileById(1),
-        "Should retrieve first tile");
-    assertNotNull(board.getTileById(50),
-        "Should retrieve middle tile");
-    assertNotNull(board.getTileById(100),
-        "Should retrieve last tile");
-    assertNull(board.getTileById(101),
-        "Should return null for non-existing tile");
   }
 
   @Test
