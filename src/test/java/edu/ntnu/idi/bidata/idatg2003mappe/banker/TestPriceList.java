@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the PriceList class.
  * Tests the initialization, retrieval and setting of prices for various services.
  *
- * @author Your Name
  * @version 1.0.0
  * @since 1.0.0
  */
