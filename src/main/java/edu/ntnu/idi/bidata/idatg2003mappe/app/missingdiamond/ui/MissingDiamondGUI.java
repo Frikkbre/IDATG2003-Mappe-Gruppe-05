@@ -59,7 +59,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   private VBox gameHeader;
   private HBox gameContent;
   private VBox leftSidebar;
-  private VBox rightPanel;
   private Label gameStatusLabel;
   private ProgressIndicator loadingIndicator;
   private VBox developerToolsPanel;
@@ -74,8 +73,8 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     try {
       initializeComponents();
       setupMainLayout();
+      createScene(); // Create scene before loading stylesheet
       loadStylesheet();
-      createScene();
 
       // Load game configuration with loading animation
       loadGameConfigurationWithAnimation();
@@ -87,41 +86,10 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     } catch (Exception e) {
       logger.severe("Failed to initialize Missing Diamond GUI: " + e.getMessage());
+      e.printStackTrace(); // Add stack trace for debugging
       showErrorDialog("Initialization Error",
           "Failed to start the game. Please check your installation.", e);
     }
-  }
-
-  /**
-   * <p>Initializes all game components and UI elements.</p>
-   */
-  private void initializeComponents() {
-    // Initialize core game components
-    gameController = new MissingDiamondController();
-    boardView = new BoardView();
-
-    // Connect board view to controller
-    boardView.setGameController(gameController);
-
-    // Initialize map designer
-    mapDesignerManager = createMapDesignerManager();
-    boardView.setMapDesignerManager(mapDesignerManager);
-
-    // Initialize UI panels
-    controlPanel = new GameControlPanel(gameController, boardView);
-    statusPanel = new PlayerStatusPanel(gameController);
-    controlPanel.setStatusPanel(statusPanel);
-
-    // Initialize navigation
-    navBar = new NavBar();
-    navBar.setStage(primaryStage);
-    navBar.setGameController(gameController);
-    navBar.setMissingDiamondGUI(this);
-
-    // Register listener
-    gameController.registerView(this);
-
-    logger.info("Game components initialized successfully");
   }
 
   /**
@@ -151,7 +119,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     VBox topSection = new VBox();
     topSection.getChildren().addAll(
         navBar.createMenuBar(),
-        gameHeader,
         developerToolsPanel
     );
     return topSection;
@@ -172,13 +139,67 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     // Center board area
     StackPane boardContainer = createBoardContainer();
 
-    // Right panel for additional info (expandable)
-    createRightPanel();
-
     // Set up responsive constraints
     HBox.setHgrow(boardContainer, Priority.ALWAYS);
 
-    gameContent.getChildren().addAll(leftSidebar, boardContainer, rightPanel);
+    gameContent.getChildren().addAll(leftSidebar, boardContainer);
+  }
+
+  private void initializeUIComponents() {
+    // Initialize gameHeader
+    gameHeader = new VBox(10);
+    gameHeader.setPadding(new Insets(15, 20, 15, 20));
+    gameHeader.setAlignment(Pos.CENTER);
+    gameHeader.getStyleClass().add("glass-container");
+
+    // Initialize game status label
+    gameStatusLabel = new Label("Loading game...");
+    gameStatusLabel.getStyleClass().add("subtitle-label");
+    gameStatusLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+
+    // Initialize loading indicator
+    loadingIndicator = new ProgressIndicator();
+    loadingIndicator.setPrefSize(30, 30);
+    loadingIndicator.setVisible(false);
+
+    // Add components to gameHeader
+    HBox statusBox = new HBox(10);
+    statusBox.setAlignment(Pos.CENTER);
+    statusBox.getChildren().addAll(gameStatusLabel, loadingIndicator);
+
+    gameHeader.getChildren().add(statusBox);
+  }
+
+  private void initializeComponents() {
+    // Initialize UI components first
+    initializeUIComponents();
+
+    // Initialize core game components
+    gameController = new MissingDiamondController();
+    boardView = new BoardView();
+
+    // Connect board view to controller
+    boardView.setGameController(gameController);
+
+    // Initialize map designer
+    mapDesignerManager = createMapDesignerManager();
+    boardView.setMapDesignerManager(mapDesignerManager);
+
+    // Initialize UI panels
+    controlPanel = new GameControlPanel(gameController, boardView);
+    statusPanel = new PlayerStatusPanel(gameController);
+    controlPanel.setStatusPanel(statusPanel);
+
+    // Initialize navigation
+    navBar = new NavBar();
+    navBar.setStage(primaryStage);
+    navBar.setGameController(gameController);
+    navBar.setMissingDiamondGUI(this);
+
+    // Register listener
+    gameController.registerView(this);
+
+    logger.info("Game components initialized successfully");
   }
 
   /**
@@ -236,81 +257,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   /**
-   * <p>Creates the right panel for additional game information.</p>
-   */
-  private void createRightPanel() {
-    rightPanel = new VBox(15);
-    rightPanel.setPrefWidth(250);
-    rightPanel.setMaxWidth(250);
-    rightPanel.setPadding(new Insets(20));
-    rightPanel.getStyleClass().addAll("center-content", "spaced-container");
-
-    // Game instructions
-    Label instructionsTitle = new Label("📖 How to Play");
-    instructionsTitle.getStyleClass().add("subtitle-label");
-    instructionsTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
-
-    TextArea instructionsText = new TextArea();
-    instructionsText.getStyleClass().add("game-text-field");
-    instructionsText.setEditable(false);
-    instructionsText.setWrapText(true);
-    instructionsText.setPrefHeight(200);
-    instructionsText.setText(
-        "🎯 Goal: Find the missing diamond!\n\n" +
-            "🎲 Roll the die to move around Africa\n\n" +
-            "🔴 Red tiles contain hidden tokens:\n" +
-            "• 💎 Diamond (win condition)\n" +
-            "• 💰 Gems (earn money)\n" +
-            "• 📄 Visa cards\n" +
-            "• ☠️ Bandits (lose money)\n\n" +
-            "💡 Tips:\n" +
-            "• Roll 4-6 for free token attempt\n" +
-            "• Pay £300 for guaranteed token\n" +
-            "• Return to start with diamond to win!"
-    );
-
-    // Game statistics
-    Label statsTitle = new Label("📊 Game Statistics");
-    statsTitle.getStyleClass().add("subtitle-label");
-    statsTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
-
-    VBox statsBox = createGameStatsBox();
-
-    rightPanel.getChildren().addAll(
-        instructionsTitle,
-        instructionsText,
-        new Separator(),
-        statsTitle,
-        statsBox
-    );
-
-    // Initially hide right panel to save space
-    rightPanel.setVisible(false);
-    rightPanel.setManaged(false);
-  }
-
-  /**
-   * <p>Creates a statistics box showing game progress.</p>
-   */
-  private VBox createGameStatsBox() {
-    VBox statsBox = new VBox(8);
-    statsBox.getStyleClass().add("glass-container");
-    statsBox.setPadding(new Insets(10));
-
-    // Add statistics labels that will be updated during gameplay
-    Label turnsLabel = new Label("Turns played: 0");
-    Label tokensFoundLabel = new Label("Tokens found: 0");
-    Label moneySpentLabel = new Label("Money spent: £0");
-
-    turnsLabel.getStyleClass().add("info-label");
-    tokensFoundLabel.getStyleClass().add("info-label");
-    moneySpentLabel.getStyleClass().add("info-label");
-
-    statsBox.getChildren().addAll(turnsLabel, tokensFoundLabel, moneySpentLabel);
-    return statsBox;
-  }
-
-  /**
    * <p>Creates the developer tools panel (hidden by default).</p>
    */
   private void createDeveloperToolsPanel() {
@@ -320,7 +266,7 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     developerToolsPanel.setVisible(false);
     developerToolsPanel.setManaged(false);
 
-    Label devTitle = new Label("🔧 Developer Tools");
+    Label devTitle = new Label("Developer Tools");
     devTitle.getStyleClass().add("subtitle-label");
     devTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
 
@@ -403,14 +349,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
    */
   private void handleWindowResize() {
     Platform.runLater(() -> {
-      // Adjust right panel visibility based on window size
-      if (primaryStage.getWidth() > 1600) {
-        rightPanel.setVisible(true);
-        rightPanel.setManaged(true);
-      } else {
-        rightPanel.setVisible(false);
-        rightPanel.setManaged(false);
-      }
 
       // Update board view dimensions if needed
       if (mapDesignerManager != null) {
@@ -427,7 +365,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
    */
   private void loadGameConfigurationWithAnimation() {
     showLoading(true);
-    updateGameStatus("Loading map configuration...");
 
     // Load in background thread
     Platform.runLater(() -> {
@@ -437,7 +374,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
         Platform.runLater(() -> {
           boardView.createLocationsFromConfig(mapConfig);
           boardView.synchronizeTilesWithDesigner(mapDesignerManager);
-          updateGameStatus("Map loaded successfully!");
           showLoading(false);
 
           // Add fade-in animation for board
@@ -449,7 +385,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
       } catch (FileHandlingException e) {
         Platform.runLater(() -> {
-          updateGameStatus("Using default map configuration");
           boardView.createDefaultLocations();
           boardView.synchronizeTilesWithDesigner(mapDesignerManager);
           showLoading(false);
@@ -541,8 +476,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     alert.setHeaderText(null);
     alert.setContentText(message + (e != null ? "\n\nError: " + e.getMessage() : ""));
 
-    // Apply styling
-    alert.getDialogPane().getStylesheets().addAll(primaryStage.getScene().getStylesheets());
+    if (primaryStage != null && primaryStage.getScene() != null) {
+      alert.getDialogPane().getStylesheets().addAll(primaryStage.getScene().getStylesheets());
+    }
     alert.showAndWait();
   }
 
@@ -555,8 +491,9 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
     alert.setHeaderText(null);
     alert.setContentText(message);
 
-    // Apply styling
-    alert.getDialogPane().getStylesheets().addAll(primaryStage.getScene().getStylesheets());
+    if (primaryStage != null && primaryStage.getScene() != null) {
+      alert.getDialogPane().getStylesheets().addAll(primaryStage.getScene().getStylesheets());
+    }
     alert.showAndWait();
   }
 
