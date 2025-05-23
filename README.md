@@ -1,7 +1,7 @@
 # IDATG2003 - Mappe
 
 ## Authors
-Simen Gudbrandsen - candidatenumber: \
+Simen Gudbrandsen - 10017 \
 Frikk Brændsrød - 10011
 
 ## Projects description
