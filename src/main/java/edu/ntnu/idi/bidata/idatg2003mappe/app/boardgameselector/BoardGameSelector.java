@@ -16,9 +16,9 @@ import javafx.stage.Stage;
 import java.io.File;
 
 /**
- * Class for the board game selector GUI.
- * Now simplified to only handle game selection since player setup
- * is handled in the dedicated PlayerSetupScreen.
+ * <p>Class for the board game selector GUI.</p>
+ * <p>Now simplified to only handle game selection since player setup
+ * is handled in the dedicated PlayerSetupScreen.</p>
  *
  * @author Simen Gudbrandsen and Frikk Breadsroed
  * @version 0.0.2
@@ -30,7 +30,7 @@ public class BoardGameSelector extends Application {
   private Stage primaryStage;
 
   /**
-   * Method to set the stage of the application.
+   * <p>Method to set the stage of the application.</p>
    *
    * @param primaryStage the primary stage to set
    */
@@ -39,8 +39,8 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Used to get the stage of the application.
-   * Used in other game classes to add their scene to the stage.
+   * <p>Used to get the stage of the application.</p>
+   * <p>Used in other game classes to add their scene to the stage.</p>
    *
    * @return the primaryStage
    */
@@ -49,8 +49,8 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Start method for the JavaFX application.
-   * This method is used to start the JavaFX application.
+   * <p>Start method for the JavaFX application.</p>
+   * <p>This method is used to start the JavaFX application.</p>
    *
    * @param primaryStage The primary stage for this application.
    * @throws Exception If an error occurs during startup.
@@ -86,10 +86,10 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Method to create the center pane of the GUI.
-   * Simplified to only show game selection buttons.
+   * <p>Method to create the center pane of the GUI.</p>
+   * <p>Simplified to only show game selection buttons.</p>
    *
-   * @return centerPane
+   * @return centerPane A VBox containing the game selection UI elements
    */
   private VBox createCenterPane() {
     VBox centerPane = new VBox(30);
@@ -115,7 +115,8 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Starts the Ladder Game.
+   * <p>Starts the Ladder Game.</p>
+   * <p>Attempts to launch the Ladder Game UI and displays an error alert if it fails.</p>
    */
   private void startLadderGame() {
     try {
@@ -126,7 +127,8 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Starts the Missing Diamond game.
+   * <p>Starts the Missing Diamond game.</p>
+   * <p>Attempts to launch the Missing Diamond game UI and displays an error alert if it fails.</p>
    */
   private void startMissingDiamond() {
     try {
@@ -137,9 +139,10 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Checks if player data file exists.
+   * <p>Checks if player data file exists.</p>
+   * <p>Verifies that the required player data CSV file is present before allowing game selection.</p>
    *
-   * @return true if player data exists, false otherwise
+   * @return <code>true</code> if player data exists, <code>false</code> otherwise
    */
   private boolean playerDataExists() {
     File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
@@ -147,11 +150,12 @@ public class BoardGameSelector extends Application {
   }
 
   /**
-   * Shows an alert dialog.
+   * <p>Shows an alert dialog.</p>
+   * <p>Displays information to the user through a JavaFX Alert dialog.</p>
    *
    * @param title   the title of the alert
    * @param message the message to display
-   * @param type    the type of alert
+   * @param type    the type of alert (ERROR, WARNING, INFORMATION, etc.)
    */
   private void showAlert(String title, String message, Alert.AlertType type) {
     Alert alert = new Alert(type);

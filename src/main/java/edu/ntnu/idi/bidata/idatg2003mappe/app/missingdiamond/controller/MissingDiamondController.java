@@ -143,7 +143,6 @@ public class MissingDiamondController {
       }
     } else {
       // Black tile (regular movement tile) - automatically end turn
-      endTurn();
       return moveResult + "\nTurn ended automatically. Next player's turn.";
     }
   }
