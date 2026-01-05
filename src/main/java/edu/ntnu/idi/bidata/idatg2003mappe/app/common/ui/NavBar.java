@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 public class NavBar {
   private static final Logger logger = Logger.getLogger(NavBar.class.getName());
   private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
-  public Object gameController;
-  BoardGameSelector boardGameSelector = new BoardGameSelector();
-  GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
+  private Object gameController;
+  private final BoardGameSelector boardGameSelector = new BoardGameSelector();
+  private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
   private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
   private Stage stage;
   private MapDesignerTool mapDesignerTool;
@@ -132,7 +132,7 @@ public class NavBar {
         try {
           // Create new LadderGameGUI with toggled random state
           LadderGameGUI newLadderGUI = new LadderGameGUI();
-          newLadderGUI.randomLadders = newRandomState;
+          newLadderGUI.setRandomLadders(newRandomState);
           newLadderGUI.start(getStage());
 
           Alert alert = new Alert(Alert.AlertType.INFORMATION);

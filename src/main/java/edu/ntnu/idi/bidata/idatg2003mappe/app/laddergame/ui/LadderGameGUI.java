@@ -62,9 +62,9 @@ public class LadderGameGUI extends Application {
   private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
   private final Map<Player, Circle> playerCircles = new HashMap<>();
   private final Map<Integer, TextField> tileFields = new HashMap<>();
-  public TextArea scoreBoard;
-  public boolean randomLadders = false;
-  public NavBar navBar;
+  private TextArea scoreBoard;
+  private boolean randomLadders = false;
+  private NavBar navBar;
   private LadderGameController gameController;
   private GridPane boardGrid;
   private TextArea gameLog;
@@ -79,6 +79,25 @@ public class LadderGameGUI extends Application {
    */
   public static void main(String[] args) {
     launch(args);
+  }
+
+  /**
+   * <p>Sets whether random ladders mode is enabled.</p>
+   * <p>When enabled, ladder positions are randomized at game start.</p>
+   *
+   * @param randomLadders true to enable random ladders mode, false for classic mode
+   */
+  public void setRandomLadders(boolean randomLadders) {
+    this.randomLadders = randomLadders;
+  }
+
+  /**
+   * <p>Returns whether random ladders mode is enabled.</p>
+   *
+   * @return true if random ladders mode is enabled, false otherwise
+   */
+  public boolean isRandomLadders() {
+    return randomLadders;
   }
 
   /**
