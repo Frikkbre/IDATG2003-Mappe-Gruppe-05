@@ -16,11 +16,25 @@ public class YellowGem extends Marker {
   private static final int VALUE = 1000;
 
   /**
+   * The actual reward amount when this gem is found.
+   */
+  private static final int REWARD = 2000;
+
+  /**
    * <p>Constructor for the YellowGem class.</p>
    * <p>Initializes a new YellowGem marker with predefined type and value.
    * Yellow gems have a standard value of 1000 currency units.</p>
    */
   public YellowGem() {
     super(TYPE, VALUE);
+  }
+
+  /**
+   * {@inheritDoc}
+   * <p>Yellow gems (topazes) reward the player with 2000 currency units.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.depositMoney(REWARD);
   }
 }

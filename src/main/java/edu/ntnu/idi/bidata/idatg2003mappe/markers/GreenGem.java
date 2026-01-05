@@ -16,11 +16,25 @@ public class GreenGem extends Marker {
   private static final int VALUE = 300;
 
   /**
+   * The actual reward amount when this gem is found.
+   */
+  private static final int REWARD = 4000;
+
+  /**
    * <p>Constructor for the GreenGem class.</p>
    * <p>Initializes a new GreenGem marker with predefined type and value.
    * Green gems have a standard value of 300 currency units.</p>
    */
   public GreenGem() {
     super(TYPE, VALUE);
+  }
+
+  /**
+   * {@inheritDoc}
+   * <p>Green gems (emeralds) reward the player with 4000 currency units.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.depositMoney(REWARD);
   }
 }

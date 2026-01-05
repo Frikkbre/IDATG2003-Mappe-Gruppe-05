@@ -24,4 +24,13 @@ public class BlankMarker extends Marker {
   public BlankMarker() {
     super(TYPE, VALUE);
   }
+
+  /**
+   * {@inheritDoc}
+   * <p>Blank markers have no effect when revealed.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.noEffect();
+  }
 }

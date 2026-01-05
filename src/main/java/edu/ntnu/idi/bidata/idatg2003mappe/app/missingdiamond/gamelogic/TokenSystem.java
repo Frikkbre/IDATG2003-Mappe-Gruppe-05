@@ -3,7 +3,15 @@ package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.gamelogic;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
-import edu.ntnu.idi.bidata.idatg2003mappe.markers.*;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Diamond;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.TokenEffectResult;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.RedGem;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.GreenGem;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.YellowGem;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Bandit;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.Visa;
+import edu.ntnu.idi.bidata.idatg2003mappe.markers.BlankMarker;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -193,37 +201,41 @@ public class TokenSystem {
   /**
    * Processes a token's effects for a player.
    *
+   * <p>Uses polymorphism to apply token effects, eliminating the need for
+   * instanceof checks. Each token type defines its own effect through the
+   * {@link Marker#getEffect()} method.</p>
+   *
    * @param token  The token to process
    * @param player The player receiving the effects
    * @param banker The banker for financial transactions
    */
   private void processToken(Marker token, Player player, Banker banker) {
-    token.reveal(); // Reveal the token
+    token.reveal();
 
-    if (token instanceof Diamond diamond) {
+    // Get the effect from the token (polymorphic call)
+    TokenEffectResult effect = token.getEffect();
+
+    // Handle diamond special case (needs to call find() method)
+    if (effect.isDiamond() && token instanceof Diamond diamond) {
       diamond.find();
       this.diamondFound = true;
+    }
 
-      // Add the diamond to player's inventory
-      player.addInventoryItem("diamond");
-    } else if (token instanceof RedGem) {
-      // Ruby worth £1000
-      banker.deposit(player, 1000);
-    } else if (token instanceof GreenGem) {
-      // Emerald worth £4000
-      banker.deposit(player, 4000);
-    } else if (token instanceof YellowGem) {
-      // Topaz worth £2000
-      banker.deposit(player, 2000);
-    } else if (token instanceof Bandit) {
-      // Robber - lose all money (only if player has money)
+    // Apply money effects
+    if (effect.isLoseAllMoney()) {
       int currentBalance = banker.getBalance(player);
       if (currentBalance > 0) {
         banker.withdraw(player, currentBalance);
       }
-    } else if (token instanceof Visa) {
-      // Visa card
-      player.addInventoryItem("visa");
+    } else if (effect.getMoneyChange() > 0) {
+      banker.deposit(player, effect.getMoneyChange());
+    } else if (effect.getMoneyChange() < 0) {
+      banker.withdraw(player, -effect.getMoneyChange());
+    }
+
+    // Apply inventory effects
+    if (effect.getInventoryItem() != null) {
+      player.addInventoryItem(effect.getInventoryItem());
     }
   }
 

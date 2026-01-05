@@ -119,4 +119,13 @@ public abstract class Marker {
   public void removeFromLocation() {
     this.location = null;
   }
+
+  /**
+   * <p>Gets the effect that occurs when this marker is revealed.</p>
+   * <p>Each marker type defines its own effect, which may include:
+   * money changes, inventory additions, or special game state changes.</p>
+   *
+   * @return A {@link TokenEffectResult} describing the effect of revealing this marker
+   */
+  public abstract TokenEffectResult getEffect();
 }

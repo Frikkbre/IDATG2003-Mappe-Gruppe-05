@@ -57,4 +57,14 @@ public class Diamond extends Marker {
     isMissing = false;
     reveal();
   }
+
+  /**
+   * {@inheritDoc}
+   * <p>The diamond effect adds the diamond to the player's inventory
+   * and marks the diamond as found in the game state.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.diamond();
+  }
 }

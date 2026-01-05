@@ -58,4 +58,13 @@ public class Bandit extends Marker {
   public String toString() {
     return String.format("Bandit (Penalty: %d steps)", penaltySteps);
   }
+
+  /**
+   * {@inheritDoc}
+   * <p>Bandits cause the player to lose all their money.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.loseAllMoney();
+  }
 }

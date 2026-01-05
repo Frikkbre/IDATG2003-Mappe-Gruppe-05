@@ -25,4 +25,14 @@ public class Visa extends Marker {
   public Visa() {
     super(TYPE, VALUE);
   }
+
+  /**
+   * {@inheritDoc}
+   * <p>Visas add a visa card to the player's inventory, providing
+   * an alternative win condition.</p>
+   */
+  @Override
+  public TokenEffectResult getEffect() {
+    return TokenEffectResult.addItem("visa");
+  }
 }
