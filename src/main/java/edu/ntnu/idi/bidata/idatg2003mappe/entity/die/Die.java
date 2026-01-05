@@ -1,7 +1,7 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.entity.die;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -22,8 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Die {
 
-  // Observer pattern support
-  private final List<DieObserver> observers = new ArrayList<>();
+  // Observer pattern support - CopyOnWriteArrayList for thread-safe iteration in UI context
+  private final List<DieObserver> observers = new CopyOnWriteArrayList<>();
   private int dieValue;
 
   /**

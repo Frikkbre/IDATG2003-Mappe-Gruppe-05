@@ -6,8 +6,10 @@ import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.Player;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.player.PlayerObserver;
 import edu.ntnu.idi.bidata.idatg2003mappe.filehandling.map.MapConfig;
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.util.Duration;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -21,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
@@ -44,8 +47,8 @@ import java.util.stream.IntStream;
 public class BoardView extends StackPane {
 
   private static final Logger logger = Logger.getLogger(BoardView.class.getName());
-  // Event listeners
-  private final Collection<BoardUpdateListener> updateListeners = new ArrayList<>();
+  // Event listeners - CopyOnWriteArrayList for thread-safe iteration in UI context
+  private final Collection<BoardUpdateListener> updateListeners = new CopyOnWriteArrayList<>();
   // Board data
   private final Map<Integer, Circle> tileCircles = new HashMap<>();
   private final Map<Player, Circle> playerMarkers = new HashMap<>();
@@ -105,16 +108,10 @@ public class BoardView extends StackPane {
     // Add a listener that will create game locations AFTER the image is rendered
     mapView.imageProperty().addListener((obs, oldImg, newImg) -> {
       if (newImg != null) {
-        // Add a small delay to ensure layout is complete
-        new Thread(() -> {
-          try {
-            Thread.sleep(100);
-            Platform.runLater(this::createDefaultLocations);
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.warning("Thread interrupted while waiting for layout: " + e.getMessage());
-          }
-        }).start();
+        // Use PauseTransition for a small delay to ensure layout is complete (runs on JavaFX thread)
+        PauseTransition delay = new PauseTransition(Duration.millis(100));
+        delay.setOnFinished(event -> createDefaultLocations());
+        delay.play();
       }
     });
 

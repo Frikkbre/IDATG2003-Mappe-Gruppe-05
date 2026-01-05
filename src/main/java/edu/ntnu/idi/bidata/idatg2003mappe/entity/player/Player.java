@@ -2,10 +2,10 @@ package edu.ntnu.idi.bidata.idatg2003mappe.entity.player;
 
 import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <p>Represents a player in the game with Observer pattern support.</p>
@@ -27,8 +27,8 @@ import java.util.Set;
  */
 public class Player {
   private final Set<String> inventory = new HashSet<>();
-  // Observer pattern support
-  private final List<PlayerObserver> observers = new ArrayList<>();
+  // Observer pattern support - CopyOnWriteArrayList for thread-safe iteration in UI context
+  private final List<PlayerObserver> observers = new CopyOnWriteArrayList<>();
   private String name;
   private int ID;
   private String color;
