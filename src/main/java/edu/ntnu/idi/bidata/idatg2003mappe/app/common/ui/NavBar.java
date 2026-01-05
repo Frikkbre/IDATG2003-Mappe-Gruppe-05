@@ -29,11 +29,13 @@ import java.util.logging.Logger;
  */
 public class NavBar {
   private static final Logger logger = Logger.getLogger(NavBar.class.getName());
-  private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
-  private Object gameController;
-  private final BoardGameSelector boardGameSelector = new BoardGameSelector();
   private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
-  private MissingDiamondGUI missingDiamondGUI = new MissingDiamondGUI();
+  private Object gameController;
+  // Lazy-initialized to avoid tight coupling - created only when needed
+  private LadderGameGUI ladderGameGUI;
+  private BoardGameSelector boardGameSelector;
+  // Injected via setter - not created here to avoid circular dependencies
+  private MissingDiamondGUI missingDiamondGUI;
   private Stage stage;
   private MapDesignerTool mapDesignerTool;
 
@@ -81,6 +83,32 @@ public class NavBar {
   }
 
   /**
+   * <p>Gets or creates the BoardGameSelector instance (lazy initialization).</p>
+   * <p>Creates the instance only when first needed to avoid unnecessary coupling.</p>
+   *
+   * @return The BoardGameSelector instance
+   */
+  private BoardGameSelector getBoardGameSelector() {
+    if (boardGameSelector == null) {
+      boardGameSelector = new BoardGameSelector();
+    }
+    return boardGameSelector;
+  }
+
+  /**
+   * <p>Gets or creates the LadderGameGUI instance (lazy initialization).</p>
+   * <p>Creates the instance only when first needed to avoid unnecessary coupling.</p>
+   *
+   * @return The LadderGameGUI instance
+   */
+  private LadderGameGUI getLadderGameGUI() {
+    if (ladderGameGUI == null) {
+      ladderGameGUI = new LadderGameGUI();
+    }
+    return ladderGameGUI;
+  }
+
+  /**
    * <p>Creates the menu bar with all navigation options.</p>
    * <p>Builds a JavaFX MenuBar with File menu and game-specific menus based on the current controller.</p>
    *
@@ -108,10 +136,11 @@ public class NavBar {
     MenuItem navigateMenuItem = new MenuItem("Return to Main Menu");
     navigateMenuItem.setOnAction(event -> {
       try {
-        if (getStage().equals(boardGameSelector.getStage())) {
+        BoardGameSelector selector = getBoardGameSelector();
+        if (getStage().equals(selector.getStage())) {
           throw new IllegalArgumentException("Already in main menu.");
         }
-        boardGameSelector.start(getStage());
+        selector.start(getStage());
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -194,13 +223,15 @@ public class NavBar {
    */
   private EventHandler<ActionEvent> determineGameTypeAndLoad() {
     return event -> {
-      if (gameController instanceof LadderGameController) {
-        LadderGameGUI ladderGameGUI = this.ladderGameGUI;
-        gameSaveLoadHandler.loadLastSaveLadderGame(ladderGameGUI, (LadderGameController) gameController,
-            ((LadderGameController) gameController).isRandomLadders());
-      } else if (gameController instanceof MissingDiamondController) {
-        MissingDiamondGUI missingDiamondGUI = this.missingDiamondGUI;
-        gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, (MissingDiamondController) gameController);
+      if (gameController instanceof LadderGameController ladderController) {
+        gameSaveLoadHandler.loadLastSaveLadderGame(
+            getLadderGameGUI(), ladderController, ladderController.isRandomLadders());
+      } else if (gameController instanceof MissingDiamondController missingController) {
+        if (missingDiamondGUI != null) {
+          gameSaveLoadHandler.loadLastSaveMissingDiamond(missingDiamondGUI, missingController);
+        } else {
+          logger.warning("Cannot load Missing Diamond save: MissingDiamondGUI not set");
+        }
       }
     };
   }
