@@ -32,7 +32,10 @@ import java.util.List;
 public class LadderGame {
 
   // Game configuration constants
-  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  /**
+   * User data directory for player saves (not in src/main/resources which is for bundled resources).
+   */
+  private static final String PLAYER_DATA_FILE = "data/saves/playerData/Players.csv";
   private static final int BOARD_SIZE = 100;
 
   // Core game components

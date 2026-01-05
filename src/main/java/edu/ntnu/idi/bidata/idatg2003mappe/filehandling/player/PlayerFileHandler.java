@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public class PlayerFileHandler {
 
   private static final Logger logger = Logger.getLogger(PlayerFileHandler.class.getName());
-  private static final String PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  private static final String PLAYER_DATA_FILE = "data/saves/playerData/Players.csv";
 
   /**
    * <p>Reads players from a CSV file.</p>

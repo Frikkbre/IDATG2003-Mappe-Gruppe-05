@@ -259,7 +259,7 @@ public class MapFileHandler {
       fileChooser.setTitle("Save Map Configuration");
       fileChooser.getExtensionFilters().add(
           new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-      fileChooser.setInitialDirectory(new File("src/main/resources/maps"));
+      fileChooser.setInitialDirectory(new File("data/maps"));
       fileChooser.setInitialFileName("missing_diamond_map.json");
 
       // Get file from dialog

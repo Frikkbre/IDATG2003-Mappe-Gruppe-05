@@ -32,7 +32,10 @@ import java.util.stream.IntStream;
  */
 public class PlayerFactory {
 
-  private static final String DEFAULT_PLAYER_DATA_FILE = "src/main/resources/saves/playerData/Players.csv";
+  /**
+   * User data directory for player saves (not in src/main/resources which is for bundled resources).
+   */
+  private static final String DEFAULT_PLAYER_DATA_FILE = "data/saves/playerData/Players.csv";
 
   private static final Logger logger = Logger.getLogger(PlayerFactory.class.getName());
 
@@ -98,7 +101,7 @@ public class PlayerFactory {
 
   /**
    * <p>Creates players from the default CSV file.</p>
-   * <p>Uses the standard location (<code>src/main/resources/saves/playerData/Players.csv</code>)
+   * <p>Uses the standard user data location (<code>data/saves/playerData/Players.csv</code>)
    * to load player data. If the file doesn't exist or can't be read,
    * falls back to creating default players.</p>
    *

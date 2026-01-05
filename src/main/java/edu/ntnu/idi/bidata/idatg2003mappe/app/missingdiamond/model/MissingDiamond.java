@@ -74,21 +74,27 @@ public class MissingDiamond {
    * @param numberOfPlayers The number of players in the game
    */
   public MissingDiamond(int numberOfPlayers) {
-    this(numberOfPlayers, "src/main/resources/maps/missing_diamond_default.json");
+    this(numberOfPlayers, MapConfigFileHandler.getDefaultMapResource());
   }
 
   /**
    * <p>Constructs a new Missing Diamond game instance with a specified number of players
-   * and a custom map file path.</p>
+   * and a custom map path.</p>
    *
-   * <p>This constructor initializes the game with the specified map configuration file and
+   * <p>This constructor initializes the game with the specified map configuration and
    * creates the specified number of players with starting positions and funds. If the map
-   * file cannot be loaded, it will fall back to using a default board configuration.</p>
+   * cannot be loaded, it will fall back to using a default board configuration.</p>
+   *
+   * <p>The mapPath can be either:</p>
+   * <ul>
+   *   <li>A classpath resource path starting with "/" (e.g., "/maps/default.json")</li>
+   *   <li>A file system path for custom user maps</li>
+   * </ul>
    *
    * @param numberOfPlayers The number of players in the game
-   * @param mapFilePath     The path to the map file
+   * @param mapPath         The path to the map (classpath resource or file system)
    */
-  public MissingDiamond(int numberOfPlayers, String mapFilePath) {
+  public MissingDiamond(int numberOfPlayers, String mapPath) {
     logger.info("Starting Missing Diamond Game with " + numberOfPlayers + " players.");
 
     this.banker = new Banker();
@@ -100,7 +106,12 @@ public class MissingDiamond {
     MapConfig mapConfig = null;
     try {
       MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      mapConfig = mapFileHandler.read(mapFilePath); // mapConfig might be null if file not found or error
+      // Use classpath resource loading for paths starting with "/"
+      if (mapPath.startsWith("/")) {
+        mapConfig = mapFileHandler.readFromResource(mapPath);
+      } else {
+        mapConfig = mapFileHandler.read(mapPath);
+      }
 
       if (mapConfig != null) {
         boardInstance = createBoardFromConfig(mapConfig);

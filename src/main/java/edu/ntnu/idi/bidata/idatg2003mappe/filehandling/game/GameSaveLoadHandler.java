@@ -35,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class GameSaveLoadHandler {
 
-  private static final String lastSaveDir = "src/main/resources/saves";
+  private static final String lastSaveDir = "data/saves";
   private static final String lastSaveFile = "LastSave.csv";
   private static final String fullPath = lastSaveDir + "/" + lastSaveFile;
 

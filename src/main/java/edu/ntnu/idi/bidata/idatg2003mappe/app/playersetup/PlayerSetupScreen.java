@@ -285,13 +285,13 @@ public class PlayerSetupScreen extends Application {
   private boolean savePlayerData() {
     try {
       // Ensure directory exists
-      File playerDir = new File("src/main/resources/saves/playerData/");
+      File playerDir = new File("data/saves/playerData/");
       if (!playerDir.exists()) {
         playerDir.mkdirs();
       }
 
       // Write to CSV file
-      File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
+      File playerFile = new File("data/saves/playerData/Players.csv");
       try (FileWriter writer = new FileWriter(playerFile)) {
         // Write header
         writer.write("\"Player name\",\"ID\",\"Color\",\"Position\"\n");

@@ -256,7 +256,7 @@ public class BoardGameSelector extends Application {
    * @return The number of configured players
    */
   private int countPlayersFromFile() {
-    File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
+    File playerFile = new File("data/saves/playerData/Players.csv");
     if (!playerFile.exists()) {
       return 0;
     }
@@ -315,7 +315,7 @@ public class BoardGameSelector extends Application {
    * @return <code>true</code> if player data exists, <code>false</code> otherwise
    */
   private boolean playerDataExists() {
-    File playerFile = new File("src/main/resources/saves/playerData/Players.csv");
+    File playerFile = new File("data/saves/playerData/Players.csv");
     return playerFile.exists() && playerFile.isFile();
   }
 
