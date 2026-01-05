@@ -8,9 +8,9 @@ import edu.ntnu.idi.bidata.idatg2003mappe.map.Tile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.EffectTile;
 import edu.ntnu.idi.bidata.idatg2003mappe.movement.LadderAction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 /**
@@ -25,8 +25,8 @@ import java.util.stream.IntStream;
 public class LadderGameController {
   private final LadderGame game;
   private final boolean randomLadders;
-  // Observer pattern for UI updates
-  private final List<BoardGameObserver> observers = new ArrayList<>();
+  // Observer pattern for UI updates - CopyOnWriteArrayList for thread-safe iteration
+  private final List<BoardGameObserver> observers = new CopyOnWriteArrayList<>();
   private int currentPlayerIndex;
 
   /**
@@ -172,6 +172,15 @@ public class LadderGameController {
    */
   public void removeObserver(BoardGameObserver observer) {
     observers.remove(observer);
+  }
+
+  /**
+   * <p>Removes all observers.</p>
+   * <p>This should be called when the game ends or the controller is being disposed
+   * to prevent memory leaks from lingering observer references.</p>
+   */
+  public void clearObservers() {
+    observers.clear();
   }
 
   /**

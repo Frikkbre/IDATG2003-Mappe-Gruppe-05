@@ -11,6 +11,7 @@ import edu.ntnu.idi.bidata.idatg2003mappe.markers.Marker;
 import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
 /**
@@ -33,7 +34,8 @@ import java.util.stream.IntStream;
  * @since 23.05.2025
  */
 public class MissingDiamondController {
-  private final List<BoardGameObserver> observers = new ArrayList<>();
+  // Observer pattern - CopyOnWriteArrayList for thread-safe iteration
+  private final List<BoardGameObserver> observers = new CopyOnWriteArrayList<>();
   private final MissingDiamond game;
   // Available actions for the current state (Skip action removed)
   private final Map<ActionState, List<String>> availableActions = new HashMap<>();
@@ -337,6 +339,37 @@ public class MissingDiamondController {
    */
   public void registerView(MapDesignerListener view) {
     this.view = view;
+  }
+
+  /**
+   * <p>Adds an observer to receive game events.</p>
+   * <p>Observers will be notified about player movements, turn changes, and game end events.</p>
+   *
+   * @param observer The {@link BoardGameObserver} to add
+   */
+  public void addObserver(BoardGameObserver observer) {
+    if (observer != null && !observers.contains(observer)) {
+      observers.add(observer);
+    }
+  }
+
+  /**
+   * <p>Removes an observer.</p>
+   * <p>The observer will no longer receive game event notifications.</p>
+   *
+   * @param observer The {@link BoardGameObserver} to remove
+   */
+  public void removeObserver(BoardGameObserver observer) {
+    observers.remove(observer);
+  }
+
+  /**
+   * <p>Removes all observers.</p>
+   * <p>This should be called when the game ends or the controller is being disposed
+   * to prevent memory leaks from lingering observer references.</p>
+   */
+  public void clearObservers() {
+    observers.clear();
   }
 
   /**
