@@ -90,7 +90,6 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
 
     } catch (Exception e) {
       logger.severe("Failed to initialize Missing Diamond GUI: " + e.getMessage());
-      e.printStackTrace(); // Add stack trace for debugging
       showErrorDialog("Initialization Error",
           "Failed to start the game. Please check your installation.", e);
     }

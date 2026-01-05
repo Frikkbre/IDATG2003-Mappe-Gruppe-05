@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * <p>Class for the board game selector GUI.</p>
@@ -27,6 +28,7 @@ import java.io.File;
  * @since 21.05.2025
  */
 public class BoardGameSelector extends Application {
+  private static final Logger logger = Logger.getLogger(BoardGameSelector.class.getName());
   private LadderGameGUI ladderGameGUI;
   private MissingDiamondGUI missingDiamondGUI;
   private Stage primaryStage;
@@ -118,7 +120,7 @@ public class BoardGameSelector extends Application {
       String cssFile = getClass().getResource("/game-style/game-styles.css").toExternalForm();
       scene.getStylesheets().add(cssFile);
     } catch (Exception e) {
-      System.err.println("Warning: Could not load CSS file. Using default styling.");
+      logger.warning("Could not load CSS file. Using default styling.");
     }
   }
 

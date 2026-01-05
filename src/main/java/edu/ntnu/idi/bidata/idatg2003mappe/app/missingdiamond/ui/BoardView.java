@@ -111,7 +111,8 @@ public class BoardView extends StackPane {
             Thread.sleep(100);
             Platform.runLater(this::createDefaultLocations);
           } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
+            logger.warning("Thread interrupted while waiting for layout: " + e.getMessage());
           }
         }).start();
       }
@@ -198,12 +199,7 @@ public class BoardView extends StackPane {
   private void handleTileClick(int tileId) {
     if (gameController == null) return;
 
-    // Add debugging statements
-    logger.info("DEBUG: Tile clicked: " + tileId);
-    logger.info("DEBUG: Connection mode active: " +
-        (mapDesignerManager != null ? mapDesignerManager.isConnectionMode() : "mapDesignerManager is null"));
-
-    // Add this block to handle connection mode
+    // Handle connection mode
     if (mapDesignerManager != null && mapDesignerManager.isConnectionMode()) {
       int connectionSourceId = mapDesignerManager.getConnectionSourceId();
 
@@ -217,9 +213,9 @@ public class BoardView extends StackPane {
         if (success) {
           // Draw the connection line
           createConnectionLine(connectionSourceId, tileId);
-          logger.info("DEBUG: Connection created successfully");
+          logger.fine("Connection created between tiles " + connectionSourceId + " and " + tileId);
         } else {
-          logger.warning("DEBUG: Connection creation failed");
+          logger.warning("Connection creation failed between tiles " + connectionSourceId + " and " + tileId);
         }
 
         // Reset for next connection

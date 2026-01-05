@@ -113,12 +113,12 @@ public class MissingDiamond {
 
         }
       } else {
-        System.err.println("Error: Map configuration is null or could not be read. Falling back to default board.");
+        logger.severe("Map configuration is null or could not be read. Falling back to default board.");
         boardInstance = createDefaultBoard();
       }
 
     } catch (FileHandlingException e) {
-      System.err.println("Error loading map configuration: " + e.getMessage());
+      logger.severe("Error loading map configuration: " + e.getMessage());
       boardInstance = createDefaultBoard();
       // Handle special tiles for default board after fallback
     }

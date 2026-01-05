@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * <p>Navigation bar component for the board game application.</p>
@@ -27,6 +28,7 @@ import java.util.List;
  * @since 21.05.2025
  */
 public class NavBar {
+  private static final Logger logger = Logger.getLogger(NavBar.class.getName());
   private final LadderGameGUI ladderGameGUI = new LadderGameGUI();
   public Object gameController;
   BoardGameSelector boardGameSelector = new BoardGameSelector();
@@ -140,7 +142,7 @@ public class NavBar {
               ". Game has been restarted.");
           alert.showAndWait();
         } catch (Exception e) {
-          System.err.println("Error restarting ladder game: " + e.getMessage());
+          logger.severe("Error restarting ladder game: " + e.getMessage());
         }
       });
 

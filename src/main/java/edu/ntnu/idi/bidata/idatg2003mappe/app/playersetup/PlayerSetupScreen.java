@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 /**
@@ -32,6 +33,7 @@ import java.util.stream.IntStream;
  */
 public class PlayerSetupScreen extends Application {
 
+  private static final Logger logger = Logger.getLogger(PlayerSetupScreen.class.getName());
   private final List<PlayerRow> playerRows = new ArrayList<>();
   private final List<String> availableColors = List.of(
       "LightGreen", "LightPink", "Green", "HotPink", "Orange", "Blue"
@@ -95,7 +97,7 @@ public class PlayerSetupScreen extends Application {
       String cssFile = getClass().getResource("/game-style/game-styles.css").toExternalForm();
       scene.getStylesheets().add(cssFile);
     } catch (Exception e) {
-      System.err.println("Warning: Could not load CSS file. Using default styling.");
+      logger.warning("Could not load CSS file. Using default styling.");
     }
   }
 
