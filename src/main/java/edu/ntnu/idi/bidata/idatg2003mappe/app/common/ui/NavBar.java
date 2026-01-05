@@ -122,12 +122,11 @@ public class NavBar {
     MenuBar menuBar = new MenuBar();
 
     // Only add Mode menu for Ladder Game
-    if (gameController instanceof LadderGameController) {
+    if (gameController instanceof LadderGameController ladderController) {
       Menu modeMenu = new Menu("Mode");
       MenuItem randomLadders = new MenuItem("Toggle Random Ladders");
       randomLadders.setOnAction(event -> {
-        LadderGameController ladderGameController = (LadderGameController) gameController;
-        boolean newRandomState = !ladderGameController.isRandomLadders();
+        boolean newRandomState = !ladderController.isRandomLadders();
 
         try {
           // Create new LadderGameGUI with toggled random state

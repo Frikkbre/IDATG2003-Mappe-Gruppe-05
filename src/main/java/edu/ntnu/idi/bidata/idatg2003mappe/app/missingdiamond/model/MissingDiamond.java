@@ -53,7 +53,7 @@ public class MissingDiamond {
   private final Banker banker;
   // City tiles
   private final Collection<Tile> cityTiles = new ArrayList<>();
-  private final Collection<Tile> startingTiles = new ArrayList<>();
+  private final List<Tile> startingTiles = new ArrayList<>();
   // NEW: Set of IDs for special tiles where players can choose to stop
   private final Set<Integer> specialTileIdsSet;
   private List<Player> players = new ArrayList<>();
@@ -185,7 +185,7 @@ public class MissingDiamond {
     // Identify starting tiles before reading players, as it might be needed for fallback
     identifyStartingTiles();
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
-    this.players = playerFileHandler.readPlayersFromCSV(this.board, (List<Tile>) this.startingTiles);
+    this.players = playerFileHandler.readPlayersFromCSV(this.board, this.startingTiles);
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
