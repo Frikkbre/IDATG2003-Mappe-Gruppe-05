@@ -81,14 +81,12 @@ public class Tile {
    * the last tile is returned.</p>
    * <p>This method moves along the path defined by the nextTile connections.</p>
    *
-   * @param steps The number of steps to move.
+   * @param steps The number of steps to move (must be non-negative).
    * @return The tile at the specified distance.
-   * @throws IllegalArgumentException if steps is negative (except special case -44)
+   * @throws IllegalArgumentException if steps is negative
    */
   public Tile getTileAtDistance(int steps) {
-    if (steps == -44) {
-      return this.getNextTile();
-    } else if (steps < 0) {
+    if (steps < 0) {
       throw new IllegalArgumentException("steps must be non-negative.");
     }
 
