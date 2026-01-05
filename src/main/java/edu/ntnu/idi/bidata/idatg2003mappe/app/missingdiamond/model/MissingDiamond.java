@@ -1,5 +1,6 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.model;
 
+import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.gamelogic.MovementCalculator;
 import edu.ntnu.idi.bidata.idatg2003mappe.app.missingdiamond.gamelogic.TokenSystem;
 import edu.ntnu.idi.bidata.idatg2003mappe.banker.Banker;
 import edu.ntnu.idi.bidata.idatg2003mappe.entity.die.Die;
@@ -51,10 +52,12 @@ public class MissingDiamond {
   private final Die die;
   private final TokenSystem tokenSystem;
   private final Banker banker;
+  private final MovementCalculator movementCalculator;
+  private final MissingDiamondBoardFactory boardFactory;
   // City tiles
   private final Collection<Tile> cityTiles = new ArrayList<>();
   private final List<Tile> startingTiles = new ArrayList<>();
-  // NEW: Set of IDs for special tiles where players can choose to stop
+  // Set of IDs for special tiles where players can choose to stop
   private final Set<Integer> specialTileIdsSet;
   private List<Player> players = new ArrayList<>();
   // Game state
@@ -100,7 +103,8 @@ public class MissingDiamond {
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
     this.die = new Die();
-    this.specialTileIdsSet = new HashSet<>(); // Initialize NEW field
+    this.specialTileIdsSet = new HashSet<>();
+    this.boardFactory = new MissingDiamondBoardFactory();
 
     BoardBranching boardInstance;
     MapConfig mapConfig = null;
@@ -114,34 +118,33 @@ public class MissingDiamond {
       }
 
       if (mapConfig != null) {
-        boardInstance = createBoardFromConfig(mapConfig);
+        boardInstance = boardFactory.createBoardFromConfig(mapConfig);
         // Populate specialTileIdsSet from mapConfig
         if (mapConfig.getLocations() != null) {
           mapConfig.getLocations().stream()
               .filter(MapConfig.Location::isSpecial)
               .map(MapConfig.Location::getId)
               .forEach(specialTileIdsSet::add);
-
         }
       } else {
         logger.severe("Map configuration is null or could not be read. Falling back to default board.");
-        boardInstance = createDefaultBoard();
+        boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
       }
 
     } catch (FileHandlingException e) {
       logger.severe("Error loading map configuration: " + e.getMessage());
-      boardInstance = createDefaultBoard();
-      // Handle special tiles for default board after fallback
+      boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
     }
 
     this.board = boardInstance;
+    this.movementCalculator = new MovementCalculator(specialTileIdsSet);
     this.players = createPlayers(numberOfPlayers, boardInstance);
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.get(currentPlayerIndex);
     this.currentRoll = 0;
 
-    identifyCityTiles(); // This might be redundant if mapConfig is used for special tiles
+    identifyCityTiles();
     identifyStartingTiles();
 
     tokenSystem.setStartingTiles(startingTiles);
@@ -162,11 +165,11 @@ public class MissingDiamond {
    * mechanisms to ensure the game can still start.</p>
    */
   public MissingDiamond() {
-
     this.banker = new Banker();
     this.tokenSystem = new TokenSystem();
     this.die = new Die();
-    this.specialTileIdsSet = new HashSet<>(); // Initialize NEW field
+    this.specialTileIdsSet = new HashSet<>();
+    this.boardFactory = new MissingDiamondBoardFactory();
 
     BoardBranching boardInstance;
     MapConfig mapConfig = null;
@@ -174,25 +177,23 @@ public class MissingDiamond {
       MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
       if (mapFileHandler.defaultMapExists()) {
         mapConfig = mapFileHandler.loadFromDefaultLocation();
-        boardInstance = createBoardFromConfig(mapConfig);
+        boardInstance = boardFactory.createBoardFromConfig(mapConfig);
         // Populate specialTileIdsSet from mapConfig
-        if (mapConfig != null && mapConfig.getLocations() != null) {
+        if (mapConfig.getLocations() != null) {
           mapConfig.getLocations().stream()
               .filter(MapConfig.Location::isSpecial)
               .map(MapConfig.Location::getId)
               .forEach(specialTileIdsSet::add);
-
         }
       } else {
-        boardInstance = createDefaultBoard();
-        // Define default special tiles if any for default board
+        boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
       }
     } catch (FileHandlingException e) {
-      boardInstance = createDefaultBoard();
-      // Handle special tiles for default board after fallback
+      boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
     }
 
     this.board = boardInstance;
+    this.movementCalculator = new MovementCalculator(specialTileIdsSet);
     // Identify starting tiles before reading players, as it might be needed for fallback
     identifyStartingTiles();
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
@@ -212,95 +213,6 @@ public class MissingDiamond {
       banker.registerPlayer(player);
       banker.deposit(player, STARTING_MONEY);
     });
-  }
-
-  /**
-   * <p>Creates a game board from a map configuration.</p>
-   *
-   * <p>This method processes the map configuration to create tiles and connections between
-   * them according to the specified layout in the configuration.</p>
-   *
-   * @param mapConfig The map configuration containing location and connection information
-   * @return A fully initialized branching board with all tiles and connections
-   */
-  private BoardBranching createBoardFromConfig(MapConfig mapConfig) {
-    BoardBranching board = new BoardBranching();
-    board.setBoardName(mapConfig.getName());
-
-    // Create all tiles
-    mapConfig.getLocations().forEach(location -> board.addTileToBoard(new Tile(location.getId())));
-
-    // Add all connections
-    mapConfig.getConnections().forEach(connection -> {
-      Tile fromTile = board.getTileById(connection.getFromId());
-      Tile toTile = board.getTileById(connection.getToId());
-
-      if (fromTile != null && toTile != null) {
-        board.connectTiles(fromTile, toTile);
-      }
-    });
-
-    return board;
-  }
-
-
-  /**
-   * <p>Creates a default game board with a predefined structure when no map configuration
-   * is available.</p>
-   *
-   * <p>This method generates a simple network of connected tiles to serve as a fallback
-   * when the map configuration cannot be loaded. It also defines which tiles are considered
-   * special (allowing players to stop before reaching their exact die roll).</p>
-   *
-   * @return A default branching board with a basic network of connected tiles
-   */
-  private BoardBranching createDefaultBoard() {
-    BoardBranching board = new BoardBranching();
-    board.setBoardName("Default Missing Diamond Map");
-
-    // Create basic city tiles
-    IntStream.rangeClosed(1, 20)
-        .mapToObj(Tile::new)
-        .forEach(board::addTileToBoard);
-
-
-    // Connect the tiles in a simple network
-    // Starting tiles (Cairo and Tangiers)
-    Tile cairo = board.getTileById(1);
-    Tile tangiers = board.getTileById(2);
-
-    // Create connections between cities
-    board.connectTiles(cairo, board.getTileById(3));
-    board.connectTiles(cairo, board.getTileById(4));
-    board.connectTiles(tangiers, board.getTileById(5));
-    board.connectTiles(tangiers, board.getTileById(6));
-
-    // Add more connections to create a network
-    IntStream.rangeClosed(3, 18).forEach(i -> {
-      Tile current = board.getTileById(i);
-      Tile next = board.getTileById(i + 1);
-
-      if (current != null && next != null) {
-        board.connectTiles(current, next);
-      }
-
-      // Add some cross-connections
-      if (i % 3 == 0 && i + 4 <= 20) {
-        Optional.ofNullable(board.getTileById(i + 4))
-            .ifPresent(crossTile -> board.connectTiles(current, crossTile));
-      }
-    });
-
-
-    // If specialTileIdsSet is empty (meaning no map config defined them), add defaults for this board.
-    if (this.specialTileIdsSet.isEmpty()) {
-      // Example: Make tiles 5, 10, 15 special for the default board
-      this.specialTileIdsSet.add(5);
-      this.specialTileIdsSet.add(10);
-      this.specialTileIdsSet.add(15);
-    }
-
-    return board;
   }
 
   /**
@@ -382,60 +294,6 @@ public class MissingDiamond {
   }
 
   /**
-   * <p>Determines if a tile is a special tile where players can optionally stop.</p>
-   *
-   * <p>Special tiles allow players to stop before reaching their exact die roll,
-   * providing strategic options for movement.</p>
-   *
-   * @param tile The tile to check
-   * @return {@code true} if the tile is designated as special, {@code false} otherwise
-   */
-  private boolean isSpecialTile(Tile tile) {
-    if (tile == null || this.specialTileIdsSet == null) {
-      return false;
-    }
-    return this.specialTileIdsSet.contains(tile.getTileId());
-  }
-
-  /**
-   * <p>Recursive helper method to find all valid destination tiles for a player's move.</p>
-   *
-   * <p>This method explores the board recursively to identify all tiles that a player
-   * can legally move to based on their die roll and the special tile rules.</p>
-   *
-   * @param currentTile   The current tile being explored in the recursion
-   * @param dieRoll       The original die roll value
-   * @param visitedInCall Set of tiles already visited in this recursive call branch
-   * @param resultOutput  Set to be populated with valid destination tiles
-   * @param currentDepth  Current recursion depth (steps taken so far)
-   */
-  private void recursiveMoveFinder(Tile currentTile, int dieRoll, Set<Tile> visitedInCall, Set<Tile> resultOutput, int currentDepth) {
-
-    // Logic for adding to resultOutput (based on currentTile, which is reached at currentDepth)
-    if (currentDepth > 0) { // Only consider tiles reached after at least one step
-      if (isSpecialTile(currentTile)) {
-        resultOutput.add(currentTile); // Special tiles are valid stops if reached within dieRoll.
-      } else { // Not a special tile
-        if (currentDepth == dieRoll) {
-          resultOutput.add(currentTile); // Non-special tiles only valid if exactly at dieRoll.
-        }
-      }
-    }
-
-    // Stop condition for recursion: if current depth has reached die roll, no more steps can be taken from here.
-    if (currentDepth >= dieRoll) {
-      return;
-    }
-
-    // Recursive step: explore neighbors
-    currentTile.getNextTiles().stream()
-        .filter(neighbor -> !visitedInCall.contains(neighbor))
-        .peek(visitedInCall::add) // Mark as visited
-        .forEach(neighbor -> recursiveMoveFinder(neighbor, dieRoll, visitedInCall, resultOutput, currentDepth + 1));
-
-  }
-
-  /**
    * <p>Gets all possible destination tiles for the current player based on their die roll.</p>
    *
    * <p>This method calculates all valid tiles that the player can move to, considering:
@@ -447,22 +305,7 @@ public class MissingDiamond {
    * @return A set of tiles that the player can legally move to
    */
   public Set<Tile> getPossibleMovesForCurrentRoll() {
-    Set<Tile> possibleMoves = new HashSet<>();
-    if (currentRoll < 1 || currentPlayer == null || currentPlayer.getCurrentTile() == null) {
-      return possibleMoves;
-    }
-
-    Tile startTile = currentPlayer.getCurrentTile();
-    Set<Tile> visitedForThisCall = new HashSet<>();
-
-    // Add the start tile itself to visited so the recursion starts by exploring its neighbors
-    visitedForThisCall.add(startTile);
-
-    // Call the recursive helper, starting at depth 0 for the player's current tile.
-    // The recursive function will add valid destination tiles to 'possibleMoves'.
-    recursiveMoveFinder(startTile, currentRoll, visitedForThisCall, possibleMoves, 0);
-
-    return possibleMoves;
+    return movementCalculator.getPossibleMoves(currentPlayer, currentRoll);
   }
 
   /**
@@ -475,21 +318,17 @@ public class MissingDiamond {
    * @return A message describing the result of the move
    */
   public String movePlayerToTile(Tile destinationTile) {
-    String result = "";
-
     if (destinationTile == null) {
       return "Invalid destination tile.";
     }
 
-    // Check if the move is valid (destination is exactly N steps away)
-    Set<Tile> validMoves = getPossibleMovesForCurrentRoll();
-    if (!validMoves.contains(destinationTile)) {
+    // Check if the move is valid using MovementCalculator
+    if (!movementCalculator.isValidMove(currentPlayer, destinationTile, currentRoll)) {
       return "Cannot move to that tile - it's not exactly " + currentRoll + " steps away.";
     }
 
     // Move the player
-    Tile oldTile = currentPlayer.getCurrentTile();
-    result += currentPlayer.getName() + " moved to tile " + destinationTile.getTileId() + ". ";
+    String result = currentPlayer.getName() + " moved to tile " + destinationTile.getTileId() + ". ";
     currentPlayer.placePlayer(destinationTile);
 
     // Reset current roll
