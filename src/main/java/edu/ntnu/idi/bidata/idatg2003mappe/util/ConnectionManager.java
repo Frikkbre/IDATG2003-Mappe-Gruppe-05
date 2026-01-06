@@ -1,6 +1,5 @@
 package edu.ntnu.idi.bidata.idatg2003mappe.util;
 
-import edu.ntnu.idi.bidata.idatg2003mappe.util.map.MapDesignerListener;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -24,7 +23,6 @@ public class ConnectionManager {
   private final Pane overlayPane;
   private final PointManager pointManager;
   private final Collection<Line> connectionLines = new ArrayList<>();
-  private final MapDesignerListener listener;
 
   /**
    * <p>Creates a new ConnectionManager with the specified overlay pane and point manager.</p>
@@ -37,7 +35,6 @@ public class ConnectionManager {
   public ConnectionManager(Pane overlayPane, PointManager pointManager) {
     this.overlayPane = overlayPane;
     this.pointManager = pointManager;
-    this.listener = null;
   }
 
   /**
@@ -159,15 +156,13 @@ public class ConnectionManager {
   }
 
   /**
-   * <p>Logs a message if a listener is available.</p>
-   * <p>This private helper method sends log messages to the registered {@link MapDesignerListener}
-   * if one exists. Used to provide feedback about connection operations.</p>
+   * <p>Logs a message using the class logger.</p>
+   * <p>This private helper method logs messages about connection operations
+   * for debugging and monitoring purposes.</p>
    *
    * @param message The message to log
    */
   private void logMessage(String message) {
-    if (listener != null) {
-      listener.onLogMessage(message);
-    }
+    logger.info(message);
   }
 }

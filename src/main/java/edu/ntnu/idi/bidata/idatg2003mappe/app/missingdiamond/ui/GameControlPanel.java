@@ -316,8 +316,6 @@ public class GameControlPanel extends VBox {
   private void applyTokenEffects(Marker token, Player player) {
     Banker banker = gameController.getBanker();
 
-    //logMessage("DEBUG: Token type is: '" + token.getType() + "'");
-
     switch (token.getType()) {
       case "Diamond":
         player.addInventoryItem("diamond");
