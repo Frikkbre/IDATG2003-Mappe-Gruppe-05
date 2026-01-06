@@ -61,16 +61,17 @@ public class GameControlPanel extends VBox {
    * @param boardView  the board view that displays the game board
    */
   public GameControlPanel(MissingDiamondController controller, BoardView boardView) {
-    super(10); // 10px spacing
+    super(12); // 12px spacing for Material Design
     this.gameController = controller;
     this.boardView = boardView;
-    setPadding(new Insets(10));
+    setPadding(new Insets(8));
 
-    // Create player info section
-    Label playerLabel = new Label("Current Player: ");
-    playerLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+    // Create player info section with Material Design typography
+    Label playerLabel = new Label("Current Player");
+    playerLabel.getStyleClass().add("md-label-large");
 
     playerMoneyLabel = new Label("Money: £0");
+    playerMoneyLabel.getStyleClass().add("md-title-small");
 
     // Create roll button
     rollDieButton = UIComponentFactory.createActionButton("Roll Die", e -> {
@@ -161,14 +162,12 @@ public class GameControlPanel extends VBox {
       updatePlayerInfo();
     });
 
-    // Add a label for selecting a move
+    // Add a label for selecting a move with Material styling
     selectMoveLabel = new Label("Select a highlighted tile to move");
-    selectMoveLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
-    selectMoveLabel.setTextFill(Color.DARKBLUE);
+    selectMoveLabel.getStyleClass().addAll("md-body-medium", "md-info-text");
 
     // Add an emergency end turn button
     endTurnButton = UIComponentFactory.createActionButton("End Turn", e -> {
-
       gameController.endTurn();
       gameController.resetRollState();
 
@@ -178,19 +177,18 @@ public class GameControlPanel extends VBox {
       boardView.updateUI();
     });
 
-    // Create game log with proper settings to prevent scrolling
+    // Create game log with Material Design styling
     gameLog = createFixedGameLog();
 
-    // Create actions section
+    // Create actions section with Material typography
     Label actionsLabel = new Label("Actions");
-    actionsLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+    actionsLabel.getStyleClass().add("md-title-small");
 
     // Create token options section
-    Label tokenOptionsLabel = new Label("Token Options (when at a red tile):");
-    tokenOptionsLabel.setFont(Font.font("System", FontWeight.BOLD, 12));
-    tokenOptionsLabel.setTextFill(Color.DARKRED);
+    Label tokenOptionsLabel = new Label("Token Options (at red tiles):");
+    tokenOptionsLabel.getStyleClass().addAll("md-label-large", "md-warning-text");
 
-    // Add components to panel (Skip button removed)
+    // Add components to panel with proper layout
     getChildren().addAll(
         playerLabel,
         playerMoneyLabel,
@@ -210,21 +208,20 @@ public class GameControlPanel extends VBox {
   }
 
   /**
-   * <p>Creates a game log text area with fixed height and proper styling.</p>
-   * <p>The log area is configured to display a limited number of messages
-   * without scrolling.</p>
+   * <p>Creates a Material Design game log text area with fixed height.</p>
+   * <p>The log area is configured to display a limited number of messages.</p>
    *
    * @return a configured TextArea for displaying game messages
    */
   private TextArea createFixedGameLog() {
     TextArea log = new TextArea();
-    log.setPrefHeight(200); // Smaller fixed height
-    log.setMaxHeight(200);  // Prevent growing
+    log.setPrefHeight(180);
+    log.setMaxHeight(180);
     log.setEditable(false);
-    log.setWrapText(true);  // Enable word wrap
+    log.setWrapText(true);
 
-    // Apply CSS class for styling
-    log.getStyleClass().add("game-log-small");
+    // Apply Material Design CSS class for styling
+    log.getStyleClass().add("md-game-log");
 
     return log;
   }

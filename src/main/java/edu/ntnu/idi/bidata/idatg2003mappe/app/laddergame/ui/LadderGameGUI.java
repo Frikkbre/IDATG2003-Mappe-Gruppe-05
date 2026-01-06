@@ -112,7 +112,7 @@ public class LadderGameGUI extends Application {
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840);
-    borderPane.getStyleClass().add("game-background");
+    borderPane.getStyleClass().add("md-game-background");
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
@@ -120,41 +120,15 @@ public class LadderGameGUI extends Application {
 
     borderPane.setTop(navBar.createMenuBar());
 
-    HBox centerBox = new HBox(20);
+    HBox centerBox = new HBox(24);
     centerBox.setAlignment(Pos.CENTER);
-    centerBox.setPadding(new Insets(20));
+    centerBox.setPadding(new Insets(24));
 
     // Create the board with overlay for player circles
     StackPane boardContainer = createBoardWithOverlay();
 
-    // Style the roll die button using CSS class
-    Button rollDieButton = new Button("Roll Die");
-    rollDieButton.setPrefSize(200, 50);
-    rollDieButton.getStyleClass().add("action-button-large");
-
-    rollDieButton.setOnAction(e -> {
-      String message = gameController.playTurn();
-      gameLog.appendText(message + "\n");
-      updateBoardUI();
-
-      if (message.contains("won")) {
-        rollDieButton.setDisable(true);
-      }
-    });
-
-    // Style the game log using CSS class
-    gameLog = new TextArea();
-    gameLog.setEditable(false);
-    gameLog.setPrefHeight(150);
-    gameLog.getStyleClass().add("game-log");
-
-    scoreBoard = createScoreBoard();
-
-    VBox leftBox = new VBox(20);
-    leftBox.setAlignment(Pos.CENTER_LEFT);
-    leftBox.setPadding(new Insets(10));
-    leftBox.getStyleClass().add("side-panel");
-    leftBox.getChildren().addAll(scoreBoard, rollDieButton, gameLog);
+    // Create Material Design sidebar
+    VBox leftBox = createSidebar();
 
     centerBox.getChildren().addAll(leftBox, boardContainer);
     borderPane.setCenter(centerBox);
@@ -168,6 +142,55 @@ public class LadderGameGUI extends Application {
     // Initialize player circles and update the board
     initializePlayerCircles();
     updateBoardUI();
+  }
+
+  /**
+   * <p>Creates the Material Design sidebar with controls and scoreboard.</p>
+   *
+   * @return VBox containing sidebar elements
+   */
+  private VBox createSidebar() {
+    VBox sidebar = new VBox(20);
+    sidebar.setAlignment(Pos.TOP_CENTER);
+    sidebar.setPadding(new Insets(20));
+    sidebar.setPrefWidth(280);
+    sidebar.getStyleClass().add("md-sidebar");
+
+    // Scoreboard section
+    scoreBoard = createScoreBoard();
+
+    // Roll Die button as Material FAB extended
+    Button rollDieButton = new Button("🎲  Roll Die");
+    rollDieButton.setPrefSize(220, 56);
+    rollDieButton.getStyleClass().add("md-fab-extended");
+
+    rollDieButton.setOnAction(e -> {
+      String message = gameController.playTurn();
+      gameLog.appendText(message + "\n");
+      updateBoardUI();
+
+      if (message.contains("won")) {
+        rollDieButton.setDisable(true);
+      }
+    });
+
+    // Game log section
+    VBox logSection = new VBox(8);
+    logSection.getStyleClass().add("md-card-filled");
+    logSection.setPadding(new Insets(12));
+
+    javafx.scene.control.Label logLabel = new javafx.scene.control.Label("Game Log");
+    logLabel.getStyleClass().add("md-title-small");
+
+    gameLog = new TextArea();
+    gameLog.setEditable(false);
+    gameLog.setPrefHeight(180);
+    gameLog.getStyleClass().add("md-game-log");
+
+    logSection.getChildren().addAll(logLabel, gameLog);
+
+    sidebar.getChildren().addAll(scoreBoard, rollDieButton, logSection);
+    return sidebar;
   }
 
   /**
@@ -185,27 +208,22 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * <p>Creates a container for the game board with an overlay for player circles.</p>
-   * <p>The container uses a StackPane to layer the following elements:</p>
-   * <ol>
-   *   <li>A grid representing the game board with numbered tiles</li>
-   *   <li>A transparent pane overlay for drawing player tokens</li>
-   * </ol>
-   * <p>The container has styling for consistent appearance with the rest of the UI,
-   * including a drop shadow effect for visual depth.</p>
+   * <p>Creates a Material Design container for the game board with player overlay.</p>
+   * <p>The container uses elevated card styling with proper shadows.</p>
    *
    * @return StackPane containing the board grid and player overlay
    */
   private StackPane createBoardWithOverlay() {
     StackPane container = new StackPane();
-    container.getStyleClass().add("board-container");
+    container.getStyleClass().add("md-board-container");
+    container.setPadding(new Insets(16));
 
-    // Add drop shadow effect
+    // Material Design elevation shadow
     DropShadow dropShadow = new DropShadow();
-    dropShadow.setRadius(15.0);
-    dropShadow.setOffsetX(5.0);
-    dropShadow.setOffsetY(5.0);
-    dropShadow.setColor(Color.color(0, 0, 0, 0.3));
+    dropShadow.setRadius(20.0);
+    dropShadow.setOffsetX(0);
+    dropShadow.setOffsetY(8.0);
+    dropShadow.setColor(Color.color(0, 0, 0, 0.25));
     container.setEffect(dropShadow);
 
     // Create the game board
@@ -213,7 +231,7 @@ public class LadderGameGUI extends Application {
 
     // Create overlay for player circles
     playerOverlay = new Pane();
-    playerOverlay.setPickOnBounds(false); // Allow clicks to pass through to tiles
+    playerOverlay.setPickOnBounds(false);
 
     // Add both to container
     container.getChildren().addAll(boardGrid, playerOverlay);
@@ -256,15 +274,14 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * <p>Creates a styled tile for the game board.</p>
-   * <p>Tiles are visually distinguished by their function:</p>
+   * <p>Creates a Material Design styled tile for the game board.</p>
+   * <p>Tiles are visually distinguished by their function using Material colors:</p>
    * <ul>
-   *   <li>Regular tiles - Light background with dark text</li>
-   *   <li>Ladder up tiles - Green background with up arrow and destination</li>
-   *   <li>Ladder down tiles (snakes) - Red background with down arrow and destination</li>
-   *   <li>Special effect tiles - Unique colors based on effect type</li>
+   *   <li>Regular tiles - Light surface with subtle shadow</li>
+   *   <li>Ladder up tiles - Material green with up arrow</li>
+   *   <li>Ladder down tiles - Material red with down arrow</li>
+   *   <li>Special effect tiles - Material accent colors</li>
    * </ul>
-   * <p>All tiles include hover effects for improved user interaction.</p>
    *
    * @param tileNumber the number to display on the tile
    * @return a styled TextField representing the tile
@@ -276,8 +293,8 @@ public class LadderGameGUI extends Application {
     tile.setEditable(false);
     tile.setAlignment(Pos.CENTER);
 
-    // Add base tile style class
-    tile.getStyleClass().add("board-tile");
+    // Add Material Design base tile style
+    tile.getStyleClass().add("md-tile");
 
     // Check if the tile has a ladder and style accordingly
     Tile currentTile = gameController.getTileByIdLinear(tileNumber);
@@ -285,33 +302,41 @@ public class LadderGameGUI extends Application {
       int destinationTileId = currentTile.getDestinationTile().getTileId();
 
       if (destinationTileId > tileNumber) {
-        // Positive ladder (going up)
-        tile.getStyleClass().add("tile-ladder-up");
+        // Positive ladder (going up) - Material green
+        tile.getStyleClass().add("md-tile-ladder-up");
         tile.setText(tileNumber + " ↑ " + destinationTileId);
       } else {
-        // Negative ladder (going down - snake)
-        tile.getStyleClass().add("tile-ladder-down");
+        // Negative ladder (going down - snake) - Material red
+        tile.getStyleClass().add("md-tile-ladder-down");
         tile.setText(tileNumber + " ↓ " + destinationTileId);
       }
     } else if (currentTile != null && currentTile.getEffect() != null) {
-      // Special effect tiles
+      // Special effect tiles with Material accent colors
       String effect = currentTile.getEffect();
       if ("skipTurn".equals(effect)) {
-        tile.getStyleClass().add("tile-skip-turn");
+        tile.getStyleClass().add("md-tile-skip-turn");
         tile.setText(tileNumber + " ⏸");
       } else if ("backToStart".equals(effect)) {
-        tile.getStyleClass().add("tile-back-to-start");
+        tile.getStyleClass().add("md-tile-back-to-start");
         tile.setText(tileNumber + " ⟲");
       }
+    } else if (tileNumber == 1) {
+      // Start tile - Material primary blue
+      tile.getStyleClass().add("md-tile-start");
+      tile.setText("START");
+    } else if (tileNumber == 100) {
+      // End tile - Gold/success
+      tile.getStyleClass().add("md-tile-end");
+      tile.setText("FINISH");
     } else {
       // Regular tile styling
-      tile.getStyleClass().add("tile-regular");
+      tile.getStyleClass().add("md-tile-regular");
     }
 
-    // Add hover effect
+    // Add subtle hover effect
     tile.setOnMouseEntered(e -> {
-      tile.setScaleX(1.05);
-      tile.setScaleY(1.05);
+      tile.setScaleX(1.03);
+      tile.setScaleY(1.03);
     });
     tile.setOnMouseExited(e -> {
       tile.setScaleX(1.0);
@@ -448,20 +473,19 @@ public class LadderGameGUI extends Application {
   }
 
   /**
-   * <p>Creates a styled scoreboard to display player rankings.</p>
-   * <p>The scoreboard shows players in order of their progress on the board.
-   * It uses a text area with custom styling for readability and visual consistency
-   * with the rest of the game UI.</p>
+   * <p>Creates a Material Design styled scoreboard to display player rankings.</p>
+   * <p>The scoreboard shows players in order of their progress on the board
+   * with card-based styling for visual consistency.</p>
    *
    * @return TextArea containing the formatted scoreboard
    */
   private TextArea createScoreBoard() {
-    TextArea scoreBoard = new TextArea("Scoreboard:");
-    scoreBoard.setPrefWidth(250);
-    scoreBoard.setPrefHeight(200);
-    scoreBoard.setEditable(false);
-    scoreBoard.getStyleClass().add("scoreboard");
-    return scoreBoard;
+    TextArea scoreBoardArea = new TextArea("Scoreboard:");
+    scoreBoardArea.setPrefWidth(240);
+    scoreBoardArea.setPrefHeight(200);
+    scoreBoardArea.setEditable(false);
+    scoreBoardArea.getStyleClass().add("md-scoreboard");
+    return scoreBoardArea;
   }
 
   /**

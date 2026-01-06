@@ -187,7 +187,8 @@ public class NavBar {
       menuBar.getMenus().addAll(fileMenu, navigateMenu);
     }
 
-    menuBar.getStyleClass().add("menu-bar-game");
+    // Apply Material Design menu bar styling
+    menuBar.getStyleClass().add("md-menu-bar");
 
     return menuBar;
   }

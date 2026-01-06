@@ -102,16 +102,18 @@ public class PlayerSetupScreen extends Application {
   }
 
   /**
-   * <p>Creates the center content with enhanced styling.</p>
-   * <p>Contains all the main UI elements in a structured layout.</p>
+   * <p>Creates the center content with Material Design styling.</p>
+   * <p>Contains all the main UI elements in a structured layout with card elevation.</p>
    *
    * @return A {@link VBox} containing all center content elements
    */
   private VBox createCenterContent() {
-    VBox content = new VBox(25);
+    VBox content = new VBox(30);
     content.setAlignment(Pos.CENTER);
-    content.setPrefWidth(600);
-    content.setMaxWidth(600);
+    content.setPrefWidth(650);
+    content.setMaxWidth(650);
+    content.setPadding(new Insets(40));
+    content.getStyleClass().addAll("md-card-elevated", "md-surface");
 
     // Create header
     VBox header = createHeader();
@@ -128,71 +130,78 @@ public class PlayerSetupScreen extends Application {
 
   /**
    * <p>Creates the header section with title and player count selector.</p>
-   * <p>Enhanced with CSS styling for better visual hierarchy.</p>
+   * <p>Uses Material Design typography for visual hierarchy.</p>
    *
    * @return A {@link VBox} containing the header elements
    */
   private VBox createHeader() {
-    VBox header = new VBox(20);
+    VBox header = new VBox(15);
     header.setAlignment(Pos.CENTER);
 
-    // Title with CSS styling
+    // Title with Material Design typography
     Label titleLabel = new Label("Welcome to Board Games!");
-    titleLabel.getStyleClass().add("title-label");
+    titleLabel.getStyleClass().add("md-headline-medium");
 
-    // Player count selection
+    // Subtitle
+    Label subtitleLabel = new Label("Set up your players to get started");
+    subtitleLabel.getStyleClass().add("md-body-large");
+
+    // Player count selection in a styled container
     HBox playerCountBox = new HBox(15);
     playerCountBox.setAlignment(Pos.CENTER);
+    playerCountBox.setPadding(new Insets(15, 20, 15, 20));
+    playerCountBox.getStyleClass().add("md-card-filled");
 
     Label countLabel = new Label("Number of players:");
-    countLabel.getStyleClass().add("subtitle-label");
+    countLabel.getStyleClass().add("md-title-medium");
 
     playerCountSpinner = new Spinner<>(2, 5, 2);
     playerCountSpinner.setPrefWidth(80);
-    playerCountSpinner.getStyleClass().add("game-spinner");
+    playerCountSpinner.getStyleClass().add("md-spinner");
     playerCountSpinner.valueProperty().addListener((obs, oldVal, newVal) -> updatePlayerRows());
 
     playerCountBox.getChildren().addAll(countLabel, playerCountSpinner);
 
-    header.getChildren().addAll(titleLabel, playerCountBox);
+    header.getChildren().addAll(titleLabel, subtitleLabel, playerCountBox);
     return header;
   }
 
   /**
    * <p>Creates the player setup section.</p>
-   * <p>Contains the dynamic player configuration rows.</p>
+   * <p>Contains the dynamic player configuration rows with Material Design cards.</p>
    *
    * @return A {@link VBox} containing the player setup elements
    */
   private VBox createPlayerSetupSection() {
-    VBox playerSetup = new VBox(15);
+    VBox playerSetup = new VBox(20);
     playerSetup.setAlignment(Pos.CENTER);
-    playerSetup.getStyleClass().add("spaced-container");
 
-    Label setupLabel = new Label("Set up your players:");
-    setupLabel.getStyleClass().add("subtitle-label");
+    Label setupLabel = new Label("Player Configuration");
+    setupLabel.getStyleClass().add("md-title-large");
 
-    // Container for player rows
-    playerContainer = new VBox(10);
+    // Container for player rows with Material styling
+    playerContainer = new VBox(12);
     playerContainer.setAlignment(Pos.CENTER);
+    playerContainer.setPadding(new Insets(10));
 
     playerSetup.getChildren().addAll(setupLabel, playerContainer);
     return playerSetup;
   }
 
   /**
-   * <p>Creates the footer with the continue button.</p>
-   * <p>Enhanced with CSS button styling.</p>
+   * <p>Creates the footer with Material Design buttons.</p>
+   * <p>Uses filled button styling for primary action.</p>
    *
    * @return A {@link HBox} containing the footer elements
    */
   private HBox createFooter() {
-    HBox footer = new HBox();
+    HBox footer = new HBox(20);
     footer.setAlignment(Pos.CENTER);
+    footer.setPadding(new Insets(20, 0, 0, 0));
 
-    continueButton = new Button("Continue to Game Selection");
-    continueButton.setPrefSize(250, 50);
-    continueButton.getStyleClass().add("game-button");
+    continueButton = new Button("Continue to Game Selection →");
+    continueButton.setPrefSize(280, 50);
+    continueButton.getStyleClass().add("md-button-filled");
     continueButton.setOnAction(e -> handleContinue());
 
     footer.getChildren().add(continueButton);
@@ -358,7 +367,7 @@ public class PlayerSetupScreen extends Application {
   /**
    * <p>Inner class to represent a player setup row.</p>
    * <p>Contains UI elements for configuring a single player's name and color.</p>
-   * <p>Now includes CSS styling for better visual presentation.</p>
+   * <p>Uses Material Design card and input styling.</p>
    */
   private static class PlayerRow {
     private final TextField nameField;
@@ -366,37 +375,40 @@ public class PlayerSetupScreen extends Application {
     private final HBox container;
 
     public PlayerRow(int playerNumber, List<String> availableColors) {
-      // Create name field with CSS styling
+      // Create name field with Material Design outlined styling
       nameField = new TextField("Player " + playerNumber);
-      nameField.setPrefWidth(150);
-      nameField.getStyleClass().add("game-text-field");
+      nameField.setPrefWidth(160);
+      nameField.getStyleClass().add("md-text-field-outlined");
+      nameField.setPromptText("Enter name");
 
-      // Create color combo box with CSS styling
+      // Create color combo box with Material Design styling
       colorCombo = new ComboBox<>();
       colorCombo.getItems().addAll(availableColors);
       colorCombo.setValue(availableColors.get((playerNumber - 1) % availableColors.size()));
-      colorCombo.setPrefWidth(120);
-      colorCombo.getStyleClass().add("game-combo-box");
+      colorCombo.setPrefWidth(130);
+      colorCombo.getStyleClass().add("md-combo-box");
 
-      // Create container with CSS styling
+      // Create container as Material Design outlined card
       container = new HBox(15);
-      container.setAlignment(Pos.CENTER);
-      container.getStyleClass().add("player-row");
+      container.setAlignment(Pos.CENTER_LEFT);
+      container.setPadding(new Insets(12, 20, 12, 20));
+      container.getStyleClass().add("md-card-outlined");
 
-      Label playerLabel = new Label("Player " + playerNumber + ":");
-      playerLabel.setPrefWidth(80);
-      playerLabel.getStyleClass().add("info-label");
+      // Player number badge
+      Label playerBadge = new Label(String.valueOf(playerNumber));
+      playerBadge.getStyleClass().add("md-player-badge");
+      playerBadge.setMinSize(32, 32);
+      playerBadge.setMaxSize(32, 32);
+      playerBadge.setAlignment(Pos.CENTER);
 
       Label nameLabel = new Label("Name:");
-      nameLabel.setPrefWidth(50);
-      nameLabel.getStyleClass().add("info-label");
+      nameLabel.getStyleClass().add("md-label-large");
 
       Label colorLabel = new Label("Color:");
-      colorLabel.setPrefWidth(50);
-      colorLabel.getStyleClass().add("info-label");
+      colorLabel.getStyleClass().add("md-label-large");
 
       container.getChildren().addAll(
-          playerLabel, nameLabel, nameField, colorLabel, colorCombo
+          playerBadge, nameLabel, nameField, colorLabel, colorCombo
       );
     }
 

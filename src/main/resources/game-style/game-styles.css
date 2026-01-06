@@ -1,354 +1,975 @@
-/* Game Styles CSS - IDATG2003 Board Games */
-/* Unified Color Theme */
+/* ==========================================================================
+   MATERIAL DESIGN CSS - IDATG2003 Board Games
+   A complete Material Design 3 implementation for JavaFX
+   ========================================================================== */
 
 /* ==========================================================================
-   COLOR VARIABLES (referenced in comments for consistency)
+   COLOR SYSTEM
    ==========================================================================
-   Primary Blue:     #3498db
-   Primary Dark:     #2980b9
-   Secondary Blue:   #2c3e50
-   Board Background: #34495e
+   Primary Palette (Blue):
+   Primary-50:  #e3f2fd    Primary-500: #3498db (main)
+   Primary-100: #bbdefb    Primary-600: #2980b9
+   Primary-200: #90caf9    Primary-700: #1976d2
+   Primary-300: #64b5f6    Primary-800: #1565c0
+   Primary-400: #42a5f5    Primary-900: #0d47a1
 
-   Success Green:    #27ae60
-   Success Dark:     #229954
-   Danger Red:       #e74c3c
-   Danger Dark:      #cb4335
-   Warning Orange:   #f39c12
-   Warning Dark:     #d68910
-   Purple:           #9b59b6
-   Purple Dark:      #7d3c98
+   Surface Colors:
+   Surface:         #ffffff
+   Surface-Variant: #f5f5f5
+   Surface-Dim:     #e0e0e0
+   On-Surface:      #1c1c1c
+   On-Surface-Var:  #49454f
+   Outline:         #79747e
+   Outline-Variant: #cac4d0
 
-   Light Gray:       #ecf0f1
-   Medium Gray:      #bdc3c7
-   Dark Gray:        #95a5a6
-   Text Dark:        #2c3e50
-   Text Light:       #34495e
+   Semantic Colors:
+   Success:  #4caf50 (green)
+   Error:    #f44336 (red)
+   Warning:  #ff9800 (orange)
+   Info:     #2196f3 (blue)
    ========================================================================== */
 
 /* ==========================================================================
-   MAIN LAYOUTS
+   ELEVATION SHADOW SYSTEM
    ========================================================================== */
 
-/* Main application background - gradient */
-.main-container {
-    -fx-background-image: linear-gradient(from 0% 0% to 100% 100%, #3498db, #2980b9);
-    -fx-background-size: cover;
-    -fx-background-repeat: no-repeat;
+.elevation-0 {
+    -fx-effect: none;
 }
 
-/* Solid fallback background */
-.main-container-solid {
-    -fx-background-color: #3498db;
+.elevation-1 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 3, 0, 0, 1),
+                dropshadow(gaussian, rgba(0,0,0,0.08), 2, 0, 0, 1);
 }
 
-/* Game board background (for Ladder Game) */
-.game-background {
-    -fx-background-color: #2c3e50;
+.elevation-2 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 6, 0, 0, 2),
+                dropshadow(gaussian, rgba(0,0,0,0.10), 4, 0, 0, 2);
 }
 
-/* Board container with shadow */
-.board-container {
-    -fx-background-color: #34495e;
-    -fx-background-radius: 15;
-    -fx-padding: 20;
+.elevation-3 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 8, 0, 0, 3),
+                dropshadow(gaussian, rgba(0,0,0,0.10), 6, 0, 0, 3);
 }
 
-/* Center content styling */
-.center-content {
-    -fx-background-color: rgba(255, 255, 255, 0.95);
-    -fx-background-radius: 15;
-    -fx-padding: 30;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
-    -fx-border-radius: 15;
-    -fx-border-color: rgba(255, 255, 255, 0.3);
-    -fx-border-width: 1;
+.elevation-4 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 10, 0, 0, 4),
+                dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 4);
 }
 
-/* Side panel styling */
-.side-panel {
-    -fx-background-color: rgba(52, 73, 94, 0.7);
-    -fx-background-radius: 10;
-    -fx-padding: 20;
+.elevation-8 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 6),
+                dropshadow(gaussian, rgba(0,0,0,0.14), 12, 0, 0, 6);
+}
+
+.elevation-16 {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 24, 0, 0, 10),
+                dropshadow(gaussian, rgba(0,0,0,0.16), 20, 0, 0, 10);
 }
 
 /* ==========================================================================
-   TYPOGRAPHY
+   TYPOGRAPHY SCALE
    ========================================================================== */
 
-/* Title styling */
-.title-label {
+.md-display-large {
+    -fx-font-size: 57px;
+    -fx-font-weight: 400;
+}
+
+.md-display-medium {
+    -fx-font-size: 45px;
+    -fx-font-weight: 400;
+}
+
+.md-headline-large {
+    -fx-font-size: 32px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #1c1c1c;
+}
+
+.md-headline-medium {
     -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.8), 1, 0, 0, 1);
+    -fx-font-weight: 400;
+    -fx-text-fill: #1c1c1c;
 }
 
-.subtitle-label {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #34495e;
+.md-headline-small {
+    -fx-font-size: 24px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #1c1c1c;
 }
 
-/* Info labels */
-.info-label {
+.md-title-large {
+    -fx-font-size: 22px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1c1c1c;
+}
+
+.md-title-medium {
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1c1c1c;
+}
+
+.md-title-small {
     -fx-font-size: 14px;
-    -fx-text-fill: #34495e;
-    -fx-font-weight: normal;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1c1c1c;
 }
 
-.success-label {
-    -fx-text-fill: #27ae60;
-    -fx-font-weight: bold;
+.md-body-large {
+    -fx-font-size: 16px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #49454f;
 }
 
-.error-label {
-    -fx-text-fill: #e74c3c;
-    -fx-font-weight: bold;
+.md-body-medium {
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #49454f;
+}
+
+.md-body-small {
+    -fx-font-size: 12px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #49454f;
+}
+
+.md-label-large {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #49454f;
+}
+
+.md-label-medium {
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #49454f;
+}
+
+.md-label-small {
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #49454f;
+}
+
+/* ==========================================================================
+   SURFACES & BACKGROUNDS
+   ========================================================================== */
+
+.md-surface {
+    -fx-background-color: #ffffff;
+}
+
+.md-surface-variant {
+    -fx-background-color: #f5f5f5;
+}
+
+.md-surface-dim {
+    -fx-background-color: #e8e8e8;
+}
+
+.md-surface-container {
+    -fx-background-color: #f3f3f3;
+}
+
+.md-surface-container-high {
+    -fx-background-color: #ececec;
+}
+
+.md-surface-container-highest {
+    -fx-background-color: #e6e6e6;
+}
+
+/* Primary surface with blue tint */
+.md-surface-primary {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #f8fbff, #e3f2fd);
+}
+
+/* Dark game background */
+.md-game-background {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #2c3e50, #1a252f);
+}
+
+/* Light background with subtle gradient */
+.md-background-gradient {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3498db, #2980b9);
+}
+
+/* ==========================================================================
+   CARDS
+   ========================================================================== */
+
+.md-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 16;
+}
+
+.md-card-elevated {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 6, 0, 0, 2),
+                dropshadow(gaussian, rgba(0,0,0,0.10), 4, 0, 0, 2);
+}
+
+.md-card-filled {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 16;
+}
+
+.md-card-outlined {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 16;
+}
+
+.md-card-outlined:hover {
+    -fx-border-color: #3498db;
+    -fx-background-color: rgba(52, 152, 219, 0.04);
 }
 
 /* ==========================================================================
    BUTTONS
    ========================================================================== */
 
-/* Primary game button */
-.game-button {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #3498db, #2980b9);
+/* Filled Button (Primary) */
+.md-button-filled {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 20;
+    -fx-padding: 10 24 10 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 3, 0, 0, 1);
+}
+
+.md-button-filled:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0, 0, 2);
+}
+
+.md-button-filled:pressed {
+    -fx-background-color: #1f6fa8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 2, 0, 0, 1);
+}
+
+.md-button-filled:disabled {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #9e9e9e;
+    -fx-effect: none;
+    -fx-cursor: default;
+}
+
+/* Outlined Button */
+.md-button-outlined {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 20;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 10 24 10 24;
+    -fx-cursor: hand;
+}
+
+.md-button-outlined:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.08);
+}
+
+.md-button-outlined:pressed {
+    -fx-background-color: rgba(52, 152, 219, 0.12);
+}
+
+.md-button-outlined:disabled {
+    -fx-border-color: #e0e0e0;
+    -fx-text-fill: #9e9e9e;
+    -fx-cursor: default;
+}
+
+/* Tonal Button */
+.md-button-tonal {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 20;
+    -fx-padding: 10 24 10 24;
+    -fx-cursor: hand;
+}
+
+.md-button-tonal:hover {
+    -fx-background-color: #bbdefb;
+}
+
+.md-button-tonal:pressed {
+    -fx-background-color: #90caf9;
+}
+
+/* Text Button */
+.md-button-text {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 20;
+    -fx-padding: 10 12 10 12;
+    -fx-cursor: hand;
+}
+
+.md-button-text:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.08);
+}
+
+/* FAB (Floating Action Button) */
+.md-fab {
+    -fx-background-color: #e3f2fd;
+    -fx-background-radius: 16;
+    -fx-min-width: 56;
+    -fx-min-height: 56;
+    -fx-pref-width: 56;
+    -fx-pref-height: 56;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.md-fab:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 12, 0, 0, 6);
+}
+
+/* Extended FAB */
+.md-fab-extended {
+    -fx-background-color: #3498db;
     -fx-text-fill: white;
     -fx-font-size: 16px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 500;
+    -fx-background-radius: 16;
+    -fx-padding: 16 24 16 24;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.35), 8, 0, 0, 4);
+    -fx-cursor: hand;
+}
+
+.md-fab-extended:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.45), 12, 0, 0, 6);
+}
+
+.md-fab-extended:pressed {
+    -fx-background-color: #1f6fa8;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.30), 6, 0, 0, 3);
+}
+
+.md-fab-extended:disabled {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #9e9e9e;
+    -fx-effect: none;
+}
+
+/* ==========================================================================
+   TEXT FIELDS
+   ========================================================================== */
+
+.md-text-field-outlined {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #79747e;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-width: 1;
+    -fx-padding: 12 16 12 16;
+    -fx-font-size: 16px;
+}
+
+.md-text-field-outlined:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+}
+
+.md-text-field-outlined:hover {
+    -fx-border-color: #1c1c1c;
+}
+
+.md-text-field-filled {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: transparent transparent #79747e transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-radius: 4 4 0 0;
+    -fx-padding: 16 16 8 16;
+    -fx-font-size: 16px;
+}
+
+.md-text-field-filled:focused {
+    -fx-background-color: #e8e8e8;
+    -fx-border-color: transparent transparent #3498db transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* ==========================================================================
+   COMBO BOX & SPINNER
+   ========================================================================== */
+
+.md-combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #79747e;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-width: 1;
+    -fx-padding: 8 12 8 12;
+}
+
+.md-combo-box:focused {
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+}
+
+.md-spinner {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #79747e;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-border-width: 1;
+}
+
+/* ==========================================================================
+   CHIPS & BADGES
+   ========================================================================== */
+
+.md-chip {
+    -fx-background-color: #e8e8e8;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12 6 12;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #1c1c1c;
+}
+
+.md-chip-primary {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+}
+
+.md-chip-success {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+}
+
+.md-chip-error {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+}
+
+.md-chip-warning {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #e65100;
+}
+
+.md-badge {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 12;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 2 8 2 8;
+    -fx-min-width: 24;
+    -fx-alignment: center;
+}
+
+.md-badge-number {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-alignment: center;
+}
+
+.md-player-badge {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.4), 4, 0, 0, 2);
+}
+
+/* ==========================================================================
+   PANELS & SIDEBARS
+   ========================================================================== */
+
+.md-sidebar {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0 16 16 0;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 4, 0);
+}
+
+.md-sidebar-dark {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0, 0, 4);
+}
+
+.md-panel {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 3);
+}
+
+/* ==========================================================================
+   APP BAR & NAVIGATION
+   ========================================================================== */
+
+.md-app-bar {
+    -fx-background-color: #3498db;
+    -fx-padding: 0 16 0 16;
+    -fx-min-height: 64;
+    -fx-pref-height: 64;
+}
+
+.md-app-bar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 400;
+}
+
+.md-menu-bar {
+    -fx-background-color: #3498db;
+    -fx-padding: 4 8 4 8;
+}
+
+/* ==========================================================================
+   TEXT AREAS & LOGS
+   ========================================================================== */
+
+.md-text-area {
+    -fx-control-inner-background: #fafafa;
+    -fx-font-family: 'System';
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-padding: 12 24 12 24;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+}
+
+.md-scoreboard {
+    -fx-control-inner-background: #fafafa;
+    -fx-font-family: 'System', monospace;
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-padding: 4;
+}
+
+.md-game-log {
+    -fx-control-inner-background: #f5f5f5;
+    -fx-font-family: 'System', monospace;
+    -fx-font-size: 12px;
+    -fx-text-fill: #616161;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+/* ==========================================================================
+   DIVIDERS
+   ========================================================================== */
+
+.md-divider {
+    -fx-background-color: #e0e0e0;
+    -fx-pref-height: 1;
+    -fx-max-height: 1;
+}
+
+.md-divider-vertical {
+    -fx-background-color: #e0e0e0;
+    -fx-pref-width: 1;
+    -fx-max-width: 1;
+}
+
+/* ==========================================================================
+   GAME SELECTION CARDS
+   ========================================================================== */
+
+.md-game-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-padding: 24;
+    -fx-pref-width: 220;
+    -fx-pref-height: 200;
+    -fx-alignment: center;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, 3);
 }
 
-.game-button:hover {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #2980b9, #1f5f8b);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 8, 0, 0, 3);
+.md-game-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 6);
+    -fx-translate-y: -4;
 }
 
-.game-button:pressed {
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #1f5f8b, #2980b9);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+.md-game-card:pressed {
+    -fx-background-color: #f5f5f5;
+    -fx-translate-y: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 4, 0, 0, 2);
 }
 
-/* Large action button (roll die, etc.) */
-.action-button-large {
-    -fx-background-color: #3498db;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 10;
-    -fx-cursor: hand;
+.md-game-icon {
+    -fx-background-color: #e3f2fd;
+    -fx-background-radius: 32;
+    -fx-min-width: 64;
+    -fx-min-height: 64;
+    -fx-pref-width: 64;
+    -fx-pref-height: 64;
+    -fx-alignment: center;
 }
 
-.action-button-large:hover {
-    -fx-background-color: #2980b9;
-}
-
-/* ==========================================================================
-   INPUT FIELDS
-   ========================================================================== */
-
-/* Input field styling */
-.game-text-field {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-padding: 8;
-    -fx-font-size: 14px;
-}
-
-.game-text-field:focused {
-    -fx-border-color: #3498db;
-    -fx-border-width: 2;
-    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.3), 5, 0, 0, 0);
-}
-
-/* ComboBox styling */
-.game-combo-box {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-padding: 8;
-}
-
-.game-combo-box:focused {
-    -fx-border-color: #3498db;
-    -fx-border-width: 2;
-}
-
-/* Spinner styling */
-.game-spinner {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-/* ==========================================================================
-   GAME LOG & TEXT AREAS
-   ========================================================================== */
-
-/* Game log text area */
-.game-log {
-    -fx-control-inner-background: #bdc3c7;
-    -fx-font-family: 'Consolas', 'Monaco', monospace;
-    -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-    -fx-border-color: #95a5a6;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-/* Smaller game log variant */
-.game-log-small {
-    -fx-control-inner-background: #f4f4f4;
-    -fx-font-family: 'Consolas', 'Monaco', monospace;
-    -fx-font-size: 11px;
-}
-
-/* Scoreboard styling */
-.scoreboard {
-    -fx-control-inner-background: #bdc3c7;
-    -fx-font-family: 'Consolas', 'Monaco', monospace;
-    -fx-font-size: 14px;
-    -fx-text-fill: #2c3e50;
-    -fx-font-weight: bold;
-    -fx-border-color: #95a5a6;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-}
-
-/* ==========================================================================
-   NAVIGATION
-   ========================================================================== */
-
-/* Menu bar styling */
-.menu-bar-game {
-    -fx-background-color: #3498db;
-}
-
-/* ==========================================================================
-   BOARD TILES (Ladder Game)
-   ========================================================================== */
-
-/* Base tile style */
-.board-tile {
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-border-width: 2;
-}
-
-/* Regular tile */
-.tile-regular {
-    -fx-background-color: #ecf0f1;
-    -fx-text-fill: #2c3e50;
-    -fx-border-color: #95a5a6;
-}
-
-/* Ladder up tile (green) */
-.tile-ladder-up {
-    -fx-background-color: #27ae60;
-    -fx-text-fill: white;
-    -fx-border-color: #229954;
-}
-
-/* Ladder down tile (red/snake) */
-.tile-ladder-down {
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
-    -fx-border-color: #cb4335;
-}
-
-/* Skip turn tile (orange) */
-.tile-skip-turn {
-    -fx-background-color: #f39c12;
-    -fx-text-fill: white;
-    -fx-border-color: #d68910;
-}
-
-/* Back to start tile (purple) */
-.tile-back-to-start {
-    -fx-background-color: #9b59b6;
-    -fx-text-fill: white;
-    -fx-border-color: #7d3c98;
+.md-game-icon-text {
+    -fx-font-size: 28px;
 }
 
 /* ==========================================================================
    PLAYER SETUP
    ========================================================================== */
 
-/* Player setup section */
-.player-row {
-    -fx-background-color: rgba(236, 240, 241, 0.8);
-    -fx-background-radius: 8;
-    -fx-padding: 10;
-    -fx-spacing: 10;
-    -fx-border-color: rgba(189, 195, 199, 0.5);
-    -fx-border-radius: 8;
+.md-player-row {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 12;
     -fx-border-width: 1;
+    -fx-padding: 12 16 12 16;
+    -fx-spacing: 12;
 }
 
-.player-row:hover {
-    -fx-background-color: rgba(220, 230, 235, 0.9);
+.md-player-row:hover {
+    -fx-border-color: #3498db;
+    -fx-background-color: rgba(52, 152, 219, 0.04);
+}
+
+.md-player-badge {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 16;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-pref-width: 32;
+    -fx-pref-height: 32;
+    -fx-alignment: center;
 }
 
 /* ==========================================================================
-   MAP DESIGNER
+   SEMANTIC TEXT COLORS
    ========================================================================== */
 
-/* Status label for coordinate mode */
-.status-label-active {
-    -fx-background-color: #e74c3c;
-    -fx-text-fill: white;
-    -fx-padding: 5;
-    -fx-font-weight: bold;
+.md-success-text {
+    -fx-text-fill: #2e7d32;
 }
 
-/* Transparent overlay */
-.overlay-transparent {
-    -fx-background-color: transparent;
+.md-error-text {
+    -fx-text-fill: #c62828;
+}
+
+.md-warning-text {
+    -fx-text-fill: #e65100;
+}
+
+.md-info-text {
+    -fx-text-fill: #1565c0;
+}
+
+/* ==========================================================================
+   BOARD TILES (LADDER GAME)
+   ========================================================================== */
+
+.md-tile {
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+}
+
+.md-tile-regular {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #424242;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 2, 0, 0, 1);
+}
+
+.md-tile-regular:hover {
+    -fx-background-color: #eeeeee;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 4, 0, 0, 2);
+}
+
+.md-tile-ladder-up {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,80,0.35), 4, 0, 0, 2);
+}
+
+.md-tile-ladder-up:hover {
+    -fx-background-color: #43a047;
+}
+
+.md-tile-ladder-down {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(244,67,54,0.35), 4, 0, 0, 2);
+}
+
+.md-tile-ladder-down:hover {
+    -fx-background-color: #e53935;
+}
+
+.md-tile-skip-turn {
+    -fx-background-color: #ff9800;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(255,152,0,0.35), 4, 0, 0, 2);
+}
+
+.md-tile-skip-turn:hover {
+    -fx-background-color: #fb8c00;
+}
+
+.md-tile-back-to-start {
+    -fx-background-color: #9c27b0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(156,39,176,0.35), 4, 0, 0, 2);
+}
+
+.md-tile-back-to-start:hover {
+    -fx-background-color: #8e24aa;
+}
+
+.md-tile-start {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(52,152,219,0.40), 6, 0, 0, 3);
+}
+
+.md-tile-end {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #ffd700, #ffb300);
+    -fx-text-fill: #1c1c1c;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(255,215,0,0.50), 6, 0, 0, 3);
+}
+
+/* Board container */
+.md-board-container {
+    -fx-background-color: #37474f;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.30), 20, 0, 0, 8);
+}
+
+/* ==========================================================================
+   MISSING DIAMOND GAME
+   ========================================================================== */
+
+.md-map-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 10, 0, 0, 4);
+}
+
+.md-player-status-row {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-spacing: 10;
+}
+
+.md-player-status-active {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #3498db;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+}
+
+.md-money-chip {
+    -fx-background-color: #e8f5e9;
+    -fx-background-radius: 12;
+    -fx-padding: 4 10 4 10;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: 500;
+    -fx-font-size: 13px;
+}
+
+/* Token action buttons */
+.md-button-token {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #e65100;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.md-button-token:hover {
+    -fx-background-color: #ffe0b2;
+}
+
+.md-button-token-premium {
+    -fx-background-color: #ffd54f;
+    -fx-text-fill: #1c1c1c;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+
+.md-button-token-premium:hover {
+    -fx-background-color: #ffca28;
 }
 
 /* ==========================================================================
    UTILITY CLASSES
    ========================================================================== */
 
-/* Fade-in helper class (use with Java transitions) */
-.fade-in {
-    -fx-opacity: 0;
+.md-spacing-sm {
+    -fx-spacing: 8;
 }
 
-/* Utility container spacing */
-.spaced-container {
-    -fx-spacing: 15;
-    -fx-padding: 20;
+.md-spacing-md {
+    -fx-spacing: 16;
 }
 
-/* Frosted glass effect container */
-.glass-container {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-background-radius: 15;
-    -fx-border-color: rgba(255, 255, 255, 0.2);
-    -fx-border-radius: 15;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+.md-spacing-lg {
+    -fx-spacing: 24;
 }
 
-/* Button content labels (for game selection buttons) */
-.button-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
+.md-padding-sm {
+    -fx-padding: 8;
+}
+
+.md-padding-md {
+    -fx-padding: 16;
+}
+
+.md-padding-lg {
+    -fx-padding: 24;
+}
+
+.md-rounded-sm {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+
+.md-rounded-md {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.md-rounded-lg {
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+
+.md-rounded-xl {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+}
+
+.md-rounded-full {
+    -fx-background-radius: 9999;
+    -fx-border-radius: 9999;
+}
+
+/* Transparent overlay */
+.md-overlay-transparent {
+    -fx-background-color: transparent;
+}
+
+/* Center alignment */
+.md-center {
+    -fx-alignment: center;
+}
+
+/* Status indicator */
+.md-status-active {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+}
+
+/* ==========================================================================
+   LEGACY COMPATIBILITY (transitional classes)
+   ========================================================================== */
+
+/* These maintain compatibility with existing code during migration */
+.main-container {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #3498db, #2980b9);
+}
+
+.main-container-solid {
+    -fx-background-color: #3498db;
+}
+
+.center-content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-padding: 32;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 12, 0, 0, 6);
+}
+
+.game-background {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #2c3e50, #1a252f);
+}
+
+.game-button {
+    -fx-background-color: #3498db;
     -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 20;
+    -fx-padding: 12 24 12 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 4, 0, 0, 2);
 }
 
-.button-description {
-    -fx-font-size: 12px;
-    -fx-text-fill: rgba(255, 255, 255, 0.9);
+.game-button:hover {
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 4);
+}
+
+.title-label {
+    -fx-font-size: 28px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #1c1c1c;
+}
+
+.subtitle-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #49454f;
+}
+
+.info-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #49454f;
 }

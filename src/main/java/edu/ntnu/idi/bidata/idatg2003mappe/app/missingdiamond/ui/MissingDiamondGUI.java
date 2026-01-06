@@ -96,11 +96,11 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   /**
-   * <p>Sets up the main layout structure using CSS classes.</p>
+   * <p>Sets up the main layout structure using Material Design CSS classes.</p>
    */
   private void setupMainLayout() {
     mainLayout = new BorderPane();
-    mainLayout.getStyleClass().add("main-container");
+    mainLayout.getStyleClass().add("md-game-background");
 
     // Create main content area
     createMainContent();
@@ -128,13 +128,12 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   /**
-   * <p>Creates the main game content with responsive layout.</p>
+   * <p>Creates the main game content with Material Design responsive layout.</p>
    */
   private void createMainContent() {
-    gameContent = new HBox(20);
-    gameContent.setPadding(new Insets(20));
+    gameContent = new HBox(24);
+    gameContent.setPadding(new Insets(24));
     gameContent.setAlignment(Pos.CENTER);
-    gameContent.getStyleClass().add("spaced-container");
 
     // Left sidebar for controls and status
     createLeftSidebar();
@@ -149,24 +148,23 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   private void initializeUIComponents() {
-    // Initialize gameHeader
+    // Initialize gameHeader with Material Design styling
     gameHeader = new VBox(10);
-    gameHeader.setPadding(new Insets(15, 20, 15, 20));
+    gameHeader.setPadding(new Insets(16, 24, 16, 24));
     gameHeader.setAlignment(Pos.CENTER);
-    gameHeader.getStyleClass().add("glass-container");
+    gameHeader.getStyleClass().add("md-card-filled");
 
-    // Initialize game status label
+    // Initialize game status label with Material typography
     gameStatusLabel = new Label("Loading game...");
-    gameStatusLabel.getStyleClass().add("subtitle-label");
-    gameStatusLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
+    gameStatusLabel.getStyleClass().add("md-title-medium");
 
     // Initialize loading indicator
     loadingIndicator = new ProgressIndicator();
-    loadingIndicator.setPrefSize(30, 30);
+    loadingIndicator.setPrefSize(28, 28);
     loadingIndicator.setVisible(false);
 
     // Add components to gameHeader
-    HBox statusBox = new HBox(10);
+    HBox statusBox = new HBox(12);
     statusBox.setAlignment(Pos.CENTER);
     statusBox.getChildren().addAll(gameStatusLabel, loadingIndicator);
 
@@ -206,52 +204,58 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   /**
-   * <p>Creates the left sidebar with game controls and player status.</p>
+   * <p>Creates the Material Design left sidebar with game controls and player status.</p>
    */
   private void createLeftSidebar() {
-    leftSidebar = new VBox(15);
-    leftSidebar.setPrefWidth(280);
-    leftSidebar.setMaxWidth(280);
+    leftSidebar = new VBox(20);
+    leftSidebar.setPrefWidth(300);
+    leftSidebar.setMaxWidth(300);
     leftSidebar.setPadding(new Insets(20));
-    leftSidebar.getStyleClass().addAll("center-content", "spaced-container");
+    leftSidebar.getStyleClass().add("md-sidebar");
 
-    // Player status section
-    Label statusTitle = new Label("🏆 Player Status");
-    statusTitle.getStyleClass().add("subtitle-label");
-    statusTitle.setFont(Font.font("System", FontWeight.BOLD, 16));
+    // Player status section with Material card
+    VBox statusSection = new VBox(12);
+    statusSection.getStyleClass().add("md-card-elevated");
+    statusSection.setPadding(new Insets(16));
 
-    // Game controls section
-    Label controlsTitle = new Label("🎮 Game Controls");
-    controlsTitle.getStyleClass().add("subtitle-label");
-    controlsTitle.setFont(Font.font("System", FontWeight.BOLD, 16));
+    Label statusTitle = new Label("Player Status");
+    statusTitle.getStyleClass().add("md-title-medium");
 
-    // Add content with separators
-    Separator separator1 = new Separator();
-    Separator separator2 = new Separator();
+    statusSection.getChildren().addAll(statusTitle, statusPanel);
+
+    // Game controls section with Material card
+    VBox controlsSection = new VBox(12);
+    controlsSection.getStyleClass().add("md-card-elevated");
+    controlsSection.setPadding(new Insets(16));
+
+    Label controlsTitle = new Label("Game Controls");
+    controlsTitle.getStyleClass().add("md-title-medium");
+
+    controlsSection.getChildren().addAll(controlsTitle, controlPanel);
+
+    // Add sections with Material dividers
+    Separator divider = new Separator();
+    divider.getStyleClass().add("md-divider");
 
     leftSidebar.getChildren().addAll(
-        statusTitle,
-        statusPanel,
-        separator1,
-        controlsTitle,
-        controlPanel,
-        separator2
+        statusSection,
+        divider,
+        controlsSection
     );
   }
 
   /**
-   * <p>Creates the board container with enhanced styling.</p>
+   * <p>Creates the board container with Material Design styling.</p>
    */
   private StackPane createBoardContainer() {
     StackPane boardContainer = new StackPane();
     boardContainer.setAlignment(Pos.CENTER);
-    boardContainer.getStyleClass().add("center-content");
-    boardContainer.setPadding(new Insets(15));
+    boardContainer.getStyleClass().add("md-board-container");
+    boardContainer.setPadding(new Insets(16));
 
-    // Add board title
-    VBox boardSection = new VBox(10);
+    // Board section with proper styling
+    VBox boardSection = new VBox(12);
     boardSection.setAlignment(Pos.CENTER);
-
 
     boardSection.getChildren().addAll(boardView);
     boardContainer.getChildren().add(boardSection);
@@ -260,34 +264,33 @@ public class MissingDiamondGUI extends Application implements MapDesignerListene
   }
 
   /**
-   * <p>Creates the developer tools panel (hidden by default).</p>
+   * <p>Creates the developer tools panel with Material Design styling (hidden by default).</p>
    */
   private void createDeveloperToolsPanel() {
-    developerToolsPanel = new VBox(10);
-    developerToolsPanel.setPadding(new Insets(10, 20, 10, 20));
-    developerToolsPanel.getStyleClass().addAll("glass-container", "spaced-container");
+    developerToolsPanel = new VBox(12);
+    developerToolsPanel.setPadding(new Insets(12, 24, 12, 24));
+    developerToolsPanel.getStyleClass().add("md-card-filled");
     developerToolsPanel.setVisible(false);
     developerToolsPanel.setManaged(false);
 
     Label devTitle = new Label("Developer Tools");
-    devTitle.getStyleClass().add("subtitle-label");
-    devTitle.setFont(Font.font("System", FontWeight.BOLD, 14));
+    devTitle.getStyleClass().add("md-title-medium");
 
-    HBox devControls = new HBox(15);
+    HBox devControls = new HBox(16);
     devControls.setAlignment(Pos.CENTER_LEFT);
 
     // Tile type selector
     Label tileTypeLabel = new Label("Tile Type:");
-    tileTypeLabel.getStyleClass().add("info-label");
+    tileTypeLabel.getStyleClass().add("md-label-large");
 
     // Connection controls
     Label sourceLabel = new Label("Source ID:");
     Label targetLabel = new Label("Target ID:");
-    sourceLabel.getStyleClass().add("info-label");
-    targetLabel.getStyleClass().add("info-label");
+    sourceLabel.getStyleClass().add("md-label-large");
+    targetLabel.getStyleClass().add("md-label-large");
 
     Button createConnectionBtn = new Button("Create Connection");
-    createConnectionBtn.getStyleClass().add("game-button");
+    createConnectionBtn.getStyleClass().add("md-button-outlined");
     createConnectionBtn.setOnAction(e -> mapDesignerManager.createConnection());
 
     devControls.getChildren().addAll(
