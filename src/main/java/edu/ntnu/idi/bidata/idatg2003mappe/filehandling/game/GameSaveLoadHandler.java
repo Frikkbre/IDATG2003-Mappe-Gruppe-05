@@ -107,84 +107,17 @@ public class GameSaveLoadHandler {
    * <p>This method reads player data from the saved CSV file and applies it to
    * the provided Ladder Game controller. It updates player positions and other
    * game state information based on the saved data.</p>
-   * <p>The method performs these steps:</p>
-   * <ol>
-   *   <li>Check if the save file exists</li>
-   *   <li>Read player data from the CSV file</li>
-   *   <li>Create a {@link GameState} object with the loaded data</li>
-   *   <li>Apply the game state to the controller</li>
-   *   <li>Update the UI to reflect the loaded state</li>
-   * </ol>
    *
    * @param ladderGameGUI The {@link LadderGameGUI} instance to update
    * @param controller    The {@link LadderGameController} to apply the state to
    * @param randomLadders Whether the game uses random ladders
    */
   public void loadLastSaveLadderGame(LadderGameGUI ladderGameGUI, LadderGameController controller, boolean randomLadders) {
-    // Check if the CSV file exists
-    File csvFile = new File(fullPath);
-    if (!csvFile.exists() || !csvFile.isFile()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("No Save Found");
-      alert.setHeaderText("No Save File Found");
-      alert.setContentText("There is no saved game to load.");
-      alert.showAndWait();
-      return;
-    }
-
-    try {
-      // Read the CSV file
-      try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
-        logger.info("Loading game from: " + fullPath);
-
-        String[] header = reader.readNext(); // Skip header
-        if (header != null) {
-          logger.info("Header: " + String.join(", ", header));
-        }
-
-        // Create GameState
-        GameState gameState = new GameState();
-        gameState.setRandomLadders(randomLadders);
-        gameState.setCurrentPlayerIndex(0); // Default to first player's turn
-
-        // Read player data
-        List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
-        String[] record;
-        while ((record = reader.readNext()) != null) {
-          if (record.length >= 4) {
-            String playerName = record[0];
-            int playerId = Integer.parseInt(record[1]);
-            int position = Integer.parseInt(record[3]);
-
-            playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
-            logger.info("Loaded player: " + playerName + " at position " + position);
-          }
-        }
-
-        gameState.setPlayerPositions(playerPositions);
-
-        // Apply the game state to the existing controller
-        controller.applyGameState(gameState);
-
-        // Show success alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Loaded");
-        alert.setHeaderText("Game Loaded Successfully");
-        alert.setContentText("Your last saved ladder game has been loaded from LastSave.csv with " +
-            playerPositions.size() + " players.");
-        alert.showAndWait();
-
-        ladderGameGUI.updateBoardUI();
-      }
-    } catch (Exception ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Load Error");
-      alert.setContentText("Could not load the game: " + ex.getMessage());
-      alert.showAndWait();
-      logger.severe("Error loading ladder game: " + ex.getMessage());
-      ex.printStackTrace();
-    }
+    loadGameState("ladder game", gameState -> {
+      gameState.setRandomLadders(randomLadders);
+      controller.applyGameState(gameState);
+      ladderGameGUI.updateBoardUI();
+    });
   }
 
   /**
@@ -192,79 +125,76 @@ public class GameSaveLoadHandler {
    * <p>This method reads player data from the saved CSV file and applies it to
    * the provided Missing Diamond controller. It updates player positions and other
    * game state information based on the saved data.</p>
-   * <p>The method performs these steps:</p>
-   * <ol>
-   *   <li>Check if the save file exists</li>
-   *   <li>Read player data from the CSV file</li>
-   *   <li>Create a {@link GameState} object with the loaded data</li>
-   *   <li>Apply the game state to the controller</li>
-   *   <li>Update the UI to reflect the loaded state</li>
-   * </ol>
    *
    * @param missingDiamondGUI The {@link MissingDiamondGUI} instance to update
    * @param controller        The {@link MissingDiamondController} to apply the state to
    */
   public void loadLastSaveMissingDiamond(MissingDiamondGUI missingDiamondGUI, MissingDiamondController controller) {
-    // Check if the CSV file exists
+    loadGameState("missing diamond game", gameState -> {
+      controller.applyGameState(gameState);
+      missingDiamondGUI.updateBoardUI();
+    });
+  }
+
+  /**
+   * <p>Common method for loading game state from the save file.</p>
+   * <p>This method handles all the common logic for loading a saved game:</p>
+   * <ol>
+   *   <li>Check if the save file exists</li>
+   *   <li>Read player data from the CSV file</li>
+   *   <li>Create a {@link GameState} object with the loaded data</li>
+   *   <li>Call the provided handler to apply game-specific logic</li>
+   *   <li>Show success or error alerts</li>
+   * </ol>
+   *
+   * @param gameTypeName A descriptive name for the game type (for logging/alerts)
+   * @param stateHandler A handler that applies the loaded state to the specific game
+   */
+  private void loadGameState(String gameTypeName, java.util.function.Consumer<GameState> stateHandler) {
     File csvFile = new File(fullPath);
     if (!csvFile.exists() || !csvFile.isFile()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("No Save Found");
-      alert.setHeaderText("No Save File Found");
-      alert.setContentText("There is no saved game to load.");
-      alert.showAndWait();
+      showAlert(Alert.AlertType.INFORMATION, "No Save Found", "No Save File Found",
+          "There is no saved game to load.");
       return;
     }
 
-    try {
-      // Read the CSV file
-      try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
-        String[] header = reader.readNext(); // Skip header
-        if (header != null) {
-          logger.info("Header: " + String.join(", ", header));
-        }
+    try (CSVReader reader = new CSVReader(new FileReader(csvFile))) {
+      logger.info("Loading " + gameTypeName + " from: " + fullPath);
 
-        // Create GameState
-        GameState gameState = new GameState();
-        gameState.setCurrentPlayerIndex(0); // Default to first player's turn
-
-        // Read player data
-        List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
-        String[] record;
-        while ((record = reader.readNext()) != null) {
-          if (record.length >= 4) {
-            String playerName = record[0];
-            int playerId = Integer.parseInt(record[1]);
-            int position = Integer.parseInt(record[3]);
-
-            playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
-            logger.info("Loaded player: " + playerName + " at position " + position);
-          }
-        }
-
-        gameState.setPlayerPositions(playerPositions);
-
-        // Apply the game state to the existing controller
-        controller.applyGameState(gameState);
-
-        // Show success alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Loaded");
-        alert.setHeaderText("Game Loaded Successfully");
-        alert.setContentText("Your last saved missing diamond game has been loaded from LastSave.csv with " +
-            playerPositions.size() + " players.");
-        alert.showAndWait();
-
-        // Update the UI
-        missingDiamondGUI.updateBoardUI();
+      String[] header = reader.readNext();
+      if (header != null) {
+        logger.info("Header: " + String.join(", ", header));
       }
+
+      GameState gameState = new GameState();
+      gameState.setCurrentPlayerIndex(0);
+
+      List<GameState.PlayerPosition> playerPositions = new ArrayList<>();
+      String[] record;
+      while ((record = reader.readNext()) != null) {
+        if (record.length >= 4) {
+          String playerName = record[0];
+          int playerId = Integer.parseInt(record[1]);
+          int position = Integer.parseInt(record[3]);
+
+          playerPositions.add(new GameState.PlayerPosition(playerName, playerId, position));
+          logger.info("Loaded player: " + playerName + " at position " + position);
+        }
+      }
+
+      gameState.setPlayerPositions(playerPositions);
+
+      // Apply game-specific logic
+      stateHandler.accept(gameState);
+
+      showAlert(Alert.AlertType.INFORMATION, "Game Loaded", "Game Loaded Successfully",
+          "Your last saved " + gameTypeName + " has been loaded from LastSave.csv with " +
+              playerPositions.size() + " players.");
+
     } catch (Exception ex) {
-      Alert alert = new Alert(Alert.AlertType.ERROR);
-      alert.setTitle("Error");
-      alert.setHeaderText("Load Error");
-      alert.setContentText("Could not load the game: " + ex.getMessage());
-      alert.showAndWait();
-      logger.severe("Error loading missing diamond game: " + ex.getMessage());
+      showAlert(Alert.AlertType.ERROR, "Error", "Load Error",
+          "Could not load the game: " + ex.getMessage());
+      logger.severe("Error loading " + gameTypeName + ": " + ex.getMessage());
       ex.printStackTrace();
     }
   }

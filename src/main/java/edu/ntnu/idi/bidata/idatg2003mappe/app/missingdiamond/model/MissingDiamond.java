@@ -106,54 +106,11 @@ public class MissingDiamond {
     this.specialTileIdsSet = new HashSet<>();
     this.boardFactory = new MissingDiamondBoardFactory();
 
-    BoardBranching boardInstance;
-    MapConfig mapConfig = null;
-    try {
-      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      // Use classpath resource loading for paths starting with "/"
-      if (mapPath.startsWith("/")) {
-        mapConfig = mapFileHandler.readFromResource(mapPath);
-      } else {
-        mapConfig = mapFileHandler.read(mapPath);
-      }
-
-      if (mapConfig != null) {
-        boardInstance = boardFactory.createBoardFromConfig(mapConfig);
-        // Populate specialTileIdsSet from mapConfig
-        if (mapConfig.getLocations() != null) {
-          mapConfig.getLocations().stream()
-              .filter(MapConfig.Location::isSpecial)
-              .map(MapConfig.Location::getId)
-              .forEach(specialTileIdsSet::add);
-        }
-      } else {
-        logger.severe("Map configuration is null or could not be read. Falling back to default board.");
-        boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
-      }
-
-    } catch (FileHandlingException e) {
-      logger.severe("Error loading map configuration: " + e.getMessage());
-      boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
-    }
-
-    this.board = boardInstance;
+    this.board = loadBoard(mapPath);
     this.movementCalculator = new MovementCalculator(specialTileIdsSet);
-    this.players = createPlayers(numberOfPlayers, boardInstance);
-    this.gameFinished = false;
-    this.currentPlayerIndex = 0;
-    this.currentPlayer = players.get(currentPlayerIndex);
-    this.currentRoll = 0;
+    this.players = createPlayers(numberOfPlayers, board);
 
-    identifyCityTiles();
-    identifyStartingTiles();
-
-    tokenSystem.setStartingTiles(startingTiles);
-    tokenSystem.initializeTokens(cityTiles);
-
-    players.forEach(player -> {
-      banker.registerPlayer(player);
-      banker.deposit(player, STARTING_MONEY);
-    });
+    initializeGameState();
   }
 
   /**
@@ -171,33 +128,91 @@ public class MissingDiamond {
     this.specialTileIdsSet = new HashSet<>();
     this.boardFactory = new MissingDiamondBoardFactory();
 
-    BoardBranching boardInstance;
-    MapConfig mapConfig = null;
-    try {
-      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
-      if (mapFileHandler.defaultMapExists()) {
-        mapConfig = mapFileHandler.loadFromDefaultLocation();
-        boardInstance = boardFactory.createBoardFromConfig(mapConfig);
-        // Populate specialTileIdsSet from mapConfig
-        if (mapConfig.getLocations() != null) {
-          mapConfig.getLocations().stream()
-              .filter(MapConfig.Location::isSpecial)
-              .map(MapConfig.Location::getId)
-              .forEach(specialTileIdsSet::add);
-        }
-      } else {
-        boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
-      }
-    } catch (FileHandlingException e) {
-      boardInstance = boardFactory.createDefaultBoard(specialTileIdsSet);
-    }
-
-    this.board = boardInstance;
+    this.board = loadBoardFromDefault();
     this.movementCalculator = new MovementCalculator(specialTileIdsSet);
-    // Identify starting tiles before reading players, as it might be needed for fallback
+
+    // Identify starting tiles before reading players for fallback positioning
     identifyStartingTiles();
     PlayerFileHandler playerFileHandler = new PlayerFileHandler();
     this.players = playerFileHandler.readPlayersFromCSV(this.board, this.startingTiles);
+
+    initializeGameState();
+  }
+
+  /**
+   * <p>Loads the game board from a specified map path.</p>
+   *
+   * @param mapPath The path to the map (classpath resource or file system)
+   * @return The loaded board, or a default board if loading fails
+   */
+  private BoardBranching loadBoard(String mapPath) {
+    try {
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      MapConfig mapConfig;
+
+      if (mapPath.startsWith("/")) {
+        mapConfig = mapFileHandler.readFromResource(mapPath);
+      } else {
+        mapConfig = mapFileHandler.read(mapPath);
+      }
+
+      if (mapConfig != null) {
+        populateSpecialTiles(mapConfig);
+        return boardFactory.createBoardFromConfig(mapConfig);
+      }
+    } catch (FileHandlingException e) {
+      logger.severe("Error loading map configuration: " + e.getMessage());
+    }
+
+    logger.severe("Map configuration could not be read. Falling back to default board.");
+    return boardFactory.createDefaultBoard(specialTileIdsSet);
+  }
+
+  /**
+   * <p>Loads the game board from the default location.</p>
+   *
+   * @return The loaded board, or a default board if loading fails
+   */
+  private BoardBranching loadBoardFromDefault() {
+    try {
+      MapConfigFileHandler mapFileHandler = new MapConfigFileHandler();
+      if (mapFileHandler.defaultMapExists()) {
+        MapConfig mapConfig = mapFileHandler.loadFromDefaultLocation();
+        populateSpecialTiles(mapConfig);
+        return boardFactory.createBoardFromConfig(mapConfig);
+      }
+    } catch (FileHandlingException e) {
+      logger.warning("Could not load default map: " + e.getMessage());
+    }
+    return boardFactory.createDefaultBoard(specialTileIdsSet);
+  }
+
+  /**
+   * <p>Populates the special tile IDs set from a map configuration.</p>
+   *
+   * @param mapConfig The map configuration containing location data
+   */
+  private void populateSpecialTiles(MapConfig mapConfig) {
+    if (mapConfig != null && mapConfig.getLocations() != null) {
+      mapConfig.getLocations().stream()
+          .filter(MapConfig.Location::isSpecial)
+          .map(MapConfig.Location::getId)
+          .forEach(specialTileIdsSet::add);
+    }
+  }
+
+  /**
+   * <p>Initializes the common game state after board and players are set up.</p>
+   *
+   * <p>This method handles the common initialization logic shared by all constructors:</p>
+   * <ul>
+   *   <li>Sets initial game state variables</li>
+   *   <li>Identifies city and starting tiles</li>
+   *   <li>Initializes the token system</li>
+   *   <li>Registers players with the banker</li>
+   * </ul>
+   */
+  private void initializeGameState() {
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
     this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
