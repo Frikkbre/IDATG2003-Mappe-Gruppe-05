@@ -138,11 +138,13 @@ public class NavBar {
       try {
         BoardGameSelector selector = getBoardGameSelector();
         if (getStage().equals(selector.getStage())) {
-          throw new IllegalArgumentException("Already in main menu.");
+          showNavigationAlert("Already in main menu.");
+          return;
         }
         selector.start(getStage());
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        logger.severe("Error navigating to main menu: " + e.getMessage());
+        showNavigationAlert("Could not navigate to main menu: " + e.getMessage());
       }
     });
 
@@ -259,5 +261,19 @@ public class NavBar {
       return missingDiamondController.getPlayers();
     }
     return Collections.emptyList();
+  }
+
+  /**
+   * <p>Shows a navigation alert dialog.</p>
+   * <p>Displays an informational alert to the user about navigation status or errors.</p>
+   *
+   * @param message The message to display in the alert
+   */
+  private void showNavigationAlert(String message) {
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+    alert.setTitle("Navigation");
+    alert.setHeaderText("Navigation Issue");
+    alert.setContentText(message);
+    alert.showAndWait();
   }
 }

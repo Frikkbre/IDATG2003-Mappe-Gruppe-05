@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -96,8 +97,7 @@ public class GameSaveLoadHandler {
       } catch (Exception ex) {
         showAlert(Alert.AlertType.ERROR, "Error", "Save Error",
             "Could not save the game: " + ex.getMessage());
-        logger.severe("Error saving game: " + ex.getMessage());
-        ex.printStackTrace();
+        logger.log(Level.SEVERE, "Error saving game", ex);
       }
     };
   }
@@ -194,8 +194,7 @@ public class GameSaveLoadHandler {
     } catch (Exception ex) {
       showAlert(Alert.AlertType.ERROR, "Error", "Load Error",
           "Could not load the game: " + ex.getMessage());
-      logger.severe("Error loading " + gameTypeName + ": " + ex.getMessage());
-      ex.printStackTrace();
+      logger.log(Level.SEVERE, "Error loading " + gameTypeName, ex);
     }
   }
 

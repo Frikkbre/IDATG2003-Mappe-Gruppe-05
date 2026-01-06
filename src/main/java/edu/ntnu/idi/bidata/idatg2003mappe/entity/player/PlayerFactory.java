@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -87,7 +88,7 @@ public class PlayerFactory {
           }
         }
       } catch (IOException | CsvValidationException e) {
-        logger.warning("Error reading player data: " + e.getMessage());
+        logger.log(Level.WARNING, "Error reading player data from " + filePath + ", falling back to defaults", e);
       }
     }
 
