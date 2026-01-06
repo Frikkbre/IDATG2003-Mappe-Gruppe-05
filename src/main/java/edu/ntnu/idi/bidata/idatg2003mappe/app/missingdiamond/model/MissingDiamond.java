@@ -211,11 +211,18 @@ public class MissingDiamond {
    *   <li>Initializes the token system</li>
    *   <li>Registers players with the banker</li>
    * </ul>
+   *
+   * @throws IllegalStateException if no players are available to start the game
    */
   private void initializeGameState() {
+    if (players == null || players.isEmpty()) {
+      throw new IllegalStateException("Cannot initialize game: no players available. "
+          + "At least one player is required to start the game.");
+    }
+
     this.gameFinished = false;
     this.currentPlayerIndex = 0;
-    this.currentPlayer = players.isEmpty() ? null : players.get(currentPlayerIndex);
+    this.currentPlayer = players.get(currentPlayerIndex);
     this.currentRoll = 0;
 
     identifyCityTiles();
@@ -301,9 +308,12 @@ public class MissingDiamond {
    * describing the result. The roll value is stored in the currentRoll field.</p>
    *
    * @return A message describing the die roll result
+   * @throws IllegalStateException if no current player is set
    */
   public String playTurn() {
-    // Roll the die
+    if (currentPlayer == null) {
+      throw new IllegalStateException("No current player set. Cannot play turn.");
+    }
     this.currentRoll = die.rollDie();
     return currentPlayer.getName() + " rolled a " + currentRoll + ".";
   }
@@ -387,8 +397,12 @@ public class MissingDiamond {
    * <p>The victory condition is met when a player has found the diamond token.</p>
    *
    * @return {@code true} if the victory condition is met, {@code false} otherwise
+   * @throws IllegalStateException if no current player is set
    */
   public boolean checkWinCondition() {
+    if (currentPlayer == null) {
+      throw new IllegalStateException("No current player set. Cannot check win condition.");
+    }
     return tokenSystem.checkVictoryCondition(currentPlayer, currentPlayer.getCurrentTile());
   }
 

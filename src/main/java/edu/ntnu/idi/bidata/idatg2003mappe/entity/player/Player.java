@@ -98,7 +98,8 @@ public class Player {
    * board's path and notifies observers about the movement.</p>
    *
    * @param tilesToMove Number of tiles to move
-   * @throws IllegalStateException If the player's current tile is not set
+   * @throws IllegalStateException If the player's current tile is not set or
+   *                               if no tile exists at the target distance
    */
   public void movePlayer(int tilesToMove) {
     if (currentTile == null) {
@@ -106,7 +107,13 @@ public class Player {
     }
 
     Tile oldTile = currentTile;
-    currentTile = currentTile.getTileAtDistance(tilesToMove);
+    Tile newTile = currentTile.getTileAtDistance(tilesToMove);
+
+    if (newTile == null) {
+      throw new IllegalStateException("No tile exists at distance " + tilesToMove + " from current position.");
+    }
+
+    currentTile = newTile;
 
     // Notify observers about the movement
     notifyPlayerMoved(oldTile, currentTile);
