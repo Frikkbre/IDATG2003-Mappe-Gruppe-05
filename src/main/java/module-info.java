@@ -2,6 +2,7 @@ module edu.ntnu.idi.bidata.idatg2003mappe {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.web;
+  requires javafx.swing; // Required for JFXPanel in tests
 
   requires org.controlsfx.controls;
   requires com.dlsc.formsfx;
