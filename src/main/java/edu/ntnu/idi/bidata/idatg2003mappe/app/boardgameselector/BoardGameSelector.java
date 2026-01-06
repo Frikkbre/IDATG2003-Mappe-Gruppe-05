@@ -209,10 +209,10 @@ public class BoardGameSelector extends Application {
     buttonContent.setAlignment(Pos.CENTER);
 
     Label titleLabel = new Label(title);
-    titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;");
+    titleLabel.getStyleClass().add("button-title");
 
     Label descLabel = new Label(description);
-    descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.9);");
+    descLabel.getStyleClass().add("button-description");
     descLabel.setWrapText(true);
     descLabel.setMaxWidth(200);
 

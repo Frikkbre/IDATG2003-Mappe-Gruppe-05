@@ -45,7 +45,7 @@ public class MapUIManager {
 
     // Initialize UI components
     statusLabel = new Label("COORDINATE MODE: Click on map to place points");
-    statusLabel.setStyle("-fx-background-color: red; -fx-text-fill: white; -fx-padding: 5px; -fx-font-weight: bold;");
+    statusLabel.getStyleClass().add("status-label-active");
     statusLabel.setVisible(false);
 
     tileTypeSelector = new ChoiceBox<>();

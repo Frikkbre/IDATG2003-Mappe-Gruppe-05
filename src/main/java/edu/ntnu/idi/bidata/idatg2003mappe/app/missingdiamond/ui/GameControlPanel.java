@@ -223,8 +223,8 @@ public class GameControlPanel extends VBox {
     log.setEditable(false);
     log.setWrapText(true);  // Enable word wrap
 
-    // Disable scrollbars
-    log.setStyle("-fx-control-inner-background: #f4f4f4; -fx-font-family: monospace; -fx-font-size: 11px;");
+    // Apply CSS class for styling
+    log.getStyleClass().add("game-log-small");
 
     return log;
   }

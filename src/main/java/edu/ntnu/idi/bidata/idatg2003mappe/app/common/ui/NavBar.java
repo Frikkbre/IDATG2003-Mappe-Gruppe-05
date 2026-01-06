@@ -187,7 +187,7 @@ public class NavBar {
       menuBar.getMenus().addAll(fileMenu, navigateMenu);
     }
 
-    menuBar.setStyle("-fx-background-color: #57B9FF;");
+    menuBar.getStyleClass().add("menu-bar-game");
 
     return menuBar;
   }

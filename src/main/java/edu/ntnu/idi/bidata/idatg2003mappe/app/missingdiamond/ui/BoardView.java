@@ -149,8 +149,8 @@ public class BoardView extends StackPane {
     overlayPane.setPrefSize(900, 700);
     overlayPane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-    // Make sure pane is visible
-    overlayPane.setStyle("-fx-background-color: transparent;");
+    // Make sure pane is visible - use CSS class
+    overlayPane.getStyleClass().add("overlay-transparent");
 
     getChildren().add(overlayPane);
 

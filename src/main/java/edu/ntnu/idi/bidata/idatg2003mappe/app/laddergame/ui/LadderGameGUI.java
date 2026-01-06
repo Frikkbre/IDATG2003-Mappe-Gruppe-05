@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 /**
@@ -49,16 +50,7 @@ public class LadderGameGUI extends Application {
   private static final double CIRCLE_RADIUS = 15.0;
   private static final double TILE_WIDTH = 80.0;
   private static final double TILE_HEIGHT = 80.0;
-  // Color scheme constants
-  private static final String BACKGROUND_COLOR = "#2C3E50"; // Dark blue-gray
-  private static final String BOARD_BACKGROUND = "#34495E"; // Lighter blue-gray
-  private static final String TILE_COLOR = "#ECF0F1"; // Light gray
-  private static final String LADDER_UP_COLOR = "#27AE60"; // Green
-  private static final String LADDER_DOWN_COLOR = "#E74C3C"; // Red
-  private static final String BUTTON_COLOR = "#3498DB"; // Blue
-  private static final String BUTTON_HOVER_COLOR = "#2980B9"; // Darker blue
-  private static final String TEXT_COLOR = "#2C3E50"; // Dark text
-  private static final String LOG_BACKGROUND = "#BDC3C7"; // Light gray for logs
+  private static final Logger logger = Logger.getLogger(LadderGameGUI.class.getName());
   private final GameSaveLoadHandler gameSaveLoadHandler = new GameSaveLoadHandler();
   private final Map<Player, Circle> playerCircles = new HashMap<>();
   private final Map<Integer, TextField> tileFields = new HashMap<>();
@@ -120,7 +112,7 @@ public class LadderGameGUI extends Application {
 
     BorderPane borderPane = new BorderPane();
     borderPane.setPrefSize(1440, 840);
-    borderPane.setStyle("-fx-background-color: " + BACKGROUND_COLOR + ";");
+    borderPane.getStyleClass().add("game-background");
 
     navBar = new NavBar();
     navBar.setStage(primaryStage);
@@ -135,37 +127,10 @@ public class LadderGameGUI extends Application {
     // Create the board with overlay for player circles
     StackPane boardContainer = createBoardWithOverlay();
 
-    // Style the roll die button
+    // Style the roll die button using CSS class
     Button rollDieButton = new Button("Roll Die");
     rollDieButton.setPrefSize(200, 50);
-    rollDieButton.setStyle(
-        "-fx-background-color: " + BUTTON_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 18px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 10;" +
-            "-fx-cursor: hand;"
-    );
-    rollDieButton.setOnMouseEntered(e ->
-        rollDieButton.setStyle(
-            "-fx-background-color: " + BUTTON_HOVER_COLOR + ";" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 18px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        )
-    );
-    rollDieButton.setOnMouseExited(e ->
-        rollDieButton.setStyle(
-            "-fx-background-color: " + BUTTON_COLOR + ";" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 18px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        )
-    );
+    rollDieButton.getStyleClass().add("action-button-large");
 
     rollDieButton.setOnAction(e -> {
       String message = gameController.playTurn();
@@ -177,36 +142,25 @@ public class LadderGameGUI extends Application {
       }
     });
 
-    // Style the game log
+    // Style the game log using CSS class
     gameLog = new TextArea();
     gameLog.setEditable(false);
     gameLog.setPrefHeight(150);
-    gameLog.setStyle(
-        "-fx-control-inner-background: " + LOG_BACKGROUND + ";" +
-            "-fx-font-family: 'Consolas', monospace;" +
-            "-fx-font-size: 14px;" +
-            "-fx-text-fill: " + TEXT_COLOR + ";" +
-            "-fx-border-color: #95A5A6;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;"
-    );
+    gameLog.getStyleClass().add("game-log");
 
     scoreBoard = createScoreBoard();
 
     VBox leftBox = new VBox(20);
     leftBox.setAlignment(Pos.CENTER_LEFT);
     leftBox.setPadding(new Insets(10));
-    leftBox.setStyle(
-        "-fx-background-color: rgba(52, 73, 94, 0.7);" +
-            "-fx-background-radius: 10;" +
-            "-fx-padding: 20;"
-    );
+    leftBox.getStyleClass().add("side-panel");
     leftBox.getChildren().addAll(scoreBoard, rollDieButton, gameLog);
 
     centerBox.getChildren().addAll(leftBox, boardContainer);
     borderPane.setCenter(centerBox);
 
     Scene scene = new Scene(borderPane);
+    loadCSS(scene);
     primaryStage.setScene(scene);
     primaryStage.setTitle("Ladder Game - " + (randomLadders ? "Random Mode" : "Classic Mode"));
     primaryStage.show();
@@ -214,6 +168,20 @@ public class LadderGameGUI extends Application {
     // Initialize player circles and update the board
     initializePlayerCircles();
     updateBoardUI();
+  }
+
+  /**
+   * <p>Loads the CSS stylesheet for the application.</p>
+   *
+   * @param scene The scene to apply CSS styling to
+   */
+  private void loadCSS(Scene scene) {
+    try {
+      String cssFile = getClass().getResource("/game-style/game-styles.css").toExternalForm();
+      scene.getStylesheets().add(cssFile);
+    } catch (Exception e) {
+      logger.warning("Could not load CSS file. Using default styling.");
+    }
   }
 
   /**
@@ -230,11 +198,7 @@ public class LadderGameGUI extends Application {
    */
   private StackPane createBoardWithOverlay() {
     StackPane container = new StackPane();
-    container.setStyle(
-        "-fx-background-color: " + BOARD_BACKGROUND + ";" +
-            "-fx-background-radius: 15;" +
-            "-fx-padding: 20;"
-    );
+    container.getStyleClass().add("board-container");
 
     // Add drop shadow effect
     DropShadow dropShadow = new DropShadow();
@@ -312,12 +276,8 @@ public class LadderGameGUI extends Application {
     tile.setEditable(false);
     tile.setAlignment(Pos.CENTER);
 
-    // Base tile style
-    String baseStyle = "-fx-font-weight: bold;" +
-        "-fx-font-size: 14px;" +
-        "-fx-border-radius: 5;" +
-        "-fx-background-radius: 5;" +
-        "-fx-border-width: 2;";
+    // Add base tile style class
+    tile.getStyleClass().add("board-tile");
 
     // Check if the tile has a ladder and style accordingly
     Tile currentTile = gameController.getTileByIdLinear(tileNumber);
@@ -326,46 +286,26 @@ public class LadderGameGUI extends Application {
 
       if (destinationTileId > tileNumber) {
         // Positive ladder (going up)
-        tile.setStyle(baseStyle +
-            "-fx-background-color: " + LADDER_UP_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-border-color: #229954;"
-        );
+        tile.getStyleClass().add("tile-ladder-up");
         tile.setText(tileNumber + " ↑ " + destinationTileId);
       } else {
         // Negative ladder (going down - snake)
-        tile.setStyle(baseStyle +
-            "-fx-background-color: " + LADDER_DOWN_COLOR + ";" +
-            "-fx-text-fill: white;" +
-            "-fx-border-color: #CB4335;"
-        );
+        tile.getStyleClass().add("tile-ladder-down");
         tile.setText(tileNumber + " ↓ " + destinationTileId);
       }
     } else if (currentTile != null && currentTile.getEffect() != null) {
       // Special effect tiles
       String effect = currentTile.getEffect();
       if ("skipTurn".equals(effect)) {
-        tile.setStyle(baseStyle +
-            "-fx-background-color: #F39C12;" + // Orange
-            "-fx-text-fill: white;" +
-            "-fx-border-color: #D68910;"
-        );
+        tile.getStyleClass().add("tile-skip-turn");
         tile.setText(tileNumber + " ⏸");
       } else if ("backToStart".equals(effect)) {
-        tile.setStyle(baseStyle +
-            "-fx-background-color: #9B59B6;" + // Purple
-            "-fx-text-fill: white;" +
-            "-fx-border-color: #7D3C98;"
-        );
+        tile.getStyleClass().add("tile-back-to-start");
         tile.setText(tileNumber + " ⟲");
       }
     } else {
       // Regular tile styling
-      tile.setStyle(baseStyle +
-          "-fx-background-color: " + TILE_COLOR + ";" +
-          "-fx-text-fill: " + TEXT_COLOR + ";" +
-          "-fx-border-color: #95A5A6;"
-      );
+      tile.getStyleClass().add("tile-regular");
     }
 
     // Add hover effect
@@ -520,16 +460,7 @@ public class LadderGameGUI extends Application {
     scoreBoard.setPrefWidth(250);
     scoreBoard.setPrefHeight(200);
     scoreBoard.setEditable(false);
-    scoreBoard.setStyle(
-        "-fx-control-inner-background: " + LOG_BACKGROUND + ";" +
-            "-fx-font-family: 'Consolas', monospace;" +
-            "-fx-font-size: 14px;" +
-            "-fx-text-fill: " + TEXT_COLOR + ";" +
-            "-fx-font-weight: bold;" +
-            "-fx-border-color: #95A5A6;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;"
-    );
+    scoreBoard.getStyleClass().add("scoreboard");
     return scoreBoard;
   }
 
